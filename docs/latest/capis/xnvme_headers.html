@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvme: headers &mdash; xNVMe 0.0.16 documentation</title>
+  <title>xnvme: headers &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="lblk" href="lblk.html" />
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -97,6 +98,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="lblk.html">lblk</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd.html">znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd_headers.html">znd: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec_headers.html">xnvmec: headers</a></li>
 </ul>
@@ -210,6 +213,35 @@
 	<span class="n">XNVME_PR_YAML</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_PR_YAML: Print formatted as YAML</span>
 	<span class="n">XNVME_PR_TERSE</span> <span class="o">=</span> <span class="mh">0x2</span>	<span class="c1">///&lt; XNVME_PR_TERSE: Print without formatting</span>
 <span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Array of version-strings for libraries bundled with xNVMe</span>
+<span class="cm"> */</span>
+<span class="k">extern</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">xnvme_3p_ver</span><span class="p">[];</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given array of version-strings to the given output stream</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param stream output stream used for printing</span>
+<span class="cm"> * @param attr Pointer to the array of strings to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_3p_ver_fpr</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">ver</span><span class="p">[],</span> <span class="k">enum</span> <span class="n">xnvme_pr</span> <span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given array of version-strings to stdout</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param attr Pointer to the array of strings to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_3p_ver_pr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">ver</span><span class="p">[],</span> <span class="k">enum</span> <span class="n">xnvme_pr</span> <span class="n">opts</span><span class="p">);</span>
+
 <span class="cm">/**</span>
 <span class="cm"> *</span>
 <span class="cm"> * io_uring_setup() flags</span>
@@ -511,15 +543,16 @@
 <span class="nf">xnvme_enumeration_pr</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_enumeration</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
-<span class="cm"> * Enumerate devices on the system</span>
+<span class="cm"> * Enumerate devices on the given system</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param list Pointer to pointer of the list of device enumerated</span>
+<span class="cm"> * @param sys_uri URI of the system to enumerate on, when NULL, localhost/PCIe</span>
 <span class="cm"> * @param opts System enumeration options</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
-<span class="nf">xnvme_enumerate</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_enumeration</span> <span class="o">**</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+<span class="nf">xnvme_enumerate</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_enumeration</span> <span class="o">**</span><span class="n">list</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sys_uri</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Opaque device handle.</span>
@@ -861,7 +894,7 @@
 		<span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span>			<span class="c1">///&lt; User callback arguments</span>
 
 		<span class="c1">///&lt; Per request backend specific data</span>
-		<span class="kt">uint8_t</span> <span class="n">be_rsvd</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+		<span class="kt">uint8_t</span> <span class="n">be_rsvd</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 	<span class="p">}</span> <span class="n">async</span><span class="p">;</span>
 
 	<span class="c1">///&lt; Fields for request-pool</span>
@@ -931,30 +964,32 @@
 <span class="cm"> * Representation of device &quot;geometry&quot;</span>
 <span class="cm"> *</span>
 <span class="cm"> * This will remain in some, encapsulating IO parameters such as MDTS, ZONE</span>
-<span class="cm"> * APPEND MDTS, nbytes, nsect etc. mapping to zone characteristics</span>
+<span class="cm"> * APPEND MDTS, nbytes, nsect etc. mapping to zone characteristics, as well as</span>
+<span class="cm"> * extended LBA formats.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @struct xnvme_geo</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="p">{</span>
 	<span class="k">enum</span> <span class="n">xnvme_geo_type</span> <span class="n">type</span><span class="p">;</span>
 
-	<span class="cm">/**</span>
-<span class="cm">	 * Pseudo-geometry npugrp and npunit are irrelevant...</span>
-<span class="cm">	 */</span>
-	<span class="kt">uint32_t</span> <span class="n">npugrp</span><span class="p">;</span>		<span class="c1">///&lt; Nr. of Parallel Unit Groups</span>
-	<span class="kt">uint32_t</span> <span class="n">npunit</span><span class="p">;</span>		<span class="c1">///&lt; Nr. of Parallel Units in PUG</span>
+	<span class="kt">uint32_t</span> <span class="n">npugrp</span><span class="p">;</span>	<span class="c1">///&lt; Nr. of Parallel Unit Groups</span>
+	<span class="kt">uint32_t</span> <span class="n">npunit</span><span class="p">;</span>	<span class="c1">///&lt; Nr. of Parallel Units in PUG</span>
 
 	<span class="kt">uint32_t</span> <span class="n">nzone</span><span class="p">;</span>		<span class="c1">///&lt; Nr. of zones in PU</span>
 	<span class="kt">uint64_t</span> <span class="n">nsect</span><span class="p">;</span>		<span class="c1">///&lt; Nr. of sectors per zone</span>
 	<span class="kt">uint32_t</span> <span class="n">nbytes</span><span class="p">;</span>	<span class="c1">///&lt; Nr. of bytes per sector</span>
 	<span class="kt">uint32_t</span> <span class="n">nbytes_oob</span><span class="p">;</span>	<span class="c1">///&lt; Nr. of bytes per sector in OOB</span>
 
-	<span class="kt">uint64_t</span> <span class="n">tbytes</span><span class="p">;</span>		<span class="c1">///&lt; Total # bytes in geometry</span>
+	<span class="kt">uint64_t</span> <span class="n">tbytes</span><span class="p">;</span>	<span class="c1">///&lt; Total # bytes in geometry</span>
 
-	<span class="kt">uint32_t</span> <span class="n">mdts_nbytes</span><span class="p">;</span>	<span class="c1">///&lt; Maximum data transfer size in bytes</span>
+	<span class="kt">uint32_t</span> <span class="n">mdts_nbytes</span><span class="p">;</span>	<span class="c1">///&lt; Maximum-data-transfer-size in unit of bytes</span>
 
-	<span class="kt">uint8_t</span> <span class="n">_rsvd</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+	<span class="kt">uint32_t</span> <span class="n">lba_nbytes</span><span class="p">;</span>	<span class="c1">///&lt; Size of an LBA in bytes</span>
+	<span class="kt">uint8_t</span> <span class="n">lba_extended</span><span class="p">;</span>	<span class="c1">///&lt; Extended LBA: 1=Supported, 0=Not-Supported</span>
+
+	<span class="kt">uint8_t</span> <span class="n">_rsvd</span><span class="p">[</span><span class="mi">15</span><span class="p">];</span>
 <span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_geo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">64</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Prints the given ::xnvme_geo to the given output stream</span>
@@ -966,7 +1001,7 @@
 <span class="cm"> * @return On success, the number of characters printed is returned.</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
-<span class="nf">xnvme_geo_fpr</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+<span class="n">xnvme_geo_fpr</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Prints the given ::xnvme_geo to stdout</span>
@@ -1071,6 +1106,21 @@
 		     <span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span><span class="p">);</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify command for the</span>
+<span class="cm"> * controller associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
+<span class="cm"> * @param csi Command Set Identifier</span>
+<span class="cm"> * @param dbuf Buffer allocated by xnvme_buf_alloc()</span>
+<span class="cm"> * @param req Pointer to structure for NVMe completion</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_idfy_ctrlr_csi</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">csi</span><span class="p">,</span>
+			 <span class="k">struct</span> <span class="n">xnvme_spec_idfy</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span> <span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span><span class="p">);</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * Submit and wait for completion of an NVMe Identify command for the given nsid</span>
 <span class="cm"> *</span>
 <span class="cm"> * Execute an NVMe identify namespace command for the namespace associated with</span>
@@ -1090,6 +1140,25 @@
 <span class="kt">int</span>
 <span class="nf">xnvme_cmd_idfy_ns</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span>
 		  <span class="k">struct</span> <span class="n">xnvme_spec_idfy</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span> <span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify command for the given nsid</span>
+<span class="cm"> *</span>
+<span class="cm"> * Execute an I/O Command Set specific NVMe identify namespace command for the</span>
+<span class="cm"> * given &#39;nsid&#39;. When the given &#39;nsid&#39; == 0, then the command is executed for</span>
+<span class="cm"> * the namespace associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param csi Command Set Identifier</span>
+<span class="cm"> * @param dbuf Buffer allocated by xnvme_buf_alloc()</span>
+<span class="cm"> * @param req Pointer to structure for NVMe completion</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_idfy_ns_csi</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">csi</span><span class="p">,</span>
+		      <span class="k">struct</span> <span class="n">xnvme_spec_idfy</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span> <span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Submit and wait for completion of an NVMe Get Log Page command</span>
@@ -1296,6 +1365,18 @@
 <span class="nf">xnvme_dev_get_ctrlr</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe identify controller structure specific to the Command Set</span>
+<span class="cm"> * and Namespace associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, pointer to namespace structure. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_spec_idfy_ctrlr</span> <span class="o">*</span>
+<span class="nf">xnvme_dev_get_ctrlr_css</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * Returns the NVMe identify namespace structure associated with the given</span>
 <span class="cm"> * device</span>
 <span class="cm"> *</span>
@@ -1308,6 +1389,18 @@
 <span class="nf">xnvme_dev_get_ns</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe identify namespace structure specific to the Command Set and</span>
+<span class="cm"> * Namespace associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, pointer to namespace structure. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_spec_idfy_ns</span> <span class="o">*</span>
+<span class="nf">xnvme_dev_get_ns_css</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * Returns the NVMe namespace identifier associated with the given `dev`</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
@@ -1316,6 +1409,16 @@
 <span class="cm"> */</span>
 <span class="kt">uint32_t</span>
 <span class="nf">xnvme_dev_get_nsid</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe Command Set Identifier associated with the given `dev`</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, NVMe Command Set Identifier is returned</span>
+<span class="cm"> */</span>
+<span class="kt">uint8_t</span>
+<span class="nf">xnvme_dev_get_csi</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Returns the internal backend state of the given `dev`</span>
@@ -1393,11 +1496,17 @@ functions.</p>
 <span class="cm"> * @struct xnvme_spec_cpl</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="n">xnvme_spec_cpl</span> <span class="p">{</span>
-	<span class="cm">/* dword 0 */</span>
-	<span class="kt">uint32_t</span>		<span class="n">cdw0</span><span class="p">;</span>	<span class="c1">///&lt; command-specific</span>
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="cm">/* dword 0 */</span>
+			<span class="kt">uint32_t</span>	<span class="n">cdw0</span><span class="p">;</span>	<span class="c1">///&lt; command-specific</span>
 
-	<span class="cm">/* dword 1 */</span>
-	<span class="kt">uint32_t</span>		<span class="n">rsvd1</span><span class="p">;</span>
+			<span class="cm">/* dword 1 */</span>
+			<span class="kt">uint32_t</span>	<span class="n">rsvd1</span><span class="p">;</span>
+		<span class="p">};</span>
+
+		<span class="kt">uint64_t</span> <span class="n">result</span><span class="p">;</span>	<span class="cm">/* Combined result of cdw 0 and cdw 1 */</span>
+	<span class="p">};</span>
 
 	<span class="cm">/* dword 2 */</span>
 	<span class="kt">uint16_t</span>		<span class="n">sqhd</span><span class="p">;</span>	<span class="c1">///&lt; submission queue head pointer</span>
@@ -1555,6 +1664,10 @@ functions.</p>
 	<span class="n">XNVME_SPEC_IDFY_NSDSCR</span> <span class="o">=</span> <span class="mh">0x3</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NSDSCR</span>
 	<span class="n">XNVME_SPEC_IDFY_SETL</span> <span class="o">=</span> <span class="mh">0x4</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_SETL</span>
 
+	<span class="n">XNVME_SPEC_IDFY_NS_IOCS</span> <span class="o">=</span> <span class="mh">0x05</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NS_IOCS</span>
+	<span class="n">XNVME_SPEC_IDFY_CTRLR_IOCS</span> <span class="o">=</span> <span class="mh">0x6</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_CTRLR_IOCS</span>
+	<span class="n">XNVME_SPEC_IDFY_NSLIST_IOCS</span> <span class="o">=</span> <span class="mh">0x7</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NSLIST_IOCS</span>
+
 	<span class="n">XNVME_SPEC_IDFY_NSLIST_ALLOC</span> <span class="o">=</span> <span class="mh">0x10</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NSLIST_ALLOC</span>
 	<span class="n">XNVME_SPEC_IDFY_NS_ALLOC</span> <span class="o">=</span> <span class="mh">0x11</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NS_ALLOC</span>
 	<span class="n">XNVME_SPEC_IDFY_CTRLR_NS</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_CTRLR_NS</span>
@@ -1564,6 +1677,9 @@ functions.</p>
 	<span class="n">XNVME_SPEC_IDFY_NSGRAN</span> <span class="o">=</span> <span class="mh">0x16</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NSGRAN</span>
 	<span class="n">XNVME_SPEC_IDFY_UUIDL</span> <span class="o">=</span> <span class="mh">0x17</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_UUIDL</span>
 
+	<span class="n">XNVME_SPEC_IDFY_NSLIST_ALLOC_IOCS</span> <span class="o">=</span> <span class="mh">0x1A</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NSLIST_ALLOC_IOCS</span>
+	<span class="n">XNVME_SPEC_IDFY_NS_ALLOC_IOCS</span> <span class="o">=</span> <span class="mh">0x1B</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_NS_ALLOC_IOCS</span>
+	<span class="n">XNVME_SPEC_IDFY_IOCS</span> <span class="o">=</span> <span class="mh">0x1C</span><span class="p">,</span> <span class="c1">///&lt; XNVME_SPEC_IDFY_IOCS</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -1576,6 +1692,30 @@ functions.</p>
 	<span class="kt">uint8_t</span>	 <span class="nl">rsvd</span> <span class="p">:</span> <span class="mi">6</span><span class="p">;</span>
 <span class="p">};</span>
 <span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_spec_lbaf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Command Set Identifiers</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see Specification Section 5.15.2.1, figure X1</span>
+<span class="cm"> *</span>
+<span class="cm"> * @enum xnvme_spec_csi</span>
+<span class="cm"> */</span>
+<span class="k">enum</span> <span class="n">xnvme_spec_csi</span> <span class="p">{</span>
+	<span class="n">XNVME_SPEC_CSI_LBLK</span>	<span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_CSI_LBLK</span>
+	<span class="n">XNVME_SPEC_CSI_ZONED</span>	<span class="o">=</span> <span class="mh">0x2</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_CSI_ZONED</span>
+
+	<span class="n">XNVME_SPEC_CSI_NOCHECK</span>	<span class="o">=</span> <span class="mh">0xFF</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_CSI_NOCHECK</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Produces a string representation of the given ::xnvme_spec_csi</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param nst the enum value to produce a string representation of</span>
+<span class="cm"> * @return On success, a string representation is returned. On error, the string</span>
+<span class="cm"> * &quot;XNVME_SPEC_CSI_ENOSYS&quot; is returned.</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>
+<span class="nf">xnvme_spec_csi_str</span><span class="p">(</span><span class="k">enum</span> <span class="n">xnvme_spec_csi</span> <span class="n">csi</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Representation of NVMe completion result Identify Namespace</span>
@@ -2235,6 +2375,48 @@ functions.</p>
 <span class="nf">xnvme_spec_idfy_ctrl_pr</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_spec_idfy_ctrlr</span> <span class="o">*</span><span class="n">idfy</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Representation of I/O Command Set Vector</span>
+<span class="cm"> *</span>
+<span class="cm"> * See NVMe spec tbd, section xyz, for details</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_spec_cs_vector</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="n">xnvme_spec_cs_vector</span> <span class="p">{</span>
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="kt">uint64_t</span> <span class="nl">nvm</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="kt">uint64_t</span> <span class="nl">rsvd1</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="kt">uint64_t</span> <span class="nl">zns</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="kt">uint64_t</span> <span class="nl">rsvd</span> <span class="p">:</span> <span class="mi">61</span><span class="p">;</span>
+		<span class="p">};</span>
+		<span class="kt">uint64_t</span> <span class="n">val</span><span class="p">;</span>
+	<span class="p">};</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_spec_cs_vector</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="cp">#define XNVME_SPEC_IDFY_CS_IOCSC_LEN 512</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Representation of I/O Command Set data structure</span>
+<span class="cm"> *</span>
+<span class="cm"> * See NVMe spec tbd, section xyz, for details</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_spec_idfy_cs</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="n">xnvme_spec_idfy_cs</span> <span class="p">{</span>
+	<span class="c1">// I/O Command Set Combinations</span>
+	<span class="k">struct</span> <span class="n">xnvme_spec_cs_vector</span> <span class="n">iocsc</span><span class="p">[</span><span class="n">XNVME_SPEC_IDFY_CS_IOCSC_LEN</span><span class="p">];</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_spec_idfy_cs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4096</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="kt">int</span>
+<span class="n">xnvme_spec_idfy_cs_fpr</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_spec_idfy_cs</span> <span class="o">*</span><span class="n">idfy</span><span class="p">,</span>
+		       <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+
+<span class="kt">int</span>
+<span class="nf">xnvme_spec_idfy_cs_pr</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_spec_idfy_cs</span> <span class="o">*</span><span class="n">idfy</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * NVMe completion result accessor</span>
 <span class="cm"> *</span>
 <span class="cm"> * TODO: clarify</span>
@@ -2245,6 +2427,7 @@ functions.</p>
 	<span class="k">union</span> <span class="p">{</span>
 		<span class="k">struct</span> <span class="n">xnvme_spec_idfy_ctrlr</span> <span class="n">ctrlr</span><span class="p">;</span>
 		<span class="k">struct</span> <span class="n">xnvme_spec_idfy_ns</span> <span class="n">ns</span><span class="p">;</span>
+		<span class="k">struct</span> <span class="n">xnvme_spec_idfy_cs</span> <span class="n">cs</span><span class="p">;</span>
 	<span class="p">};</span>
 <span class="p">};</span>
 <span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_spec_idfy</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4096</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
@@ -2595,7 +2778,8 @@ functions.</p>
 	<span class="kt">uint32_t</span> <span class="nl">cntid</span>		<span class="p">:</span> <span class="mi">16</span><span class="p">;</span>	<span class="c1">///&lt; Controller Identifier</span>
 
 	<span class="kt">uint32_t</span> <span class="nl">nvmsetid</span>	<span class="p">:</span> <span class="mi">16</span><span class="p">;</span>	<span class="c1">///&lt; NVM Set Identifier</span>
-	<span class="kt">uint32_t</span> <span class="nl">rsvd2</span>		<span class="p">:</span> <span class="mi">16</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="nl">rsvd2</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="nl">csi</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>	<span class="c1">///&lt; Command Set Identifier</span>
 
 	<span class="kt">uint32_t</span> <span class="n">cdw12_13</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>		<span class="c1">///&lt; Command dword 12 to 13</span>
 

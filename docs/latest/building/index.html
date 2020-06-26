@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building xNVMe from source &mdash; xNVMe 0.0.16 documentation</title>
+  <title>Building xNVMe from source &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="SPDK" href="../backends/xnvme_be_spdk/index.html" /> 
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -268,6 +269,7 @@ git
 libaio
 libutil-linux
 make
+ncurses
 numactl
 </pre></div>
 </div>
@@ -288,6 +290,7 @@ libaio-devel
 libuuid-devel
 make
 nasm
+ncurses-devel
 numactl-devel
 openssl-devel
 patch
@@ -318,11 +321,10 @@ chmod +x cmake.sh
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
 cmake
-g++
-gcc
 git
 libaio-dev
 libcunit1-dev
+libncurses5-dev
 libnuma-dev
 libssl-dev
 nasm
@@ -330,8 +332,8 @@ uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
-apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/debian-11.txt<span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via aptitude -- seems to handle dependencies better</span>
+aptitude -q -y -f install <span class="k">$(</span>cat scripts/pkgs/debian-11.txt<span class="k">)</span>
 </pre></div>
 </div>
 </div>
@@ -340,11 +342,10 @@ apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/debian-11.txt<span
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
 cmake
-g++
-gcc
 git
 libaio-dev
 libcunit1-dev
+libncurses5-dev
 libnuma-dev
 libssl-dev
 nasm
@@ -361,11 +362,10 @@ apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/debian-10.txt<span
 <h3>Debian 9 (Stretch)<a class="headerlink" href="#debian-9-stretch" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
-g++
-gcc
 git
 libaio-dev
 libcunit1-dev
+libncurses5-dev
 libnuma-dev
 libssl-dev
 nasm
@@ -396,6 +396,7 @@ cunit
 e2fsprogs-libuuid
 gmake
 nasm
+ncurses
 openssl
 python
 </pre></div>
@@ -416,6 +417,7 @@ gcc
 git
 libaio-dev
 libcunit1-dev
+libncurses5-dev
 libnuma-dev
 libssl-dev
 nasm
@@ -438,6 +440,7 @@ gcc
 git
 libaio-dev
 libcunit1-dev
+libncurses5-dev
 libnuma-dev
 libssl-dev
 nasm
@@ -459,6 +462,7 @@ gcc
 git
 libaio-dev
 libcunit1-dev
+libncurses5-dev
 libnuma-dev
 libssl-dev
 nasm
@@ -481,15 +485,16 @@ chmod +x cmake.sh
 <h3>Alpine Linux 3.11.3<a class="headerlink" href="#alpine-linux-3-11-3" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apk</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash
+bsd-compat-headers
 build-base
 cmake
 coreutils
 gawk
 libexecinfo-dev
-bsd-compat-headers
 linux-headers
 make
 musl-dev
+ncurses
 numactl-dev
 python3
 util-linux-dev

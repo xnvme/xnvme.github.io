@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvme &mdash; xNVMe 0.0.16 documentation</title>
+  <title>xnvme &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="xnvme: headers" href="xnvme_headers.html" />
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -95,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-geo-type">xnvme_geo_type</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-nvme-sgl-descriptor-type">xnvme_nvme_sgl_descriptor_type</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-pr">xnvme_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-csi">xnvme_spec_csi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat-id">xnvme_spec_feat_id</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat-sel">xnvme_spec_feat_sel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-flag">xnvme_spec_flag</a></li>
@@ -123,9 +125,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cmd-sanitize">xnvme_spec_cmd_sanitize</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cmd-sfeat">xnvme_spec_cmd_sfeat</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cpl">xnvme_spec_cpl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cs-vector">xnvme_spec_cs_vector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-dsm-range">xnvme_spec_dsm_range</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat">xnvme_spec_feat</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy">xnvme_spec_idfy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-cs">xnvme_spec_idfy_cs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-ctrlr">xnvme_spec_idfy_ctrlr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-ns">xnvme_spec_idfy_ns</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-lbaf">xnvme_spec_lbaf</a></li>
@@ -141,6 +145,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-ilog2">XNVME_ILOG2</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-max">XNVME_MAX</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-min">XNVME_MIN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-3p-ver-fpr">xnvme_3p_ver_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-3p-ver-pr">xnvme_3p_ver_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-async-get-depth">xnvme_async_get_depth</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-async-get-outstanding">xnvme_async_get_outstanding</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-async-init">xnvme_async_init</a></li>
@@ -162,7 +168,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-gfeat">xnvme_cmd_gfeat</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-idfy">xnvme_cmd_idfy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-idfy-ctrlr">xnvme_cmd_idfy_ctrlr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-idfy-ctrlr-csi">xnvme_cmd_idfy_ctrlr_csi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-idfy-ns">xnvme_cmd_idfy_ns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-idfy-ns-csi">xnvme_cmd_idfy_ns_csi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-log">xnvme_cmd_log</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass">xnvme_cmd_pass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass-admin">xnvme_cmd_pass_admin</a></li>
@@ -173,9 +181,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-close">xnvme_dev_close</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-fpr">xnvme_dev_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-be-state">xnvme_dev_get_be_state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-csi">xnvme_dev_get_csi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ctrlr">xnvme_dev_get_ctrlr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ctrlr-css">xnvme_dev_get_ctrlr_css</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-geo">xnvme_dev_get_geo</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ns">xnvme_dev_get_ns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ns-css">xnvme_dev_get_ns_css</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-nsid">xnvme_dev_get_nsid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ssw">xnvme_dev_get_ssw</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-open">xnvme_dev_open</a></li>
@@ -210,8 +221,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-reset">xnvme_sgl_reset</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cmd-fpr">xnvme_spec_cmd_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cmd-pr">xnvme_spec_cmd_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-csi-str">xnvme_spec_csi_str</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat-fpr">xnvme_spec_feat_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat-pr">xnvme_spec_feat_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-cs-fpr">xnvme_spec_idfy_cs_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-cs-pr">xnvme_spec_idfy_cs_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-ctrl-fpr">xnvme_spec_idfy_ctrl_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-ctrl-pr">xnvme_spec_idfy_ctrl_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-ns-fpr">xnvme_spec_idfy_ns_fpr</a></li>
@@ -241,6 +255,8 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_headers.html">xnvme: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lblk.html">lblk</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd.html">znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd_headers.html">znd: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec_headers.html">xnvmec: headers</a></li>
 </ul>
@@ -473,6 +489,39 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-spec-csi">
+<span id="sec-c-apis-xnvme-enum-xnvme-spec-csi"></span><h3>xnvme_spec_csi<a class="headerlink" href="#xnvme-spec-csi" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.xnvme_spec_csi">
+<span class="target" id="libxnvme__spec_8h_1a11f85789e823c6a9b97f1472e22d0b22"></span><code class="sig-name descname">xnvme_spec_csi</code><a class="headerlink" href="#c.xnvme_spec_csi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command Set Identifiers. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 5.15.2.1, figure X1 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvme__spec_8h_1a11f85789e823c6a9b97f1472e22d0b22a643c211044c9f6e5a6182313d3c112d3"></span><code class="sig-name descname">0x0</code></dt>
+<dd><p>XNVME_SPEC_CSI_LBLK. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvme__spec_8h_1a11f85789e823c6a9b97f1472e22d0b22a6ab8c75183529806a2915950a0ea8ee1"></span><code class="sig-name descname">0x2</code></dt>
+<dd><p>XNVME_SPEC_CSI_ZONED. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xFF">
+<span class="target" id="libxnvme__spec_8h_1a11f85789e823c6a9b97f1472e22d0b22a781146ae6e5ed770fc07b76e4cfe9985"></span><code class="sig-name descname">0xFF</code><a class="headerlink" href="#c.0xFF" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVME_SPEC_CSI_NOCHECK. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-spec-feat-id">
 <span id="sec-c-apis-xnvme-enum-xnvme-spec-feat-id"></span><h3>xnvme_spec_feat_id<a class="headerlink" href="#xnvme-spec-feat-id" title="Permalink to this headline">¶</a></h3>
 <dl class="enum">
@@ -637,6 +686,24 @@
 </dd></dl>
 
 <dl class="enumvalue">
+<dt id="c.0x05">
+<span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a73141d580011e8931ba03855dca48b6c"></span><code class="sig-name descname">0x05</code><a class="headerlink" href="#c.0x05" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVME_SPEC_IDFY_NS_IOCS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a6ea28fa163ff5fa2e6b9443cc744b210"></span><code class="sig-name descname">0x6</code></dt>
+<dd><p>XNVME_SPEC_IDFY_CTRLR_IOCS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a6f89cd9912696e8b73b9b3368f87b47a"></span><code class="sig-name descname">0x7</code></dt>
+<dd><p>XNVME_SPEC_IDFY_NSLIST_IOCS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
 <dt id="c.0x10">
 <span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a080f3db058903d1e76314e2c7d2ba79a"></span><code class="sig-name descname">0x10</code><a class="headerlink" href="#c.0x10" title="Permalink to this definition">¶</a></dt>
 <dd><p>XNVME_SPEC_IDFY_NSLIST_ALLOC. </p>
@@ -682,6 +749,24 @@
 <dt id="c.0x17">
 <span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581aae42f807358232cf0e408c9e86b85cc2"></span><code class="sig-name descname">0x17</code><a class="headerlink" href="#c.0x17" title="Permalink to this definition">¶</a></dt>
 <dd><p>XNVME_SPEC_IDFY_UUIDL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x1A">
+<span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a1a0de087c7303c7f48056e7c7763c7e3"></span><code class="sig-name descname">0x1A</code><a class="headerlink" href="#c.0x1A" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVME_SPEC_IDFY_NSLIST_ALLOC_IOCS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x1B">
+<span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a4b4a8cea48e5fdc293e3db790e41ec9a"></span><code class="sig-name descname">0x1B</code><a class="headerlink" href="#c.0x1B" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVME_SPEC_IDFY_NS_ALLOC_IOCS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x1C">
+<span class="target" id="libxnvme__spec_8h_1aea52868048e9ccc795b66f5fcb783581a6d514f6fb81d1810f3c0597f2f22bf26"></span><code class="sig-name descname">0x1C</code><a class="headerlink" href="#c.0x1C" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVME_SPEC_IDFY_IOCS. </p>
 </dd></dl>
 
 </dd></dl>
@@ -967,7 +1052,7 @@
 <dt id="c.xnvme_geo">
 <span class="target" id="structxnvme__geo"></span><em class="property">struct </em><code class="sig-name descname">xnvme_geo</code><a class="headerlink" href="#c.xnvme_geo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of device “geometry”. </p>
-<p>This will remain in some, encapsulating IO parameters such as MDTS, ZONE APPEND MDTS, nbytes, nsect etc. mapping to zone characteristics </p>
+<p>This will remain in some, encapsulating IO parameters such as MDTS, ZONE APPEND MDTS, nbytes, nsect etc. mapping to zone characteristics, as well as extended LBA formats. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
@@ -978,8 +1063,7 @@
 <dl class="variable">
 <dt id="c.xnvme_geo::npugrp">
 <span class="target" id="structxnvme__geo_1ac2e7bb718534a412ec5448dfab2ad9f8"></span>uint32_t <code class="sig-name descname">npugrp</code><a class="headerlink" href="#c.xnvme_geo::npugrp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pseudo-geometry npugrp and npunit are irrelevant… </p>
-<p>Nr. of Parallel Unit Groups </p>
+<dd><p>Nr. of Parallel Unit Groups. </p>
 </dd></dl>
 
 <dl class="variable">
@@ -1021,12 +1105,24 @@
 <dl class="variable">
 <dt id="c.xnvme_geo::mdts_nbytes">
 <span class="target" id="structxnvme__geo_1a06403e430dd35ead26014c141f595da4"></span>uint32_t <code class="sig-name descname">mdts_nbytes</code><a class="headerlink" href="#c.xnvme_geo::mdts_nbytes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum data transfer size in bytes. </p>
+<dd><p>Maximum-data-transfer-size in unit of bytes. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvme_geo::lba_nbytes">
+<span class="target" id="structxnvme__geo_1a032465cfb0e8fcf8ba5b2156463f3716"></span>uint32_t <code class="sig-name descname">lba_nbytes</code><a class="headerlink" href="#c.xnvme_geo::lba_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of an LBA in bytes. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvme_geo::lba_extended">
+<span class="target" id="structxnvme__geo_1a7e8c9c4d36f072fc95baeaaba2d2bc2d"></span>uint8_t <code class="sig-name descname">lba_extended</code><a class="headerlink" href="#c.xnvme_geo::lba_extended" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extended LBA: 1=Supported, 0=Not-Supported. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt>
-<span class="target" id="structxnvme__geo_1a13d40e944a3dff7644a2a9f386ed96d3"></span><code class="sig-name descname">uint8_t xnvme_geo::_rsvd[20]</code></dt>
+<span class="target" id="structxnvme__geo_1ab54ad0c2e497163ff134524e7e1c6730"></span><code class="sig-name descname">uint8_t xnvme_geo::_rsvd[15]</code></dt>
 <dd></dd></dl>
 
 </div>
@@ -1141,8 +1237,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
-<dt id="c.92">
-<span class="target" id="structxnvme__spec__cmd_1aa379fdbf84cbfc893d58841ad591d79e"></span>union <a class="reference internal" href="#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a>::&#64;91 <a class="reference internal" href="#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a>::&#64;<code class="sig-name descname">92</code><a class="headerlink" href="#c.92" title="Permalink to this definition">¶</a></dt>
+<dt id="c.100">
+<span class="target" id="structxnvme__spec__cmd_1ae9aadfc1861d269f4485885012351add"></span>union <a class="reference internal" href="#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a>::&#64;99 <a class="reference internal" href="#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a>::&#64;<code class="sig-name descname">100</code><a class="headerlink" href="#c.100" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1216,7 +1312,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_cmd_common::dptr">
-<span class="target" id="structxnvme__spec__cmd__common_1af37501c3779717e124674e5db67e90f3"></span>union <a class="reference internal" href="#c.xnvme_spec_cmd_common" title="xnvme_spec_cmd_common">xnvme_spec_cmd_common</a>::&#64;88  <code class="sig-name descname">dptr</code><a class="headerlink" href="#c.xnvme_spec_cmd_common::dptr" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__cmd__common_1ab7b75b7c2b261432d03a668419186b94"></span>union <a class="reference internal" href="#c.xnvme_spec_cmd_common" title="xnvme_spec_cmd_common">xnvme_spec_cmd_common</a>::&#64;96  <code class="sig-name descname">dptr</code><a class="headerlink" href="#c.xnvme_spec_cmd_common::dptr" title="Permalink to this definition">¶</a></dt>
 <dd><p>&lt; DPTR  data pointer </p>
 </dd></dl>
 
@@ -1403,6 +1499,12 @@
 <dt id="c.xnvme_spec_cmd_idfy::rsvd2">
 <span class="target" id="structxnvme__spec__cmd__idfy_1ab0dcae5c712cf99b8f3f4a414569f752"></span>uint32_t <code class="sig-name descname">rsvd2</code><a class="headerlink" href="#c.xnvme_spec_cmd_idfy::rsvd2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvme_spec_cmd_idfy::csi">
+<span class="target" id="structxnvme__spec__cmd__idfy_1abd3e16d9f5cd175ebdb352332889f13e"></span>uint32_t <code class="sig-name descname">csi</code><a class="headerlink" href="#c.xnvme_spec_cmd_idfy::csi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command Set Identifier. </p>
+</dd></dl>
 
 <dl class="variable">
 <dt>
@@ -1698,14 +1800,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
-<dt id="c.xnvme_spec_cpl::cdw0">
-<span class="target" id="structxnvme__spec__cpl_1a48af8a8cd083119e1dbfd3828da11db7"></span>uint32_t <code class="sig-name descname">cdw0</code><a class="headerlink" href="#c.xnvme_spec_cpl::cdw0" title="Permalink to this definition">¶</a></dt>
-<dd><p>command-specific </p>
-</dd></dl>
-
-<dl class="variable">
-<dt id="c.xnvme_spec_cpl::rsvd1">
-<span class="target" id="structxnvme__spec__cpl_1ac09d16a6bde57f73e226d3deabb50d68"></span>uint32_t <code class="sig-name descname">rsvd1</code><a class="headerlink" href="#c.xnvme_spec_cpl::rsvd1" title="Permalink to this definition">¶</a></dt>
+<dt id="c.6">
+<span class="target" id="structxnvme__spec__cpl_1a76febf30b323c682bdc3de407ed75129"></span>union <a class="reference internal" href="#c.xnvme_spec_cpl" title="xnvme_spec_cpl">xnvme_spec_cpl</a>::&#64;5 <a class="reference internal" href="#c.xnvme_spec_cpl" title="xnvme_spec_cpl">xnvme_spec_cpl</a>::&#64;<code class="sig-name descname">6</code><a class="headerlink" href="#c.6" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="variable">
@@ -1729,6 +1825,24 @@
 <dl class="variable">
 <dt id="c.xnvme_spec_cpl::status">
 <span class="target" id="structxnvme__spec__cpl_1a4db816aa1016646ccbaa81632464ee25"></span>struct <a class="reference internal" href="#c.xnvme_spec_status" title="xnvme_spec_status">xnvme_spec_status</a> <code class="sig-name descname">status</code><a class="headerlink" href="#c.xnvme_spec_cpl::status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-spec-cs-vector">
+<span id="sec-c-apis-xnvme-struct-xnvme-spec-cs-vector"></span><h3>xnvme_spec_cs_vector<a class="headerlink" href="#xnvme-spec-cs-vector" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.xnvme_spec_cs_vector">
+<span class="target" id="structxnvme__spec__cs__vector"></span><em class="property">struct </em><code class="sig-name descname">xnvme_spec_cs_vector</code><a class="headerlink" href="#c.xnvme_spec_cs_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of I/O Command Set Vector. </p>
+<p>See NVMe spec tbd, section xyz, for details </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.82">
+<span class="target" id="structxnvme__spec__cs__vector_1a2d316d51f1571de94d1fb02cddddb47c"></span>union <a class="reference internal" href="#c.xnvme_spec_cs_vector" title="xnvme_spec_cs_vector">xnvme_spec_cs_vector</a>::&#64;81 <a class="reference internal" href="#c.xnvme_spec_cs_vector" title="xnvme_spec_cs_vector">xnvme_spec_cs_vector</a>::&#64;<code class="sig-name descname">82</code><a class="headerlink" href="#c.82" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1775,8 +1889,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
-<dt id="c.80">
-<span class="target" id="structxnvme__spec__feat_1a8e7e61be13d333c921246cf1fe546c0a"></span>union <a class="reference internal" href="#c.xnvme_spec_feat" title="xnvme_spec_feat">xnvme_spec_feat</a>::&#64;79 <a class="reference internal" href="#c.xnvme_spec_feat" title="xnvme_spec_feat">xnvme_spec_feat</a>::&#64;<code class="sig-name descname">80</code><a class="headerlink" href="#c.80" title="Permalink to this definition">¶</a></dt>
+<dt id="c.88">
+<span class="target" id="structxnvme__spec__feat_1a2685a32ed387936dc3d790e71f62a253"></span>union <a class="reference internal" href="#c.xnvme_spec_feat" title="xnvme_spec_feat">xnvme_spec_feat</a>::&#64;87 <a class="reference internal" href="#c.xnvme_spec_feat" title="xnvme_spec_feat">xnvme_spec_feat</a>::&#64;<code class="sig-name descname">88</code><a class="headerlink" href="#c.88" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1793,8 +1907,26 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
-<dt id="c.78">
-<span class="target" id="structxnvme__spec__idfy_1a4920c224700fef9009f7abddcd393cdc"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy" title="xnvme_spec_idfy">xnvme_spec_idfy</a>::&#64;77 <a class="reference internal" href="#c.xnvme_spec_idfy" title="xnvme_spec_idfy">xnvme_spec_idfy</a>::&#64;<code class="sig-name descname">78</code><a class="headerlink" href="#c.78" title="Permalink to this definition">¶</a></dt>
+<dt id="c.86">
+<span class="target" id="structxnvme__spec__idfy_1a34cb3a6268c54504beb9a0a4224464eb"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy" title="xnvme_spec_idfy">xnvme_spec_idfy</a>::&#64;85 <a class="reference internal" href="#c.xnvme_spec_idfy" title="xnvme_spec_idfy">xnvme_spec_idfy</a>::&#64;<code class="sig-name descname">86</code><a class="headerlink" href="#c.86" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-spec-idfy-cs">
+<span id="sec-c-apis-xnvme-struct-xnvme-spec-idfy-cs"></span><h3>xnvme_spec_idfy_cs<a class="headerlink" href="#xnvme-spec-idfy-cs" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.xnvme_spec_idfy_cs">
+<span class="target" id="structxnvme__spec__idfy__cs"></span><em class="property">struct </em><code class="sig-name descname">xnvme_spec_idfy_cs</code><a class="headerlink" href="#c.xnvme_spec_idfy_cs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of I/O Command Set data structure. </p>
+<p>See NVMe spec tbd, section xyz, for details </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structxnvme__spec__idfy__cs_1a3494ba08c26e766fb1fb9770bb839ebc"></span><code class="sig-name descname">struct xnvme_spec_cs_vector xnvme_spec_idfy_cs::iocsc[XNVME_SPEC_IDFY_CS_IOCSC_LEN]</code></dt>
 <dd></dd></dl>
 
 </div>
@@ -1852,7 +1984,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::cmic">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a9c16f5f36a9403cd4b14537eb63b8d58"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;24  <code class="sig-name descname">cmic</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::cmic" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1abd2c2fcab367f94787b8a689bfc6c91b"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;28  <code class="sig-name descname">cmic</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::cmic" title="Permalink to this definition">¶</a></dt>
 <dd><p>controller multi-path I/O and namespace sharing capabilities </p>
 </dd></dl>
 
@@ -1888,13 +2020,13 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::oaes">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1ac953f136e2c5e54fe598c81bf8a39a3d"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;25  <code class="sig-name descname">oaes</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::oaes" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a3c33c865222821643b6ce87692d22b6d"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;29  <code class="sig-name descname">oaes</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::oaes" title="Permalink to this definition">¶</a></dt>
 <dd><p>optional asynchronous events supported </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::ctratt">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a7c96a81ae38272c30d83e025081cacbd"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;26  <code class="sig-name descname">ctratt</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::ctratt" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a396e5f8e2ffce803511c0fab86c5b78a"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;30  <code class="sig-name descname">ctratt</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::ctratt" title="Permalink to this definition">¶</a></dt>
 <dd><p>controller attributes </p>
 </dd></dl>
 
@@ -1916,7 +2048,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::oacs">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1aaa2183a346d0cd94e53b31816dfa19d9"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;27  <code class="sig-name descname">oacs</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::oacs" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a14e027dfa24d2a7b4cb07663dd620ac9"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;31  <code class="sig-name descname">oacs</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::oacs" title="Permalink to this definition">¶</a></dt>
 <dd><p>optional admin command support </p>
 </dd></dl>
 
@@ -1934,13 +2066,13 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::frmw">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a803b160b150724a2013e124b42174df1"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;28  <code class="sig-name descname">frmw</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::frmw" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a809c35e5c3ca26748b6c1e90e1e1f9b8"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;32  <code class="sig-name descname">frmw</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::frmw" title="Permalink to this definition">¶</a></dt>
 <dd><p>firmware updates </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::lpa">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1ab7d4fb6c8fe18c47bbaba58bdc97ee69"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;29  <code class="sig-name descname">lpa</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::lpa" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1af04a1d258dd559ba12178947187a3172"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;33  <code class="sig-name descname">lpa</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::lpa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log Page Attributes. </p>
 </dd></dl>
 
@@ -1958,13 +2090,13 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::avscc">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a080b4b0bc9010b4c02ebd22b9c666545"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;30  <code class="sig-name descname">avscc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::avscc" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1aa66240a5aa59173a003aedb5c8e44478"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;34  <code class="sig-name descname">avscc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::avscc" title="Permalink to this definition">¶</a></dt>
 <dd><p>admin vendor specific command configuration </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::apsta">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a56d6415c4e449b234d59a803ed495e22"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;31  <code class="sig-name descname">apsta</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::apsta" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a417ad47d2d1baf4658f9f36b9ba18a97"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;35  <code class="sig-name descname">apsta</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::apsta" title="Permalink to this definition">¶</a></dt>
 <dd><p>autonomous power state transition attributes </p>
 </dd></dl>
 
@@ -2012,7 +2144,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::rpmbs">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a8a234e7c9a656c5ff4698bfcfd631eaf"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;32  <code class="sig-name descname">rpmbs</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::rpmbs" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a362bb2a20266f5a86357b12616e68b08"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;36  <code class="sig-name descname">rpmbs</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::rpmbs" title="Permalink to this definition">¶</a></dt>
 <dd><p>replay protected memory block support </p>
 </dd></dl>
 
@@ -2024,7 +2156,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::dsto">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1ad8a25bb5a305e1dba8192a4ac3742a58"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;33  <code class="sig-name descname">dsto</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::dsto" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a6ce431cf3d646d3f1757c99521ac2d93"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;37  <code class="sig-name descname">dsto</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::dsto" title="Permalink to this definition">¶</a></dt>
 <dd><p>device self-test options </p>
 </dd></dl>
 
@@ -2044,7 +2176,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::hctma">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1ad87e7bc7cc1afd923708d5587ecd7eb1"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;34  <code class="sig-name descname">hctma</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::hctma" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1abb98fc4cd21da37e75c3802870a316c2"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;38  <code class="sig-name descname">hctma</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::hctma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Host controlled thermal management attributes. </p>
 </dd></dl>
 
@@ -2062,7 +2194,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::sanicap">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a92e5d701f836d762b90d2d3de82beb6e"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;35  <code class="sig-name descname">sanicap</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::sanicap" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a5b3dc522da4d9eca6c6a6a5aec5b2e3e"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;39  <code class="sig-name descname">sanicap</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::sanicap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sanitize capabilities. </p>
 </dd></dl>
 
@@ -2073,13 +2205,13 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::sqes">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a140297d139e7a58a0aef1fcfc948f2ae"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;36  <code class="sig-name descname">sqes</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::sqes" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a782bfd94cbb1beb6233fd38984caf70d"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;40  <code class="sig-name descname">sqes</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::sqes" title="Permalink to this definition">¶</a></dt>
 <dd><p>submission queue entry size </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::cqes">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a6eaac654803ae53628bb68929c72cd13"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;37  <code class="sig-name descname">cqes</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::cqes" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1af1c253cbe284975f54b4136a1a456f88"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;41  <code class="sig-name descname">cqes</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::cqes" title="Permalink to this definition">¶</a></dt>
 <dd><p>completion queue entry size </p>
 </dd></dl>
 
@@ -2096,7 +2228,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::oncs">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1ac23edfc7a0690240d135d8ae25b261b6"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;38  <code class="sig-name descname">oncs</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::oncs" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1ade149877285595437a2a4838c86b6c6e"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;42  <code class="sig-name descname">oncs</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::oncs" title="Permalink to this definition">¶</a></dt>
 <dd><p>optional nvm command support </p>
 </dd></dl>
 
@@ -2108,13 +2240,13 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::fna">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a5342506ecb0a8b7635298c65b4cf819a"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;39  <code class="sig-name descname">fna</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::fna" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a4a2c92e723949d7665184fd7c49bdb54"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;43  <code class="sig-name descname">fna</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::fna" title="Permalink to this definition">¶</a></dt>
 <dd><p>format nvm attributes </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::vwc">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a74eb80e6e80cc0dafb88d03eb0262382"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;40  <code class="sig-name descname">vwc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::vwc" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a15a8c5db4fe6fb6ff7e8a2dcb2b494be"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;44  <code class="sig-name descname">vwc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::vwc" title="Permalink to this definition">¶</a></dt>
 <dd><p>volatile write cache </p>
 </dd></dl>
 
@@ -2154,7 +2286,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::sgls">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1a63a2f3ff2a7245a4a871e56296b33d73"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;41  <code class="sig-name descname">sgls</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::sgls" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a4dd9910dfc7e9a0b42dff3992068ea29"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;45  <code class="sig-name descname">sgls</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::sgls" title="Permalink to this definition">¶</a></dt>
 <dd><p>SGL support. </p>
 </dd></dl>
 
@@ -2181,7 +2313,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ctrlr::nvmf_specific">
-<span class="target" id="structxnvme__spec__idfy__ctrlr_1ae6b86278f449e60e7867095656f19f4d"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;42  <code class="sig-name descname">nvmf_specific</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::nvmf_specific" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ctrlr_1a8495860b375b552f6a205fd6f36ece58"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>::&#64;46  <code class="sig-name descname">nvmf_specific</code><a class="headerlink" href="#c.xnvme_spec_idfy_ctrlr::nvmf_specific" title="Permalink to this definition">¶</a></dt>
 <dd><p>NVMe over Fabrics-specific fields. </p>
 </dd></dl>
 
@@ -2228,7 +2360,7 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::nsfeat">
-<span class="target" id="structxnvme__spec__idfy__ns_1af655b758a29d6977258e3362bee2b8b6"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;5  <code class="sig-name descname">nsfeat</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::nsfeat" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1a50804af055eeb596c004e0403334deee"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;9  <code class="sig-name descname">nsfeat</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::nsfeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>namespace features </p>
 </dd></dl>
 
@@ -2240,49 +2372,49 @@
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::flbas">
-<span class="target" id="structxnvme__spec__idfy__ns_1af70feba9f1d5c16afcf86861eb48403e"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;6  <code class="sig-name descname">flbas</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::flbas" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1ad71bfce18a604c7751851819583b60c4"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;10  <code class="sig-name descname">flbas</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::flbas" title="Permalink to this definition">¶</a></dt>
 <dd><p>formatted lba size </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::mc">
-<span class="target" id="structxnvme__spec__idfy__ns_1a23e616f19accf2234e3162021c02a98c"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;7  <code class="sig-name descname">mc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::mc" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1af24a2d13090eddbdf49b6891deb5e608"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;11  <code class="sig-name descname">mc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::mc" title="Permalink to this definition">¶</a></dt>
 <dd><p>metadata capabilities </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::dpc">
-<span class="target" id="structxnvme__spec__idfy__ns_1ad9cee607a4deca6d919362b3b37ac834"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;8  <code class="sig-name descname">dpc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::dpc" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1a37d290acb79ce4106348996a981b1d9b"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;12  <code class="sig-name descname">dpc</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::dpc" title="Permalink to this definition">¶</a></dt>
 <dd><p>end-to-end data protection capabilities </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::dps">
-<span class="target" id="structxnvme__spec__idfy__ns_1ac9d73f1ea5155f23b3f6bb7d816783ea"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;9  <code class="sig-name descname">dps</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::dps" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1ac53de633aaaa65b395121aa0cf3d46de"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;13  <code class="sig-name descname">dps</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::dps" title="Permalink to this definition">¶</a></dt>
 <dd><p>end-to-end data protection type settings </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::nmic">
-<span class="target" id="structxnvme__spec__idfy__ns_1ae83b20d82d171d3a3cc6ecaba0d98e8e"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;10  <code class="sig-name descname">nmic</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::nmic" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1aa5a63005a2c7e796aacdf1ec67d17287"></span>struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;14  <code class="sig-name descname">nmic</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::nmic" title="Permalink to this definition">¶</a></dt>
 <dd><p>namespace multi-path I/O and namespace sharing capabilities </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::nsrescap">
-<span class="target" id="structxnvme__spec__idfy__ns_1ae3233809fc2a0577f51853ae8419b338"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;11  <code class="sig-name descname">nsrescap</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::nsrescap" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1ada03ce3a28cd05a84b568244c2047a2e"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;15  <code class="sig-name descname">nsrescap</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::nsrescap" title="Permalink to this definition">¶</a></dt>
 <dd><p>reservation capabilities </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::fpi">
-<span class="target" id="structxnvme__spec__idfy__ns_1af160fc04dbfb6e6b85c06ce4a0e74c50"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;12  <code class="sig-name descname">fpi</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::fpi" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1ae46f9455583bf09d2209ed4099cab05f"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;16  <code class="sig-name descname">fpi</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::fpi" title="Permalink to this definition">¶</a></dt>
 <dd><p>format progress indicator </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_spec_idfy_ns::dlfeat">
-<span class="target" id="structxnvme__spec__idfy__ns_1a7e3e77d4a0644251c4512d7419a2beb2"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;13  <code class="sig-name descname">dlfeat</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::dlfeat" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__spec__idfy__ns_1a2a19d58a714ddda4f66ea54f907550cb"></span>union <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>::&#64;17  <code class="sig-name descname">dlfeat</code><a class="headerlink" href="#c.xnvme_spec_idfy_ns::dlfeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>deallocate logical features </p>
 </dd></dl>
 
@@ -2600,8 +2732,8 @@
 </dd></dl>
 
 <dl class="variable">
-<dt id="c.85">
-<span class="target" id="structxnvme__spec__sgl__descriptor_1aba8512411605e881c80c0092985d7381"></span>union <a class="reference internal" href="#c.xnvme_spec_sgl_descriptor" title="xnvme_spec_sgl_descriptor">xnvme_spec_sgl_descriptor</a>::&#64;84 <a class="reference internal" href="#c.xnvme_spec_sgl_descriptor" title="xnvme_spec_sgl_descriptor">xnvme_spec_sgl_descriptor</a>::&#64;<code class="sig-name descname">85</code><a class="headerlink" href="#c.85" title="Permalink to this definition">¶</a></dt>
+<dt id="c.93">
+<span class="target" id="structxnvme__spec__sgl__descriptor_1acce44fd5d49ccf51a5c5cf4b64e041c0"></span>union <a class="reference internal" href="#c.xnvme_spec_sgl_descriptor" title="xnvme_spec_sgl_descriptor">xnvme_spec_sgl_descriptor</a>::&#64;92 <a class="reference internal" href="#c.xnvme_spec_sgl_descriptor" title="xnvme_spec_sgl_descriptor">xnvme_spec_sgl_descriptor</a>::&#64;<code class="sig-name descname">93</code><a class="headerlink" href="#c.93" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -2690,6 +2822,45 @@
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-3p-ver-fpr">
+<span id="sec-c-apis-xnvme-func-xnvme-3p-ver-fpr"></span><h3>xnvme_3p_ver_fpr<a class="headerlink" href="#xnvme-3p-ver-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_3p_ver_fpr">
+<span class="target" id="libxnvme_8h_1a31862fbdb2bd26ae7b1bd422bb682825"></span>int <code class="sig-name descname">xnvme_3p_ver_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const char *<em> ver[]</em>, enum  <a class="reference internal" href="#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a><em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_3p_ver_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given array of version-strings to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attr</span></code>: Pointer to the array of strings to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-3p-ver-pr">
+<span id="sec-c-apis-xnvme-func-xnvme-3p-ver-pr"></span><h3>xnvme_3p_ver_pr<a class="headerlink" href="#xnvme-3p-ver-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_3p_ver_pr">
+<span class="target" id="libxnvme_8h_1aa546475c69e4946c1a441ef253300159"></span>int <code class="sig-name descname">xnvme_3p_ver_pr</code><span class="sig-paren">(</span>const char *<em> ver[]</em>, enum  <a class="reference internal" href="#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a><em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_3p_ver_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given array of version-strings to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">attr</span></code>: Pointer to the array of strings to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -3114,6 +3285,27 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-cmd-idfy-ctrlr-csi">
+<span id="sec-c-apis-xnvme-func-xnvme-cmd-idfy-ctrlr-csi"></span><h3>xnvme_cmd_idfy_ctrlr_csi<a class="headerlink" href="#xnvme-cmd-idfy-ctrlr-csi" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_cmd_idfy_ctrlr_csi">
+<span class="target" id="libxnvme_8h_1a334c2e08c20f5f3848bf0d2bb7ad6e3a"></span>int <code class="sig-name descname">xnvme_cmd_idfy_ctrlr_csi</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint8_t<em> csi</em>, struct  <a class="reference internal" href="#c.xnvme_spec_idfy" title="xnvme_spec_idfy">xnvme_spec_idfy</a>  *<em> dbuf</em>, struct  <a class="reference internal" href="#c.xnvme_req" title="xnvme_req">xnvme_req</a>  *<em> req</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_idfy_ctrlr_csi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit and wait for completion of an NVMe Identify command for the controller associated with the given device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">csi</span></code>: Command Set Identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: Buffer allocated by <a class="reference internal" href="#libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">req</span></code>: Pointer to structure for NVMe completion</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-cmd-idfy-ns">
 <span id="sec-c-apis-xnvme-func-xnvme-cmd-idfy-ns"></span><h3>xnvme_cmd_idfy_ns<a class="headerlink" href="#xnvme-cmd-idfy-ns" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
@@ -3128,6 +3320,29 @@
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: Buffer allocated by <a class="reference internal" href="#libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">req</span></code>: Pointer to structure for NVMe completion</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-cmd-idfy-ns-csi">
+<span id="sec-c-apis-xnvme-func-xnvme-cmd-idfy-ns-csi"></span><h3>xnvme_cmd_idfy_ns_csi<a class="headerlink" href="#xnvme-cmd-idfy-ns-csi" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_cmd_idfy_ns_csi">
+<span class="target" id="libxnvme_8h_1a5237d9c5604671852b547a7fe3d9d361"></span>int <code class="sig-name descname">xnvme_cmd_idfy_ns_csi</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint32_t<em> nsid</em>, uint8_t<em> csi</em>, struct  <a class="reference internal" href="#c.xnvme_spec_idfy" title="xnvme_spec_idfy">xnvme_spec_idfy</a>  *<em> dbuf</em>, struct  <a class="reference internal" href="#c.xnvme_req" title="xnvme_req">xnvme_req</a>  *<em> req</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_idfy_ns_csi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit and wait for completion of an NVMe Identify command for the given nsid. </p>
+<p>Execute an I/O Command Set specific NVMe identify namespace command for the given ‘nsid’. When the given ‘nsid’ == 0, then the command is executed for the namespace associated with the given device</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">csi</span></code>: Command Set Identifier </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: Buffer allocated by <a class="reference internal" href="#libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">req</span></code>: Pointer to structure for NVMe completion</p></li>
 </ul>
@@ -3386,12 +3601,48 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-dev-get-csi">
+<span id="sec-c-apis-xnvme-func-xnvme-dev-get-csi"></span><h3>xnvme_dev_get_csi<a class="headerlink" href="#xnvme-dev-get-csi" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_dev_get_csi">
+<span class="target" id="libxnvme_8h_1a5b5992f3ef6666253c03935e6ab4806f"></span>uint8_t <code class="sig-name descname">xnvme_dev_get_csi</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_csi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the NVMe Command Set Identifier associated with the given <code class="docutils literal notranslate"><span class="pre">dev</span></code> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, NVMe Command Set Identifier is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-dev-get-ctrlr">
 <span id="sec-c-apis-xnvme-func-xnvme-dev-get-ctrlr"></span><h3>xnvme_dev_get_ctrlr<a class="headerlink" href="#xnvme-dev-get-ctrlr" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="c.xnvme_dev_get_ctrlr">
 <span class="target" id="libxnvme_8h_1aaff4b71fb80f3fdf7f5a5595822263cd"></span>const struct <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>* <code class="sig-name descname">xnvme_dev_get_ctrlr</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ctrlr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the NVMe identify controller structure associated with the given device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ctrlr-css">
+<span id="sec-c-apis-xnvme-func-xnvme-dev-get-ctrlr-css"></span><h3>xnvme_dev_get_ctrlr_css<a class="headerlink" href="#xnvme-dev-get-ctrlr-css" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_dev_get_ctrlr_css">
+<span class="target" id="libxnvme_8h_1a7f13fadedf586a8830726423410bd00d"></span>const struct <a class="reference internal" href="#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr">xnvme_spec_idfy_ctrlr</a>* <code class="sig-name descname">xnvme_dev_get_ctrlr_css</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ctrlr_css" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the NVMe identify controller structure specific to the Command Set and Namespace associated with the given device. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
 </dd>
@@ -3428,6 +3679,24 @@
 <dt id="c.xnvme_dev_get_ns">
 <span class="target" id="libxnvme_8h_1af72db35731e0ddb02f32c07563bae72e"></span>const struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>* <code class="sig-name descname">xnvme_dev_get_ns</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the NVMe identify namespace structure associated with the given device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ns-css">
+<span id="sec-c-apis-xnvme-func-xnvme-dev-get-ns-css"></span><h3>xnvme_dev_get_ns_css<a class="headerlink" href="#xnvme-dev-get-ns-css" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_dev_get_ns_css">
+<span class="target" id="libxnvme_8h_1a647ec999ef1227575e6c6310987de9cd"></span>const struct <a class="reference internal" href="#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns">xnvme_spec_idfy_ns</a>* <code class="sig-name descname">xnvme_dev_get_ns_css</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ns_css" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the NVMe identify namespace structure specific to the Command Set and Namespace associated with the given device. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
 </dd>
@@ -3533,13 +3802,14 @@
 <span id="sec-c-apis-xnvme-func-xnvme-enumerate"></span><h3>xnvme_enumerate<a class="headerlink" href="#xnvme-enumerate" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="c.xnvme_enumerate">
-<span class="target" id="libxnvme_8h_1a218027ece98d89b00ec9db1469fb421b"></span>int <code class="sig-name descname">xnvme_enumerate</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvme_enumeration" title="xnvme_enumeration">xnvme_enumeration</a>  **<em> list</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_enumerate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enumerate devices on the system. </p>
+<span class="target" id="libxnvme_8h_1acc931e09e16a84bc260d8dee64ac0246"></span>int <code class="sig-name descname">xnvme_enumerate</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvme_enumeration" title="xnvme_enumeration">xnvme_enumeration</a>  **<em> list</em>, const char *<em> sys_uri</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_enumerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enumerate devices on the given system. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">list</span></code>: Pointer to pointer of the list of device enumerated </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sys_uri</span></code>: URI of the system to enumerate on, when NULL, localhost/PCIe </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: System enumeration options</p></li>
 </ul>
 </dd>
@@ -4042,6 +4312,24 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-spec-csi-str">
+<span id="sec-c-apis-xnvme-func-xnvme-spec-csi-str"></span><h3>xnvme_spec_csi_str<a class="headerlink" href="#xnvme-spec-csi-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_spec_csi_str">
+<span class="target" id="libxnvme__spec_8h_1af57383349b9d1f66c8d8e186cdefc25c"></span>const char* <code class="sig-name descname">xnvme_spec_csi_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.xnvme_spec_csi" title="xnvme_spec_csi">xnvme_spec_csi</a><em> csi</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_spec_csi_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libxnvme__spec_8h_1a11f85789e823c6a9b97f1472e22d0b22"><span class="std std-ref">xnvme_spec_csi</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “XNVME_SPEC_CSI_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nst</span></code>: the enum value to produce a string representation of </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-spec-feat-fpr">
 <span id="sec-c-apis-xnvme-func-xnvme-spec-feat-fpr"></span><h3>xnvme_spec_feat_fpr<a class="headerlink" href="#xnvme-spec-feat-fpr" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
@@ -4081,6 +4369,22 @@
 </dl>
 </p>
 </dd></dl>
+
+</div>
+<div class="section" id="xnvme-spec-idfy-cs-fpr">
+<span id="sec-c-apis-xnvme-func-xnvme-spec-idfy-cs-fpr"></span><h3>xnvme_spec_idfy_cs_fpr<a class="headerlink" href="#xnvme-spec-idfy-cs-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_spec_idfy_cs_fpr">
+<span class="target" id="libxnvme__spec_8h_1a831d26cd25b3eb936d5297c4793bc2fe"></span>int <code class="sig-name descname">xnvme_spec_idfy_cs_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.xnvme_spec_idfy_cs" title="xnvme_spec_idfy_cs">xnvme_spec_idfy_cs</a>  *<em> idfy</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_spec_idfy_cs_fpr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvme-spec-idfy-cs-pr">
+<span id="sec-c-apis-xnvme-func-xnvme-spec-idfy-cs-pr"></span><h3>xnvme_spec_idfy_cs_pr<a class="headerlink" href="#xnvme-spec-idfy-cs-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_spec_idfy_cs_pr">
+<span class="target" id="libxnvme__spec_8h_1ab2ca01ff99a4095a9a7ea46af957e99f"></span>int <code class="sig-name descname">xnvme_spec_idfy_cs_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.xnvme_spec_idfy_cs" title="xnvme_spec_idfy_cs">xnvme_spec_idfy_cs</a>  *<em> idfy</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_spec_idfy_cs_pr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="xnvme-spec-idfy-ctrl-fpr">

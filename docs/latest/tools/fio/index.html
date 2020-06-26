@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.16 documentation</title>
+  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="C APIs" href="../../capis/index.html" />
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -88,13 +89,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../quick_start/index.html">Quick Start</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">fio xNVMe IO Engine</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#caveat">Caveat</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#todo">TODO</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-io-engine-verification">fio xNVMe IO Engine verification</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-io-engine-on-nvme-device">fio xNVMe IO Engine on NVMe Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-io-engine-on-nvme-device-with-zoned-command-set">fio xNVMe IO Engine on NVMe Device with Zoned Command Set</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#build-notes">Build Notes</a></li>
 </ul>
 </li>
@@ -177,18 +179,10 @@
 <div class="section" id="caveat">
 <h2>Caveat<a class="headerlink" href="#caveat" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Can handle only a single device at a time</p></li>
-<li><p>Must be used with <code class="docutils literal notranslate"><span class="pre">--thread=1</span></code></p></li>
-<li><p>Supports only “raw” device-files
+<li><p>For “raw” device-files only
 - That is, <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/nullb0</span></code> and <strong>NOT</strong> file-system files</p></li>
+<li><p>Must be used with <code class="docutils literal notranslate"><span class="pre">--thread=1</span></code></p></li>
 </ol>
-</div>
-<div class="section" id="todo">
-<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Fix caveat 1; that is, add support for multiple devices</p></li>
-<li><p>Fix caveat 2; figure out how to unify the fio/xNVMe/SPDK threading models</p></li>
-</ul>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -220,7 +214,7 @@ are attached to the Kernel NVMe driver:</p>
 </div>
 <div class="section" id="fio-xnvme-io-engine-verification">
 <h2>fio xNVMe IO Engine verification<a class="headerlink" href="#fio-xnvme-io-engine-verification" title="Permalink to this headline">¶</a></h2>
-<p>This fio-script is used for verifying the <strong>xNVMe</strong> under load.</p>
+<p>This fio-script is used for verifying <strong>xNVMe</strong> under load.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> Verify fio IO engines with a random-write workload using 4K BS at QD16
 <span class="p">;</span>
 <span class="p">;</span> README
@@ -350,6 +344,8 @@ are attached to the Kernel NVMe driver:</p>
 <span class="s2">sqthread_poll=0</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
 
 <span class="s2">[xnvme_uring_sqt]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
@@ -357,6 +353,8 @@ are attached to the Kernel NVMe driver:</p>
 <span class="s2">sqthread_poll=1</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
 
 <span class="s2">[xnvme_uring_iop]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
@@ -364,6 +362,8 @@ are attached to the Kernel NVMe driver:</p>
 <span class="s2">sqthread_poll=0</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
 
 <span class="s2">[xnvme_uring_all]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
@@ -371,6 +371,15 @@ are attached to the Kernel NVMe driver:</p>
 <span class="s2">sqthread_poll=1</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
+
+<span class="s2">[xnvme_laio]</span>
+<span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
+<span class="s2">;filename=laio\:/dev/nullb0?pseudo=1</span>
+<span class="s2">;filename=laio\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=laio</span>
 
 <span class="s2">[xnvme_spdk]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
@@ -515,6 +524,8 @@ means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.
 <span class="s2">sqthread_poll=0</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
 
 <span class="s2">[xnvme_uring_sqt]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
@@ -522,6 +533,8 @@ means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.
 <span class="s2">sqthread_poll=1</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
 
 <span class="s2">[xnvme_uring_iop]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
@@ -529,18 +542,99 @@ means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.
 <span class="s2">sqthread_poll=0</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
 
 <span class="s2">[xnvme_uring_all]</span>
-<span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
+<span class="s2">ioengine=external:/usr/lib/fio-engine/libxnvme-fio-engine.so</span>
 <span class="s2">hipri=1</span>
 <span class="s2">sqthread_poll=1</span>
 <span class="s2">;filename=liou\:/dev/nullb0?pseudo=1</span>
 <span class="s2">;filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=liou</span>
+
+<span class="s2">[xnvme_laio]</span>
+<span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
+<span class="s2">;filename=laio\:/dev/nullb0?pseudo=1</span>
+<span class="s2">;filename=laio\:/dev/nvme0n1</span>
+<span class="s2">;filename=/dev/nvme0n1</span>
+<span class="s2">;be=laio</span>
 
 <span class="s2">[xnvme_spdk]</span>
 <span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
 <span class="s2">;filename=pci\:0000\:01\:00.0?nsid=1</span>
 <span class="s2">;filename=pci\:0000\:03\:00.0?nsid=1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fio-xnvme-io-engine-on-nvme-device-with-zoned-command-set">
+<h2>fio xNVMe IO Engine on NVMe Device with Zoned Command Set<a class="headerlink" href="#fio-xnvme-io-engine-on-nvme-device-with-zoned-command-set" title="Permalink to this headline">¶</a></h2>
+<p>This fio-script provides the basics for running on an NVMe device with the
+Zoned Command Set enabled.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> Running xNVMe/fio on a Zoned Device
+<span class="p">;</span>
+<span class="p">;</span> README
+<span class="p">;</span>
+<span class="p">;</span> Make sure you provide the correct path to <span class="s1">&#39;libxnvme-fio-engine.so&#39;</span> in the
+<span class="p">;</span> sections below
+<span class="p">;</span>
+<span class="p">;</span> Take note of the <span class="s2">&quot;special&quot;</span> use of <span class="s1">&#39;filename&#39;</span> in the sections below
+<span class="p">;</span>
+<span class="p">;</span> In the fio-file, it needs <span class="s2">&quot;\&quot; to escape &quot;</span>:<span class="s2">&quot;, eg.</span>
+<span class="s2">; filename=liou\:/dev/nvme0n1</span>
+<span class="s2">;</span>
+<span class="s2">; On the command-line, it needs &quot;</span><span class="se">\\</span><span class="s2">&quot; to escape &quot;</span>:<span class="s2">&quot;, eg.</span>
+<span class="s2">; --filename=liou\\:/dev/nvme0n1</span>
+<span class="s2">;</span>
+<span class="s2">; Job-file is intended to be used as:</span>
+<span class="s2">;</span>
+<span class="s2">; fio xnvme-zoned.fio \</span>
+<span class="s2">;		--section=verify \</span>
+<span class="s2">;		--filename=liou:\\/dev/nvme0n1</span>
+<span class="s2">;</span>
+<span class="s2">; Have a look at xnvme-compare.fio, for the details on instrumenting the</span>
+<span class="s2">; different backends and comparing performance.</span>
+<span class="s2">;</span>
+<span class="s2">; I/O errors have been observed with fio 3.20, if you encounted them, then you</span>
+<span class="s2">; can clean up the drive by first invoking:</span>
+<span class="s2">;</span>
+<span class="s2">; zoned mgmt-reset /dev/nvme0n2 --slba 0x0 --all</span>
+<span class="s2">;</span>
+<span class="s2">; Which will prepare the drive</span>
+<span class="s2">;</span>
+<span class="s2">[global]</span>
+<span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
+<span class="s2">zonemode=zbd</span>
+<span class="s2">size=1G</span>
+<span class="s2">iodepth=1</span>
+<span class="s2">bs=4K</span>
+<span class="s2">direct=1</span>
+<span class="s2">thread=1</span>
+<span class="s2">time_based=1</span>
+<span class="s2">runtime=10</span>
+<span class="s2">ramp_time=1</span>
+<span class="s2">norandommap=1</span>
+<span class="s2">; If fio complains about zone-size, then run:</span>
+<span class="s2">; zoned info /dev/nvme0n1 it will provide the values you need, then define it:</span>
+<span class="s2">; zonesize=nsect * nbytes</span>
+<span class="s2">;</span>
+<span class="s2">;zonesize=</span>
+
+<span class="s2">; Avoid accidentally creating device files; e.g. &quot;</span>/dev/nvme0n1<span class="s2">&quot;, &quot;</span>/dev/nullb0<span class="s2">&quot;</span>
+<span class="s2">allow_file_create=0</span>
+
+<span class="s2">[default]</span>
+
+<span class="s2">[write]</span>
+<span class="s2">rw=write</span>
+
+<span class="s2">[read]</span>
+<span class="s2">rw=read</span>
+
+<span class="s2">[verify]</span>
+<span class="s2">rw=write</span>
+<span class="s2">verify=crc32c</span>
 </pre></div>
 </div>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cross-platform libraries and tools for NVMe devices &mdash; xNVMe 0.0.16 documentation</title>
+  <title>Cross-platform libraries and tools for NVMe devices &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Quick Start" href="quick_start/index.html" /> 
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -168,22 +169,21 @@ well as an asynchronous manner.</p>
 parameters essential for I/O applications. Such as your maximum data transfer
 size and introducing the concept of a device geometry.</p>
 <p>The foundation is as such fairly low-level, sitting right on top of a NVMe
-driver. The actual NVMe driver being used by the <code class="docutils literal notranslate"><span class="pre">libxnvme</span></code> is re-targetable
-and can be one of: The GNU/Linux Kernel NVMe driver, the hybrid GNU/Linux
-NVMe-Direct driver, the FreeBSD NVMe driver, or the Intel SPDK NVMe driver.</p>
+driver. The actual NVMe driver being used by <code class="docutils literal notranslate"><span class="pre">libxnvme</span></code> is re-targetable and
+can be any one of the GNU/Linux Kernel NVMe driver via <code class="docutils literal notranslate"><span class="pre">libaio</span></code>, <code class="docutils literal notranslate"><span class="pre">IOCTLs</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">io_uring</span></code>, the SPDK NVMe driver, or your own custom NVMe driver.</p>
 <p>As such, <code class="docutils literal notranslate"><span class="pre">libxnvme</span></code> provides a unifying <code class="docutils literal notranslate"><span class="pre">C</span> <span class="pre">API</span></code> for NVMe tool builders,
 application developers, and for anyone wanting their host-defined software to
 run on more than a single platform.</p>
 <p>On top of <code class="docutils literal notranslate"><span class="pre">libxnvme</span></code> a suite of tools and libraries are provided, that is, a
 command-line interface for managing your NVMe device named <code class="docutils literal notranslate"><span class="pre">xnvme</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">lblk</span></code> for commands specific to NVM Namespaces.</p>
-<p>To evaluate the performance of abstractions introduced by <code class="docutils literal notranslate"><span class="pre">xNVMe</span></code> a Fio IO
-engine is provided.</p>
-<p>Pending public release is a command-line interface designed specifically for
+<p>For the Zoned Command Set a command-line interface designed specifically for
 convenient management of Zoned NVMe devices named <code class="docutils literal notranslate"><span class="pre">zoned</span></code> and a library for
-direct application integration of Zoned NVMe device named <code class="docutils literal notranslate"><span class="pre">libznd</span></code>.
-Additionally, a user space filesystem is provided giving you access to your
-<code class="docutils literal notranslate"><span class="pre">zoned</span></code> device using file system semantics.</p>
+direct application integration of Zoned NVMe device named <code class="docutils literal notranslate"><span class="pre">libznd</span></code>.</p>
+<p>To evaluate the performance of abstractions introduced by <code class="docutils literal notranslate"><span class="pre">xNVMe</span></code> a Fio IO
+engine is provided, supporting <strong>conventional</strong> NVMe devices, as well as
+<strong>Zoned</strong> devices.</p>
 <p>Jump right into the <a class="reference internal" href="quick_start/index.html#sec-quick-start"><span class="std std-ref">Quick Start</span></a> and with the basics in place you can
 explore the <a class="reference internal" href="capis/index.html#sec-c-apis"><span class="std std-ref">C APIs</span></a> and the <a class="reference internal" href="tools/index.html#sec-tools"><span class="std std-ref">Tools</span></a>.</p>
 <p>Contents:</p>
@@ -196,6 +196,7 @@ explore the <a class="reference internal" href="capis/index.html#sec-c-apis"><sp
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tools/index.html">Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tools/xnvme/index.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools/zoned/index.html">zoned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tools/lblk/index.html">lblk</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tools/fio/index.html">fio xNVMe IO Engine</a></li>
 </ul>
@@ -205,6 +206,8 @@ explore the <a class="reference internal" href="capis/index.html#sec-c-apis"><sp
 <li class="toctree-l2"><a class="reference internal" href="capis/xnvme_headers.html">xnvme: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="capis/lblk.html">lblk</a></li>
 <li class="toctree-l2"><a class="reference internal" href="capis/lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capis/znd.html">znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capis/znd_headers.html">znd: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="capis/xnvmec.html">xnvmec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="capis/xnvmec_headers.html">xnvmec: headers</a></li>
 </ul>
@@ -217,12 +220,14 @@ explore the <a class="reference internal" href="capis/index.html#sec-c-apis"><sp
 <li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/fabrics.html">Fabrics non-RDMA TCP transport setup on Linux</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/library.html">Library Usage Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/nvme/index.html">NVMe Introduction</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backends/index.html">Backends</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="backends/xnvme_be_fioc.html">FreeBSD/IOCTL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backends/xnvme_be_lioc.html">Linux/IOCTL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backends/xnvme_be_liou.html">Linux/io_uring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backends/xnvme_be_laio.html">Linux/libaio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backends/xnvme_be_spdk/index.html">SPDK</a></li>
 </ul>
 </li>

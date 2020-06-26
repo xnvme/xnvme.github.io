@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvmec: headers &mdash; xNVMe 0.0.16 documentation</title>
+  <title>xnvmec: headers &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="C APIs: Examples" href="../examples/index.html" />
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -92,6 +93,8 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_headers.html">xnvme: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lblk.html">lblk</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd.html">znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd_headers.html">znd: headers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">xnvmec: headers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#libxnvmec-h">libxnvmec.h</a></li>
@@ -284,6 +287,7 @@
 	<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span><span class="p">;</span>			<span class="c1">///&lt; Created</span>
 
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">uri</span><span class="p">;</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sys_uri</span><span class="p">;</span>
 
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cmd_input</span><span class="p">;</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cmd_output</span><span class="p">;</span>
@@ -306,6 +310,8 @@
 	<span class="kt">uint32_t</span> <span class="n">uuid</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">cns</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">csi</span><span class="p">;</span>
+	<span class="kt">uint64_t</span> <span class="n">index</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">setid</span><span class="p">;</span>
 
 	<span class="kt">uint64_t</span> <span class="n">cntid</span><span class="p">;</span>
@@ -396,9 +402,12 @@
 	<span class="n">XNVMEC_OPT_NLB</span> <span class="o">=</span> <span class="sc">&#39;Q&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NLB</span>
 
 	<span class="n">XNVMEC_OPT_URI</span> <span class="o">=</span> <span class="sc">&#39;R&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_URI</span>
+	<span class="n">XNVMEC_OPT_SYS_URI</span> <span class="o">=</span> <span class="sc">&#39;,&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SYS_URI</span>
 	<span class="n">XNVMEC_OPT_UUID</span> <span class="o">=</span> <span class="sc">&#39;S&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_UUID</span>
 	<span class="n">XNVMEC_OPT_NSID</span> <span class="o">=</span> <span class="sc">&#39;T&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NSID</span>
 	<span class="n">XNVMEC_OPT_CNS</span> <span class="o">=</span> <span class="sc">&#39;U&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CNS</span>
+	<span class="n">XNVMEC_OPT_CSI</span> <span class="o">=</span> <span class="sc">&#39;/&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CSI</span>
+	<span class="n">XNVMEC_OPT_INDEX</span> <span class="o">=</span> <span class="sc">&#39;-&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_INDEX</span>
 	<span class="n">XNVMEC_OPT_SETID</span> <span class="o">=</span> <span class="sc">&#39;V&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SETID</span>
 
 	<span class="n">XNVMEC_OPT_CNTID</span> <span class="o">=</span> <span class="sc">&#39;W&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CNTID</span>
@@ -452,9 +461,6 @@
 	<span class="n">XNVMEC_OPT_UNUSED06</span> <span class="o">=</span> <span class="sc">&#39;%&#39;</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_UNUSED07</span> <span class="o">=</span> <span class="sc">&#39;&amp;&#39;</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_UNUSED08</span> <span class="o">=</span> <span class="sc">&#39;+&#39;</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_UNUSED09</span> <span class="o">=</span> <span class="sc">&#39;,&#39;</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_UNUSED10</span> <span class="o">=</span> <span class="sc">&#39;-&#39;</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_UNUSED11</span> <span class="o">=</span> <span class="sc">&#39;/&#39;</span><span class="p">,</span>
 
 	<span class="n">XNVMEC_OPT_UNKNOWN</span> <span class="o">=</span> <span class="sc">&#39;?&#39;</span><span class="p">,</span>	<span class="c1">///&lt; XNVMEC_OPT_UNKNOWN: do not use getopt special char</span>
 	<span class="n">XNVMEC_OPT_WEIRD</span> <span class="o">=</span> <span class="sc">&#39;:&#39;</span><span class="p">,</span>		<span class="c1">///&lt; XNVMEC_OPT_WEIRD: do not use getopt special char</span>

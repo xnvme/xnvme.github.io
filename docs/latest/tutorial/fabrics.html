@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fabrics non-RDMA TCP transport setup on Linux &mdash; xNVMe 0.0.16 documentation</title>
+  <title>Fabrics non-RDMA TCP transport setup on Linux &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Library Usage Notes" href="library.html" />
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -92,13 +93,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Fabrics non-RDMA TCP transport setup on Linux</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#target-setup">Target Setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#exporting-targets">Exporting Targets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-targets-via-kernel-modules">Exporting Targets via kernel modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-targets-via-spdk">Exporting Targets via SPDK</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#initiator-setup">Initiator Setup</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="library.html">Library Usage Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nvme/index.html">NVMe Introduction</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
@@ -189,8 +192,8 @@
 <p>With the Kernel support loaded. Then there are a bunch neat tools out there for
 configuring your fabrics setup. Here, <code class="docutils literal notranslate"><span class="pre">nvme-cli</span></code> is used for the hands-on
 approach.</p>
-<div class="section" id="exporting-targets">
-<h3>Exporting Targets<a class="headerlink" href="#exporting-targets" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="exporting-targets-via-kernel-modules">
+<h3>Exporting Targets via kernel modules<a class="headerlink" href="#exporting-targets-via-kernel-modules" title="Permalink to this headline">¶</a></h3>
 <p>Define a couple of variables:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span> <span class="s2">&quot;${EXPORT_BDNAME:=/dev/nvme0n1}&quot;</span>
 <span class="p">:</span> <span class="s2">&quot;${NVMET_SUBSYS_NAME:=jazz}&quot;</span>
@@ -200,25 +203,72 @@ approach.</p>
 <p>We can then export the device at <code class="docutils literal notranslate"><span class="pre">EXPORT_BDNAME</span></code> in a NVMe Target Subsystem
 named <code class="docutils literal notranslate"><span class="pre">NVMET_SUBSYS_NAME</span></code> containing a single NVMe Namespace identified by
 <code class="docutils literal notranslate"><span class="pre">NVMET_SUBSYS_NSID</span></code> without any access control:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration is done via kernel user configuration filesystem</span>
-<span class="n">sudo</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mount</span> <span class="o">-</span><span class="n">t</span> <span class="n">configfs</span> <span class="n">none</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">config</span><span class="o">/</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Configuration is done via kernel user configuration filesystem
+sudo /bin/mount -t configfs none /sys/kernel/config/
 
-<span class="c1"># Create an NVMe Target Subsystem</span>
-<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/$</span><span class="si">{NVMET_SUBSYS_NAME}</span><span class="s2">&quot;</span>
+# Create an NVMe Target Subsystem
+mkdir -p &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}&quot;
 
-<span class="c1"># Allow everybody... this is just for testing...</span>
-<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/$</span><span class="si">{NVMET_SUBSYS_NAME}</span><span class="s2">/attr_allow_any_host&quot;</span>
+# Allow everybody... this is just for testing...
+echo 1 &gt; &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/attr_allow_any_host&quot;
 
-<span class="c1"># Create a NVMe Namespace within the Target Subsystem</span>
-<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/$</span><span class="si">{NVMET_SUBSYS_NAME}</span><span class="s2">/namespaces/1&quot;</span>
+# Create a NVMe Namespace within the Target Subsystem
+mkdir -p &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/namespaces/1&quot;
 
-<span class="c1"># Add the device backing the NVMe Namespace</span>
-<span class="n">echo</span> <span class="o">-</span><span class="n">n</span> <span class="s2">&quot;$</span><span class="si">{EXPORT_BDNAME}</span><span class="s2">&quot;</span> <span class="o">&gt;</span> <span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/$</span><span class="si">{NVMET_SUBSYS_NAME}</span><span class="s2">/namespaces/1/device_path&quot;</span>
+# Add the device backing the NVMe Namespace
+echo -n &quot;${EXPORT_BDNAME}&quot; &gt; &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/namespaces/1/device_path&quot;
 
-<span class="c1"># Enable the NVMe Target Namespace</span>
-<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/$</span><span class="si">{NVMET_SUBSYS_NAME}</span><span class="s2">/namespaces/1/enable&quot;</span>
+# Enable the NVMe Target Namespace
+echo 1 &gt; &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/namespaces/1/enable&quot;
+
+# Creates a port
+mkdir /sys/kernel/config/nvmet/ports/1
+
+# Set the address (local interface that will be listening)
+echo 172.20.0.100 &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_traddr&quot;
+
+# Set the transport type
+echo tcp &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_trtype&quot;
+
+# Set the port number
+echo 4420 &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_trsvcid&quot;
+
+# Set the address family
+echo ipv4 &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_adrfam&quot;
+
+# Create a link and enables the port
+ln -s /sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME} /sys/kernel/config/nvmet/ports/1/subsystems/${NVMET_SUBSYS_NAME}
 </pre></div>
 </div>
+</div>
+<div class="section" id="exporting-targets-via-spdk">
+<h3>Exporting Targets via SPDK<a class="headerlink" href="#exporting-targets-via-spdk" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>::</dt><dd><p># Clone xnvme
+git clone <a class="reference external" href="https://github.com/OpenMPDK/xNVMe.git">https://github.com/OpenMPDK/xNVMe.git</a></p>
+<p># Start submodules
+cd xnvme
+git submodule update –init –recursive</p>
+<p># Build ans install xnvme
+make
+make install-deb</p>
+<p># Load SPDK drivers
+xnvme-driver</p>
+<p># Start SPDK Target App (with high priorities)
+cd third-party/spdk/repos/build/bin
+./nvmf_tgt</p>
+<p># Create a transport e.g. TCP
+scripts/rpc.py nvmf_create_transport -t TCP -u 16384 -p 8 -c 8192</p>
+<p># Attach local PCIe controllers (replace the address accordingly)
+scripts/rpc.py bdev_nvme_attach_controller -b Nvme0 -t PCIe -a 0000:03:00.0</p>
+<p># Create a controller to be exposed over fabrics
+scripts/rpc.py nvmf_create_subsystem nqn.2020-05.io.spdk:cnode1 -a -s SPDK00000000000001 -d SPDK_Controller1</p>
+<p># Add the local PCIe namespace to the fabrics controller
+scripts/rpc.py nvmf_subsystem_add_ns nqn.2020-05.io.spdk:cnode1 Nvme0n1</p>
+<p># Listen for connections (replace the transport, address, and port accordingly)
+scripts/rpc.py nvmf_subsystem_add_listener nqn.2020-05.io.spdk:cnode1 -t tcp -a 172.20.0.100 -s 4420</p>
+</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="initiator-setup">
@@ -230,6 +280,28 @@ named <code class="docutils literal notranslate"><span class="pre">NVMET_SUBSYS_
 </pre></div>
 </div>
 <p>If not, then just build a kernel with all the bells-and-whistles.</p>
+<p>Using xNVMe SPDK backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Clone xnvme
+git clone https://github.com/OpenMPDK/xNVMe.git
+
+# Start submodules
+cd xnvme
+git submodule update --init --recursive
+
+# Build ans install xnvme
+make
+make install-deb
+
+# Load SPDK drivers
+xnvme-driver
+
+# Enumerate fabrics devices (URI example: fab:172.20.0.100:4022?nsid=1)
+zoned enum --uri fab:&lt;addr&gt;:&lt;port&gt;?nsid=&lt;nsid&gt;
+
+# Test simple I/O in conventional namespaces over fabrics
+xnvme_io_async write fab:&lt;addr&gt;:&lt;port&gt;?nsid=&lt;nsid&gt; --slba 0x0 --elba 0xffff
+</pre></div>
+</div>
 </div>
 </div>
 

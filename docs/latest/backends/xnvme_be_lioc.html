@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Linux/IOCTL &mdash; xNVMe 0.0.16 documentation</title>
+  <title>Linux/IOCTL &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Linux/io_uring" href="xnvme_be_liou.html" />
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -97,6 +98,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_be_liou.html">Linux/io_uring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_be_laio.html">Linux/libaio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_be_spdk/index.html">SPDK</a></li>
 </ul>
 </li>
@@ -169,12 +171,14 @@
             
   <div class="section" id="linux-ioctl">
 <span id="sec-backends-lioc"></span><h1>Linux/IOCTL<a class="headerlink" href="#linux-ioctl" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">XNVME_BE_LIOC</span></code> backend uses synchronous <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls to have the
-kernel perform NVMe commands. To enable asynchronous IO, then there are two
-options:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">be:lioc</span></code> backend communicates with the Linux NVMe driver via IOCTLs. The
+backend relies on the driver-provided passthrough interface to submit admin,
+IO, and arbitrary user-defined commands.</p>
+<p>The backend does not support the asynchronous command interface, to enable it
+for a subset of commands then two options are available:</p>
 <ul class="simple">
-<li><p>Using <code class="docutils literal notranslate"><span class="pre">libaio</span></code> (TODO: no implemented yet)</p></li>
-<li><p>Using <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> via the <code class="docutils literal notranslate"><span class="pre">Linux/io_uring</span> <span class="pre">backend</span></code> / <code class="docutils literal notranslate"><span class="pre">XNVME_BE_LIOU</span></code></p></li>
+<li><p>The <a class="reference internal" href="xnvme_be_liou.html#sec-backends-liou"><span class="std std-ref">Linux/io_uring</span></a> backend (<code class="docutils literal notranslate"><span class="pre">be:liou</span></code>)</p></li>
+<li><p>The <a class="reference internal" href="xnvme_be_laio.html#sec-backends-laio"><span class="std std-ref">Linux/libaio</span></a> backend (<code class="docutils literal notranslate"><span class="pre">be:laio</span></code>)</p></li>
 </ul>
 <div class="section" id="note-on-errors">
 <h2>Note on Errors<a class="headerlink" href="#note-on-errors" title="Permalink to this headline">¶</a></h2>

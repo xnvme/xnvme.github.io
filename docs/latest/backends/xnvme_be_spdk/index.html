@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SPDK &mdash; xNVMe 0.0.16 documentation</title>
+  <title>SPDK &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,10 +33,11 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Building xNVMe from source" href="../../building/index.html" />
-    <link rel="prev" title="Linux/io_uring" href="../xnvme_be_liou.html" /> 
+    <link rel="prev" title="Linux/libaio" href="../xnvme_be_laio.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -94,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../xnvme_be_fioc.html">FreeBSD/IOCTL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xnvme_be_lioc.html">Linux/IOCTL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xnvme_be_liou.html">Linux/io_uring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_laio.html">Linux/libaio</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">SPDK</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#build-xnvme-with-spdk-support">Build <strong>xNVMe</strong> with <strong>SPDK</strong> support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compiling-and-linking-your-code-with-xnvme">Compiling and linking your code with <strong>xNVMe</strong></a><ul>
@@ -211,7 +213,7 @@
 	-Wl,--whole-archive -Wl,--no-as-needed <span class="se">\</span>
 	-lxnvme <span class="se">\</span>
 	-Wl,--no-whole-archive -Wl,--as-needed <span class="se">\</span>
-	-luuid -lnuma -pthread <span class="se">\</span>
+	-laio -luuid -lnuma -pthread <span class="se">\</span>
 	-o hello
 </pre></div>
 </div>
@@ -241,6 +243,8 @@ give you errors such as <strong>device not found</strong>.</p>
     iomd: <span class="s1">&#39;SYNC&#39;</span>
     payload_data: <span class="s1">&#39;DRV&#39;</span>
     payload_meta: <span class="s1">&#39;DRV&#39;</span>
+    csi: 0x0
+    nsid: 0x1
     ssw: <span class="m">12</span>
   xnvme_geo:
     type: XNVME_GEO_CONVENTIONAL
@@ -251,7 +255,9 @@ give you errors such as <strong>device not found</strong>.</p>
     nbytes: <span class="m">4096</span>
     nbytes_oob: <span class="m">0</span>
     tbytes: <span class="m">8589934592</span>
-    mdts_nbytes: <span class="m">16777216</span>
+    mdts_nbytes: <span class="m">524288</span>
+    lba_nbytes: <span class="m">4096</span>
+    lba_extended: <span class="m">0</span>
 </pre></div>
 </div>
 <p>Note that the device identifier is hardcoded in the examples. You can use
@@ -303,6 +309,10 @@ its dependencies.</p>
 <span id="sec-backends-spdk-identifiers"></span><h3>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Permalink to this headline">¶</a></h3>
 <p>Since devices are no longer available in <code class="docutils literal notranslate"><span class="pre">/dev</span></code>, then the PCI ids are used,
 such as <code class="docutils literal notranslate"><span class="pre">pci:0000:03:00.0?nsid=1</span></code>, e.g. using the CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+xnvme info pci:0000:03:00.0?nsid<span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
 <p>And using the API it would be similar to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
 <span class="n">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s2">&quot;pci:0000:01:00.0?nsid=1&quot;</span><span class="p">);</span>
@@ -333,7 +343,7 @@ your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.129764<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.019994<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -414,7 +424,7 @@ a total of two gigabytes can be used.</p>
         <a href="../../building/index.html" class="btn btn-neutral float-right" title="Building xNVMe from source" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../xnvme_be_liou.html" class="btn btn-neutral float-left" title="Linux/io_uring" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../xnvme_be_laio.html" class="btn btn-neutral float-left" title="Linux/libaio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

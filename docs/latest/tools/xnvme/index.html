@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvme &mdash; xNVMe 0.0.16 documentation</title>
+  <title>xnvme &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,9 +33,10 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="lblk" href="../lblk/index.html" />
+    <link rel="next" title="zoned" href="../zoned/index.html" />
     <link rel="prev" title="Tools" href="../index.html" /> 
 </head>
 
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -96,8 +97,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#logs-error-information">logs: Error-Information</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#logs-health-information">logs: Health-Information</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#logs-user-defined-log">logs: User-Defined Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#library-information">Library Information</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fio/index.html">fio xNVMe IO Engine</a></li>
 </ul>
@@ -184,6 +187,7 @@ Where &lt;command&gt; is one of:
   idfy             <span class="p">|</span> Execute an User-defined Identify Command
   idfy-ns          <span class="p">|</span> Identify the given Namespace
   idfy-ctrlr       <span class="p">|</span> Identify the given Controller
+  idfy-cs          <span class="p">|</span> Identify the Command Sets supported by the controller
   log              <span class="p">|</span> Retrieve a User-defined Log
   log-erri         <span class="p">|</span> Retrieve the error-information log
   log-health       <span class="p">|</span> Retrieve the S.M.A.R.T. / Health information log
@@ -197,7 +201,7 @@ Where &lt;command&gt; is one of:
 
 See <span class="s1">&#39;xnvme &lt;command&gt; --help&#39;</span> <span class="k">for</span> the description of <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 <div class="section" id="enumerate-devices">
@@ -212,12 +216,13 @@ Enumerate devices on the system
 
 Where &lt;args&gt; include:
 
+  <span class="o">[</span> --uri uri <span class="o">]</span>                 <span class="p">;</span> System URI e.g. fab:10.9.8.1:8888
   <span class="o">[</span> --flags 0xNUM <span class="o">]</span>             <span class="p">;</span> Command flags
   <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -233,12 +238,12 @@ Retrieve derived information <span class="k">for</span> given device
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
   <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -254,13 +259,13 @@ Identify the given Controller
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
   <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
   <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -276,14 +281,14 @@ Identify the given Namespace
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
   <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
   <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
   <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -299,8 +304,8 @@ Execute an User-defined Identify Command
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
-  --cns 0xNUM                   <span class="p">;</span> CNS?
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  --cns 0xNUM                   <span class="p">;</span> Controller or Namespace Struct
   <span class="o">[</span> --cntid 0xNUM <span class="o">]</span>             <span class="p">;</span> Controller Identifier
   <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
   <span class="o">[</span> --setid 0xNUM <span class="o">]</span>             <span class="p">;</span> NVM Set Identifier
@@ -310,7 +315,7 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -326,7 +331,7 @@ Retrieve and print log
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
   <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
   <span class="o">[</span> --limit NUM <span class="o">]</span>               <span class="p">;</span> Restrict amount to <span class="s1">&#39;NUM&#39;</span>
   <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
@@ -334,7 +339,7 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -350,14 +355,14 @@ Retrieve and print log
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
   <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
   <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
   <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -373,7 +378,7 @@ Retrieve and print log
 
 Where &lt;args&gt; include:
 
-  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1 or pci://0000:01:00.1
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
   --lid 0xNUM                   <span class="p">;</span> Log-page IDentifier
   <span class="o">[</span> --lsp 0xNUM <span class="o">]</span>               <span class="p">;</span> Log-SPecific parameters
   <span class="o">[</span> --lpo-nbytes NUM <span class="o">]</span>          <span class="p">;</span> Log-Page Offset <span class="o">(</span>in bytes<span class="o">)</span>
@@ -385,7 +390,32 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;xnvme --help&#39;</span> <span class="k">for</span> other commands
 
-xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">16</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="library-information">
+<h2>Library Information<a class="headerlink" href="#library-information" title="Permalink to this headline">¶</a></h2>
+<p>Retrieve information about the library which <code class="docutils literal notranslate"><span class="pre">xnvme</span></code> is linked with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme library-info
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">17</span><span class="o">}</span>
+xnvme_3p:
+  - <span class="s1">&#39;fio;git-describe:fio-3.20-62-gc7f72c4b&#39;</span>
+  - <span class="s1">&#39;spdk;git-describe:v20.04-rc1-528-g8c710c9d;+patches&#39;</span>
+  - <span class="s1">&#39;libnvme;git-rev:master/a458217&#39;</span>
+  - <span class="s1">&#39;liburing;git-describe:liburing-0.6-53-g94ba6378&#39;</span>
+xnvme_be_attr_list:
+  count: <span class="m">5</span>
+  capacity: <span class="m">5</span>
+  items:
+  - <span class="o">{</span>name: <span class="s1">&#39;spdk&#39;</span>, enabled: <span class="m">1</span>, schemes: <span class="o">[</span>pci, spdk, pcie, fab<span class="o">]}</span>
+  - <span class="o">{</span>name: <span class="s1">&#39;liou&#39;</span>, enabled: <span class="m">1</span>, schemes: <span class="o">[</span>liou, file<span class="o">]}</span>
+  - <span class="o">{</span>name: <span class="s1">&#39;laio&#39;</span>, enabled: <span class="m">1</span>, schemes: <span class="o">[</span>laio, file<span class="o">]}</span>
+  - <span class="o">{</span>name: <span class="s1">&#39;lioc&#39;</span>, enabled: <span class="m">1</span>, schemes: <span class="o">[</span>lioc, file<span class="o">]}</span>
+  - <span class="o">{</span>name: <span class="s1">&#39;fioc&#39;</span>, enabled: <span class="m">0</span>, schemes: <span class="o">[</span>fioc, file<span class="o">]}</span>
 </pre></div>
 </div>
 </div>
@@ -399,7 +429,7 @@ xNVMe - Cross-platform NVMe utility -- ver: <span class="o">{</span>major: <span
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../lblk/index.html" class="btn btn-neutral float-right" title="lblk" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../zoned/index.html" class="btn btn-neutral float-right" title="zoned" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index.html" class="btn btn-neutral float-left" title="Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

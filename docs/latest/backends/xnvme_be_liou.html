@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Linux/io_uring &mdash; xNVMe 0.0.16 documentation</title>
+  <title>Linux/io_uring &mdash; xNVMe 0.0.17 documentation</title>
   
 
   
@@ -33,9 +33,10 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="SPDK" href="xnvme_be_spdk/index.html" />
+    <link rel="next" title="Linux/libaio" href="xnvme_be_laio.html" />
     <link rel="prev" title="Linux/IOCTL" href="xnvme_be_lioc.html" /> 
 </head>
 
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                0.0.16
+                0.0.17
               </div>
             
           
@@ -97,6 +98,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#note-on-errors">Note on Errors</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_be_laio.html">Linux/libaio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_be_spdk/index.html">SPDK</a></li>
 </ul>
 </li>
@@ -169,13 +171,10 @@
             
   <div class="section" id="linux-io-uring">
 <span id="sec-backends-liou"></span><h1>Linux/io_uring<a class="headerlink" href="#linux-io-uring" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">XNVME_BE_LIOU</span></code> backend uses synchronous <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls to have the
-kernel perform NVMe command and <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> for:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_cmd_read</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_cmd_write</span></code></p></li>
-<li><p>And for everything else it can ship via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> opcodes</p></li>
-</ul>
+<p>The Linux/io_uring backend, <code class="docutils literal notranslate"><span class="pre">be:liou</span></code>, uses <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> to provide an
+asynchronous interface, over which NVMe command opcodes with equivalent
+<code class="docutils literal notranslate"><span class="pre">io_uring</span></code> opcodes are shipped. Currently, this includes read and write.</p>
+<p>Everything else is mapped to the Linux NVMe Driver IOCTLs via <code class="docutils literal notranslate"><span class="pre">be:lioc</span></code>.</p>
 <div class="section" id="note-on-errors">
 <h2>Note on Errors<a class="headerlink" href="#note-on-errors" title="Permalink to this headline">¶</a></h2>
 <p>Some commands may be issued through <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> that are invalid. While most
@@ -196,7 +195,7 @@ See the documentation on <a class="reference internal" href="../capis/xnvme.html
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="xnvme_be_spdk/index.html" class="btn btn-neutral float-right" title="SPDK" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="xnvme_be_laio.html" class="btn btn-neutral float-right" title="Linux/libaio" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="xnvme_be_lioc.html" class="btn btn-neutral float-left" title="Linux/IOCTL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
