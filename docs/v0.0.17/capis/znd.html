@@ -1,0 +1,1821 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>znd &mdash; xNVMe 0.0.17 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="znd: headers" href="znd_headers.html" />
+    <link rel="prev" title="lblk: headers" href="lblk_headers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.17
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">C APIs</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_headers.html">xnvme: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lblk.html">lblk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">znd</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#znd-cmd-log-lid">znd_cmd_log_lid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-cmd-opc">znd_cmd_opc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-recv-action">znd_recv_action</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-recv-action-sf">znd_recv_action_sf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-send-action">znd_send_action</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-send-action-sf">znd_send_action_sf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-state">znd_state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-status-code">znd_status_code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-type">znd_type</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#znd-changes">znd_changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-cmd">znd_cmd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-cmd-append">znd_cmd_append</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-cmd-mgmt-recv">znd_cmd_mgmt_recv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-cmd-mgmt-send">znd_cmd_mgmt_send</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-descr">znd_descr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy">znd_idfy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-ctrlr">znd_idfy_ctrlr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-lbafe">znd_idfy_lbafe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-ns">znd_idfy_ns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-report">znd_report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-rprt-hdr">znd_rprt_hdr</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#znd-changes-fpr">znd_changes_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-changes-from-dev">znd_changes_from_dev</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-changes-pr">znd_changes_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sec-c-apis-znd-func-znd-cmd-append">znd_cmd_append</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sec-c-apis-znd-func-znd-cmd-mgmt-recv">znd_cmd_mgmt_recv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sec-c-apis-znd-func-znd-cmd-mgmt-send">znd_cmd_mgmt_send</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-descr-fpr">znd_descr_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-descr-from-dev">znd_descr_from_dev</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-descr-from-dev-in-state">znd_descr_from_dev_in_state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-descr-pr">znd_descr_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-ctrlr-fpr">znd_idfy_ctrlr_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-ctrlr-pr">znd_idfy_ctrlr_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-lbafe-fpr">znd_idfy_lbafe_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-ns-fpr">znd_idfy_ns_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-idfy-ns-pr">znd_idfy_ns_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-recv-action-sf-str">znd_recv_action_sf_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-recv-action-str">znd_recv_action_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-report-find-arbitrary">znd_report_find_arbitrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-report-fpr">znd_report_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-report-from-dev">znd_report_from_dev</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-report-pr">znd_report_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-rprt-hdr-fpr">znd_rprt_hdr_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-rprt-hdr-pr">znd_rprt_hdr_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-send-action-sf-str">znd_send_action_sf_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-send-action-str">znd_send_action_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-stat-dev">znd_stat_dev</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-state-str">znd_state_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-status-code-str">znd_status_code_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#znd-type-str">znd_type_str</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="znd_headers.html">znd: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec_headers.html">xnvmec: headers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">C APIs</a> &raquo;</li>
+        
+      <li>znd</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/capis/znd.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="znd">
+<span id="sec-c-apis-znd"></span><h1>znd<a class="headerlink" href="#znd" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="enums">
+<span id="sec-c-apis-znd-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="znd-cmd-log-lid">
+<span id="sec-c-apis-znd-enum-znd-cmd-log-lid"></span><h3>znd_cmd_log_lid<a class="headerlink" href="#znd-cmd-log-lid" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_cmd_log_lid">
+<span class="target" id="libznd_8h_1a8056b850895c3c4541b619a9b00b78c9"></span><code class="sig-name descname">znd_cmd_log_lid</code><a class="headerlink" href="#c.znd_cmd_log_lid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log identifiers for Zoned Namespaces. </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0xBF">
+<span class="target" id="libznd_8h_1a8056b850895c3c4541b619a9b00b78c9afc76e52f59188cd30d910aa182676c34"></span><code class="sig-name descname">0xBF</code><a class="headerlink" href="#c.0xBF" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_CMD_LOG_CHANGES. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-cmd-opc">
+<span id="sec-c-apis-znd-enum-znd-cmd-opc"></span><h3>znd_cmd_opc<a class="headerlink" href="#znd-cmd-opc" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_cmd_opc">
+<span class="target" id="libznd_8h_1a21239ff193a91775cebdf4fa8fdf6801"></span><code class="sig-name descname">znd_cmd_opc</code><a class="headerlink" href="#c.znd_cmd_opc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x79">
+<span class="target" id="libznd_8h_1a21239ff193a91775cebdf4fa8fdf6801af01c5d193b0bf50b8f4ec7f6c6609ea1"></span><code class="sig-name descname">0x79</code><a class="headerlink" href="#c.0x79" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_CMD_OPC_MGMT_SEND. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x7A">
+<span class="target" id="libznd_8h_1a21239ff193a91775cebdf4fa8fdf6801a2b376a896205e2debcc743da2833dc24"></span><code class="sig-name descname">0x7A</code><a class="headerlink" href="#c.0x7A" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_CMD_OPC_MGMT_RECV. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x7D">
+<span class="target" id="libznd_8h_1a21239ff193a91775cebdf4fa8fdf6801a9318a14d27f4199764cc5fe9093a2ba4"></span><code class="sig-name descname">0x7D</code><a class="headerlink" href="#c.0x7D" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_CMD_OPC_APPEND. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-recv-action">
+<span id="sec-c-apis-znd-enum-znd-recv-action"></span><h3>znd_recv_action<a class="headerlink" href="#znd-recv-action" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_recv_action">
+<span class="target" id="libznd_8h_1aed78a6c8f2edef629f8adacf026a8994"></span><code class="sig-name descname">znd_recv_action</code><a class="headerlink" href="#c.znd_recv_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoned Receive Action. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2, figure TBDZMRDW13 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x0">
+<span class="target" id="libznd_8h_1aed78a6c8f2edef629f8adacf026a8994a9e5b2701773b83e734191e6bdaae47b2"></span><code class="sig-name descname">0x0</code><a class="headerlink" href="#c.0x0" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_REPORT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x1">
+<span class="target" id="libznd_8h_1aed78a6c8f2edef629f8adacf026a8994afbc4607558953a1f85ee2d8e4da127fa"></span><code class="sig-name descname">0x1</code><a class="headerlink" href="#c.0x1" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_EREPORT. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-recv-action-sf">
+<span id="sec-c-apis-znd-enum-znd-recv-action-sf"></span><h3>znd_recv_action_sf<a class="headerlink" href="#znd-recv-action-sf" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_recv_action_sf">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80b"></span><code class="sig-name descname">znd_recv_action_sf</code><a class="headerlink" href="#c.znd_recv_action_sf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Receive Action (<a class="reference internal" href="#libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02"><span class="std std-ref">znd_send_action</span></a>) specific field values. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2, figure TBDZMRDW13 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80ba316af054f7339263487f8688b1feacc1"></span><code class="sig-name descname">0x0</code></dt>
+<dd><p>ZND_RECV_SF_ALL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80ba81fe2348388372b35bbc895cd64b4b43"></span><code class="sig-name descname">0x1</code></dt>
+<dd><p>ZND_RECV_SF_EMPTY. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x2">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80bab429ae7c6723d80ea17c7745b37f1f1b"></span><code class="sig-name descname">0x2</code><a class="headerlink" href="#c.0x2" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_SF_IOPEN. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x3">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80bad4ed801ed02f1bfcf664fb50a056bcd3"></span><code class="sig-name descname">0x3</code><a class="headerlink" href="#c.0x3" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_SF_EOPEN. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x4">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80baf8ed468f27ba7bbf855c05abcf197aa6"></span><code class="sig-name descname">0x4</code><a class="headerlink" href="#c.0x4" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_SF_CLOSED. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x5">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80ba510f58cd44b56ab5ca48ea64416d9c7c"></span><code class="sig-name descname">0x5</code><a class="headerlink" href="#c.0x5" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_SF_FULL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x6">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80bab11335dd99370ec5400b5aaf9b50c02f"></span><code class="sig-name descname">0x6</code><a class="headerlink" href="#c.0x6" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_SF_RONLY. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x7">
+<span class="target" id="libznd_8h_1a2420bb972046b9c04de7a340abe4f80ba477407a1fad8b34e2c229e1896c56f92"></span><code class="sig-name descname">0x7</code><a class="headerlink" href="#c.0x7" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_RECV_SF_OFFLINE. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-send-action">
+<span id="sec-c-apis-znd-enum-znd-send-action"></span><h3>znd_send_action<a class="headerlink" href="#znd-send-action" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_send_action">
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02"></span><code class="sig-name descname">znd_send_action</code><a class="headerlink" href="#c.znd_send_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actions for the Zone Management Send command. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.1, figure TBDZMDW13 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02a91cb1566e135080957d5225b7b7152fe"></span><code class="sig-name descname">0x1</code></dt>
+<dd><p>ZND_SEND_CLOSE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02ac51c1c108aa2a0ad35c9f38c5dc239b2"></span><code class="sig-name descname">0x2</code></dt>
+<dd><p>ZND_SEND_FINISH. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02ae500f25da419638bbe9c7d5865ca3789"></span><code class="sig-name descname">0x3</code></dt>
+<dd><p>ZND_SEND_OPEN. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02a29c23bec6a2d9aeb0847df25ce0de9a5"></span><code class="sig-name descname">0x4</code></dt>
+<dd><p>ZND_SEND_RESET. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02ad2935c84eeb35f78067bbc0a20042079"></span><code class="sig-name descname">0x5</code></dt>
+<dd><p>ZND_SEND_OFFLINE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x10">
+<span class="target" id="libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02ab44893b43e145a0bc205b2f251c6366a"></span><code class="sig-name descname">0x10</code><a class="headerlink" href="#c.0x10" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SEND_DESCRIPTOR. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-send-action-sf">
+<span id="sec-c-apis-znd-enum-znd-send-action-sf"></span><h3>znd_send_action_sf<a class="headerlink" href="#znd-send-action-sf" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_send_action_sf">
+<span class="target" id="libznd_8h_1aca0371a24b7db1a09236bcc39e7936b2"></span><code class="sig-name descname">znd_send_action_sf</code><a class="headerlink" href="#c.znd_send_action_sf" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is not defined in any spec… </p>
+<p>it would just seem sane if it was… </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1aca0371a24b7db1a09236bcc39e7936b2a85bf4e410b10b400b3a23ee5845d6cf8"></span><code class="sig-name descname">0x1</code></dt>
+<dd><p>ZND_SEND_SF_SALL. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-state">
+<span id="sec-c-apis-znd-enum-znd-state"></span><h3>znd_state<a class="headerlink" href="#znd-state" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_state">
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5"></span><code class="sig-name descname">znd_state</code><a class="headerlink" href="#c.znd_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone State as reported by Zone Management Receive. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2.2.3, figure TBDZMRZD </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5aa5f46fcfcb3e4453501b6ccd466a9d2f"></span><code class="sig-name descname">0x1</code></dt>
+<dd><p>ZND_STATE_EMPTY. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5a354464b76918299b5c7dd79bcc29ff24"></span><code class="sig-name descname">0x2</code></dt>
+<dd><p>ZND_STATE_IOPEN. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5a859fb933c356d229db5e8dc1382f565a"></span><code class="sig-name descname">0x3</code></dt>
+<dd><p>ZND_STATE_EOPEN. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5aec2c48980f3bb79c9a7b39ee9b2ac231"></span><code class="sig-name descname">0x4</code></dt>
+<dd><p>ZND_STATE_CLOSED. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xD">
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5a4fd936bbe3425e41116ec02d3de2a031"></span><code class="sig-name descname">0xD</code><a class="headerlink" href="#c.0xD" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_STATE_RONLY. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xE">
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5a70b4a4bc1e3ea1e0c14abc8adfd5fa91"></span><code class="sig-name descname">0xE</code><a class="headerlink" href="#c.0xE" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_STATE_FULL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xF">
+<span class="target" id="libznd_8h_1a54f5dce05a205b9812da3961cd943fc5ab1ea3b817522c75b82120ba5807ed59e"></span><code class="sig-name descname">0xF</code><a class="headerlink" href="#c.0xF" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_STATE_OFFLINE. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-status-code">
+<span id="sec-c-apis-znd-enum-znd-status-code"></span><h3>znd_status_code<a class="headerlink" href="#znd-status-code" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_status_code">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567"></span><code class="sig-name descname">znd_status_code</code><a class="headerlink" href="#c.znd_status_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command-set specific status codes related to Zoned Namespaces. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 4.1.1.1.1, figures GENERICSTATUSCODES and STATUSCODES </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x7F">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567a6394e98b000310f7bb681a7aed793d13"></span><code class="sig-name descname">0x7F</code><a class="headerlink" href="#c.0x7F" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_INVALID_FORMAT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xB8">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567addaa409715d70520431fa689b1ef3734"></span><code class="sig-name descname">0xB8</code><a class="headerlink" href="#c.0xB8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoned Command Set. </p>
+<p>ZND_SC_BOUNDARY_ERROR </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xB9">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567a1155623dad17ba029d0844763bb7b942"></span><code class="sig-name descname">0xB9</code><a class="headerlink" href="#c.0xB9" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_IS_FULL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xBA">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567af25c4bcf5bcde4919180751156eefe68"></span><code class="sig-name descname">0xBA</code><a class="headerlink" href="#c.0xBA" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_IS_READONLY. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xBB">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567aee300784c37fd1b2347832a3458e34d0"></span><code class="sig-name descname">0xBB</code><a class="headerlink" href="#c.0xBB" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_IS_OFFLINE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xBC">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567ab8f75a7510443099d5769bdaf5e19aec"></span><code class="sig-name descname">0xBC</code><a class="headerlink" href="#c.0xBC" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_INVALID_WRITE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xBD">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567a265b204e493dbeee90a1c086ecf4beb1"></span><code class="sig-name descname">0xBD</code><a class="headerlink" href="#c.0xBD" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_TOO_MANY_ACTIVE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xBE">
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567a0c791166d67ac898990818223d29a124"></span><code class="sig-name descname">0xBE</code><a class="headerlink" href="#c.0xBE" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZND_SC_TOO_MANY_OPEN. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567a02075dd4f2b41aa424de226db6e06188"></span><code class="sig-name descname">0xBF</code></dt>
+<dd><p>ZND_SC_INVALID_TRANS. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="znd-type">
+<span id="sec-c-apis-znd-enum-znd-type"></span><h3>znd_type<a class="headerlink" href="#znd-type" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.znd_type">
+<span class="target" id="libznd_8h_1af799b0502da89e64210c628aa857ced9"></span><code class="sig-name descname">znd_type</code><a class="headerlink" href="#c.znd_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Type. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2.2.3, figure TBDZMRD </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libznd_8h_1af799b0502da89e64210c628aa857ced9a01a3bb5cf9d98d003d344bfffa01f82b"></span><code class="sig-name descname">0x2</code></dt>
+<dd><p>ZND_TYPE_SEQWR. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="structs">
+<span id="sec-c-apis-znd-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="znd-changes">
+<span id="sec-c-apis-znd-struct-znd-changes"></span><h3>znd_changes<a class="headerlink" href="#znd-changes" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_changes">
+<span class="target" id="structznd__changes"></span><em class="property">struct </em><code class="sig-name descname">znd_changes</code><a class="headerlink" href="#c.znd_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Identifier List as returned by get-log-page. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 5.3.1.1, figure TBDZONELIST </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_changes::nidents">
+<span class="target" id="structznd__changes_1a7232f00a078cb715d571b1bc127c9e4f"></span>uint16_t <code class="sig-name descname">nidents</code><a class="headerlink" href="#c.znd_changes::nidents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of Zone Identifiers. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__changes_1a9e20025c939028a3deb200d0e715868a"></span><code class="sig-name descname">uint8_t znd_changes::rsvd2[6]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__changes_1ac8636dae6f8aaef552d3986369abee51"></span><code class="sig-name descname">uint64_t znd_changes::idents[ZND_CHANGES_LEN]</code></dt>
+<dd><p>Zone Identifiers. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-cmd">
+<span id="sec-c-apis-znd-struct-znd-cmd"></span><h3>znd_cmd<a class="headerlink" href="#znd-cmd" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_cmd">
+<span class="target" id="structznd__cmd"></span><em class="property">struct </em><code class="sig-name descname">znd_cmd</code><a class="headerlink" href="#c.znd_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>NVMe Command Accessors for the Zoned Command Set. </p>
+<p>NVMe Command Accessors for the Logical Block Command Set. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.102">
+<span class="target" id="structznd__cmd_1a45a3b154d49ceffbb86d58c54e8bbd52"></span>union <a class="reference internal" href="#c.znd_cmd" title="znd_cmd">znd_cmd</a>::&#64;101 <a class="reference internal" href="#c.znd_cmd" title="znd_cmd">znd_cmd</a>::&#64;<code class="sig-name descname">102</code><a class="headerlink" href="#c.102" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-cmd-append">
+<span id="sec-c-apis-znd-struct-znd-cmd-append"></span><h3>znd_cmd_append<a class="headerlink" href="#znd-cmd-append" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_cmd_append">
+<span class="target" id="structznd__cmd__append"></span><em class="property">struct </em><code class="sig-name descname">znd_cmd_append</code><a class="headerlink" href="#c.znd_cmd_append" title="Permalink to this definition">¶</a></dt>
+<dd><p>NVMe Command Accessor for command with opcode ZND_CMD_OPC_APPEND. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__cmd__append_1a8822c00a4c6e6bf181cf39df3cb67c25"></span><code class="sig-name descname">uint32_t znd_cmd_append::cdw00_09[10]</code></dt>
+<dd><p>Command dword 0 to 9. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::zslba">
+<span class="target" id="structznd__cmd__append_1aacfb96f8ba7765b8277128f0133c7944"></span>uint64_t <code class="sig-name descname">zslba</code><a class="headerlink" href="#c.znd_cmd_append::zslba" title="Permalink to this definition">¶</a></dt>
+<dd><p>SLBA: Start Logical Block Address. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::nlb">
+<span class="target" id="structznd__cmd__append_1a1a1cdcc97bb950b69956673eef34672c"></span>uint32_t <code class="sig-name descname">nlb</code><a class="headerlink" href="#c.znd_cmd_append::nlb" title="Permalink to this definition">¶</a></dt>
+<dd><p>NLB: Number of logical blocks. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::rsvd">
+<span class="target" id="structznd__cmd__append_1a801c85d2341e753ac1da667a2c4bc9ce"></span>uint32_t <code class="sig-name descname">rsvd</code><a class="headerlink" href="#c.znd_cmd_append::rsvd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::dtype">
+<span class="target" id="structznd__cmd__append_1a7dc7aae9e7e275d0b9a34cf5a7b7c28c"></span>uint32_t <code class="sig-name descname">dtype</code><a class="headerlink" href="#c.znd_cmd_append::dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>DT: Directive Type. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::prinfo">
+<span class="target" id="structznd__cmd__append_1a4f54268ca28b3f791eab98efea384a44"></span>uint32_t <code class="sig-name descname">prinfo</code><a class="headerlink" href="#c.znd_cmd_append::prinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>PI: Protection Information Field. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::rsvd2">
+<span class="target" id="structznd__cmd__append_1af4ebe43da2a44b30993555a32607d0b9"></span>uint32_t <code class="sig-name descname">rsvd2</code><a class="headerlink" href="#c.znd_cmd_append::rsvd2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::fua">
+<span class="target" id="structznd__cmd__append_1a912d8ba46cee5eb9184a0dd031affe91"></span>uint32_t <code class="sig-name descname">fua</code><a class="headerlink" href="#c.znd_cmd_append::fua" title="Permalink to this definition">¶</a></dt>
+<dd><p>FUA: Force unit access. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_append::lr">
+<span class="target" id="structznd__cmd__append_1a27c4acfa6150114dc64ae41401a67335"></span>uint32_t <code class="sig-name descname">lr</code><a class="headerlink" href="#c.znd_cmd_append::lr" title="Permalink to this definition">¶</a></dt>
+<dd><p>LR: Limited retry. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__cmd__append_1a6c8d443945cbba6801f38d14b38184d9"></span><code class="sig-name descname">uint32_t znd_cmd_append::cdw13_15[3]</code></dt>
+<dd><p>Command dword 13 to 15. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-cmd-mgmt-recv">
+<span id="sec-c-apis-znd-struct-znd-cmd-mgmt-recv"></span><h3>znd_cmd_mgmt_recv<a class="headerlink" href="#znd-cmd-mgmt-recv" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_cmd_mgmt_recv">
+<span class="target" id="structznd__cmd__mgmt__recv"></span><em class="property">struct </em><code class="sig-name descname">znd_cmd_mgmt_recv</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv" title="Permalink to this definition">¶</a></dt>
+<dd><p>NVMe Command Accessor for command with opcode ZND_CMD_OPC_MGMT_RECV. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__cmd__mgmt__recv_1ae91d3db9d08af80893b5a7e976f2f49f"></span><code class="sig-name descname">uint32_t znd_cmd_mgmt_recv::cdw00_09[10]</code></dt>
+<dd><p>Command dword 0 to 9. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::slba">
+<span class="target" id="structznd__cmd__mgmt__recv_1a47331920500cc7a75a9223d7f807d215"></span>uint64_t <code class="sig-name descname">slba</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::slba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start LBA. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::ndwords">
+<span class="target" id="structznd__cmd__mgmt__recv_1aa78e53a675a816070d83c5665687dfed"></span>uint32_t <code class="sig-name descname">ndwords</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::ndwords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of dwords in data-payload. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::zra">
+<span class="target" id="structznd__cmd__mgmt__recv_1a6363208097905dc51b3c69adf77dd738"></span>uint32_t <code class="sig-name descname">zra</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::zra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Receive Action. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::zrasf">
+<span class="target" id="structznd__cmd__mgmt__recv_1a06dbf241182ab4e7cf5b541893ac381e"></span>uint32_t <code class="sig-name descname">zrasf</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::zrasf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Receive Action Specific Field. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::partial">
+<span class="target" id="structznd__cmd__mgmt__recv_1ab1a62db31ea81d1e9043688bc6ba92ab"></span>uint32_t <code class="sig-name descname">partial</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partial. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::rsvd">
+<span class="target" id="structznd__cmd__mgmt__recv_1a18255b0fdf0ca2fdb2bee6711c12802b"></span>uint32_t <code class="sig-name descname">rsvd</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::rsvd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_recv::addrs_dst">
+<span class="target" id="structznd__cmd__mgmt__recv_1a9af9b6af054bba8215b7a05bcb3b5c4c"></span>uint64_t <code class="sig-name descname">addrs_dst</code><a class="headerlink" href="#c.znd_cmd_mgmt_recv::addrs_dst" title="Permalink to this definition">¶</a></dt>
+<dd><p>destination addresses </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-cmd-mgmt-send">
+<span id="sec-c-apis-znd-struct-znd-cmd-mgmt-send"></span><h3>znd_cmd_mgmt_send<a class="headerlink" href="#znd-cmd-mgmt-send" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_cmd_mgmt_send">
+<span class="target" id="structznd__cmd__mgmt__send"></span><em class="property">struct </em><code class="sig-name descname">znd_cmd_mgmt_send</code><a class="headerlink" href="#c.znd_cmd_mgmt_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>NVMe Command Accessor for command with opcode ZND_CMD_OPC_MGMT_SEND. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__cmd__mgmt__send_1ae231de37d6df73f571bcbfcecef63af6"></span><code class="sig-name descname">uint32_t znd_cmd_mgmt_send::cdw00_09[10]</code></dt>
+<dd><p>Command dword 0 to 9. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_send::slba">
+<span class="target" id="structznd__cmd__mgmt__send_1a251b1153dc363f6450416e1dca5be990"></span>uint64_t <code class="sig-name descname">slba</code><a class="headerlink" href="#c.znd_cmd_mgmt_send::slba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start LBA. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_send::cdw12">
+<span class="target" id="structznd__cmd__mgmt__send_1a9250b6590e325793034199908531b409"></span>uint32_t <code class="sig-name descname">cdw12</code><a class="headerlink" href="#c.znd_cmd_mgmt_send::cdw12" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_send::zsa">
+<span class="target" id="structznd__cmd__mgmt__send_1a10fb7b496a53a963c65c5cb10b7e3fa4"></span>uint32_t <code class="sig-name descname">zsa</code><a class="headerlink" href="#c.znd_cmd_mgmt_send::zsa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Send Action. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_send::zsasf">
+<span class="target" id="structznd__cmd__mgmt__send_1abef74e3b3b1f51cc8c356ecb6ba6cdc7"></span>uint32_t <code class="sig-name descname">zsasf</code><a class="headerlink" href="#c.znd_cmd_mgmt_send::zsasf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select All. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_cmd_mgmt_send::rsvd">
+<span class="target" id="structznd__cmd__mgmt__send_1afbe98dad2423f05b88d556a969b20872"></span>uint32_t <code class="sig-name descname">rsvd</code><a class="headerlink" href="#c.znd_cmd_mgmt_send::rsvd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__cmd__mgmt__send_1af445a112885ca0dbae2d27a4f4d97333"></span><code class="sig-name descname">uint32_t znd_cmd_mgmt_send::cdw14_15[2]</code></dt>
+<dd><p>Command dword 14 to 15. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-descr">
+<span id="sec-c-apis-znd-struct-znd-descr"></span><h3>znd_descr<a class="headerlink" href="#znd-descr" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_descr">
+<span class="target" id="structznd__descr"></span><em class="property">struct </em><code class="sig-name descname">znd_descr</code><a class="headerlink" href="#c.znd_descr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Descriptor as reported by Zone Management Receive command. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2.2.3, figure TBDZMRZD </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_descr::zt">
+<span class="target" id="structznd__descr_1af59989250c8ccf9a5478a19e35fcdc8f"></span>uint8_t <code class="sig-name descname">zt</code><a class="headerlink" href="#c.znd_descr::zt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Type. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::rsvd0">
+<span class="target" id="structznd__descr_1a8f560bdd6a70f5b4625e22bd8a7c7e13"></span>uint8_t <code class="sig-name descname">rsvd0</code><a class="headerlink" href="#c.znd_descr::rsvd0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::rsvd1">
+<span class="target" id="structznd__descr_1abb2ff7d92e16d740f92aebbf830c3f25"></span>uint8_t <code class="sig-name descname">rsvd1</code><a class="headerlink" href="#c.znd_descr::rsvd1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::zs">
+<span class="target" id="structznd__descr_1a610cc3e602daefc103b827998cd43266"></span>uint8_t <code class="sig-name descname">zs</code><a class="headerlink" href="#c.znd_descr::zs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone State. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::za">
+<span class="target" id="structznd__descr_1a8b49b6d782581b1e99eaf1f7addb71e4"></span>union <a class="reference internal" href="#c.znd_descr" title="znd_descr">znd_descr</a>::&#64;107  <code class="sig-name descname">za</code><a class="headerlink" href="#c.znd_descr::za" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Attributes. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__descr_1a46563fbba1838ee6ebf22cc186a1da38"></span><code class="sig-name descname">uint8_t znd_descr::rsvd7[5]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::zcap">
+<span class="target" id="structznd__descr_1a493c4a294405047b0b6ecaa7d1f555f1"></span>uint64_t <code class="sig-name descname">zcap</code><a class="headerlink" href="#c.znd_descr::zcap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Capacity (in number of LBAs) </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::zslba">
+<span class="target" id="structznd__descr_1a860fc5adc8aa4932601c1bdec5ef42e2"></span>uint64_t <code class="sig-name descname">zslba</code><a class="headerlink" href="#c.znd_descr::zslba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Start LBA. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_descr::wp">
+<span class="target" id="structznd__descr_1a8c2805d4cce51531b14c70ddf03ac8a3"></span>uint64_t <code class="sig-name descname">wp</code><a class="headerlink" href="#c.znd_descr::wp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Pointer. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__descr_1a2420a0f6c0f2145a010c72a1131e68a8"></span><code class="sig-name descname">uint8_t znd_descr::rsvd63[32]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy">
+<span id="sec-c-apis-znd-struct-znd-idfy"></span><h3>znd_idfy<a class="headerlink" href="#znd-idfy" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_idfy">
+<span class="target" id="structznd__idfy"></span><em class="property">struct </em><code class="sig-name descname">znd_idfy</code><a class="headerlink" href="#c.znd_idfy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of the NVMe Identify Namespace command completion result. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.106">
+<span class="target" id="structznd__idfy_1acdf5c7d2f22b45d0fedd3e5f9b790677"></span>union <a class="reference internal" href="#c.znd_idfy" title="znd_idfy">znd_idfy</a>::&#64;105 <a class="reference internal" href="#c.znd_idfy" title="znd_idfy">znd_idfy</a>::&#64;<code class="sig-name descname">106</code><a class="headerlink" href="#c.106" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-ctrlr">
+<span id="sec-c-apis-znd-struct-znd-idfy-ctrlr"></span><h3>znd_idfy_ctrlr<a class="headerlink" href="#znd-idfy-ctrlr" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_idfy_ctrlr">
+<span class="target" id="structznd__idfy__ctrlr"></span><em class="property">struct </em><code class="sig-name descname">znd_idfy_ctrlr</code><a class="headerlink" href="#c.znd_idfy_ctrlr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify controller accessor only for Zoned specific fields. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification, section 3.1.2 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_idfy_ctrlr::zasl">
+<span class="target" id="structznd__idfy__ctrlr_1a132ab4ac252581659f17a00de8df62ab"></span>uint8_t <code class="sig-name descname">zasl</code><a class="headerlink" href="#c.znd_idfy_ctrlr::zasl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Append Size Limit. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__idfy__ctrlr_1a02befd7cdfc6e51108b3843436d68ffb"></span><code class="sig-name descname">uint8_t znd_idfy_ctrlr::rsvd8[4095]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-lbafe">
+<span id="sec-c-apis-znd-struct-znd-idfy-lbafe"></span><h3>znd_idfy_lbafe<a class="headerlink" href="#znd-idfy-lbafe" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_idfy_lbafe">
+<span class="target" id="structznd__idfy__lbafe"></span><em class="property">struct </em><code class="sig-name descname">znd_idfy_lbafe</code><a class="headerlink" href="#c.znd_idfy_lbafe" title="Permalink to this definition">¶</a></dt>
+<dd><p>LBA Format Extension. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 5.1.2, figure LBAFE </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_idfy_lbafe::zsze">
+<span class="target" id="structznd__idfy__lbafe_1ac29cdfaef5bebbcfdb357df46698102d"></span>uint64_t <code class="sig-name descname">zsze</code><a class="headerlink" href="#c.znd_idfy_lbafe::zsze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Size in number of logical blocks. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_idfy_lbafe::zdes">
+<span class="target" id="structznd__idfy__lbafe_1a24db8db156e4e731319c280445900db9"></span>uint8_t <code class="sig-name descname">zdes</code><a class="headerlink" href="#c.znd_idfy_lbafe::zdes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Descriptor Extensions Size. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__idfy__lbafe_1a59c925ccb71c39cc0bbe4115531b34ea"></span><code class="sig-name descname">uint8_t znd_idfy_lbafe::rsvd[7]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-ns">
+<span id="sec-c-apis-znd-struct-znd-idfy-ns"></span><h3>znd_idfy_ns<a class="headerlink" href="#znd-idfy-ns" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_idfy_ns">
+<span class="target" id="structznd__idfy__ns"></span><em class="property">struct </em><code class="sig-name descname">znd_idfy_ns</code><a class="headerlink" href="#c.znd_idfy_ns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zoned Command Set specific identify namespace data structure. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>TP4053, section 3 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_idfy_ns::zoc">
+<span class="target" id="structznd__idfy__ns_1a6ec5ff0041dd3b6ed61b9d8436eade72"></span>struct <a class="reference internal" href="#c.znd_idfy_ns" title="znd_idfy_ns">znd_idfy_ns</a>::&#64;103  <code class="sig-name descname">zoc</code><a class="headerlink" href="#c.znd_idfy_ns::zoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Operation Characteristics. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_idfy_ns::ozcs">
+<span class="target" id="structznd__idfy__ns_1adde23413814f595e715f278b2bc89420"></span>struct <a class="reference internal" href="#c.znd_idfy_ns" title="znd_idfy_ns">znd_idfy_ns</a>::&#64;104  <code class="sig-name descname">ozcs</code><a class="headerlink" href="#c.znd_idfy_ns::ozcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional Zoned Command Support. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_idfy_ns::mar">
+<span class="target" id="structznd__idfy__ns_1a2ae832ba5a3ef0aef995dc268628bfd5"></span>uint32_t <code class="sig-name descname">mar</code><a class="headerlink" href="#c.znd_idfy_ns::mar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum Active Resources. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_idfy_ns::mor">
+<span class="target" id="structznd__idfy__ns_1af2d14e275a935b9d49d02d4d46b85f50"></span>uint32_t <code class="sig-name descname">mor</code><a class="headerlink" href="#c.znd_idfy_ns::mor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum Open Resources. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_idfy_ns::rrl">
+<span class="target" id="structznd__idfy__ns_1aa0fcff6ace4c6bf0ee10a9625b787dc0"></span>uint32_t <code class="sig-name descname">rrl</code><a class="headerlink" href="#c.znd_idfy_ns::rrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset Recommended Limit. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_idfy_ns::frl">
+<span class="target" id="structznd__idfy__ns_1abaf187215c37da833fdd7ae7d68d3ced"></span>uint32_t <code class="sig-name descname">frl</code><a class="headerlink" href="#c.znd_idfy_ns::frl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finish Recommended Limit. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__idfy__ns_1a11c655c6f4524c65fe638599c446ba71"></span><code class="sig-name descname">uint8_t znd_idfy_ns::rsvd20_2815[2796]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__idfy__ns_1a47d9b8ebf884f8cfbc4afd98aa1a7fd4"></span><code class="sig-name descname">struct znd_idfy_lbafe znd_idfy_ns::lbafe[16]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__idfy__ns_1a38bc382b66b729cf0b1b74887897c705"></span><code class="sig-name descname">uint8_t znd_idfy_ns::rsvd3072_3839[768]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__idfy__ns_1afea6793e061cc46d91ff43cf08fef23e"></span><code class="sig-name descname">uint8_t znd_idfy_ns::vs[256]</code></dt>
+<dd><p>Vendor Specific. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-report">
+<span id="sec-c-apis-znd-struct-znd-report"></span><h3>znd_report<a class="headerlink" href="#znd-report" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_report">
+<span class="target" id="structznd__report"></span><em class="property">struct </em><code class="sig-name descname">znd_report</code><a class="headerlink" href="#c.znd_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulation of Zone Descriptors and Zone Descriptor Extensions. </p>
+<p>This is not the structure from the Specification, rather, this encapsulates it and provides MACRO-accessors and helper-functions to retrieve zone-descriptors and when supported, extensions.</p>
+<p>For simplicity then only used the macros:</p>
+<p>ZND_REPORT_DESCR(rprt, nth) - Access the ‘nth’ descriptor (zero-based) ZND_REPORT_DEXT(rprt, nth) - Access the ‘nth’ descr. extension (zero-based)</p>
+<p>However, when zdes_bytes is 0, then <code class="docutils literal notranslate"><span class="pre">descr</span></code> is accessible as a regular array When zdes &gt; 0, then the ZND_REPORT_DESCR should be used to access Zone Descriptors and ZND_REPORT_DEXT should be used to access Zone Descriptor extension </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_report::nzones">
+<span class="target" id="structznd__report_1aa1449f52da6e793e8018f20d3c720478"></span>uint64_t <code class="sig-name descname">nzones</code><a class="headerlink" href="#c.znd_report::nzones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nr. of zones in device. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::zd_nbytes">
+<span class="target" id="structznd__report_1a34b709da9a22276747f80f718d015ec5"></span>uint32_t <code class="sig-name descname">zd_nbytes</code><a class="headerlink" href="#c.znd_report::zd_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Descriptor in ‘B’. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::zdext_nbytes">
+<span class="target" id="structznd__report_1a9cdeaffd396567f1c418fbce5dc57f96"></span>uint32_t <code class="sig-name descname">zdext_nbytes</code><a class="headerlink" href="#c.znd_report::zdext_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Descriptor Extension in ‘B’. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::zslba">
+<span class="target" id="structznd__report_1ad1e5661f7006db2c12d0952b1bcb3330"></span>uint64_t <code class="sig-name descname">zslba</code><a class="headerlink" href="#c.znd_report::zslba" title="Permalink to this definition">¶</a></dt>
+<dd><p>First Zone in the report. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::zelba">
+<span class="target" id="structznd__report_1aa0030973b829fd6d0217d3a7d712c5e3"></span>uint64_t <code class="sig-name descname">zelba</code><a class="headerlink" href="#c.znd_report::zelba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Last Zone in the report. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::nentries">
+<span class="target" id="structznd__report_1a0d4fa8bcb403d791cb37a39f0c30e0cf"></span>uint32_t <code class="sig-name descname">nentries</code><a class="headerlink" href="#c.znd_report::nentries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nr. of entries in report. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::extended">
+<span class="target" id="structznd__report_1a878105d0c7d3d4b55e1786218d0b7c03"></span>uint8_t <code class="sig-name descname">extended</code><a class="headerlink" href="#c.znd_report::extended" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this report has extensions. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__report_1adf1061241009ac309ac72612c298eef1"></span><code class="sig-name descname">uint8_t znd_report::_pad[3]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::zrent_nbytes">
+<span class="target" id="structznd__report_1a5fc573abd14d6b59d0e0367d8694c0f6"></span>uint64_t <code class="sig-name descname">zrent_nbytes</code><a class="headerlink" href="#c.znd_report::zrent_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zone Report Entry Size in ‘B’. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::report_nbytes">
+<span class="target" id="structznd__report_1a95edc3c200a26fbd84111769c1b0c67a"></span>uint64_t <code class="sig-name descname">report_nbytes</code><a class="headerlink" href="#c.znd_report::report_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of this struct in bytes. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.znd_report::entries_nbytes">
+<span class="target" id="structznd__report_1a476a7ed6575a680c1ddcaebdbc472635"></span>uint64_t <code class="sig-name descname">entries_nbytes</code><a class="headerlink" href="#c.znd_report::entries_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the entries in bytes. </p>
+<p>Array of structs, column format: <code class="docutils literal notranslate"><span class="pre">descr[,descr_ext]</span></code> </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__report_1a1b4f7a6c91e542b6508fd3889fdf796e"></span><code class="sig-name descname">uint8_t znd_report::storage[]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-rprt-hdr">
+<span id="sec-c-apis-znd-struct-znd-rprt-hdr"></span><h3>znd_rprt_hdr<a class="headerlink" href="#znd-rprt-hdr" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.znd_rprt_hdr">
+<span class="target" id="structznd__rprt__hdr"></span><em class="property">struct </em><code class="sig-name descname">znd_rprt_hdr</code><a class="headerlink" href="#c.znd_rprt_hdr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Report Zones Data Structure header. </p>
+<p>The first 16 bytes of the two Report Zoned data structures</p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2.2.1, figure TBDZMRRZ </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.2.2.2, figure TBDZMRERZ </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.znd_rprt_hdr::nzones">
+<span class="target" id="structznd__rprt__hdr_1a8b282533ddd587f030f0534859ba0263"></span>uint64_t <code class="sig-name descname">nzones</code><a class="headerlink" href="#c.znd_rprt_hdr::nzones" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of zones in namespace when receiving with partial=0 Number of zones in the data-buffer, when receiving with partial=1. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structznd__rprt__hdr_1adb7c5facf54ba8e2fb32dec13f76b56a"></span><code class="sig-name descname">uint8_t znd_rprt_hdr::rsvd[56]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="functions">
+<span id="sec-c-apis-znd-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="znd-changes-fpr">
+<span id="sec-c-apis-znd-func-znd-changes-fpr"></span><h3>znd_changes_fpr<a class="headerlink" href="#znd-changes-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_changes_fpr">
+<span class="target" id="libznd_8h_1ade407c6952978b5c7177e2d29c53cb5e"></span>int <code class="sig-name descname">znd_changes_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.znd_changes" title="znd_changes">znd_changes</a>  *<em> changes</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_changes_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__changes"><span class="std std-ref">znd_changes</span></a> to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">changes</span></code>: pointer to subject to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-changes-from-dev">
+<span id="sec-c-apis-znd-func-znd-changes-from-dev"></span><h3>znd_changes_from_dev<a class="headerlink" href="#znd-changes-from-dev" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_changes_from_dev">
+<span class="target" id="libznd_8h_1aefc89f63c2b32d600658e2770310ac9e"></span>struct <a class="reference internal" href="#c.znd_changes" title="znd_changes">znd_changes</a>* <code class="sig-name descname">znd_changes_from_dev</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_changes_from_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of changes since the last report was retrieved. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>Invoking this function clears the changed log</p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>Caller is responsible for de-allocating the returned structure using <code class="docutils literal notranslate"><span class="pre">xnvme_buf_free</span></code></p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme.html#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-changes-pr">
+<span id="sec-c-apis-znd-func-znd-changes-pr"></span><h3>znd_changes_pr<a class="headerlink" href="#znd-changes-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_changes_pr">
+<span class="target" id="libznd_8h_1a1f25b7ecc9baa7fa28f00b22a54bdf86"></span>int <code class="sig-name descname">znd_changes_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.znd_changes" title="znd_changes">znd_changes</a>  *<em> changes</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_changes_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty-printer of <a class="reference internal" href="#structznd__changes"><span class="std std-ref">znd_changes</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">changes</span></code>: pointer to subject to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="sec-c-apis-znd-func-znd-cmd-append">
+<span id="id1"></span><h3>znd_cmd_append<a class="headerlink" href="#sec-c-apis-znd-func-znd-cmd-append" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<span class="target" id="libznd_8h_1ad599407fc87aa622018ff71cfbdd68a4"></span>int <code class="sig-name descname">znd_cmd_append</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint32_t<em> nsid</em>, uint64_t<em> zslba</em>, uint16_t<em> nlb</em>, const void *<em> dbuf</em>, const void *<em> mbuf</em>, int<em> opts</em>, struct  <a class="reference internal" href="xnvme.html#c.xnvme_req" title="xnvme_req">xnvme_req</a>  *<em> ret</em><span class="sig-paren">)</span></dt>
+<dd><p>Submit, and optionally wait for completion of, a Zone Append. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme.html#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace Identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zslba</span></code>: First LBA of the Zone to append to </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nlb</span></code>: number of LBAs, this is zero-based value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: pointer to data payload </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mbuf</span></code>: pointer to meta payload </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: command-options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1aa9df7fa0f59bfcc26076f174670d0e2d"><span class="std std-ref">xnvme_cmd_opts</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ret</span></code>: Pointer to structure for async. context and NVMe completion</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="sec-c-apis-znd-func-znd-cmd-mgmt-recv">
+<span id="id2"></span><h3>znd_cmd_mgmt_recv<a class="headerlink" href="#sec-c-apis-znd-func-znd-cmd-mgmt-recv" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<span class="target" id="libznd_8h_1a38d075a81ba8efeb5aa762c23b923eda"></span>int <code class="sig-name descname">znd_cmd_mgmt_recv</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint32_t<em> nsid</em>, uint64_t<em> slba</em>, enum  <a class="reference internal" href="#c.znd_recv_action" title="znd_recv_action">znd_recv_action</a><em> action</em>, enum  <a class="reference internal" href="#c.znd_recv_action_sf" title="znd_recv_action_sf">znd_recv_action_sf</a><em> sf</em>, uint8_t<em> partial</em>, void *<em> dbuf</em>, uint32_t<em> dbuf_nbytes</em>, int<em> opts</em>, struct  <a class="reference internal" href="xnvme.html#c.xnvme_req" title="xnvme_req">xnvme_req</a>  *<em> ret</em><span class="sig-paren">)</span></dt>
+<dd><p>Submit, and optionally wait for completion of, a Zone Management Receive. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>When <code class="docutils literal notranslate"><span class="pre">opts</span> <span class="pre">|</span> <span class="pre">CMD_MODE_SYNC</span></code> then <code class="docutils literal notranslate"><span class="pre">ret</span></code> is filled with completion entry upon return</p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme.html#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace Identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slba</span></code>: Start LBA of the Zone to receive for </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">action</span></code>: the <a class="reference internal" href="#libznd_8h_1aed78a6c8f2edef629f8adacf026a8994"><span class="std std-ref">znd_recv_action</span></a> to perform </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sf</span></code>: the <a class="reference internal" href="#libznd_8h_1a2420bb972046b9c04de7a340abe4f80b"><span class="std std-ref">znd_recv_action_sf</span></a> option </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">partial</span></code>: partial request </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: pointer to data payload </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf_nbytes</span></code>: pointer to meta payload </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: command-options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1aa9df7fa0f59bfcc26076f174670d0e2d"><span class="std std-ref">xnvme_cmd_opts</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ret</span></code>: Pointer to structure for async. context and NVMe completion</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="sec-c-apis-znd-func-znd-cmd-mgmt-send">
+<span id="id3"></span><h3>znd_cmd_mgmt_send<a class="headerlink" href="#sec-c-apis-znd-func-znd-cmd-mgmt-send" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<span class="target" id="libznd_8h_1a115d6e5932e3f9a407190e3add0266a2"></span>int <code class="sig-name descname">znd_cmd_mgmt_send</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint32_t<em> nsid</em>, uint64_t<em> zslba</em>, enum  <a class="reference internal" href="#c.znd_send_action" title="znd_send_action">znd_send_action</a><em> action</em>, enum  <a class="reference internal" href="#c.znd_send_action_sf" title="znd_send_action_sf">znd_send_action_sf</a><em> sf</em>, void *<em> dbuf</em>, int<em> opts</em>, struct  <a class="reference internal" href="xnvme.html#c.xnvme_req" title="xnvme_req">xnvme_req</a>  *<em> ret</em><span class="sig-paren">)</span></dt>
+<dd><p>Submit, and optionally wait for completion of, a Zone Management Send. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme.html#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace Identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zslba</span></code>: Start LBA of the Zone to manage </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">action</span></code>: Management action to perform with zone at zslba </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sf</span></code>: the <a class="reference internal" href="#libznd_8h_1aca0371a24b7db1a09236bcc39e7936b2"><span class="std std-ref">znd_send_action_sf</span></a> option </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: For action=ZND_SEND_DESCRIPTOR provide buffer </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: command-options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1aa9df7fa0f59bfcc26076f174670d0e2d"><span class="std std-ref">xnvme_cmd_opts</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ret</span></code>: Pointer to structure for async. context and NVMe completion</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-descr-fpr">
+<span id="sec-c-apis-znd-func-znd-descr-fpr"></span><h3>znd_descr_fpr<a class="headerlink" href="#znd-descr-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_descr_fpr">
+<span class="target" id="libznd_8h_1a278ecb20bd8184613c8767359730df6b"></span>int <code class="sig-name descname">znd_descr_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.znd_descr" title="znd_descr">znd_descr</a>  *<em> descr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_descr_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__descr"><span class="std std-ref">znd_descr</span></a> to the given stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">descr</span></code>: the struct to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-descr-from-dev">
+<span id="sec-c-apis-znd-func-znd-descr-from-dev"></span><h3>znd_descr_from_dev<a class="headerlink" href="#znd-descr-from-dev" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_descr_from_dev">
+<span class="target" id="libznd_8h_1a1c0104b22a51d39b613cbaf53de90405"></span>int <code class="sig-name descname">znd_descr_from_dev</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint64_t<em> slba</em>, struct  <a class="reference internal" href="#c.znd_descr" title="znd_descr">znd_descr</a>  *<em> zdescr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_descr_from_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills ‘zdescr’ with the Zone on the given ‘dev’ that starts at ‘slba’. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On succes, 0 is returned and ‘zdescr’ filled with matching Zone Descriptor. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned to indicate the error, and the content of given ‘zdescr’ is undefined. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: The device to receive descriptors from </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slba</span></code>: The Zone Start LBA </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zdescr</span></code>: Pointer to the descriptor the function should fill</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-descr-from-dev-in-state">
+<span id="sec-c-apis-znd-func-znd-descr-from-dev-in-state"></span><h3>znd_descr_from_dev_in_state<a class="headerlink" href="#znd-descr-from-dev-in-state" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_descr_from_dev_in_state">
+<span class="target" id="libznd_8h_1ad041972cf62cdaf48ae21701009ff40f"></span>int <code class="sig-name descname">znd_descr_from_dev_in_state</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, enum  <a class="reference internal" href="#c.znd_state" title="znd_state">znd_state</a><em> state</em>, struct  <a class="reference internal" href="#c.znd_descr" title="znd_descr">znd_descr</a>  *<em> zdescr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_descr_from_dev_in_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills ‘zdescr’ with the first Zone on the given ‘dev’ in the given ‘state’. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On succes, 0 is returned and ‘zdescr’ filled with matching Zone Descriptor. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned to indicate the error, and the content of given ‘zdescr’ is undefined. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: The device to receive descriptors from </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: The state the Zone should be in </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zdescr</span></code>: Pointer to the descriptor the function should fill</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-descr-pr">
+<span id="sec-c-apis-znd-func-znd-descr-pr"></span><h3>znd_descr_pr<a class="headerlink" href="#znd-descr-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_descr_pr">
+<span class="target" id="libznd_8h_1a9a3dec82c38f4bdc103e72db43b32a5d"></span>int <code class="sig-name descname">znd_descr_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.znd_descr" title="znd_descr">znd_descr</a>  *<em> descr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_descr_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__descr"><span class="std std-ref">znd_descr</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">descr</span></code>: the structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-ctrlr-fpr">
+<span id="sec-c-apis-znd-func-znd-idfy-ctrlr-fpr"></span><h3>znd_idfy_ctrlr_fpr<a class="headerlink" href="#znd-idfy-ctrlr-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_idfy_ctrlr_fpr">
+<span class="target" id="libznd_8h_1afc028509484943df92d63269240952fd"></span>int <code class="sig-name descname">znd_idfy_ctrlr_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, struct  <a class="reference internal" href="#c.znd_idfy_ctrlr" title="znd_idfy_ctrlr">znd_idfy_ctrlr</a>  *<em> zctrlr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_idfy_ctrlr_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__idfy__ctrlr"><span class="std std-ref">znd_idfy_ctrlr</span></a> to the given output stream. </p>
+<p>Only fields specific to Zoned Namespaces are printed by this function</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zctrlr</span></code>: pointer to the structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-ctrlr-pr">
+<span id="sec-c-apis-znd-func-znd-idfy-ctrlr-pr"></span><h3>znd_idfy_ctrlr_pr<a class="headerlink" href="#znd-idfy-ctrlr-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_idfy_ctrlr_pr">
+<span class="target" id="libznd_8h_1a2f76e8922bc54e400957c762a4137972"></span>int <code class="sig-name descname">znd_idfy_ctrlr_pr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.znd_idfy_ctrlr" title="znd_idfy_ctrlr">znd_idfy_ctrlr</a>  *<em> zctrlr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_idfy_ctrlr_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__idfy__ctrlr"><span class="std std-ref">znd_idfy_ctrlr</span></a> to the given output stream. </p>
+<p>Only fields specific to Zoned Namespaces are printed by this function</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">zctrlr</span></code>: pointer to the structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-lbafe-fpr">
+<span id="sec-c-apis-znd-func-znd-idfy-lbafe-fpr"></span><h3>znd_idfy_lbafe_fpr<a class="headerlink" href="#znd-idfy-lbafe-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_idfy_lbafe_fpr">
+<span class="target" id="libznd_8h_1abd6716ba9992424d3d95475c8d9d348e"></span>int <code class="sig-name descname">znd_idfy_lbafe_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, struct  <a class="reference internal" href="#c.znd_idfy_lbafe" title="znd_idfy_lbafe">znd_idfy_lbafe</a>  *<em> zonef</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_idfy_lbafe_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__idfy__lbafe"><span class="std std-ref">znd_idfy_lbafe</span></a> to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zonef</span></code>: pointer to structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-ns-fpr">
+<span id="sec-c-apis-znd-func-znd-idfy-ns-fpr"></span><h3>znd_idfy_ns_fpr<a class="headerlink" href="#znd-idfy-ns-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_idfy_ns_fpr">
+<span class="target" id="libznd_8h_1a324d083df0bfd3f185029d49b39ae0f2"></span>int <code class="sig-name descname">znd_idfy_ns_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, struct  <a class="reference internal" href="#c.znd_idfy_ns" title="znd_idfy_ns">znd_idfy_ns</a>  *<em> zns</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_idfy_ns_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__idfy__ns"><span class="std std-ref">znd_idfy_ns</span></a> to the given output stream. </p>
+<p>Only fields specific to Zoned Namespaces are printed by this function</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zns</span></code>: pointer to the structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-idfy-ns-pr">
+<span id="sec-c-apis-znd-func-znd-idfy-ns-pr"></span><h3>znd_idfy_ns_pr<a class="headerlink" href="#znd-idfy-ns-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_idfy_ns_pr">
+<span class="target" id="libznd_8h_1adf7b5e18c133d2f5cfdd8d7cd3d97d1c"></span>int <code class="sig-name descname">znd_idfy_ns_pr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.znd_idfy_ns" title="znd_idfy_ns">znd_idfy_ns</a>  *<em> zns</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_idfy_ns_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__idfy__ns"><span class="std std-ref">znd_idfy_ns</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">zns</span></code>: pointer to <a class="reference internal" href="#structznd__idfy__ns"><span class="std std-ref">znd_idfy_ns</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-recv-action-sf-str">
+<span id="sec-c-apis-znd-func-znd-recv-action-sf-str"></span><h3>znd_recv_action_sf_str<a class="headerlink" href="#znd-recv-action-sf-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_recv_action_sf_str">
+<span class="target" id="libznd_8h_1a1f6f53dfddb7e42865a51783abb58c45"></span>const char* <code class="sig-name descname">znd_recv_action_sf_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_recv_action_sf" title="znd_recv_action_sf">znd_recv_action_sf</a><em> sf</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_recv_action_sf_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1a2420bb972046b9c04de7a340abe4f80b"><span class="std std-ref">znd_recv_action_sf</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_RECV_SF_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sf</span></code>: The send action specific field value to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-recv-action-str">
+<span id="sec-c-apis-znd-func-znd-recv-action-str"></span><h3>znd_recv_action_str<a class="headerlink" href="#znd-recv-action-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_recv_action_str">
+<span class="target" id="libznd_8h_1a06950edd6b4b3e4d857c18aeb8460a13"></span>const char* <code class="sig-name descname">znd_recv_action_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_recv_action" title="znd_recv_action">znd_recv_action</a><em> action</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_recv_action_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1aed78a6c8f2edef629f8adacf026a8994"><span class="std std-ref">znd_recv_action</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_RECV_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">action</span></code>: The receive action to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-report-find-arbitrary">
+<span id="sec-c-apis-znd-func-znd-report-find-arbitrary"></span><h3>znd_report_find_arbitrary<a class="headerlink" href="#znd-report-find-arbitrary" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_report_find_arbitrary">
+<span class="target" id="libznd_8h_1ae388e8f9f8df72a9b32537102979ec8f"></span>int <code class="sig-name descname">znd_report_find_arbitrary</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.znd_report" title="znd_report">znd_report</a>  *<em> report</em>, enum  <a class="reference internal" href="#c.znd_state" title="znd_state">znd_state</a><em> state</em>, uint64_t *<em> zlba</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_report_find_arbitrary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan the ‘report’ for a zone in the given ‘state’ and store it in ‘zlba’. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">report</span></code>: The report to scan </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: The zone-state to scan for </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zlba</span></code>: Pointer to store zlba to </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: Optional seed random-number generator, when 0 then time(NULL) is used</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-report-fpr">
+<span id="sec-c-apis-znd-func-znd-report-fpr"></span><h3>znd_report_fpr<a class="headerlink" href="#znd-report-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_report_fpr">
+<span class="target" id="libznd_8h_1af154ae7825d16a0449f3b39d03f8b3ea"></span>int <code class="sig-name descname">znd_report_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.znd_report" title="znd_report">znd_report</a>  *<em> report</em>, int<em> flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_report_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__report"><span class="std std-ref">znd_report</span></a> to the given stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">report</span></code>: pointer to the the <a class="reference internal" href="#structznd__report"><span class="std std-ref">znd_report</span></a> to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flags</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-report-from-dev">
+<span id="sec-c-apis-znd-func-znd-report-from-dev"></span><h3>znd_report_from_dev<a class="headerlink" href="#znd-report-from-dev" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_report_from_dev">
+<span class="target" id="libznd_8h_1a83977af5c95534f4945662410cfc88df"></span>struct <a class="reference internal" href="#c.znd_report" title="znd_report">znd_report</a>* <code class="sig-name descname">znd_report_from_dev</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint64_t<em> slba</em>, size_t<em> limit</em>, uint8_t<em> extended</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_report_from_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves a Zone Report from the namespace associated with the given <code class="docutils literal notranslate"><span class="pre">dev</span></code>, reporting starting at the given <code class="docutils literal notranslate"><span class="pre">slba</span></code>, and limited to <code class="docutils literal notranslate"><span class="pre">limit</span></code> entries. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>Caller is responsible for de-allocating the returned structure using <a class="reference internal" href="xnvme.html#libxnvme_8h_1a703c51315a407f2b57fc0f69dcdcfa96"><span class="std std-ref">xnvme_buf_virt_free()</span></a></p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>On success, pointer to zoned report. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme.html#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slba</span></code>: LBA of the first zone in the report </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">limit</span></code>: when 0 then provide a report for all zones start from slba. Otherwise, provide a report for [slba, slba+limit] </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extended</span></code>: When 0, the “regular” report is provided. When 1, then the Extended Report is provided, if supported by device.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-report-pr">
+<span id="sec-c-apis-znd-func-znd-report-pr"></span><h3>znd_report_pr<a class="headerlink" href="#znd-report-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_report_pr">
+<span class="target" id="libznd_8h_1a3300158c4b3bf2c9d9d112b75fe93516"></span>int <code class="sig-name descname">znd_report_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.znd_report" title="znd_report">znd_report</a>  *<em> report</em>, int<em> flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_report_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structznd__report"><span class="std std-ref">znd_report</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">report</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flags</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-rprt-hdr-fpr">
+<span id="sec-c-apis-znd-func-znd-rprt-hdr-fpr"></span><h3>znd_rprt_hdr_fpr<a class="headerlink" href="#znd-rprt-hdr-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_rprt_hdr_fpr">
+<span class="target" id="libznd_8h_1a567b1e22a1663106a2e43baba3124baa"></span>int <code class="sig-name descname">znd_rprt_hdr_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.znd_rprt_hdr" title="znd_rprt_hdr">znd_rprt_hdr</a>  *<em> hdr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_rprt_hdr_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the given <a class="reference internal" href="#structznd__rprt__hdr"><span class="std std-ref">znd_rprt_hdr</span></a> to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hdr</span></code>: the struct to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-rprt-hdr-pr">
+<span id="sec-c-apis-znd-func-znd-rprt-hdr-pr"></span><h3>znd_rprt_hdr_pr<a class="headerlink" href="#znd-rprt-hdr-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_rprt_hdr_pr">
+<span class="target" id="libznd_8h_1a85dc514c3ae669fe734e1ad6611b6845"></span>int <code class="sig-name descname">znd_rprt_hdr_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.znd_rprt_hdr" title="znd_rprt_hdr">znd_rprt_hdr</a>  *<em> hdr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_rprt_hdr_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the given <a class="reference internal" href="#structznd__rprt__hdr"><span class="std std-ref">znd_rprt_hdr</span></a> to the stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hdr</span></code>: the struct to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-send-action-sf-str">
+<span id="sec-c-apis-znd-func-znd-send-action-sf-str"></span><h3>znd_send_action_sf_str<a class="headerlink" href="#znd-send-action-sf-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_send_action_sf_str">
+<span class="target" id="libznd_8h_1a117affcdc8ca45bc650f7540f49ef31b"></span>const char* <code class="sig-name descname">znd_send_action_sf_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_send_action_sf" title="znd_send_action_sf">znd_send_action_sf</a><em> sf</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_send_action_sf_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1aca0371a24b7db1a09236bcc39e7936b2"><span class="std std-ref">znd_send_action_sf</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_SEND_SF_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sf</span></code>: The send action specific field value to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-send-action-str">
+<span id="sec-c-apis-znd-func-znd-send-action-str"></span><h3>znd_send_action_str<a class="headerlink" href="#znd-send-action-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_send_action_str">
+<span class="target" id="libznd_8h_1a63d0a5255bce33bfaf38ae2043c0fea7"></span>const char* <code class="sig-name descname">znd_send_action_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_send_action" title="znd_send_action">znd_send_action</a><em> action</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_send_action_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1ae8d2f06f8d05b7efca6ba849b85c3a02"><span class="std std-ref">znd_send_action</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_SEND_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">action</span></code>: The action to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-stat-dev">
+<span id="sec-c-apis-znd-func-znd-stat-dev"></span><h3>znd_stat_dev<a class="headerlink" href="#znd-stat-dev" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_stat_dev">
+<span class="target" id="libznd_8h_1a7d7a58dc61b6166c6250b7fa6ca05b4d"></span>int <code class="sig-name descname">znd_stat_dev</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, enum  <a class="reference internal" href="#c.znd_recv_action_sf" title="znd_recv_action_sf">znd_recv_action_sf</a><em> sfield</em>, uint64_t *<em> nzones</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_stat_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask the given device for how many zones in the given state via receive-action. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On Success, 0 is returned and ‘nzones’ filled with stat. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned to indicate the error. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: The device to stat </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sfield</span></code>: Receive stats of the given <a class="reference internal" href="#libznd_8h_1a2420bb972046b9c04de7a340abe4f80b"><span class="std std-ref">znd_recv_action_sf</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nzones</span></code>: Pointer to store result in</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-state-str">
+<span id="sec-c-apis-znd-func-znd-state-str"></span><h3>znd_state_str<a class="headerlink" href="#znd-state-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_state_str">
+<span class="target" id="libznd_8h_1a505d229160b6cf9c106a18f8276a7bc1"></span>const char* <code class="sig-name descname">znd_state_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_state" title="znd_state">znd_state</a><em> state</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_state_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1a54f5dce05a205b9812da3961cd943fc5"><span class="std std-ref">znd_state</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_STATE_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: the enum value produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-status-code-str">
+<span id="sec-c-apis-znd-func-znd-status-code-str"></span><h3>znd_status_code_str<a class="headerlink" href="#znd-status-code-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_status_code_str">
+<span class="target" id="libznd_8h_1a96de2362ae4b3029643dc663d8f87e2c"></span>const char* <code class="sig-name descname">znd_status_code_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_status_code" title="znd_status_code">znd_status_code</a><em> sc</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_status_code_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1ad4b4e8bc685315369f37a13ffbfd1567"><span class="std std-ref">znd_status_code</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_SC_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sc</span></code>: the enum value to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="znd-type-str">
+<span id="sec-c-apis-znd-func-znd-type-str"></span><h3>znd_type_str<a class="headerlink" href="#znd-type-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.znd_type_str">
+<span class="target" id="libznd_8h_1a28f2a1bc22406bc40282b95eeca6168d"></span>const char* <code class="sig-name descname">znd_type_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.znd_type" title="znd_type">znd_type</a><em> zt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.znd_type_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libznd_8h_1af799b0502da89e64210c628aa857ced9"><span class="std std-ref">znd_type</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “ZND_TYPE_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">zt</span></code>: the <a class="reference internal" href="#libznd_8h_1af799b0502da89e64210c628aa857ced9"><span class="std std-ref">znd_type</span></a> to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="znd_headers.html" class="btn btn-neutral float-right" title="znd: headers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="lblk_headers.html" class="btn btn-neutral float-left" title="lblk: headers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

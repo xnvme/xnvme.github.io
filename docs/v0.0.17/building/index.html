@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building xNVMe from source &mdash; xNVMe 0.0.17 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="SPDK" href="../backends/xnvme_be_spdk/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.17
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building xNVMe from source</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#toolchain">Toolchain</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arch-linux-20200306">Arch Linux 20200306</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centos-7">CentOS 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-11-bullseye">Debian 11 (Bullseye)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-10-buster">Debian 10 (Buster)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-9-stretch">Debian 9 (Stretch)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freebsd-12">Freebsd 12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-20-04-focal">Ubuntu 20.04 (Focal)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-18-04-bionic">Ubuntu 18.04 (Bionic)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-16-04-xenial">Ubuntu 16.04 (Xenial)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alpine-linux-3-11-3">Alpine Linux 3.11.3</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#known-build-issues">Known Build Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-toolchain">Custom Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-compiling-for-arm-on-x86">Cross-compiling for ARM on x86</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Building xNVMe from source</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/building/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-xnvme-from-source">
+<span id="sec-building"></span><h1>Building xNVMe from source<a class="headerlink" href="#building-xnvme-from-source" title="Permalink to this headline">¶</a></h1>
+<p><strong>xNVMe</strong> builds and runs on Linux, FreeBSD, and Windows. The latter is not
+publicly supported, however, have a look at <a class="reference internal" href="#sec-building-windows"><span class="std std-ref">Windows</span></a> for
+more information.</p>
+<p>Retrieve the <strong>xNVMe</strong> repository from
+<a class="reference external" href="https://github.com/OpenMPDK/xNVMe">GitHUB</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the xNVMe repos</span>
+git clone https://github.com/OpenMPDK/xNVMe.git --recursive
+<span class="nb">cd</span> xnvme
+
+<span class="c1"># make: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+make
+
+<span class="c1"># make install: install via the apt package manager</span>
+sudo make install-deb
+
+<span class="c1"># make install: install in the &quot;usual&quot; manner</span>
+sudo make install
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The repository uses git-submodules, so make sure you are cloning with
+<code class="docutils literal notranslate"><span class="pre">--recursive</span></code>, if you overlooked that, then invoke <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span>
+<span class="pre">--init</span> <span class="pre">--recursive</span></code></p>
+</div>
+<p>If you want to change the build-configuration, then have a look at the
+following <a class="reference internal" href="#sec-building-config"><span class="std std-ref">Configuration</span></a>, if you are seeing build errors, then jump
+to the <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> section describing packages to install on
+different Linux distributions and on FreeBSD.</p>
+<p>There you will also find notes on customizing the toolchain and
+cross-compilation.</p>
+<div class="section" id="configuration">
+<span id="sec-building-config"></span><h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">configure</span></code> script is provided to configure the build of <strong>xNVMe</strong>. You can
+inspect configuration options by invoking:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Boolean options are enabled by prefixing <code class="docutils literal notranslate"><span class="pre">--enable-&lt;OPTION&gt;</span></code></p></li>
+<li><p>Boolean options are disabled by prefixing <code class="docutils literal notranslate"><span class="pre">--disable-&lt;OPTION&gt;</span></code></p></li>
+<li><p>A couple of examples:</p>
+<ul>
+<li><p>Enable debug with: <code class="docutils literal notranslate"><span class="pre">--enable-debug</span></code></p></li>
+<li><p>Disable the SPDK backend with: <code class="docutils literal notranslate"><span class="pre">--disable-be-spdk</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>The configure-script will enable backends relevant to the system
+platform determined by the environment variable <code class="docutils literal notranslate"><span class="pre">OSTYPE</span></code>.</p>
+<p>On Linux, the configure script enables the backends <code class="docutils literal notranslate"><span class="pre">be:lioc</span></code>, <code class="docutils literal notranslate"><span class="pre">be:liou</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">be:spdk</span></code>.
+On FreeBSD, the configure script enables the backends <code class="docutils literal notranslate"><span class="pre">be:fioc</span></code> and
+<code class="docutils literal notranslate"><span class="pre">be:spdk</span></code>.</p>
+<p><strong>xNVMe</strong> provides third-party libraries via submodules, it builds these and
+embeds them in the <strong>xNVMe</strong> static libraries and executables. If you want to
+link with your version of these libraries then you can overwrite the respective
+include and library paths. See <code class="docutils literal notranslate"><span class="pre">./configure</span> <span class="pre">--help</span></code> for details.</p>
+</div>
+<div class="section" id="toolchain">
+<span id="sec-building-toolchain"></span><h2>Toolchain<a class="headerlink" href="#toolchain" title="Permalink to this headline">¶</a></h2>
+<p>The toolchain (compiler, archiver, and linker) used for building <strong>xNVMe</strong>
+must support <strong>C11</strong>, <strong>pthreads</strong>:</p>
+<ul class="simple">
+<li><p>CMake (&gt;= 3.9, For <strong>xNVMe</strong>)</p></li>
+<li><p>glibc (&gt;= 2.28, for <strong>io_uring</strong>)</p></li>
+<li><p>libaio-dev (&gt;=0.3, For <strong>xNVMe</strong> and <strong>SPDK</strong>)</p></li>
+<li><p>libnuma-dev (&gt;=2, For <strong>SPDK</strong>)</p></li>
+<li><p>libssl-dev (&gt;=1.1, For <strong>SPDK</strong>)</p></li>
+<li><p>make (gmake)</p></li>
+<li><p>uuid-dev (&gt;=2.3, For <strong>SPDK</strong>)</p></li>
+</ul>
+<p>The preferred toolchain is <strong>gcc</strong> and the following sections describe how to
+install it and required libraries on FreeBSD and a set of popular Linux
+Distributions.</p>
+<p>If you which to use a different toolchain then see the
+<a class="reference internal" href="#sec-building-custom"><span class="std std-ref">Custom Toolchain</span></a>, on how to instrument the build-system using a
+compiler other than <strong>gcc</strong>.</p>
+<div class="section" id="arch-linux-20200306">
+<h3>Arch Linux 20200306<a class="headerlink" href="#arch-linux-20200306" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">pacman</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>base-devel
+cmake
+cunit
+gcc
+git
+libaio
+libutil-linux
+make
+ncurses
+numactl
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via pacman</span>
+pacman -Syyu --noconfirm
+pacman -S --noconfirm <span class="k">$(</span>cat scripts/pkgs/arch-20200306.txt<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="centos-7">
+<h3>CentOS 7<a class="headerlink" href="#centos-7" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">yum</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+git
+glibc-static
+libaio-devel
+libuuid-devel
+make
+nasm
+ncurses-devel
+numactl-devel
+openssl-devel
+patch
+wget
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Developer Tools</span>
+yum install -y centos-release-scl
+yum-config-manager --enable rhel-server-rhscl-7-rpms
+yum install -y devtoolset-8
+
+<span class="c1"># Source them in for usage before building xNVMe</span>
+<span class="nb">source</span> /opt/rh/devtoolset-8/enable
+
+<span class="c1"># Install packages via yum</span>
+yum install -y <span class="k">$(</span>cat scripts/pkgs/centos-7.txt<span class="k">)</span>
+
+<span class="c1"># Install CMake using installer from GitHUB</span>
+wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-Linux-x86_64.sh -O cmake.sh
+chmod +x cmake.sh
+./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-11-bullseye">
+<h3>Debian 11 (Bullseye)<a class="headerlink" href="#debian-11-bullseye" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via aptitude -- seems to handle dependencies better</span>
+aptitude -q -y -f install <span class="k">$(</span>cat scripts/pkgs/debian-11.txt<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-10-buster">
+<h3>Debian 10 (Buster)<a class="headerlink" href="#debian-10-buster" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/debian-10.txt<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-9-stretch">
+<h3>Debian 9 (Stretch)<a class="headerlink" href="#debian-9-stretch" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+uuid-dev
+wget
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/debian-9.txt<span class="k">)</span>
+
+<span class="c1"># Install CMake using installer from GitHUB</span>
+wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-Linux-x86_64.sh -O cmake.sh
+chmod +x cmake.sh
+./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
+</pre></div>
+</div>
+</div>
+<div class="section" id="freebsd-12">
+<h3>Freebsd 12<a class="headerlink" href="#freebsd-12" title="Permalink to this headline">¶</a></h3>
+<p>Ensure that you have kernel source in <code class="docutils literal notranslate"><span class="pre">/usr/src</span></code>, then install the following
+packages via <code class="docutils literal notranslate"><span class="pre">pkg</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+automake
+bash
+cmake
+cunit
+e2fsprogs-libuuid
+gmake
+nasm
+ncurses
+openssl
+python
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via pkg</span>
+pkg install -qy <span class="k">$(</span>cat scripts/pkgs/freebsd-12.txt<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-20-04-focal">
+<h3>Ubuntu 20.04 (Focal)<a class="headerlink" href="#ubuntu-20-04-focal" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+g++
+gcc
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/ubuntu-2004.txt<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-18-04-bionic">
+<h3>Ubuntu 18.04 (Bionic)<a class="headerlink" href="#ubuntu-18-04-bionic" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+g++
+gcc
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/ubuntu-1804.txt<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-16-04-xenial">
+<h3>Ubuntu 16.04 (Xenial)<a class="headerlink" href="#ubuntu-16-04-xenial" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+g++
+gcc
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+uuid-dev
+wget
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat scripts/pkgs/ubuntu-1604.txt<span class="k">)</span>
+
+<span class="c1"># Install CMake using installer from GitHUB</span>
+wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-Linux-x86_64.sh -O cmake.sh
+chmod +x cmake.sh
+./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
+</pre></div>
+</div>
+</div>
+<div class="section" id="alpine-linux-3-11-3">
+<h3>Alpine Linux 3.11.3<a class="headerlink" href="#alpine-linux-3-11-3" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apk</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash
+bsd-compat-headers
+build-base
+cmake
+coreutils
+gawk
+libexecinfo-dev
+linux-headers
+make
+musl-dev
+ncurses
+numactl-dev
+python3
+util-linux-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apk</span>
+<span class="c1">#apk update</span>
+apk add <span class="k">$(</span>cat scripts/pkgs/alpine-3.11.3.txt<span class="k">)</span>
+</pre></div>
+</div>
+<div class="section" id="known-build-issues">
+<h4>Known Build Issues<a class="headerlink" href="#known-build-issues" title="Permalink to this headline">¶</a></h4>
+<p>There are a couple of known issues when building <strong>xNVMe</strong> on Alpine Linux,
+these are due to issues with the musl standard library which is not entirely
+compatible with <strong>GLIBC</strong> / <strong>BSD</strong>.</p>
+<p>When building on Alpine with <code class="docutils literal notranslate"><span class="pre">./configure</span> <span class="pre">--enable-be-spdk</span></code>, currently fails
+with due to re-definition of <code class="docutils literal notranslate"><span class="pre">STAILQ_*</span></code> macros.</p>
+<p>And, enabling <strong>be:liou</strong>, <code class="docutils literal notranslate"><span class="pre">./configure</span> <span class="pre">--enable-be-liou</span></code>, currently fails
+with due to missing definition in <strong>musl</strong>, leading to this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>include/liburing.h:195:17: error: unknown type name &#39;loff_t&#39;; did you mean
+&#39;off_t&#39;?
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="custom-toolchain">
+<span id="sec-building-custom"></span><h3>Custom Toolchain<a class="headerlink" href="#custom-toolchain" title="Permalink to this headline">¶</a></h3>
+<p>To use a compiler other than <strong>gcc</strong>, then:</p>
+<ol class="arabic simple">
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">CC</span></code> and <code class="docutils literal notranslate"><span class="pre">CXX</span></code> environment variable for the <code class="docutils literal notranslate"><span class="pre">./configure</span></code> script</p></li>
+<li><p>Pass <code class="docutils literal notranslate"><span class="pre">CC</span></code>, and <code class="docutils literal notranslate"><span class="pre">CXX</span></code> as arguments to <code class="docutils literal notranslate"><span class="pre">make</span></code></p></li>
+</ol>
+<p>For example, compiling <strong>xNVMe</strong> on a system where the default compiler is not
+<strong>gcc</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">CXX</span><span class="o">=</span>g++ ./configure &lt;YOUR_OPTIONS_HERE&gt;
+make <span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">CXX</span><span class="o">=</span>g++
+make install <span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">CXX</span><span class="o">=</span>g++
+</pre></div>
+</div>
+<p>Recent versions of <strong>icc</strong>, <strong>clang</strong>, and <strong>pgi</strong> should at be able to satisfy
+the <strong>C11</strong> and <strong>pthreads</strong> requirements. However, it will most likely require
+a bit of fiddling.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>icc</strong> works well after you bought a license and installed it
+correctly. There is a free option with Intel System Suite 2019.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>pgi</strong> compiler has some issues linking with <strong>SPDK/DPDK</strong> due
+to unstable <strong>ABI</strong> for <strong>RTE</strong> it seems.</p>
+</div>
+<p>The path of least fiddling around is to just install the toolchain and
+libraries as described in the sections below.</p>
+</div>
+<div class="section" id="cross-compiling-for-arm-on-x86">
+<span id="sec-building-crosscompiling"></span><h3>Cross-compiling for ARM on x86<a class="headerlink" href="#cross-compiling-for-arm-on-x86" title="Permalink to this headline">¶</a></h3>
+<p>In case you do not have the build-tools available on your ARM target, then you
+can cross-compile g by parsing <code class="docutils literal notranslate"><span class="pre">CC</span></code> parameter to make e.g.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>aarch64-linux-gnu-gcc-9 ./configure &lt;config_options&gt;
+make <span class="nv">CC</span><span class="o">=</span>aarch64-linux-gnu-gcc-9
+</pre></div>
+</div>
+<p>Then transfer and unpack <code class="docutils literal notranslate"><span class="pre">xnvme0.tar.gz</span></code> from the <code class="docutils literal notranslate"><span class="pre">build</span></code> directory to your
+ARM machine.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is currently not supported with the SPDK backend</p>
+</div>
+</div>
+<div class="section" id="windows">
+<span id="sec-building-windows"></span><h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>Windows is not supported in public domain. However, if you want to roll your
+support into <strong>xNVMe</strong>, then you could follow the pointers below.</p>
+<p>C11 support is quite poor with most compilers on Windows except for Intel ICC
+and the GCC port <a class="reference external" href="http://tdm-gcc.tdragon.net/">TDM-GCC</a>.</p>
+<p>A backend implementation for Windows could utilize an IO path, sending
+read/write IO to the block device and then wrap all other NVMe commands around
+the NVMe driver IOCTL interface.</p>
+<p>Such as the one provided by the Open-Source NVMe Driver for Windows:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://svn.openfabrics.org/svnrepo/nvmewin/">https://svn.openfabrics.org/svnrepo/nvmewin/</a></p></li>
+</ul>
+<p>Or use the IOCTL interface of the built-in NVMe driver:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/fileio/working-with-nvme-devices">https://docs.microsoft.com/en-us/windows/win32/fileio/working-with-nvme-devices</a></p></li>
+</ul>
+<p>A bit of care has been taken in <strong>xNVMe</strong>, e.g. buffer-allocation, to support /
+run on Windows. So, you “only” have to worry about implementing the
+command-transport and async interface.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../backends/xnvme_be_spdk/index.html" class="btn btn-neutral float-left" title="SPDK" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
