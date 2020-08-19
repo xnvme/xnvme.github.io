@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Library Usage Notes &mdash; xNVMe 0.0.18 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="NVMe Introduction" href="nvme/index.html" />
+    <link rel="prev" title="Fabrics non-RDMA TCP transport setup on Linux" href="fabrics.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.18
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="fabrics.html">Fabrics non-RDMA TCP transport setup on Linux</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Library Usage Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#backends">Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-interfaces">Command Interfaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#return-values-and-status-codes">Return Values and Status Codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#asynchronous-interface">Asynchronous Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pretty-printing">Pretty-Printing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="nvme/index.html">NVMe Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Library Usage Notes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorial/library.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="library-usage-notes">
+<span id="sec-tutorials-library"></span><h1>Library Usage Notes<a class="headerlink" href="#library-usage-notes" title="Permalink to this headline">¶</a></h1>
+<p>Introducing how to use the <strong>xNVMe</strong> libraries and C APIs.</p>
+<div class="section" id="backends">
+<h2>Backends<a class="headerlink" href="#backends" title="Permalink to this headline">¶</a></h2>
+<p>…</p>
+</div>
+<div class="section" id="command-interfaces">
+<h2>Command Interfaces<a class="headerlink" href="#command-interfaces" title="Permalink to this headline">¶</a></h2>
+<p>…</p>
+</div>
+<div class="section" id="return-values-and-status-codes">
+<h2>Return Values and Status Codes<a class="headerlink" href="#return-values-and-status-codes" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions signal errors using the standard <code class="docutils literal notranslate"><span class="pre">errno</span></code>
+thread-local variable and a return value of <code class="docutils literal notranslate"><span class="pre">-1</span></code>. To gain more insights into
+what went wrong in a command, use the optional <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code> parameter that all
+<code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions take.  When supplied, the <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code> will contain
+the NVMe status code in the <code class="docutils literal notranslate"><span class="pre">status</span></code> field.</p>
+<p><strong>Note</strong> that while the <a class="reference internal" href="../backends/xnvme_be_spdk/index.html#sec-backends-spdk"><span class="std std-ref">spdk</span></a> backend has a
+one-to-one correspondence between what is in the <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code> and what is
+reported by the device, the <a class="reference internal" href="../backends/xnvme_be_lioc.html#sec-backends-lioc"><span class="std std-ref">Linux/IOCTL</span></a>,
+<a class="reference internal" href="../backends/xnvme_be_liou.html#sec-backends-liou"><span class="std std-ref">Linux/io_uring</span></a> backend will transform certain errors
+from the kernel into their NVMe equivalents.</p>
+<p>This is because certain <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls may return <code class="docutils literal notranslate"><span class="pre">-1</span></code> and <code class="docutils literal notranslate"><span class="pre">Invalid</span>
+<span class="pre">Argument</span></code> without actually sending a command to the device. To align the
+backends with each other, such an error wil be transformed into the NVMe
+equivalent if possible. For example, <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Argument</span></code> will be transformed
+into the NVMe status code <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Field</span> <span class="pre">in</span> <span class="pre">Command</span></code> and set that in the
+given <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code>.</p>
+<p>TODO: add references to the C API</p>
+</div>
+<div class="section" id="memory-management">
+<h2>Memory Management<a class="headerlink" href="#memory-management" title="Permalink to this headline">¶</a></h2>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> option <code class="docutils literal notranslate"><span class="pre">XNVME_CMD_SGL</span></code>, then use these functions
+to manage the Scather / Gather Lists.</p>
+</div>
+<div class="section" id="asynchronous-interface">
+<h2>Asynchronous Interface<a class="headerlink" href="#asynchronous-interface" title="Permalink to this headline">¶</a></h2>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> option <code class="docutils literal notranslate"><span class="pre">XNVME_CMD_ASYNC</span></code>, then use these
+functions to steer the asynchronous mechanics.</p>
+</div>
+<div class="section" id="pretty-printing">
+<h2>Pretty-Printing<a class="headerlink" href="#pretty-printing" title="Permalink to this headline">¶</a></h2>
+<p>Every structure has a pretty-printer function. Even the opaque ones, e.g.
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xnvme_dev</span></code> has the printer function <a class="reference internal" href="../capis/xnvme.html#c.xnvme_dev_pr" title="xnvme_dev_pr"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_pr()</span></code></a>.  By
+convention they are named the same as the structure plus a <cite>_pr</cite> postfix.</p>
+<p>The printers all take an <cite>opts</cite> parameter which controls how the structure
+should be printed, the current default is <a class="reference external" href="https://yaml.org/">YAML</a> representation.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="nvme/index.html" class="btn btn-neutral float-right" title="NVMe Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fabrics.html" class="btn btn-neutral float-left" title="Fabrics non-RDMA TCP transport setup on Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

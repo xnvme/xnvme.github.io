@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lblk &mdash; xNVMe 0.0.18 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="lblk: headers" href="lblk_headers.html" />
+    <link rel="prev" title="xnvme: headers" href="xnvme_headers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.18
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">C APIs</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_headers.html">xnvme: headers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lblk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-cmd-opc">lblk_cmd_opc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-status-code">lblk_status_code</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-cmd">lblk_cmd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-cmd-scopy">lblk_cmd_scopy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy">lblk_idfy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy-ctrlr">lblk_idfy_ctrlr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy-ns">lblk_idfy_ns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-source-range">lblk_source_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-source-range-entry">lblk_source_range_entry</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-cmd-opc-str">lblk_cmd_opc_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sec-c-apis-lblk-func-lblk-cmd-scopy">lblk_cmd_scopy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy-ctrlr-fpr">lblk_idfy_ctrlr_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy-ctrlr-pr">lblk_idfy_ctrlr_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy-ns-fpr">lblk_idfy_ns_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-idfy-ns-pr">lblk_idfy_ns_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-source-range-entry-fpr">lblk_source_range_entry_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-source-range-entry-pr">lblk_source_range_entry_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-source-range-fpr">lblk_source_range_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-source-range-pr">lblk_source_range_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lblk-status-code-str">lblk_status_code_str</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd.html">znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd_headers.html">znd: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec_headers.html">xnvmec: headers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">C APIs</a> &raquo;</li>
+        
+      <li>lblk</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/capis/lblk.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lblk">
+<span id="sec-c-apis-lblk"></span><h1>lblk<a class="headerlink" href="#lblk" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="enums">
+<span id="sec-c-apis-lblk-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lblk-cmd-opc">
+<span id="sec-c-apis-lblk-enum-lblk-cmd-opc"></span><h3>lblk_cmd_opc<a class="headerlink" href="#lblk-cmd-opc" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.lblk_cmd_opc">
+<span class="target" id="liblblk_8h_1a2132c0da99f742a51ff815b45fbd7e68"></span><code class="sig-name descname">lblk_cmd_opc</code><a class="headerlink" href="#c.lblk_cmd_opc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logical Block Command Set opcodes. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6, figure 346 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x19">
+<span class="target" id="liblblk_8h_1a2132c0da99f742a51ff815b45fbd7e68ad95bd9e66598db5fed7a46f0336c5d47"></span><code class="sig-name descname">0x19</code><a class="headerlink" href="#c.0x19" title="Permalink to this definition">¶</a></dt>
+<dd><p>LBLK_CMD_OPC_SCOPY. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-status-code">
+<span id="sec-c-apis-lblk-enum-lblk-status-code"></span><h3>lblk_status_code<a class="headerlink" href="#lblk-status-code" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.lblk_status_code">
+<span class="target" id="liblblk_8h_1a6d4d4695896f6cab0340a4fa393b4a3f"></span><code class="sig-name descname">lblk_status_code</code><a class="headerlink" href="#c.lblk_status_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command-set specific status codes related to Logical Block Namespaces. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.TBD.1, figure 355 </p>
+</dd>
+</dl>
+</p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x82">
+<span class="target" id="liblblk_8h_1a6d4d4695896f6cab0340a4fa393b4a3fa72d949ed0235a4776f1ed820cbc1b7c6"></span><code class="sig-name descname">0x82</code><a class="headerlink" href="#c.0x82" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy Command Specific Status Values. </p>
+<p>LBLK_SC_WRITE_TO_RONLY </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="structs">
+<span id="sec-c-apis-lblk-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lblk-cmd">
+<span id="sec-c-apis-lblk-struct-lblk-cmd"></span><h3>lblk_cmd<a class="headerlink" href="#lblk-cmd" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_cmd">
+<span class="target" id="structlblk__cmd"></span><em class="property">struct </em><code class="sig-name descname">lblk_cmd</code><a class="headerlink" href="#c.lblk_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.111">
+<span class="target" id="structlblk__cmd_1a153afbc9f3abbb0552a3105e75e268e8"></span>union <a class="reference internal" href="#c.lblk_cmd" title="lblk_cmd">lblk_cmd</a>::&#64;110 <a class="reference internal" href="#c.lblk_cmd" title="lblk_cmd">lblk_cmd</a>::&#64;<code class="sig-name descname">111</code><a class="headerlink" href="#c.111" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-cmd-scopy">
+<span id="sec-c-apis-lblk-struct-lblk-cmd-scopy"></span><h3>lblk_cmd_scopy<a class="headerlink" href="#lblk-cmd-scopy" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_cmd_scopy">
+<span class="target" id="structlblk__cmd__scopy"></span><em class="property">struct </em><code class="sig-name descname">lblk_cmd_scopy</code><a class="headerlink" href="#c.lblk_cmd_scopy" title="Permalink to this definition">¶</a></dt>
+<dd><p>NVMe Command Accessor for command with opcode LBLK_CMD_OPC_COPY. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__cmd__scopy_1aef76fc138f67ab0ae7ac66060122573f"></span><code class="sig-name descname">uint32_t lblk_cmd_scopy::cdw00_09[10]</code></dt>
+<dd><p>Command dword 0 to 9. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::sdlba">
+<span class="target" id="structlblk__cmd__scopy_1a5d8126bae90c7b99b763e9989b07512c"></span>uint64_t <code class="sig-name descname">sdlba</code><a class="headerlink" href="#c.lblk_cmd_scopy::sdlba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start Destination LBA. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::nr">
+<span class="target" id="structlblk__cmd__scopy_1a3d9ba4899c43d23ca546943101633b0d"></span>uint32_t <code class="sig-name descname">nr</code><a class="headerlink" href="#c.lblk_cmd_scopy::nr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of Ranges. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::rsvd1">
+<span class="target" id="structlblk__cmd__scopy_1a7f84640951a6512e6856984e2ac8145a"></span>uint32_t <code class="sig-name descname">rsvd1</code><a class="headerlink" href="#c.lblk_cmd_scopy::rsvd1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::prinfor">
+<span class="target" id="structlblk__cmd__scopy_1ac64d77d2dbf56cc4cbb412166a8b885d"></span>uint32_t <code class="sig-name descname">prinfor</code><a class="headerlink" href="#c.lblk_cmd_scopy::prinfor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protection Info. Field Read. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::df">
+<span class="target" id="structlblk__cmd__scopy_1a377f7e508e87f22b7515fd0d5be56ff3"></span>uint32_t <code class="sig-name descname">df</code><a class="headerlink" href="#c.lblk_cmd_scopy::df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Descriptor Format. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::dtype">
+<span class="target" id="structlblk__cmd__scopy_1a3be3f9e03cc72d3b947a3fcdab50eaa8"></span>uint32_t <code class="sig-name descname">dtype</code><a class="headerlink" href="#c.lblk_cmd_scopy::dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directive Type. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::rsvd2">
+<span class="target" id="structlblk__cmd__scopy_1a2ae9cf06d8711c5d241a86ff8d2b8897"></span>uint32_t <code class="sig-name descname">rsvd2</code><a class="headerlink" href="#c.lblk_cmd_scopy::rsvd2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::prinfow">
+<span class="target" id="structlblk__cmd__scopy_1a1bbf0c050aff35b607dff7a761f2e82d"></span>uint32_t <code class="sig-name descname">prinfow</code><a class="headerlink" href="#c.lblk_cmd_scopy::prinfow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protection Info. Field Write. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::fua">
+<span class="target" id="structlblk__cmd__scopy_1acd0db569f362ac092ff72a465c226c8e"></span>uint32_t <code class="sig-name descname">fua</code><a class="headerlink" href="#c.lblk_cmd_scopy::fua" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force Unit Access. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::lr">
+<span class="target" id="structlblk__cmd__scopy_1af696884f20dac646a0e9da6cdf596510"></span>uint32_t <code class="sig-name descname">lr</code><a class="headerlink" href="#c.lblk_cmd_scopy::lr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Limited Retry. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::rsvd3">
+<span class="target" id="structlblk__cmd__scopy_1aa7b25e56e97efd25fe0399e6e893933b"></span>uint32_t <code class="sig-name descname">rsvd3</code><a class="headerlink" href="#c.lblk_cmd_scopy::rsvd3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::dspec">
+<span class="target" id="structlblk__cmd__scopy_1a568161ddb714be95b0a20bd2c6b1fee3"></span>uint32_t <code class="sig-name descname">dspec</code><a class="headerlink" href="#c.lblk_cmd_scopy::dspec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directive Specific. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::ilbrt">
+<span class="target" id="structlblk__cmd__scopy_1a48c1f8b1b2a6f3dd98c49580aedb250d"></span>uint32_t <code class="sig-name descname">ilbrt</code><a class="headerlink" href="#c.lblk_cmd_scopy::ilbrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial Logical Block Ref. Tag. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::lbat">
+<span class="target" id="structlblk__cmd__scopy_1ab710b171f1b00b560e3b474886b98bae"></span>uint32_t <code class="sig-name descname">lbat</code><a class="headerlink" href="#c.lblk_cmd_scopy::lbat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logical Block App. Tag. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_cmd_scopy::lbatm">
+<span class="target" id="structlblk__cmd__scopy_1a863acc2958679449b13864fa250f60ac"></span>uint32_t <code class="sig-name descname">lbatm</code><a class="headerlink" href="#c.lblk_cmd_scopy::lbatm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logical Block App. Tag Mask. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy">
+<span id="sec-c-apis-lblk-struct-lblk-idfy"></span><h3>lblk_idfy<a class="headerlink" href="#lblk-idfy" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_idfy">
+<span class="target" id="structlblk__idfy"></span><em class="property">struct </em><code class="sig-name descname">lblk_idfy</code><a class="headerlink" href="#c.lblk_idfy" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.119">
+<span class="target" id="structlblk__idfy_1ae7e7dc64cf5654a2f1f07c5cac65e7fa"></span>union <a class="reference internal" href="#c.lblk_idfy" title="lblk_idfy">lblk_idfy</a>::&#64;118 <a class="reference internal" href="#c.lblk_idfy" title="lblk_idfy">lblk_idfy</a>::&#64;<code class="sig-name descname">119</code><a class="headerlink" href="#c.119" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy-ctrlr">
+<span id="sec-c-apis-lblk-struct-lblk-idfy-ctrlr"></span><h3>lblk_idfy_ctrlr<a class="headerlink" href="#lblk-idfy-ctrlr" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_idfy_ctrlr">
+<span class="target" id="structlblk__idfy__ctrlr"></span><em class="property">struct </em><code class="sig-name descname">lblk_idfy_ctrlr</code><a class="headerlink" href="#c.lblk_idfy_ctrlr" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__idfy__ctrlr_1a86c92520f50106ec9d6f12d6eb97d904"></span><code class="sig-name descname">uint8_t lblk_idfy_ctrlr::byte0_519[520]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_idfy_ctrlr::oncs">
+<span class="target" id="structlblk__idfy__ctrlr_1a45f890cddfc897bf175bc9485d267a50"></span>union <a class="reference internal" href="#c.lblk_idfy_ctrlr" title="lblk_idfy_ctrlr">lblk_idfy_ctrlr</a>::&#64;112  <code class="sig-name descname">oncs</code><a class="headerlink" href="#c.lblk_idfy_ctrlr::oncs" title="Permalink to this definition">¶</a></dt>
+<dd><p>optional nvm command support </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__idfy__ctrlr_1a5516479a3bc77ef01f4a380f07a8ec30"></span><code class="sig-name descname">uint8_t lblk_idfy_ctrlr::byte522_543[22]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_idfy_ctrlr::ocfs">
+<span class="target" id="structlblk__idfy__ctrlr_1a632566ae11f92fd1d67d347d1d346837"></span>union <a class="reference internal" href="#c.lblk_idfy_ctrlr" title="lblk_idfy_ctrlr">lblk_idfy_ctrlr</a>::&#64;113  <code class="sig-name descname">ocfs</code><a class="headerlink" href="#c.lblk_idfy_ctrlr::ocfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional Copy Format Supported. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__idfy__ctrlr_1a8fbb18978ac8c6404963e2e8850b9fcf"></span><code class="sig-name descname">uint8_t lblk_idfy_ctrlr::byte546_4095[3550]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy-ns">
+<span id="sec-c-apis-lblk-struct-lblk-idfy-ns"></span><h3>lblk_idfy_ns<a class="headerlink" href="#lblk-idfy-ns" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_idfy_ns">
+<span class="target" id="structlblk__idfy__ns"></span><em class="property">struct </em><code class="sig-name descname">lblk_idfy_ns</code><a class="headerlink" href="#c.lblk_idfy_ns" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__idfy__ns_1aca3e21f509b2bd4b46e362185030634d"></span><code class="sig-name descname">uint8_t lblk_idfy_ns::byte0_75[76]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_idfy_ns::mcl">
+<span class="target" id="structlblk__idfy__ns_1a1199ec06f049044c302096d9f484bf80"></span>uint32_t <code class="sig-name descname">mcl</code><a class="headerlink" href="#c.lblk_idfy_ns::mcl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum Copy Length. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_idfy_ns::mssrl">
+<span class="target" id="structlblk__idfy__ns_1a444de8061ca33c4a271e47a83bca65fa"></span>uint16_t <code class="sig-name descname">mssrl</code><a class="headerlink" href="#c.lblk_idfy_ns::mssrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum Single Source Range Length. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_idfy_ns::msrc">
+<span class="target" id="structlblk__idfy__ns_1a775aba338e37cbc2f87208c3660e9bbf"></span>uint8_t <code class="sig-name descname">msrc</code><a class="headerlink" href="#c.lblk_idfy_ns::msrc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum Source Range Count. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__idfy__ns_1ae704544576848982a4eb24cf0d11e435"></span><code class="sig-name descname">uint8_t lblk_idfy_ns::byte83_4095[4013]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-source-range">
+<span id="sec-c-apis-lblk-struct-lblk-source-range"></span><h3>lblk_source_range<a class="headerlink" href="#lblk-source-range" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_source_range">
+<span class="target" id="structlblk__source__range"></span><em class="property">struct </em><code class="sig-name descname">lblk_source_range</code><a class="headerlink" href="#c.lblk_source_range" title="Permalink to this definition">¶</a></dt>
+<dd><p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>Specification Section 6.TBD.1 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__source__range_1a0d3dd25933143abbfa6741f5c078898f"></span><code class="sig-name descname">struct lblk_source_range_entry lblk_source_range::entry[LBLK_SCOPY_NENTRY_MAX]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-source-range-entry">
+<span id="sec-c-apis-lblk-struct-lblk-source-range-entry"></span><h3>lblk_source_range_entry<a class="headerlink" href="#lblk-source-range-entry" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.lblk_source_range_entry">
+<span class="target" id="structlblk__source__range__entry"></span><em class="property">struct </em><code class="sig-name descname">lblk_source_range_entry</code><a class="headerlink" href="#c.lblk_source_range_entry" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="structlblk__source__range__entry_1af944ed409ae9d05a769cfb5b3d57ae09"></span><code class="sig-name descname">uint8_t lblk_source_range_entry::rsvd0[8]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_source_range_entry::slba">
+<span class="target" id="structlblk__source__range__entry_1a030eeb750a2809ca34c9eb517ff5c80a"></span>uint64_t <code class="sig-name descname">slba</code><a class="headerlink" href="#c.lblk_source_range_entry::slba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start LBA. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_source_range_entry::nlb">
+<span class="target" id="structlblk__source__range__entry_1aa5f054b30d939062e237f969b5d42f6d"></span>uint32_t <code class="sig-name descname">nlb</code><a class="headerlink" href="#c.lblk_source_range_entry::nlb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of logical blocks, zero-based. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_source_range_entry::rsvd20">
+<span class="target" id="structlblk__source__range__entry_1a099e4c0d16a4a33f1000e8e18329fcb7"></span>uint32_t <code class="sig-name descname">rsvd20</code><a class="headerlink" href="#c.lblk_source_range_entry::rsvd20" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_source_range_entry::eilbrt">
+<span class="target" id="structlblk__source__range__entry_1ad32c27559e14fcf58c2627fb7975bca1"></span>uint32_t <code class="sig-name descname">eilbrt</code><a class="headerlink" href="#c.lblk_source_range_entry::eilbrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expected Initial Logical Block Ref. Tag. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_source_range_entry::elbatm">
+<span class="target" id="structlblk__source__range__entry_1adb30f467bda62cb7ac8fa55eb67f8aaa"></span>uint32_t <code class="sig-name descname">elbatm</code><a class="headerlink" href="#c.lblk_source_range_entry::elbatm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expected Logical Block App. Tag Mask. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.lblk_source_range_entry::elbat">
+<span class="target" id="structlblk__source__range__entry_1a5ffce2423ca7246fdb1e6395d8e00e39"></span>uint32_t <code class="sig-name descname">elbat</code><a class="headerlink" href="#c.lblk_source_range_entry::elbat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expected Logical Block App. Tag. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="functions">
+<span id="sec-c-apis-lblk-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lblk-cmd-opc-str">
+<span id="sec-c-apis-lblk-func-lblk-cmd-opc-str"></span><h3>lblk_cmd_opc_str<a class="headerlink" href="#lblk-cmd-opc-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_cmd_opc_str">
+<span class="target" id="liblblk_8h_1af7e144c14d73f2414508b339afeacd11"></span>const char* <code class="sig-name descname">lblk_cmd_opc_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.lblk_cmd_opc" title="lblk_cmd_opc">lblk_cmd_opc</a><em> opc</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_cmd_opc_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#liblblk_8h_1a2132c0da99f742a51ff815b45fbd7e68"><span class="std std-ref">lblk_cmd_opc</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “LBLK_CMD_OPC_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">opc</span></code>: the enum value to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="sec-c-apis-lblk-func-lblk-cmd-scopy">
+<span id="id1"></span><h3>lblk_cmd_scopy<a class="headerlink" href="#sec-c-apis-lblk-func-lblk-cmd-scopy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<span class="target" id="liblblk_8h_1aae22b461a22c7122a6b2974a05540d8a"></span>int <code class="sig-name descname">lblk_cmd_scopy</code><span class="sig-paren">(</span>struct  xnvme_dev  *<em> dev</em>, uint32_t<em> nsid</em>, uint64_t<em> sdlba</em>, struct  <a class="reference internal" href="#c.lblk_source_range_entry" title="lblk_source_range_entry">lblk_source_range_entry</a>  *<em> ranges</em>, uint8_t<em> nr</em>, int<em> opts</em>, struct  <a class="reference internal" href="xnvme.html#c.xnvme_req" title="xnvme_req">xnvme_req</a>  *<em> ret</em><span class="sig-paren">)</span></dt>
+<dd><p>Submit, and optionally wait for completion of, a NVMe Copy Command. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="xnvme.html#libxnvme_8h_1aa9df7fa0f59bfcc26076f174670d0e2d"><span class="std std-ref">xnvme_cmd_opts</span></a></p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, -1 is returned, <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate and <code class="docutils literal notranslate"><span class="pre">ret</span></code> filled with lower-level status codes </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme.html#libxnvme_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace Identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sdlba</span></code>: The Starting Destination LBA to start copying to </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ranges</span></code>: Pointer to ranges-buffer, see <a class="reference internal" href="#structlblk__source__range__entry"><span class="std std-ref">lblk_source_range_entry</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nr</span></code>: Number of ranges in the given ranges-buffer, zero-based value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: command options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1aa9df7fa0f59bfcc26076f174670d0e2d"><span class="std std-ref">xnvme_cmd_opts</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ret</span></code>: Pointer to structure for NVMe completion and async. context</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy-ctrlr-fpr">
+<span id="sec-c-apis-lblk-func-lblk-idfy-ctrlr-fpr"></span><h3>lblk_idfy_ctrlr_fpr<a class="headerlink" href="#lblk-idfy-ctrlr-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_idfy_ctrlr_fpr">
+<span class="target" id="liblblk_8h_1ae65ded2f60aac84ed4e2bffc17559768"></span>int <code class="sig-name descname">lblk_idfy_ctrlr_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, struct  <a class="reference internal" href="#c.lblk_idfy_ctrlr" title="lblk_idfy_ctrlr">lblk_idfy_ctrlr</a>  *<em> idfy</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_idfy_ctrlr_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__idfy__ctrlr"><span class="std std-ref">lblk_idfy_ctrlr</span></a> to the given output stream. </p>
+<p>Only fields specific to Logical Block Namespaces are printed by this function</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">idfy</span></code>: pointer to the structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy-ctrlr-pr">
+<span id="sec-c-apis-lblk-func-lblk-idfy-ctrlr-pr"></span><h3>lblk_idfy_ctrlr_pr<a class="headerlink" href="#lblk-idfy-ctrlr-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_idfy_ctrlr_pr">
+<span class="target" id="liblblk_8h_1acce24c532cebc455a9b7bfe8d6ebb9cf"></span>int <code class="sig-name descname">lblk_idfy_ctrlr_pr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.lblk_idfy_ctrlr" title="lblk_idfy_ctrlr">lblk_idfy_ctrlr</a>  *<em> idfy</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_idfy_ctrlr_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__idfy__ctrlr"><span class="std std-ref">lblk_idfy_ctrlr</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">idfy</span></code>: pointer to <a class="reference internal" href="#structlblk__idfy__ctrlr"><span class="std std-ref">lblk_idfy_ctrlr</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy-ns-fpr">
+<span id="sec-c-apis-lblk-func-lblk-idfy-ns-fpr"></span><h3>lblk_idfy_ns_fpr<a class="headerlink" href="#lblk-idfy-ns-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_idfy_ns_fpr">
+<span class="target" id="liblblk_8h_1a93294d05e3605c6384a9b43cf19d3b2c"></span>int <code class="sig-name descname">lblk_idfy_ns_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, struct  <a class="reference internal" href="#c.lblk_idfy_ns" title="lblk_idfy_ns">lblk_idfy_ns</a>  *<em> idfy</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_idfy_ns_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__idfy__ns"><span class="std std-ref">lblk_idfy_ns</span></a> to the given output stream. </p>
+<p>Only fields specific to Logical Block Namespaces are printed by this function</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">idfy</span></code>: pointer to the structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-idfy-ns-pr">
+<span id="sec-c-apis-lblk-func-lblk-idfy-ns-pr"></span><h3>lblk_idfy_ns_pr<a class="headerlink" href="#lblk-idfy-ns-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_idfy_ns_pr">
+<span class="target" id="liblblk_8h_1a5e8106223413a283556eb117dc9429c6"></span>int <code class="sig-name descname">lblk_idfy_ns_pr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.lblk_idfy_ns" title="lblk_idfy_ns">lblk_idfy_ns</a>  *<em> idfy</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_idfy_ns_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__idfy__ns"><span class="std std-ref">lblk_idfy_ns</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">idfy</span></code>: pointer to <a class="reference internal" href="#structlblk__idfy__ns"><span class="std std-ref">lblk_idfy_ns</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-source-range-entry-fpr">
+<span id="sec-c-apis-lblk-func-lblk-source-range-entry-fpr"></span><h3>lblk_source_range_entry_fpr<a class="headerlink" href="#lblk-source-range-entry-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_source_range_entry_fpr">
+<span class="target" id="liblblk_8h_1a0432f9ad7f655d74428383bcf19a22a5"></span>int <code class="sig-name descname">lblk_source_range_entry_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.lblk_source_range_entry" title="lblk_source_range_entry">lblk_source_range_entry</a>  *<em> entry</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_source_range_entry_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__source__range__entry"><span class="std std-ref">lblk_source_range_entry</span></a> to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">entry</span></code>: pointer to structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-source-range-entry-pr">
+<span id="sec-c-apis-lblk-func-lblk-source-range-entry-pr"></span><h3>lblk_source_range_entry_pr<a class="headerlink" href="#lblk-source-range-entry-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_source_range_entry_pr">
+<span class="target" id="liblblk_8h_1aa0a9c184a0bec095ddfa7dd9e1341217"></span>int <code class="sig-name descname">lblk_source_range_entry_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.lblk_source_range_entry" title="lblk_source_range_entry">lblk_source_range_entry</a>  *<em> entry</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_source_range_entry_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__source__range__entry"><span class="std std-ref">lblk_source_range_entry</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">entry</span></code>: pointer to structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-source-range-fpr">
+<span id="sec-c-apis-lblk-func-lblk-source-range-fpr"></span><h3>lblk_source_range_fpr<a class="headerlink" href="#lblk-source-range-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_source_range_fpr">
+<span class="target" id="liblblk_8h_1a665caa0d623258fefe04fd137147262f"></span>int <code class="sig-name descname">lblk_source_range_fpr</code><span class="sig-paren">(</span>FILE *<em> stream</em>, const struct  <a class="reference internal" href="#c.lblk_source_range" title="lblk_source_range">lblk_source_range</a>  *<em> srange</em>, uint8_t<em> nr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_source_range_fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__source__range"><span class="std std-ref">lblk_source_range</span></a> to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">srange</span></code>: pointer to structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nr</span></code>: nr=0: print LBLK_SCOPY_NENTRY_MAX entries from the given , nr&gt;0: print no more than nr </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-source-range-pr">
+<span id="sec-c-apis-lblk-func-lblk-source-range-pr"></span><h3>lblk_source_range_pr<a class="headerlink" href="#lblk-source-range-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_source_range_pr">
+<span class="target" id="liblblk_8h_1aa5a816fce76061cc68a48c2d6ed63db9"></span>int <code class="sig-name descname">lblk_source_range_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.lblk_source_range" title="lblk_source_range">lblk_source_range</a>  *<em> srange</em>, uint8_t<em> nr</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_source_range_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given <a class="reference internal" href="#structlblk__source__range"><span class="std std-ref">lblk_source_range</span></a> to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">srange</span></code>: pointer to structure to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nr</span></code>: nr=0: print LBLK_SCOPY_NENTRY_MAX entries from the given , nr&gt;0: print no more than nr </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="xnvme.html#libxnvme_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lblk-status-code-str">
+<span id="sec-c-apis-lblk-func-lblk-status-code-str"></span><h3>lblk_status_code_str<a class="headerlink" href="#lblk-status-code-str" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.lblk_status_code_str">
+<span class="target" id="liblblk_8h_1a5085d20c1c54dc2f9d80214f85bd0039"></span>const char* <code class="sig-name descname">lblk_status_code_str</code><span class="sig-paren">(</span>enum  <a class="reference internal" href="#c.lblk_status_code" title="lblk_status_code">lblk_status_code</a><em> sc</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lblk_status_code_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#liblblk_8h_1a6d4d4695896f6cab0340a4fa393b4a3f"><span class="std std-ref">lblk_status_code</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a string representation is returned. On error, the string “LBLK_SC_ENOSYS” is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sc</span></code>: the enum value to produce a string representation of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lblk_headers.html" class="btn btn-neutral float-right" title="lblk: headers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="xnvme_headers.html" class="btn btn-neutral float-left" title="xnvme: headers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

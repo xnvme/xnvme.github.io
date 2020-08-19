@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Fabrics non-RDMA TCP transport setup on Linux &mdash; xNVMe 0.0.18 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Library Usage Notes" href="library.html" />
+    <link rel="prev" title="Tutorials" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.18
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fabrics non-RDMA TCP transport setup on Linux</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#target-setup">Target Setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-targets-via-kernel-modules">Exporting Targets via kernel modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporting-targets-via-spdk">Exporting Targets via SPDK</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#initiator-setup">Initiator Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="library.html">Library Usage Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nvme/index.html">NVMe Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Fabrics non-RDMA TCP transport setup on Linux</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorial/fabrics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fabrics-non-rdma-tcp-transport-setup-on-linux">
+<span id="sec-tutorials-fabrics"></span><h1>Fabrics non-RDMA TCP transport setup on Linux<a class="headerlink" href="#fabrics-non-rdma-tcp-transport-setup-on-linux" title="Permalink to this headline">¶</a></h1>
+<p>This guide assumes that you are running Debian Bullseye.</p>
+<p>Roles:</p>
+<ul class="simple">
+<li><p>Fabrics Target</p></li>
+<li><p>Fabrics Initiator</p></li>
+</ul>
+<div class="section" id="target-setup">
+<h2>Target Setup<a class="headerlink" href="#target-setup" title="Permalink to this headline">¶</a></h2>
+<p>Using Kernel support via modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">modprobe</span> <span class="n">nvme</span>
+<span class="n">modprobe</span> <span class="n">nvmet</span>
+<span class="n">modprobe</span> <span class="n">nvmet_tcp</span>
+</pre></div>
+</div>
+<p>If not, then just build a kernel with all the bells-and-whistles.</p>
+<p>With the Kernel support loaded. Then there are a bunch neat tools out there for
+configuring your fabrics setup. Here, <code class="docutils literal notranslate"><span class="pre">nvme-cli</span></code> is used for the hands-on
+approach.</p>
+<div class="section" id="exporting-targets-via-kernel-modules">
+<h3>Exporting Targets via kernel modules<a class="headerlink" href="#exporting-targets-via-kernel-modules" title="Permalink to this headline">¶</a></h3>
+<p>Define a couple of variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span> <span class="s2">&quot;${EXPORT_BDNAME:=/dev/nvme0n1}&quot;</span>
+<span class="p">:</span> <span class="s2">&quot;${NVMET_SUBSYS_NAME:=jazz}&quot;</span>
+<span class="p">:</span> <span class="s2">&quot;$</span><span class="si">{NVMET_SUBSYS_NSID:1}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>We can then export the device at <code class="docutils literal notranslate"><span class="pre">EXPORT_BDNAME</span></code> in a NVMe Target Subsystem
+named <code class="docutils literal notranslate"><span class="pre">NVMET_SUBSYS_NAME</span></code> containing a single NVMe Namespace identified by
+<code class="docutils literal notranslate"><span class="pre">NVMET_SUBSYS_NSID</span></code> without any access control:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Configuration is done via kernel user configuration filesystem
+sudo /bin/mount -t configfs none /sys/kernel/config/
+
+# Create an NVMe Target Subsystem
+mkdir -p &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}&quot;
+
+# Allow everybody... this is just for testing...
+echo 1 &gt; &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/attr_allow_any_host&quot;
+
+# Create a NVMe Namespace within the Target Subsystem
+mkdir -p &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/namespaces/1&quot;
+
+# Add the device backing the NVMe Namespace
+echo -n &quot;${EXPORT_BDNAME}&quot; &gt; &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/namespaces/1/device_path&quot;
+
+# Enable the NVMe Target Namespace
+echo 1 &gt; &quot;/sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME}/namespaces/1/enable&quot;
+
+# Creates a port
+mkdir /sys/kernel/config/nvmet/ports/1
+
+# Set the address (local interface that will be listening)
+echo 172.20.0.100 &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_traddr&quot;
+
+# Set the transport type
+echo tcp &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_trtype&quot;
+
+# Set the port number
+echo 4420 &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_trsvcid&quot;
+
+# Set the address family
+echo ipv4 &gt; &quot;/sys/kernel/config/nvmet/ports/1/addr_adrfam&quot;
+
+# Create a link and enables the port
+ln -s /sys/kernel/config/nvmet/subsystems/${NVMET_SUBSYS_NAME} /sys/kernel/config/nvmet/ports/1/subsystems/${NVMET_SUBSYS_NAME}
+</pre></div>
+</div>
+</div>
+<div class="section" id="exporting-targets-via-spdk">
+<h3>Exporting Targets via SPDK<a class="headerlink" href="#exporting-targets-via-spdk" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>::</dt><dd><p># Clone xnvme
+git clone <a class="reference external" href="https://github.com/OpenMPDK/xNVMe.git">https://github.com/OpenMPDK/xNVMe.git</a></p>
+<p># Start submodules
+cd xnvme
+git submodule update –init –recursive</p>
+<p># Build ans install xnvme
+make
+make install-deb</p>
+<p># Load SPDK drivers
+xnvme-driver</p>
+<p># Start SPDK Target App (with high priorities)
+cd third-party/spdk/repos/build/bin
+./nvmf_tgt</p>
+<p># Create a transport e.g. TCP
+scripts/rpc.py nvmf_create_transport -t TCP -u 16384 -p 8 -c 8192</p>
+<p># Attach local PCIe controllers (replace the address accordingly)
+scripts/rpc.py bdev_nvme_attach_controller -b Nvme0 -t PCIe -a 0000:03:00.0</p>
+<p># Create a controller to be exposed over fabrics
+scripts/rpc.py nvmf_create_subsystem nqn.2020-05.io.spdk:cnode1 -a -s SPDK00000000000001 -d SPDK_Controller1</p>
+<p># Add the local PCIe namespace to the fabrics controller
+scripts/rpc.py nvmf_subsystem_add_ns nqn.2020-05.io.spdk:cnode1 Nvme0n1</p>
+<p># Listen for connections (replace the transport, address, and port accordingly)
+scripts/rpc.py nvmf_subsystem_add_listener nqn.2020-05.io.spdk:cnode1 -t tcp -a 172.20.0.100 -s 4420</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="initiator-setup">
+<h2>Initiator Setup<a class="headerlink" href="#initiator-setup" title="Permalink to this headline">¶</a></h2>
+<p>Using Kernel support via modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">modprobe</span> <span class="n">nvme</span>
+<span class="n">modprobe</span> <span class="n">nvme_fabrics</span>
+<span class="n">modprobe</span> <span class="n">nvme_tcp</span>
+</pre></div>
+</div>
+<p>If not, then just build a kernel with all the bells-and-whistles.</p>
+<p>Using xNVMe SPDK backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Clone xnvme
+git clone https://github.com/OpenMPDK/xNVMe.git
+
+# Start submodules
+cd xnvme
+git submodule update --init --recursive
+
+# Build ans install xnvme
+make
+make install-deb
+
+# Load SPDK drivers
+xnvme-driver
+
+# Enumerate fabrics devices (URI example: fab:172.20.0.100:4022?nsid=1)
+zoned enum --uri fab:&lt;addr&gt;:&lt;port&gt;?nsid=&lt;nsid&gt;
+
+# Test simple I/O in conventional namespaces over fabrics
+xnvme_io_async write fab:&lt;addr&gt;:&lt;port&gt;?nsid=&lt;nsid&gt; --slba 0x0 --elba 0xffff
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="library.html" class="btn btn-neutral float-right" title="Library Usage Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

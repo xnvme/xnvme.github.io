@@ -1,0 +1,1491 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xnvmec &mdash; xNVMe 0.0.18 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="xnvmec: headers" href="xnvmec_headers.html" />
+    <link rel="prev" title="znd: headers" href="znd_headers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.18
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">C APIs</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_headers.html">xnvme: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lblk.html">lblk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lblk_headers.html">lblk: headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd.html">znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="znd_headers.html">znd: headers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">xnvmec</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-opt">xnvmec_opt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-opt-type">xnvmec_opt_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-opts">xnvmec_opts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sec-c-apis-xnvmec-struct-xnvmec">xnvmec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-args">xnvmec_args</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-sub">xnvmec_sub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-sub-opt">xnvmec_sub_opt</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sec-c-apis-xnvmec-func-xnvmec">xnvmec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-args-pr">xnvmec_args_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-buf-clear">xnvmec_buf_clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-buf-diff">xnvmec_buf_diff</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-buf-diff-pr">xnvmec_buf_diff_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-buf-fill">xnvmec_buf_fill</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-buf-from-file">xnvmec_buf_from_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-buf-to-file">xnvmec_buf_to_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-cmd-from-file">xnvmec_cmd_from_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-cmd-to-file">xnvmec_cmd_to_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-int2opt">xnvmec_int2opt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-perr">xnvmec_perr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-pinf">xnvmec_pinf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-timer-bw-pr">xnvmec_timer_bw_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-timer-start">xnvmec_timer_start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvmec-timer-stop">xnvmec_timer_stop</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec_headers.html">xnvmec: headers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">C APIs</a> &raquo;</li>
+        
+      <li>xnvmec</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/capis/xnvmec.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="xnvmec">
+<span id="sec-c-apis-xnvmec"></span><h1>xnvmec<a class="headerlink" href="#xnvmec" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="enums">
+<span id="sec-c-apis-xnvmec-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="xnvmec-opt">
+<span id="sec-c-apis-xnvmec-enum-xnvmec-opt"></span><h3>xnvmec_opt<a class="headerlink" href="#xnvmec-opt" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.xnvmec_opt">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115"></span><code class="sig-name descname">xnvmec_opt</code><a class="headerlink" href="#c.xnvmec_opt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command-Line Options, each command-line option can be one of <a class="reference internal" href="#libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007f"><span class="std std-ref">xnvmec_opt_type</span></a>. </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x0">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a71d326991ff49855ace41337b9ade5b8"></span><code class="sig-name descname">0x0</code><a class="headerlink" href="#c.0x0" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_NONE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x1">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ad0d28d1bbaaa809ce67257ac5bc28c39"></span><code class="sig-name descname">0x1</code><a class="headerlink" href="#c.0x1" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW00. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x2">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115af8da8443391d68105f137e1138c466cb"></span><code class="sig-name descname">0x2</code><a class="headerlink" href="#c.0x2" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW01. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x3">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a2cc28e57dd707939a9723013c035a059"></span><code class="sig-name descname">0x3</code><a class="headerlink" href="#c.0x3" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW02. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x4">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a35af892060edcdbbce8b1d82f47a0877"></span><code class="sig-name descname">0x4</code><a class="headerlink" href="#c.0x4" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW03. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x5">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab9c981631bbaf5715a9e4236b3731536"></span><code class="sig-name descname">0x5</code><a class="headerlink" href="#c.0x5" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW04. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x6">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab3813943795be594c5436d00f3174c38"></span><code class="sig-name descname">0x6</code><a class="headerlink" href="#c.0x6" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW05. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x7">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a85f13e98bb580dd250f7acda087a4db0"></span><code class="sig-name descname">0x7</code><a class="headerlink" href="#c.0x7" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW06. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x8">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aa4bb29cc3dfa962be7cc3f7162405b91"></span><code class="sig-name descname">0x8</code><a class="headerlink" href="#c.0x8" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW07. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x9">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a3c673c43bf32615c2ba134f62cc93cff"></span><code class="sig-name descname">0x9</code><a class="headerlink" href="#c.0x9" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW08. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xA">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac4714eba67495e8013d0bd8fa1262327"></span><code class="sig-name descname">0xA</code><a class="headerlink" href="#c.0xA" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW09. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xB">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a358179545dc49a6920f83ba622f2a6e6"></span><code class="sig-name descname">0xB</code><a class="headerlink" href="#c.0xB" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW10. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xC">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115add42e4159f5401b1a05d51303ed9d99b"></span><code class="sig-name descname">0xC</code><a class="headerlink" href="#c.0xC" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW11. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xD">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aeca182b9034f27429341d70dbd75b31c"></span><code class="sig-name descname">0xD</code><a class="headerlink" href="#c.0xD" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW12. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xE">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a3335475f36748272e0d25f80774fa736"></span><code class="sig-name descname">0xE</code><a class="headerlink" href="#c.0xE" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW13. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0xF">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a15690604b18a77f20e8843f99b64f215"></span><code class="sig-name descname">0xF</code><a class="headerlink" href="#c.0xF" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW14. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.0x1F">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a0025a4048863a4d9bbf7dd79eb5a9ddf"></span><code class="sig-name descname">0x1F</code><a class="headerlink" href="#c.0x1F" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_CDW15. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab5966b870dd7d86797993a718299eba8"></span></dt>
+<dd><p>XNVMEC_OPT_CMD_INPUT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a5cddc72dc3ea69b6c33e2ad63b7a66b5"></span></dt>
+<dd><p>XNVMEC_OPT_CMD_OUTPUT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a70df213b86c8e8e729c024db53b2204c"></span></dt>
+<dd><p>XNVMEC_OPT_DATA_NBYTES. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a1fec5b7f6ff053831b1dea408b03cb44"></span></dt>
+<dd><p>XNVMEC_OPT_DATA_INPUT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a6f106578779338fe558f404602453b78"></span></dt>
+<dd><p>XNVMEC_OPT_DATA_OUTPUT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a06b395b387fcf5e0e8b3d2e79fdf728c"></span></dt>
+<dd><p>XNVMEC_OPT_META_NBYTES. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab6bb3acfef51ac459bdf8943df3b5aad"></span></dt>
+<dd><p>XNVMEC_OPT_META_INPUT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a8d18c625fbf6f99151dc7a746c97be5c"></span></dt>
+<dd><p>XNVMEC_OPT_META_OUTPUT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a02005e1a73d305ab0eb70c06c17d6655"></span></dt>
+<dd><p>XNVMEC_OPT_LBAF. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ad22688105176c30f776118cee6484071"></span></dt>
+<dd><p>XNVMEC_OPT_SLBA. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a90aecc101202a27d995fbd2582d43550"></span></dt>
+<dd><p>XNVMEC_OPT_ELBA. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a10bfa4e54179afd11ad7a2230d73d2d8"></span></dt>
+<dd><p>XNVMEC_OPT_LBA. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115acd88e6f2c566d5ec9bf0a09560127900"></span></dt>
+<dd><p>XNVMEC_OPT_NLB. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115abf09fa121c92e5cadf7905fd801b8d6f"></span></dt>
+<dd><p>XNVMEC_OPT_URI. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a1bd590ff0308fbc75da5993867a5a34c"></span></dt>
+<dd><p>XNVMEC_OPT_SYS_URI. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115af47ecfbd11733eb3eba8310941a7ef17"></span></dt>
+<dd><p>XNVMEC_OPT_UUID. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a2dc7090f36685e4f7451d27070e8070a"></span></dt>
+<dd><p>XNVMEC_OPT_NSID. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a751ee1031c821140464b2780871dcc2f"></span></dt>
+<dd><p>XNVMEC_OPT_CNS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aa6e6d25a5313628586400a322ccc7bb9"></span></dt>
+<dd><p>XNVMEC_OPT_CSI. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a4504e48a97682373fd70f4c3686731db"></span></dt>
+<dd><p>XNVMEC_OPT_INDEX. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a3742675478b216e9e7a7abbb77032f18"></span></dt>
+<dd><p>XNVMEC_OPT_SETID. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a8b58e3acb0e181a1668dd0086ceecc5a"></span></dt>
+<dd><p>XNVMEC_OPT_CNTID. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aa19e1afbdc9d883d8eb62eccb9f33fbb"></span></dt>
+<dd><p>XNVMEC_OPT_LID. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a58c83a602851b1c94b2ac9d0daaae8ef"></span></dt>
+<dd><p>XNVMEC_OPT_LSP. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a2ce7063bf8d215e2699b19c288f74cab"></span></dt>
+<dd><p>XNVMEC_OPT_LPO_NBYTES. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a5eca79fb5b876c84d40b9d0df87f0e6a"></span></dt>
+<dd><p>XNVMEC_OPT_RAE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a757caf943017808be9d78ebdbe07ac00"></span></dt>
+<dd><p>XNVMEC_OPT_CLEAR. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a3f876cd0e843e1a3ee4a6f7ab0c06266"></span></dt>
+<dd><p>XNVMEC_OPT_ZF. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aab4e80dff4f55e9a2cb5ddef3b962eb4"></span></dt>
+<dd><p>XNVMEC_OPT_SES. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a61a6c25464a4caa4291e5141c6fa06e0"></span></dt>
+<dd><p>XNVMEC_OPT_SEL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ae3eadd696fa98218273c80e9f31b2718"></span></dt>
+<dd><p>XNVMEC_OPT_MSET. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a0baef63ea2e7931a1d37788ded9a3da7"></span></dt>
+<dd><p>XNVMEC_OPT_AUSE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a333b3ebe3404c37102d64744a1314676"></span></dt>
+<dd><p>XNVMEC_OPT_OVRPAT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a6088e36c4fc54b265e7c26a6ef092dae"></span></dt>
+<dd><p>XNVMEC_OPT_OWPASS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a3f054455969b6dfd56cda38c8828b979"></span></dt>
+<dd><p>XNVMEC_OPT_OIPBP. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ad507730a069157896ee26442e5a7de2c"></span></dt>
+<dd><p>XNVMEC_OPT_NODAS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a4a2213c0e78d6fe4e9e9a7c6fab44d10"></span></dt>
+<dd><p>XNVMEC_OPT_ACTION. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a0b9cbd1ba5b3548434792cba77232040"></span></dt>
+<dd><p>XNVMEC_OPT_ZRMS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ad14c96d745f978fa0af1a802ecc40033"></span></dt>
+<dd><p>XNVMEC_OPT_PI. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a88179fbff4b96102005542eaa8e4f729"></span></dt>
+<dd><p>XNVMEC_OPT_PIL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a25e899dd2ea4e276914198afe1e29013"></span></dt>
+<dd><p>XNVMEC_OPT_FID. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aac10115af003c6d153766b1b9af6b2c0"></span></dt>
+<dd><p>XNVMEC_OPT_FEAT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab9d6dcd3d0d4c23a0c5c86f77a2bfeb3"></span></dt>
+<dd><p>XNVMEC_OPT_SEED. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a3519e967f4cdc778576d91bdb8147f90"></span></dt>
+<dd><p>XNVMEC_OPT_LIMIT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a669e0fb4498287724bdf8cd7d7a34e5a"></span></dt>
+<dd><p>XNVMEC_OPT_QDEPTH. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab5769e17b74c98b3fdfffc0ce53d010c"></span></dt>
+<dd><p>XNVMEC_OPT_STATUS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac624ffc5db898b841662f0185ab1c2f2"></span></dt>
+<dd><p>XNVMEC_OPT_SAVE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a9b2074597479449792523c65ea2ae2a8"></span></dt>
+<dd><p>XNVMEC_OPT_RESET. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a870a1389fc37040f1f296ea97251eb71"></span></dt>
+<dd><p>XNVMEC_OPT_VERBOSE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a4aa74abd4fcb5cf8fe7db2078ef402ed"></span></dt>
+<dd><p>XNVMEC_OPT_HELP. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a9e3e095864d830583a96184755dc036e"></span></dt>
+<dd><p>XNVMEC_OPT_COUNT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac0ddfdda72f54e5796361f5372ac2d33"></span></dt>
+<dd><p>XNVMEC_OPT_OFFSET. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a9481d284962bd5e64cf5f40533561099"></span></dt>
+<dd><p>XNVMEC_OPT_OPCODE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a89e6899a915daaccd6223c6d808f4000"></span></dt>
+<dd><p>XNVMEC_OPT_FLAGS. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a88653f7751615846a07ea2f37fa73221"></span></dt>
+<dd><p>XNVMEC_OPT_ALL. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a33fc296d6554f5a4422967e4ac707623"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a5297de9e4f28cdaf22f3d0f3ec0dbc4e"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a1cd6879c60556ce3e89964bef858ee71"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a01586778709429f4bc70ec0cf2c590b8"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a114e387967b024ce7b95aea56eabb1aa"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac893c8c2c9132105435a8e5bf823b686"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a623def2d04909f7f63709cbdea914e70"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a0b65992f425961d7456b098dece8bc9f"></span></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aa0bb11af3731bbad41839b30f7c77583"></span></dt>
+<dd><p>XNVMEC_OPT_UNKNOWN: do not use getopt special char. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a8ceb3078ca5e40d668716bf0ab3468ef"></span></dt>
+<dd><p>XNVMEC_OPT_WEIRD: do not use getopt special char. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.255">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac830349031802c23206f6aed39764b85"></span><code class="sig-name descname">255</code><a class="headerlink" href="#c.255" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_OPT_END: do not use. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-opt-type">
+<span id="sec-c-apis-xnvmec-enum-xnvmec-opt-type"></span><h3>xnvmec_opt_type<a class="headerlink" href="#xnvmec-opt-type" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.xnvmec_opt_type">
+<span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007f"></span><code class="sig-name descname">xnvmec_opt_type</code><a class="headerlink" href="#c.xnvmec_opt_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVMEC_LFLG: . </p>
+<p>/cli verbose; always optional XNVMEC_LOPT: ./cli lba 0x0; optionally provide a value XNVMEC_LREQ: ./cli required and provides a value XNVMEC_POSA: ./cli &lt;arg1&gt; &lt;arg2&gt;; required, ordered, and provides a value </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007fae4eb11a0ce94eae93c8f5eb74ecc6e34"></span><code class="sig-name descname">0x1</code></dt>
+<dd><p>XNVMEC_POSA. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007fac0b303e0b373f4361b389ca12cfd7376"></span><code class="sig-name descname">0x2</code></dt>
+<dd><p>XNVMEC_LFLG. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007faa1ebcf3f93cb09919e2a03324010191e"></span><code class="sig-name descname">0x3</code></dt>
+<dd><p>XNVMEC_LOPT. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007fa6b6771dc1105b5cb53a66ca88c7d7097"></span><code class="sig-name descname">0x4</code></dt>
+<dd><p>XNVMEC_LREQ. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-opts">
+<span id="sec-c-apis-xnvmec-enum-xnvmec-opts"></span><h3>xnvmec_opts<a class="headerlink" href="#xnvmec-opts" title="Permalink to this headline">¶</a></h3>
+<dl class="enum">
+<dt id="c.xnvmec_opts">
+<span class="target" id="libxnvmec_8h_1adbf9a77b87f15b91176913eea91e9bbc"></span><code class="sig-name descname">xnvmec_opts</code><a class="headerlink" href="#c.xnvmec_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1adbf9a77b87f15b91176913eea91e9bbca73f60afeb083f148f85617782b85db7f"></span><code class="sig-name descname">0x0</code></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1adbf9a77b87f15b91176913eea91e9bbca7221510759e57420398c5a13762727db"></span><code class="sig-name descname">0x1</code></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="structs">
+<span id="sec-c-apis-xnvmec-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sec-c-apis-xnvmec-struct-xnvmec">
+<span id="id1"></span><h3>xnvmec<a class="headerlink" href="#sec-c-apis-xnvmec-struct-xnvmec" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.xnvmec">
+<span class="target" id="structxnvmec"></span><em class="property">struct </em><code class="sig-name descname">xnvmec</code><a class="headerlink" href="#c.xnvmec" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.xnvmec::title">
+<span class="target" id="structxnvmec_1ab683dc0fc9507511849d47f0d0b9ecd9"></span>const char* <code class="sig-name descname">title</code><a class="headerlink" href="#c.xnvmec::title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by user. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::descr_short">
+<span class="target" id="structxnvmec_1a888034c9fef4a02a8a786de3dcd75da9"></span>const char* <code class="sig-name descname">descr_short</code><a class="headerlink" href="#c.xnvmec::descr_short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by user. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::descr_long">
+<span class="target" id="structxnvmec_1a8ad52fc85b2b7f88217d812c7b860a50"></span>const char* <code class="sig-name descname">descr_long</code><a class="headerlink" href="#c.xnvmec::descr_long" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by user. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::nsubs">
+<span class="target" id="structxnvmec_1af6af1314ce63369d3bbd9463e5386881"></span>int <code class="sig-name descname">nsubs</code><a class="headerlink" href="#c.xnvmec::nsubs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by user. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::subs">
+<span class="target" id="structxnvmec_1a289c0f88344e2edbedf0f62caa2c3eac"></span>struct <a class="reference internal" href="#c.xnvmec_sub" title="xnvmec_sub">xnvmec_sub</a>* <code class="sig-name descname">subs</code><a class="headerlink" href="#c.xnvmec::subs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by user. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::ver_pr">
+<span class="target" id="structxnvmec_1ad6a65ce0ee86b16beda606d05b0d18af"></span>int<code class="sig-name descname">ver_pr)</code><a class="headerlink" href="#c.xnvmec::ver_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by library if unset. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::argc">
+<span class="target" id="structxnvmec_1aa33a5eafde208b85e7b7156a7fa484d8"></span>int <code class="sig-name descname">argc</code><a class="headerlink" href="#c.xnvmec::argc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by library. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::argv">
+<span class="target" id="structxnvmec_1ade5a9ba194e6bd79ba33b4f0ad2e4646"></span>char** <code class="sig-name descname">argv</code><a class="headerlink" href="#c.xnvmec::argv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by library. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::args">
+<span class="target" id="structxnvmec_1ac1a5da4353ae34ed91e5893d34e6e5ae"></span>struct <a class="reference internal" href="#c.xnvmec_args" title="xnvmec_args">xnvmec_args</a> <code class="sig-name descname">args</code><a class="headerlink" href="#c.xnvmec::args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by library. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structxnvmec_1a9d207b154877ea567033e6b214468f4b"></span><code class="sig-name descname">int xnvmec::given[255]</code></dt>
+<dd><p>Setup by library. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::sub">
+<span class="target" id="structxnvmec_1aa300451158f562a53e7c5f6a4d53d829"></span>struct <a class="reference internal" href="#c.xnvmec_sub" title="xnvmec_sub">xnvmec_sub</a>* <code class="sig-name descname">sub</code><a class="headerlink" href="#c.xnvmec::sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup by library. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec::timer">
+<span class="target" id="structxnvmec_1a5c9440d60cfe637af5b69df83a7f09dd"></span>struct <a class="reference internal" href="xnvme.html#c.xnvme_timer" title="xnvme_timer">xnvme_timer</a> <code class="sig-name descname">timer</code><a class="headerlink" href="#c.xnvmec::timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used by xnvmec_timer_*. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-args">
+<span id="sec-c-apis-xnvmec-struct-xnvmec-args"></span><h3>xnvmec_args<a class="headerlink" href="#xnvmec-args" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.xnvmec_args">
+<span class="target" id="structxnvmec__args"></span><em class="property">struct </em><code class="sig-name descname">xnvmec_args</code><a class="headerlink" href="#c.xnvmec_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Options are stored in an instance of this structure. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.xnvmec_args::dev">
+<span class="target" id="structxnvmec__args_1a7e19889f354e799f00a6f9dbec9e24bc"></span>struct xnvme_dev* <code class="sig-name descname">dev</code><a class="headerlink" href="#c.xnvmec_args::dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Created. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::geo">
+<span class="target" id="structxnvmec__args_1abdf0f11565228c185dd655f3a28e269d"></span>const struct <a class="reference internal" href="xnvme.html#c.xnvme_geo" title="xnvme_geo">xnvme_geo</a>* <code class="sig-name descname">geo</code><a class="headerlink" href="#c.xnvmec_args::geo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Created. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::uri">
+<span class="target" id="structxnvmec__args_1a03a3e5892ce19f5c33337ec9683c5252"></span>const char* <code class="sig-name descname">uri</code><a class="headerlink" href="#c.xnvmec_args::uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::sys_uri">
+<span class="target" id="structxnvmec__args_1a0dab2aa9a7fd298d2184f7cf8e7724b3"></span>const char* <code class="sig-name descname">sys_uri</code><a class="headerlink" href="#c.xnvmec_args::sys_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::cmd_input">
+<span class="target" id="structxnvmec__args_1a4551676ff9a473e21064013fdabb2c08"></span>const char* <code class="sig-name descname">cmd_input</code><a class="headerlink" href="#c.xnvmec_args::cmd_input" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::cmd_output">
+<span class="target" id="structxnvmec__args_1a79789ca12fb41db11ead37695b6f94f4"></span>const char* <code class="sig-name descname">cmd_output</code><a class="headerlink" href="#c.xnvmec_args::cmd_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::data_nbytes">
+<span class="target" id="structxnvmec__args_1aaf511ad94f75853f97c171b493fa0fd9"></span>size_t <code class="sig-name descname">data_nbytes</code><a class="headerlink" href="#c.xnvmec_args::data_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::data_input">
+<span class="target" id="structxnvmec__args_1aac3e12d4e8a66ebcd4ec25d00ffc7f43"></span>const char* <code class="sig-name descname">data_input</code><a class="headerlink" href="#c.xnvmec_args::data_input" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::data_output">
+<span class="target" id="structxnvmec__args_1a5a99737556345cb66be38ff2a7bee6dd"></span>const char* <code class="sig-name descname">data_output</code><a class="headerlink" href="#c.xnvmec_args::data_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::meta_nbytes">
+<span class="target" id="structxnvmec__args_1a09a4b642d7a9448459666eb814c0202c"></span>size_t <code class="sig-name descname">meta_nbytes</code><a class="headerlink" href="#c.xnvmec_args::meta_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::meta_input">
+<span class="target" id="structxnvmec__args_1aa09a399c7c55868453578d55ae80f989"></span>const char* <code class="sig-name descname">meta_input</code><a class="headerlink" href="#c.xnvmec_args::meta_input" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::meta_output">
+<span class="target" id="structxnvmec__args_1aa6ff8198d4922ff752f8f0cec03c68b8"></span>const char* <code class="sig-name descname">meta_output</code><a class="headerlink" href="#c.xnvmec_args::meta_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structxnvmec__args_1ad5ef28db43098a1ced0b487a2fdfc258"></span><code class="sig-name descname">uint32_t xnvmec_args::cdw[16]</code></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::lbaf">
+<span class="target" id="structxnvmec__args_1af335623fb51642f54129caa5f5af2fc4"></span>uint64_t <code class="sig-name descname">lbaf</code><a class="headerlink" href="#c.xnvmec_args::lbaf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::lba">
+<span class="target" id="structxnvmec__args_1ab90968c1f7f4b5b9eba280f850a7d78f"></span>uint64_t <code class="sig-name descname">lba</code><a class="headerlink" href="#c.xnvmec_args::lba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::nlb">
+<span class="target" id="structxnvmec__args_1a29b7b5635826649ec3a286ababfd8d0a"></span>uint32_t <code class="sig-name descname">nlb</code><a class="headerlink" href="#c.xnvmec_args::nlb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::slba">
+<span class="target" id="structxnvmec__args_1a3bedeef32b2a552660390ee93a80fbeb"></span>uint64_t <code class="sig-name descname">slba</code><a class="headerlink" href="#c.xnvmec_args::slba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::elba">
+<span class="target" id="structxnvmec__args_1ac3b4be7c6ef3ebe055f8bbfa104aba7c"></span>uint64_t <code class="sig-name descname">elba</code><a class="headerlink" href="#c.xnvmec_args::elba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::uuid">
+<span class="target" id="structxnvmec__args_1a8652414d2cff3b6b8ed9caf6a7780592"></span>uint32_t <code class="sig-name descname">uuid</code><a class="headerlink" href="#c.xnvmec_args::uuid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::nsid">
+<span class="target" id="structxnvmec__args_1aaf5b830a1c58035dc2ff4ea73a9e16b0"></span>uint32_t <code class="sig-name descname">nsid</code><a class="headerlink" href="#c.xnvmec_args::nsid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::cns">
+<span class="target" id="structxnvmec__args_1a18983e26094cb9c41d27271b0f58de07"></span>uint32_t <code class="sig-name descname">cns</code><a class="headerlink" href="#c.xnvmec_args::cns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::csi">
+<span class="target" id="structxnvmec__args_1ac4d9276643b487758d644a292b9f88bc"></span>uint32_t <code class="sig-name descname">csi</code><a class="headerlink" href="#c.xnvmec_args::csi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::index">
+<span class="target" id="structxnvmec__args_1ae837a0792928d6b87bdf0b05410d9c29"></span>uint64_t <code class="sig-name descname">index</code><a class="headerlink" href="#c.xnvmec_args::index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::setid">
+<span class="target" id="structxnvmec__args_1a5d99b494099a17615be6a1d82552f328"></span>uint32_t <code class="sig-name descname">setid</code><a class="headerlink" href="#c.xnvmec_args::setid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::cntid">
+<span class="target" id="structxnvmec__args_1a09a2435dd9a164da4ee8778cd3e1d0ee"></span>uint64_t <code class="sig-name descname">cntid</code><a class="headerlink" href="#c.xnvmec_args::cntid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::lid">
+<span class="target" id="structxnvmec__args_1a06bc2d83774a41b5a2431340bfe4d5ec"></span>uint32_t <code class="sig-name descname">lid</code><a class="headerlink" href="#c.xnvmec_args::lid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::lsp">
+<span class="target" id="structxnvmec__args_1a6336d86f57246cb38af2fc85b1dae700"></span>uint32_t <code class="sig-name descname">lsp</code><a class="headerlink" href="#c.xnvmec_args::lsp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::lpo_nbytes">
+<span class="target" id="structxnvmec__args_1acc0979a14b760782e85fbeb03967c801"></span>uint64_t <code class="sig-name descname">lpo_nbytes</code><a class="headerlink" href="#c.xnvmec_args::lpo_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::rae">
+<span class="target" id="structxnvmec__args_1a4b3e12f8b6e17d0c767e8ca94ab992d2"></span>uint32_t <code class="sig-name descname">rae</code><a class="headerlink" href="#c.xnvmec_args::rae" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::clear">
+<span class="target" id="structxnvmec__args_1acf42f2bf04761b39215f3b90ba32d31c"></span>uint32_t <code class="sig-name descname">clear</code><a class="headerlink" href="#c.xnvmec_args::clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::zf">
+<span class="target" id="structxnvmec__args_1a0f958769eb65f30c12f908034d72ed61"></span>uint32_t <code class="sig-name descname">zf</code><a class="headerlink" href="#c.xnvmec_args::zf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::ses">
+<span class="target" id="structxnvmec__args_1a3573cc538709c272db31962c80c58733"></span>uint32_t <code class="sig-name descname">ses</code><a class="headerlink" href="#c.xnvmec_args::ses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::sel">
+<span class="target" id="structxnvmec__args_1a8a9b3e33545e59ff64f7f5ffece53126"></span>uint32_t <code class="sig-name descname">sel</code><a class="headerlink" href="#c.xnvmec_args::sel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::mset">
+<span class="target" id="structxnvmec__args_1a345cf3d2fd148418b1c050ed8fe2810c"></span>uint32_t <code class="sig-name descname">mset</code><a class="headerlink" href="#c.xnvmec_args::mset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::ause">
+<span class="target" id="structxnvmec__args_1a50dfcb37c6318afcc2ad9d93f1886215"></span>uint32_t <code class="sig-name descname">ause</code><a class="headerlink" href="#c.xnvmec_args::ause" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::ovrpat">
+<span class="target" id="structxnvmec__args_1a76d98b586cb15a7ab528e2a1d416d9ea"></span>uint32_t <code class="sig-name descname">ovrpat</code><a class="headerlink" href="#c.xnvmec_args::ovrpat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::owpass">
+<span class="target" id="structxnvmec__args_1a5ffa4f39e74260e87a31b3c13d9d2ad0"></span>uint32_t <code class="sig-name descname">owpass</code><a class="headerlink" href="#c.xnvmec_args::owpass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::oipbp">
+<span class="target" id="structxnvmec__args_1a69b72e696a3ef71ec7f9af00743e7942"></span>uint32_t <code class="sig-name descname">oipbp</code><a class="headerlink" href="#c.xnvmec_args::oipbp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::nodas">
+<span class="target" id="structxnvmec__args_1a519772e8996f96ab110323c05ed826fe"></span>uint32_t <code class="sig-name descname">nodas</code><a class="headerlink" href="#c.xnvmec_args::nodas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::action">
+<span class="target" id="structxnvmec__args_1adc614b52cc877f7ae3306644b3154c79"></span>uint32_t <code class="sig-name descname">action</code><a class="headerlink" href="#c.xnvmec_args::action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::zrms">
+<span class="target" id="structxnvmec__args_1a4474e23887206e896223df1ad9fe5f6d"></span>uint32_t <code class="sig-name descname">zrms</code><a class="headerlink" href="#c.xnvmec_args::zrms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::pi">
+<span class="target" id="structxnvmec__args_1ab4cbc9895b0f8b989e7ef360f820db84"></span>uint32_t <code class="sig-name descname">pi</code><a class="headerlink" href="#c.xnvmec_args::pi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::pil">
+<span class="target" id="structxnvmec__args_1ab97263f2f1212285946681189a0493ad"></span>uint32_t <code class="sig-name descname">pil</code><a class="headerlink" href="#c.xnvmec_args::pil" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::fid">
+<span class="target" id="structxnvmec__args_1ac7582ab91ad6e19ddd02e215969e0d71"></span>uint32_t <code class="sig-name descname">fid</code><a class="headerlink" href="#c.xnvmec_args::fid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::feat">
+<span class="target" id="structxnvmec__args_1a3fa20a36cb48ab48ad83f396b773ea6e"></span>uint32_t <code class="sig-name descname">feat</code><a class="headerlink" href="#c.xnvmec_args::feat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::seed">
+<span class="target" id="structxnvmec__args_1ac9984c580c1205ceb87f513d9bfdeaa5"></span>uint32_t <code class="sig-name descname">seed</code><a class="headerlink" href="#c.xnvmec_args::seed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::qdepth">
+<span class="target" id="structxnvmec__args_1a3f69d209058ce20bd3887b64021a0d29"></span>uint32_t <code class="sig-name descname">qdepth</code><a class="headerlink" href="#c.xnvmec_args::qdepth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::limit">
+<span class="target" id="structxnvmec__args_1ab1884e7814ec9a8288eb82133886f52b"></span>uint32_t <code class="sig-name descname">limit</code><a class="headerlink" href="#c.xnvmec_args::limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::count">
+<span class="target" id="structxnvmec__args_1ab1296e58ce1dabc529df604ae9c138be"></span>uint64_t <code class="sig-name descname">count</code><a class="headerlink" href="#c.xnvmec_args::count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::offset">
+<span class="target" id="structxnvmec__args_1a3363c63d6b57655d5c9728c7b27dcb7e"></span>uint64_t <code class="sig-name descname">offset</code><a class="headerlink" href="#c.xnvmec_args::offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::opcode">
+<span class="target" id="structxnvmec__args_1a14c7eb602f34eec552977b864c7cc2fa"></span>uint64_t <code class="sig-name descname">opcode</code><a class="headerlink" href="#c.xnvmec_args::opcode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::flags">
+<span class="target" id="structxnvmec__args_1a7fe61edc86d565056b457dbf89f6202e"></span>uint64_t <code class="sig-name descname">flags</code><a class="headerlink" href="#c.xnvmec_args::flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::all">
+<span class="target" id="structxnvmec__args_1a6ceb1f370043bbce81df4698c96a670c"></span>uint64_t <code class="sig-name descname">all</code><a class="headerlink" href="#c.xnvmec_args::all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::status">
+<span class="target" id="structxnvmec__args_1a6a45453888dc73ff64556ba047fd1a64"></span>uint32_t <code class="sig-name descname">status</code><a class="headerlink" href="#c.xnvmec_args::status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::save">
+<span class="target" id="structxnvmec__args_1a51b0fbf4d1b7539aa3167ff6c4d83ee1"></span>uint32_t <code class="sig-name descname">save</code><a class="headerlink" href="#c.xnvmec_args::save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::reset">
+<span class="target" id="structxnvmec__args_1afdd7dc8ac0ba59ef8fc8c4d7596b68ed"></span>uint32_t <code class="sig-name descname">reset</code><a class="headerlink" href="#c.xnvmec_args::reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::verbose">
+<span class="target" id="structxnvmec__args_1af179811e1fd167e2f16d2e8bc16d37d1"></span>uint32_t <code class="sig-name descname">verbose</code><a class="headerlink" href="#c.xnvmec_args::verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::help">
+<span class="target" id="structxnvmec__args_1a9279bd749fb8b0bf73e1c14dfa69a638"></span>uint32_t <code class="sig-name descname">help</code><a class="headerlink" href="#c.xnvmec_args::help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-sub">
+<span id="sec-c-apis-xnvmec-struct-xnvmec-sub"></span><h3>xnvmec_sub<a class="headerlink" href="#xnvmec-sub" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.xnvmec_sub">
+<span class="target" id="structxnvmec__sub"></span><em class="property">struct </em><code class="sig-name descname">xnvmec_sub</code><a class="headerlink" href="#c.xnvmec_sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filled by the user of libxnvmc, usually statically right above main. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.xnvmec_sub::name">
+<span class="target" id="structxnvmec__sub_1a23a2dcfd6191df36b34643f088ae6a59"></span>const char* <code class="sig-name descname">name</code><a class="headerlink" href="#c.xnvmec_sub::name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Short name of the sub-command. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_sub::descr_short">
+<span class="target" id="structxnvmec__sub_1a15b2dbc5ed44b3be951e49dc3c378354"></span>const char* <code class="sig-name descname">descr_short</code><a class="headerlink" href="#c.xnvmec_sub::descr_short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Short sub-command description. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_sub::descr_long">
+<span class="target" id="structxnvmec__sub_1ae57435caee99b6a4645cf05efddb2491"></span>const char* <code class="sig-name descname">descr_long</code><a class="headerlink" href="#c.xnvmec_sub::descr_long" title="Permalink to this definition">¶</a></dt>
+<dd><p>Long sub-command description. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_sub::command">
+<span class="target" id="structxnvmec__sub_1ad6c0dbc23cefaf29640e09ce6160f18a"></span>xnvmec_subfunc <code class="sig-name descname">command</code><a class="headerlink" href="#c.xnvmec_sub::command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to execute. </p>
+<p>Options to parse into args and pass onto func </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structxnvmec__sub_1a7e4539d1f19a1fdfe5c818b1f8067861"></span><code class="sig-name descname">struct xnvmec_sub_opt xnvmec_sub::opts[XNVMEC_SUB_OPTS_LEN]</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-sub-opt">
+<span id="sec-c-apis-xnvmec-struct-xnvmec-sub-opt"></span><h3>xnvmec_sub_opt<a class="headerlink" href="#xnvmec-sub-opt" title="Permalink to this headline">¶</a></h3>
+<dl class="struct">
+<dt id="c.xnvmec_sub_opt">
+<span class="target" id="structxnvmec__sub__opt"></span><em class="property">struct </em><code class="sig-name descname">xnvmec_sub_opt</code><a class="headerlink" href="#c.xnvmec_sub_opt" title="Permalink to this definition">¶</a></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.xnvmec_sub_opt::opt">
+<span class="target" id="structxnvmec__sub__opt_1aea845475e40ac0d6716a3c5cb1efc17c"></span><a class="reference internal" href="#c.xnvmec_opt" title="xnvmec_opt">xnvmec_opt</a> <code class="sig-name descname">opt</code><a class="headerlink" href="#c.xnvmec_sub_opt::opt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_sub_opt::type">
+<span class="target" id="structxnvmec__sub__opt_1a07f5ad733a47ab22fee03ae4f08f2f50"></span><a class="reference internal" href="#c.xnvmec_opt_type" title="xnvmec_opt_type">xnvmec_opt_type</a> <code class="sig-name descname">type</code><a class="headerlink" href="#c.xnvmec_sub_opt::type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="functions">
+<span id="sec-c-apis-xnvmec-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sec-c-apis-xnvmec-func-xnvmec">
+<span id="id2"></span><h3>xnvmec<a class="headerlink" href="#sec-c-apis-xnvmec-func-xnvmec" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<span class="target" id="libxnvmec_8h_1a26da0086cab3abb7cbcdc3aeace797f8"></span>int <code class="sig-name descname">xnvmec</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a>  *<em> cli</em>, int<em> argc</em>, char **<em> argv</em>, int<em> opts</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-args-pr">
+<span id="sec-c-apis-xnvmec-func-xnvmec-args-pr"></span><h3>xnvmec_args_pr<a class="headerlink" href="#xnvmec-args-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_args_pr">
+<span class="target" id="libxnvmec_8h_1ac253db2bbfb079984c563793f338a146"></span>void <code class="sig-name descname">xnvmec_args_pr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvmec_args" title="xnvmec_args">xnvmec_args</a>  *<em> args</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_args_pr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-buf-clear">
+<span id="sec-c-apis-xnvmec-func-xnvmec-buf-clear"></span><h3>xnvmec_buf_clear<a class="headerlink" href="#xnvmec-buf-clear" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_buf_clear">
+<span class="target" id="libxnvmec_8h_1a0a2adfbd498b066cbcbf4975a37e0107"></span>void* <code class="sig-name descname">xnvmec_buf_clear</code><span class="sig-paren">(</span>void *<em> buf</em>, size_t<em> nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_buf_clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-buf-diff">
+<span id="sec-c-apis-xnvmec-func-xnvmec-buf-diff"></span><h3>xnvmec_buf_diff<a class="headerlink" href="#xnvmec-buf-diff" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_buf_diff">
+<span class="target" id="libxnvmec_8h_1a313c28352733e4bfe34d7ad65bac508d"></span>size_t <code class="sig-name descname">xnvmec_buf_diff</code><span class="sig-paren">(</span>const void *<em> expected</em>, const void *<em> actual</em>, size_t<em> nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_buf_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of bytes where expected is different from actual. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, returns number of bytes that differ </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">expected</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actual</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-buf-diff-pr">
+<span id="sec-c-apis-xnvmec-func-xnvmec-buf-diff-pr"></span><h3>xnvmec_buf_diff_pr<a class="headerlink" href="#xnvmec-buf-diff-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_buf_diff_pr">
+<span class="target" id="libxnvmec_8h_1ab0efec8492256031dc4ad9ef9f866d45"></span>void <code class="sig-name descname">xnvmec_buf_diff_pr</code><span class="sig-paren">(</span>const void *<em> expected</em>, const void *<em> actual</em>, size_t<em> nbytes</em>, int<em> opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_buf_diff_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the number and value of bytes where expected is different from actual. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">expected</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">actual</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-buf-fill">
+<span id="sec-c-apis-xnvmec-func-xnvmec-buf-fill"></span><h3>xnvmec_buf_fill<a class="headerlink" href="#xnvmec-buf-fill" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_buf_fill">
+<span class="target" id="libxnvmec_8h_1a69e0b882fdb26029d17895d91f8daf70"></span>int <code class="sig-name descname">xnvmec_buf_fill</code><span class="sig-paren">(</span>void *<em> buf</em>, size_t<em> nbytes</em>, const char *<em> content</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_buf_fill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills <code class="docutils literal notranslate"><span class="pre">buf</span></code> with content <code class="docutils literal notranslate"><span class="pre">nbytes</span></code> of content. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to the buffer to fill </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">content</span></code>: Name of a file, or special “zero”, or “anum” </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: Amount of bytes to fill in buf</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-buf-from-file">
+<span id="sec-c-apis-xnvmec-func-xnvmec-buf-from-file"></span><h3>xnvmec_buf_from_file<a class="headerlink" href="#xnvmec-buf-from-file" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_buf_from_file">
+<span class="target" id="libxnvmec_8h_1a989f58694f9d8868074940fbc1d9be7e"></span>int <code class="sig-name descname">xnvmec_buf_from_file</code><span class="sig-paren">(</span>void *<em> buf</em>, size_t<em> nbytes</em>, const char *<em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_buf_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read content of file into buffer. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to the buffer </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: Size of buf </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code>: Source to read from</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-buf-to-file">
+<span id="sec-c-apis-xnvmec-func-xnvmec-buf-to-file"></span><h3>xnvmec_buf_to_file<a class="headerlink" href="#xnvmec-buf-to-file" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_buf_to_file">
+<span class="target" id="libxnvmec_8h_1a0631f77d0d60a704246ef0050e22e4d1"></span>int <code class="sig-name descname">xnvmec_buf_to_file</code><span class="sig-paren">(</span>void *<em> buf</em>, size_t<em> nbytes</em>, const char *<em> path</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_buf_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write content of buffer into file. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to the buffer </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: Size of buf </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code>: Destination where buffer will be dumped to</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-cmd-from-file">
+<span id="sec-c-apis-xnvmec-func-xnvmec-cmd-from-file"></span><h3>xnvmec_cmd_from_file<a class="headerlink" href="#xnvmec-cmd-from-file" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_cmd_from_file">
+<span class="target" id="libxnvmec_8h_1a93dcce2974330c4948d248bad0e9aac1"></span>int <code class="sig-name descname">xnvmec_cmd_from_file</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="xnvme.html#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a>  *<em> cmd</em>, const char *<em> fpath</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_cmd_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill the the given ‘cmd’ with content of file at ‘fpath’. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code>: the command to fill </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fpath</span></code>: path to file</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-cmd-to-file">
+<span id="sec-c-apis-xnvmec-func-xnvmec-cmd-to-file"></span><h3>xnvmec_cmd_to_file<a class="headerlink" href="#xnvmec-cmd-to-file" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_cmd_to_file">
+<span class="target" id="libxnvmec_8h_1a4018ad7f754a29f4b519197d2d7b3145"></span>int <code class="sig-name descname">xnvmec_cmd_to_file</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="xnvme.html#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a>  *<em> cmd</em>, const char *<em> fpath</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_cmd_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the given <code class="docutils literal notranslate"><span class="pre">cmd</span></code> in <code class="docutils literal notranslate"><span class="pre">fpath</span></code> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code>: the command to store </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fpath</span></code>: path to store content of cmd in</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-int2opt">
+<span id="sec-c-apis-xnvmec-func-xnvmec-int2opt"></span><h3>xnvmec_int2opt<a class="headerlink" href="#xnvmec-int2opt" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_int2opt">
+<span class="target" id="libxnvmec_8h_1a2da38bd7a0973bec92aa7c972f1d20e0"></span>enum <a class="reference internal" href="#c.xnvmec_opt" title="xnvmec_opt">xnvmec_opt</a> <code class="sig-name descname">xnvmec_int2opt</code><span class="sig-paren">(</span>int<em> opt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_int2opt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given integer to opt. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, a valid OP is returned. On error, XNVME_OPT_END is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">opt</span></code>: The integer to convert</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvmec-perr">
+<span id="sec-c-apis-xnvmec-func-xnvmec-perr"></span><h3>xnvmec_perr<a class="headerlink" href="#xnvmec-perr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_perr">
+<span class="target" id="libxnvmec_8h_1a8b446d8b351fc88e8fdf9c4751711bc5"></span>void <code class="sig-name descname">xnvmec_perr</code><span class="sig-paren">(</span>const char *<em> msg</em>, int<em> err</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_perr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-pinf">
+<span id="sec-c-apis-xnvmec-func-xnvmec-pinf"></span><h3>xnvmec_pinf<a class="headerlink" href="#xnvmec-pinf" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_pinf">
+<span class="target" id="libxnvmec_8h_1a8b9adbb94da4b569f38bc1c0ee01de07"></span>void <code class="sig-name descname">xnvmec_pinf</code><span class="sig-paren">(</span>const char *<em> format</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_pinf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-timer-bw-pr">
+<span id="sec-c-apis-xnvmec-func-xnvmec-timer-bw-pr"></span><h3>xnvmec_timer_bw_pr<a class="headerlink" href="#xnvmec-timer-bw-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_timer_bw_pr">
+<span class="target" id="libxnvmec_8h_1a72e47e7ae38fa58b6e951c427f1b3edf"></span>static void <code class="sig-name descname">xnvmec_timer_bw_pr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a>  *<em> cli</em>, const char *<em> prefix</em>, size_t<em> nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_timer_bw_pr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-timer-start">
+<span id="sec-c-apis-xnvmec-func-xnvmec-timer-start"></span><h3>xnvmec_timer_start<a class="headerlink" href="#xnvmec-timer-start" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_timer_start">
+<span class="target" id="libxnvmec_8h_1a629183b4b040a28c7c315096acebf85e"></span>static uint64_t <code class="sig-name descname">xnvmec_timer_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a>  *<em> cli</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_timer_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="xnvmec-timer-stop">
+<span id="sec-c-apis-xnvmec-func-xnvmec-timer-stop"></span><h3>xnvmec_timer_stop<a class="headerlink" href="#xnvmec-timer-stop" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvmec_timer_stop">
+<span class="target" id="libxnvmec_8h_1aac1e2f9f315348df81e4cc1a1f11e190"></span>static uint64_t <code class="sig-name descname">xnvmec_timer_stop</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a>  *<em> cli</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_timer_stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="xnvmec_headers.html" class="btn btn-neutral float-right" title="xnvmec: headers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="znd_headers.html" class="btn btn-neutral float-left" title="znd: headers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
