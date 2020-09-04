@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.19 documentation</title>
+  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.20 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.19
+                0.0.20
               </div>
             
           
@@ -434,8 +434,8 @@ means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.
 <span class="s2">direct=1</span>
 <span class="s2">thread=1</span>
 <span class="s2">time_based=1</span>
-<span class="s2">runtime=10</span>
-<span class="s2">ramp_time=1</span>
+<span class="s2">runtime=7</span>
+<span class="s2">ramp_time=3</span>
 <span class="s2">norandommap=1</span>
 
 <span class="s2">; Avoid accidentally creating device files; e.g. &quot;</span>/dev/nvme0n1<span class="s2">&quot;, &quot;</span>/dev/nullb0<span class="s2">&quot;</span>
@@ -582,37 +582,39 @@ Zoned Command Set enabled.</p>
 <span class="p">;</span> Take note of the <span class="s2">&quot;special&quot;</span> use of <span class="s1">&#39;filename&#39;</span> in the sections below
 <span class="p">;</span>
 <span class="p">;</span> In the fio-file, it needs <span class="s2">&quot;\&quot; to escape &quot;</span>:<span class="s2">&quot;, eg.</span>
-<span class="s2">; filename=liou\:/dev/nvme0n1</span>
+<span class="s2">; filename=liou\:/dev/nvme0n2</span>
 <span class="s2">;</span>
 <span class="s2">; On the command-line, it needs &quot;</span><span class="se">\\</span><span class="s2">&quot; to escape &quot;</span>:<span class="s2">&quot;, eg.</span>
-<span class="s2">; --filename=liou\\:/dev/nvme0n1</span>
+<span class="s2">; --filename=liou\\:/dev/nvme0n2</span>
 <span class="s2">;</span>
 <span class="s2">; Job-file is intended to be used as:</span>
 <span class="s2">;</span>
-<span class="s2">; fio xnvme-zoned.fio \</span>
-<span class="s2">;		--section=verify \</span>
-<span class="s2">;		--filename=liou:\\/dev/nvme0n1</span>
+<span class="s2">;   fio xnvme-zoned.fio \</span>
+<span class="s2">;     --section=verify \</span>
+<span class="s2">;     --ioengine=external:/usr/lib/libxnvme-fio-engine.so \</span>
+<span class="s2">;     --filename=liou:\\/dev/nvme0n2</span>
 <span class="s2">;</span>
 <span class="s2">; Have a look at xnvme-compare.fio, for the details on instrumenting the</span>
 <span class="s2">; different backends and comparing performance.</span>
 <span class="s2">;</span>
-<span class="s2">; I/O errors have been observed with fio 3.20, if you encounted them, then you</span>
-<span class="s2">; can clean up the drive by first invoking:</span>
+<span class="s2">; I/O errors have been observed with fio 3.20, however, not with 3.22, in any</span>
+<span class="s2">; case, if you encounter them, then you can clean up the drive by first</span>
+<span class="s2">; invoking:</span>
 <span class="s2">;</span>
-<span class="s2">; zoned mgmt-reset /dev/nvme0n2 --slba 0x0 --all</span>
+<span class="s2">;   zoned mgmt-reset /dev/nvme0n2 --slba 0x0 --all</span>
 <span class="s2">;</span>
 <span class="s2">; Which will prepare the drive</span>
 <span class="s2">;</span>
 <span class="s2">[global]</span>
-<span class="s2">ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
+<span class="s2">;ioengine=external:/usr/lib/libxnvme-fio-engine.so</span>
 <span class="s2">zonemode=zbd</span>
 <span class="s2">size=1G</span>
 <span class="s2">iodepth=1</span>
 <span class="s2">bs=4K</span>
 <span class="s2">direct=1</span>
 <span class="s2">thread=1</span>
-<span class="s2">time_based=1</span>
-<span class="s2">runtime=10</span>
+<span class="s2">;time_based=1</span>
+<span class="s2">;runtime=10</span>
 <span class="s2">ramp_time=1</span>
 <span class="s2">norandommap=1</span>
 <span class="s2">; If fio complains about zone-size, then run:</span>
