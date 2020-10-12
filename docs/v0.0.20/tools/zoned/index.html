@@ -1,0 +1,1193 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>zoned &mdash; xNVMe 0.0.20 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="lblk" href="../lblk/index.html" />
+    <link rel="prev" title="xnvme" href="../xnvme/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.20
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">zoned</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerate-zoned-devices-on-the-system">Enumerate Zoned Devices on the system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-essential-device-information">Retrieve essential device information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retrieve-device-report">Retrieve Device Report</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#retrieve-the-entire-device-report">Retrieve the entire device report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retrieve-a-subset-of-the-device-report">Retrieve a subset of the device report</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#report-changes">Report Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#report-errors">Report Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zone-management">Zone Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reading">Reading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing">Writing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-with-append">Writing - with append</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fio/index.html">fio xNVMe IO Engine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C APIs: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building/index.html">Building xNVMe from source</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Tools</a> &raquo;</li>
+        
+      <li>zoned</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/tools/zoned/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="zoned">
+<span id="sec-tools-zoned"></span><h1>zoned<a class="headerlink" href="#zoned" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Usage: zoned &lt;command&gt; [&lt;args&gt;]
+
+Where &lt;command&gt; is one of:
+
+  enum             | Enumerate Zoned Namespaces on the system
+  info             | Retrieve device info
+  idfy-ctrlr       | Zoned Command Set specific identify-controller
+  idfy-ns          | Zoned Command Set specific identify-controller
+  report           | Retrieve Zone Information
+  changes          | Retrieve the Changed Zone list
+  errors           | Retrieve the Error-Log
+  read             | Execute a Read Command
+  write            | Execute a Write Command
+  append           | Execute an Append Command
+  mgmt-open        | Open a Zone
+  mgmt-close       | Close a Zone
+  mgmt-finish      | Finish a Zone
+  mgmt-reset       | Reset a Zone
+  mgmt             | Zone Management Send Command with custom action
+
+See &#39;zoned &lt;command&gt; --help&#39; for the description of [&lt;args&gt;]
+
+Zoned Namespace Utility -- ver: {major: 0, minor: 0, patch: 20}
+
+</pre></div>
+</div>
+<div class="section" id="enumerate-zoned-devices-on-the-system">
+<h2>Enumerate Zoned Devices on the system<a class="headerlink" href="#enumerate-zoned-devices-on-the-system" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned enum --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned enum <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Enumerate Zoned Namespaces on the system
+
+Where &lt;args&gt; include:
+
+  <span class="o">[</span> --uri uri <span class="o">]</span>                 <span class="p">;</span> System URI e.g. fab:10.9.8.1:8888
+  <span class="o">[</span> --flags 0xNUM <span class="o">]</span>             <span class="p">;</span> Command flags
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Enumerate the storage devices usable by the library and the <code class="docutils literal notranslate"><span class="pre">zoned</span></code> CLI on
+the system:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned enum
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xnvme_enumerate()</span>
+xnvme_enumeration:
+  capacity: <span class="m">94</span>
+  nentries: <span class="m">6</span>
+  entries:
+  - <span class="o">{</span>trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>, schm: <span class="s1">&#39;liou&#39;</span>, opts: <span class="s1">&#39;&#39;</span>, uri: <span class="s1">&#39;liou:/dev/nvme0n1&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>trgt: <span class="s1">&#39;/dev/nvme0n2&#39;</span>, schm: <span class="s1">&#39;liou&#39;</span>, opts: <span class="s1">&#39;&#39;</span>, uri: <span class="s1">&#39;liou:/dev/nvme0n2&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>, schm: <span class="s1">&#39;laio&#39;</span>, opts: <span class="s1">&#39;&#39;</span>, uri: <span class="s1">&#39;laio:/dev/nvme0n1&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>trgt: <span class="s1">&#39;/dev/nvme0n2&#39;</span>, schm: <span class="s1">&#39;laio&#39;</span>, opts: <span class="s1">&#39;&#39;</span>, uri: <span class="s1">&#39;laio:/dev/nvme0n2&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>, schm: <span class="s1">&#39;lioc&#39;</span>, opts: <span class="s1">&#39;&#39;</span>, uri: <span class="s1">&#39;lioc:/dev/nvme0n1&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>trgt: <span class="s1">&#39;/dev/nvme0n2&#39;</span>, schm: <span class="s1">&#39;lioc&#39;</span>, opts: <span class="s1">&#39;&#39;</span>, uri: <span class="s1">&#39;lioc:/dev/nvme0n2&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieve-essential-device-information">
+<h2>Retrieve essential device information<a class="headerlink" href="#retrieve-essential-device-information" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned info --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned info &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Retrieve device info
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Retrieve device properties and attributes for a specific device identified by
+e.g. <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned info /dev/nvme0n2
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nvme0n2&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nvme0n2&#39;</span>
+  xnvme_cmd_opts:
+    mask: <span class="s1">&#39;00000000000000000000000000000001&#39;</span>
+    iomd: <span class="s1">&#39;SYNC&#39;</span>
+    payload_data: <span class="s1">&#39;DRV&#39;</span>
+    payload_meta: <span class="s1">&#39;DRV&#39;</span>
+    csi: 0x2
+    nsid: 0x2
+    ssw: <span class="m">12</span>
+  xnvme_geo:
+    type: XNVME_GEO_ZONED
+    npugrp: <span class="m">1</span>
+    npunit: <span class="m">1</span>
+    nzone: <span class="m">512</span>
+    nsect: <span class="m">4096</span>
+    nbytes: <span class="m">4096</span>
+    nbytes_oob: <span class="m">0</span>
+    tbytes: <span class="m">8589934592</span>
+    mdts_nbytes: <span class="m">520192</span>
+    lba_nbytes: <span class="m">4096</span>
+    lba_extended: <span class="m">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieve-device-report">
+<h2>Retrieve Device Report<a class="headerlink" href="#retrieve-device-report" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned report --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned report &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Retrieve Zone Information
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  <span class="o">[</span> --slba 0xNUM <span class="o">]</span>              <span class="p">;</span> Start Logical Block Address
+  <span class="o">[</span> --limit NUM <span class="o">]</span>               <span class="p">;</span> Restrict amount to <span class="s1">&#39;NUM&#39;</span>
+  <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<div class="section" id="retrieve-the-entire-device-report">
+<h3>Retrieve the entire device report<a class="headerlink" href="#retrieve-the-entire-device-report" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve a complete report of zone information for a specific device identified
+by e.g. <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned report /dev/nvme0n2
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Zone Information Report for lba: 0x0000000000000000, limit: 512</span>
+znd_report:
+  report_nbytes: <span class="m">32832</span>
+  entries_nbytes: <span class="m">32768</span>
+  zd_nbytes: <span class="m">64</span>
+  zdext_nbytes: <span class="m">0</span>
+  zrent_nbytes: <span class="m">64</span>
+  zslba: 0x0000000000000000
+  zelba: 0x00000000001ff000
+  nzones: <span class="m">512</span>
+  nentries: <span class="m">512</span>
+  extended: <span class="m">0</span>
+  entries:
+    - <span class="o">{</span>zslba: 0x0000000000000000, wp: 0x0000000000000000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000001000, wp: 0x0000000000002000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000002000, wp: 0x0000000000003000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000003000, wp: 0x0000000000004000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000004000, wp: 0x0000000000005000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000005000, wp: 0x0000000000006000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000006000, wp: 0x0000000000007000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000007000, wp: 0x0000000000008000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000008000, wp: 0x0000000000009000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000009000, wp: 0x000000000000a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000000a000, wp: 0x000000000000b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000000b000, wp: 0x000000000000c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000000c000, wp: 0x000000000000c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000000d000, wp: 0x000000000000d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000000e000, wp: 0x000000000000e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000000f000, wp: 0x000000000000f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000010000, wp: 0x0000000000010000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000011000, wp: 0x0000000000011000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000012000, wp: 0x0000000000012000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000013000, wp: 0x0000000000013000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000014000, wp: 0x0000000000014000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000015000, wp: 0x0000000000015000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000016000, wp: 0x0000000000016000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000017000, wp: 0x0000000000017000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000018000, wp: 0x0000000000018000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000019000, wp: 0x0000000000019000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000001a000, wp: 0x000000000001a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000001b000, wp: 0x000000000001b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000001c000, wp: 0x000000000001c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000001d000, wp: 0x000000000001d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000001e000, wp: 0x000000000001e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000001f000, wp: 0x000000000001f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000020000, wp: 0x0000000000020000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000021000, wp: 0x0000000000021000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000022000, wp: 0x0000000000022000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000023000, wp: 0x0000000000023000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000024000, wp: 0x0000000000024000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000025000, wp: 0x0000000000025000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000026000, wp: 0x0000000000026000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000027000, wp: 0x0000000000027000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000028000, wp: 0x0000000000028000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000029000, wp: 0x0000000000029000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000002a000, wp: 0x000000000002a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000002b000, wp: 0x000000000002b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000002c000, wp: 0x000000000002c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000002d000, wp: 0x000000000002d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000002e000, wp: 0x000000000002e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000002f000, wp: 0x000000000002f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000030000, wp: 0x0000000000030000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000031000, wp: 0x0000000000031000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000032000, wp: 0x0000000000032000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000033000, wp: 0x0000000000033000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000034000, wp: 0x0000000000034000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000035000, wp: 0x0000000000035000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000036000, wp: 0x0000000000036000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000037000, wp: 0x0000000000037000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000038000, wp: 0x0000000000038000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000039000, wp: 0x0000000000039000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000003a000, wp: 0x000000000003a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000003b000, wp: 0x000000000003b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000003c000, wp: 0x000000000003c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000003d000, wp: 0x000000000003d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000003e000, wp: 0x000000000003e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000003f000, wp: 0x000000000003f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000040000, wp: 0x0000000000040000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000041000, wp: 0x0000000000041000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000042000, wp: 0x0000000000042000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000043000, wp: 0x0000000000043000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000044000, wp: 0x0000000000044000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000045000, wp: 0x0000000000045000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000046000, wp: 0x0000000000046000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000047000, wp: 0x0000000000047000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000048000, wp: 0x0000000000048000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000049000, wp: 0x0000000000049000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000004a000, wp: 0x000000000004a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000004b000, wp: 0x000000000004b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000004c000, wp: 0x000000000004c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000004d000, wp: 0x000000000004d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000004e000, wp: 0x000000000004e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000004f000, wp: 0x000000000004f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000050000, wp: 0x0000000000050000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000051000, wp: 0x0000000000051000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000052000, wp: 0x0000000000052000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000053000, wp: 0x0000000000053000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000054000, wp: 0x0000000000054000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000055000, wp: 0x0000000000055000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000056000, wp: 0x0000000000056000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000057000, wp: 0x0000000000057000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000058000, wp: 0x0000000000058000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000059000, wp: 0x0000000000059000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000005a000, wp: 0x000000000005a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000005b000, wp: 0x000000000005b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000005c000, wp: 0x000000000005c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000005d000, wp: 0x000000000005d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000005e000, wp: 0x000000000005e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000005f000, wp: 0x000000000005f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000060000, wp: 0x0000000000060000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000061000, wp: 0x0000000000061000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000062000, wp: 0x0000000000062000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000063000, wp: 0x0000000000063000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000064000, wp: 0x0000000000064000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000065000, wp: 0x0000000000065000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000066000, wp: 0x0000000000066000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000067000, wp: 0x0000000000067000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000068000, wp: 0x0000000000068000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000069000, wp: 0x0000000000069000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000006a000, wp: 0x000000000006a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000006b000, wp: 0x000000000006b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000006c000, wp: 0x000000000006c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000006d000, wp: 0x000000000006d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000006e000, wp: 0x000000000006e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000006f000, wp: 0x000000000006f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000070000, wp: 0x0000000000070000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000071000, wp: 0x0000000000071000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000072000, wp: 0x0000000000072000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000073000, wp: 0x0000000000073000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000074000, wp: 0x0000000000074000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000075000, wp: 0x0000000000075000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000076000, wp: 0x0000000000076000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000077000, wp: 0x0000000000077000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000078000, wp: 0x0000000000078000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000079000, wp: 0x0000000000079000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000007a000, wp: 0x000000000007a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000007b000, wp: 0x000000000007b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000007c000, wp: 0x000000000007c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000007d000, wp: 0x000000000007d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000007e000, wp: 0x000000000007e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000007f000, wp: 0x000000000007f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000080000, wp: 0x0000000000080000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000081000, wp: 0x0000000000081000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000082000, wp: 0x0000000000082000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000083000, wp: 0x0000000000083000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000084000, wp: 0x0000000000084000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000085000, wp: 0x0000000000085000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000086000, wp: 0x0000000000086000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000087000, wp: 0x0000000000087000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000088000, wp: 0x0000000000088000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000089000, wp: 0x0000000000089000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000008a000, wp: 0x000000000008a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000008b000, wp: 0x000000000008b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000008c000, wp: 0x000000000008c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000008d000, wp: 0x000000000008d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000008e000, wp: 0x000000000008e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000008f000, wp: 0x000000000008f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000090000, wp: 0x0000000000090000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000091000, wp: 0x0000000000091000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000092000, wp: 0x0000000000092000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000093000, wp: 0x0000000000093000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000094000, wp: 0x0000000000094000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000095000, wp: 0x0000000000095000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000096000, wp: 0x0000000000096000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000097000, wp: 0x0000000000097000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000098000, wp: 0x0000000000098000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000099000, wp: 0x0000000000099000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000009a000, wp: 0x000000000009a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000009b000, wp: 0x000000000009b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000009c000, wp: 0x000000000009c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000009d000, wp: 0x000000000009d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000009e000, wp: 0x000000000009e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000009f000, wp: 0x000000000009f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a0000, wp: 0x00000000000a0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a1000, wp: 0x00000000000a1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a2000, wp: 0x00000000000a2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a3000, wp: 0x00000000000a3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a4000, wp: 0x00000000000a4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a5000, wp: 0x00000000000a5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a6000, wp: 0x00000000000a6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a7000, wp: 0x00000000000a7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a8000, wp: 0x00000000000a8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000a9000, wp: 0x00000000000a9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000aa000, wp: 0x00000000000aa000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ab000, wp: 0x00000000000ab000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ac000, wp: 0x00000000000ac000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ad000, wp: 0x00000000000ad000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ae000, wp: 0x00000000000ae000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000af000, wp: 0x00000000000af000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b0000, wp: 0x00000000000b0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b1000, wp: 0x00000000000b1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b2000, wp: 0x00000000000b2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b3000, wp: 0x00000000000b3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b4000, wp: 0x00000000000b4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b5000, wp: 0x00000000000b5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b6000, wp: 0x00000000000b6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b7000, wp: 0x00000000000b7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b8000, wp: 0x00000000000b8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000b9000, wp: 0x00000000000b9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ba000, wp: 0x00000000000ba000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000bb000, wp: 0x00000000000bb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000bc000, wp: 0x00000000000bc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000bd000, wp: 0x00000000000bd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000be000, wp: 0x00000000000be000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000bf000, wp: 0x00000000000bf000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c0000, wp: 0x00000000000c0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c1000, wp: 0x00000000000c1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c2000, wp: 0x00000000000c2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c3000, wp: 0x00000000000c3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c4000, wp: 0x00000000000c4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c5000, wp: 0x00000000000c5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c6000, wp: 0x00000000000c6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c7000, wp: 0x00000000000c7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c8000, wp: 0x00000000000c8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000c9000, wp: 0x00000000000c9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ca000, wp: 0x00000000000ca000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000cb000, wp: 0x00000000000cb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000cc000, wp: 0x00000000000cc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000cd000, wp: 0x00000000000cd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ce000, wp: 0x00000000000ce000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000cf000, wp: 0x00000000000cf000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d0000, wp: 0x00000000000d0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d1000, wp: 0x00000000000d1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d2000, wp: 0x00000000000d2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d3000, wp: 0x00000000000d3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d4000, wp: 0x00000000000d4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d5000, wp: 0x00000000000d5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d6000, wp: 0x00000000000d6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d7000, wp: 0x00000000000d7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d8000, wp: 0x00000000000d8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000d9000, wp: 0x00000000000d9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000da000, wp: 0x00000000000da000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000db000, wp: 0x00000000000db000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000dc000, wp: 0x00000000000dc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000dd000, wp: 0x00000000000dd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000de000, wp: 0x00000000000de000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000df000, wp: 0x00000000000df000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e0000, wp: 0x00000000000e0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e1000, wp: 0x00000000000e1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e2000, wp: 0x00000000000e2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e3000, wp: 0x00000000000e3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e4000, wp: 0x00000000000e4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e5000, wp: 0x00000000000e5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e6000, wp: 0x00000000000e6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e7000, wp: 0x00000000000e7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e8000, wp: 0x00000000000e8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000e9000, wp: 0x00000000000e9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ea000, wp: 0x00000000000ea000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000eb000, wp: 0x00000000000eb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ec000, wp: 0x00000000000ec000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ed000, wp: 0x00000000000ed000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ee000, wp: 0x00000000000ee000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ef000, wp: 0x00000000000ef000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f0000, wp: 0x00000000000f0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f1000, wp: 0x00000000000f1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f2000, wp: 0x00000000000f2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f3000, wp: 0x00000000000f3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f4000, wp: 0x00000000000f4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f5000, wp: 0x00000000000f5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f6000, wp: 0x00000000000f6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f7000, wp: 0x00000000000f7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f8000, wp: 0x00000000000f8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000f9000, wp: 0x00000000000f9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000fa000, wp: 0x00000000000fa000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000fb000, wp: 0x00000000000fb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000fc000, wp: 0x00000000000fc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000fd000, wp: 0x00000000000fd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000fe000, wp: 0x00000000000fe000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000000ff000, wp: 0x00000000000ff000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000100000, wp: 0x0000000000100000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000101000, wp: 0x0000000000101000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000102000, wp: 0x0000000000102000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000103000, wp: 0x0000000000103000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000104000, wp: 0x0000000000104000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000105000, wp: 0x0000000000105000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000106000, wp: 0x0000000000106000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000107000, wp: 0x0000000000107000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000108000, wp: 0x0000000000108000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000109000, wp: 0x0000000000109000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000010a000, wp: 0x000000000010a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000010b000, wp: 0x000000000010b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000010c000, wp: 0x000000000010c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000010d000, wp: 0x000000000010d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000010e000, wp: 0x000000000010e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000010f000, wp: 0x000000000010f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000110000, wp: 0x0000000000110000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000111000, wp: 0x0000000000111000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000112000, wp: 0x0000000000112000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000113000, wp: 0x0000000000113000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000114000, wp: 0x0000000000114000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000115000, wp: 0x0000000000115000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000116000, wp: 0x0000000000116000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000117000, wp: 0x0000000000117000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000118000, wp: 0x0000000000118000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000119000, wp: 0x0000000000119000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000011a000, wp: 0x000000000011a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000011b000, wp: 0x000000000011b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000011c000, wp: 0x000000000011c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000011d000, wp: 0x000000000011d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000011e000, wp: 0x000000000011e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000011f000, wp: 0x000000000011f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000120000, wp: 0x0000000000120000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000121000, wp: 0x0000000000121000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000122000, wp: 0x0000000000122000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000123000, wp: 0x0000000000123000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000124000, wp: 0x0000000000124000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000125000, wp: 0x0000000000125000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000126000, wp: 0x0000000000126000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000127000, wp: 0x0000000000127000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000128000, wp: 0x0000000000128000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000129000, wp: 0x0000000000129000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000012a000, wp: 0x000000000012a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000012b000, wp: 0x000000000012b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000012c000, wp: 0x000000000012c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000012d000, wp: 0x000000000012d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000012e000, wp: 0x000000000012e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000012f000, wp: 0x000000000012f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000130000, wp: 0x0000000000130000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000131000, wp: 0x0000000000131000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000132000, wp: 0x0000000000132000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000133000, wp: 0x0000000000133000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000134000, wp: 0x0000000000134000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000135000, wp: 0x0000000000135000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000136000, wp: 0x0000000000136000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000137000, wp: 0x0000000000137000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000138000, wp: 0x0000000000138000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000139000, wp: 0x0000000000139000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000013a000, wp: 0x000000000013a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000013b000, wp: 0x000000000013b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000013c000, wp: 0x000000000013c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000013d000, wp: 0x000000000013d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000013e000, wp: 0x000000000013e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000013f000, wp: 0x000000000013f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000140000, wp: 0x0000000000140000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000141000, wp: 0x0000000000141000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000142000, wp: 0x0000000000142000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000143000, wp: 0x0000000000143000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000144000, wp: 0x0000000000144000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000145000, wp: 0x0000000000145000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000146000, wp: 0x0000000000146000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000147000, wp: 0x0000000000147000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000148000, wp: 0x0000000000148000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000149000, wp: 0x0000000000149000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000014a000, wp: 0x000000000014a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000014b000, wp: 0x000000000014b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000014c000, wp: 0x000000000014c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000014d000, wp: 0x000000000014d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000014e000, wp: 0x000000000014e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000014f000, wp: 0x000000000014f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000150000, wp: 0x0000000000150000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000151000, wp: 0x0000000000151000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000152000, wp: 0x0000000000152000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000153000, wp: 0x0000000000153000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000154000, wp: 0x0000000000154000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000155000, wp: 0x0000000000155000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000156000, wp: 0x0000000000156000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000157000, wp: 0x0000000000157000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000158000, wp: 0x0000000000158000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000159000, wp: 0x0000000000159000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000015a000, wp: 0x000000000015a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000015b000, wp: 0x000000000015b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000015c000, wp: 0x000000000015c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000015d000, wp: 0x000000000015d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000015e000, wp: 0x000000000015e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000015f000, wp: 0x000000000015f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000160000, wp: 0x0000000000160000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000161000, wp: 0x0000000000161000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000162000, wp: 0x0000000000162000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000163000, wp: 0x0000000000163000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000164000, wp: 0x0000000000164000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000165000, wp: 0x0000000000165000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000166000, wp: 0x0000000000166000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000167000, wp: 0x0000000000167000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000168000, wp: 0x0000000000168000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000169000, wp: 0x0000000000169000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000016a000, wp: 0x000000000016a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000016b000, wp: 0x000000000016b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000016c000, wp: 0x000000000016c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000016d000, wp: 0x000000000016d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000016e000, wp: 0x000000000016e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000016f000, wp: 0x000000000016f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000170000, wp: 0x0000000000170000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000171000, wp: 0x0000000000171000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000172000, wp: 0x0000000000172000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000173000, wp: 0x0000000000173000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000174000, wp: 0x0000000000174000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000175000, wp: 0x0000000000175000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000176000, wp: 0x0000000000176000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000177000, wp: 0x0000000000177000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000178000, wp: 0x0000000000178000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000179000, wp: 0x0000000000179000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000017a000, wp: 0x000000000017a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000017b000, wp: 0x000000000017b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000017c000, wp: 0x000000000017c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000017d000, wp: 0x000000000017d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000017e000, wp: 0x000000000017e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000017f000, wp: 0x000000000017f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000180000, wp: 0x0000000000180000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000181000, wp: 0x0000000000181000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000182000, wp: 0x0000000000182000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000183000, wp: 0x0000000000183000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000184000, wp: 0x0000000000184000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000185000, wp: 0x0000000000185000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000186000, wp: 0x0000000000186000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000187000, wp: 0x0000000000187000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000188000, wp: 0x0000000000188000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000189000, wp: 0x0000000000189000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000018a000, wp: 0x000000000018a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000018b000, wp: 0x000000000018b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000018c000, wp: 0x000000000018c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000018d000, wp: 0x000000000018d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000018e000, wp: 0x000000000018e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000018f000, wp: 0x000000000018f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000190000, wp: 0x0000000000190000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000191000, wp: 0x0000000000191000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000192000, wp: 0x0000000000192000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000193000, wp: 0x0000000000193000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000194000, wp: 0x0000000000194000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000195000, wp: 0x0000000000195000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000196000, wp: 0x0000000000196000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000197000, wp: 0x0000000000197000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000198000, wp: 0x0000000000198000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000199000, wp: 0x0000000000199000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000019a000, wp: 0x000000000019a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000019b000, wp: 0x000000000019b000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000019c000, wp: 0x000000000019c000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000019d000, wp: 0x000000000019d000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000019e000, wp: 0x000000000019e000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x000000000019f000, wp: 0x000000000019f000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a0000, wp: 0x00000000001a0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a1000, wp: 0x00000000001a1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a2000, wp: 0x00000000001a2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a3000, wp: 0x00000000001a3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a4000, wp: 0x00000000001a4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a5000, wp: 0x00000000001a5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a6000, wp: 0x00000000001a6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a7000, wp: 0x00000000001a7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a8000, wp: 0x00000000001a8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001a9000, wp: 0x00000000001a9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001aa000, wp: 0x00000000001aa000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ab000, wp: 0x00000000001ab000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ac000, wp: 0x00000000001ac000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ad000, wp: 0x00000000001ad000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ae000, wp: 0x00000000001ae000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001af000, wp: 0x00000000001af000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b0000, wp: 0x00000000001b0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b1000, wp: 0x00000000001b1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b2000, wp: 0x00000000001b2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b3000, wp: 0x00000000001b3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b4000, wp: 0x00000000001b4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b5000, wp: 0x00000000001b5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b6000, wp: 0x00000000001b6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b7000, wp: 0x00000000001b7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b8000, wp: 0x00000000001b8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001b9000, wp: 0x00000000001b9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ba000, wp: 0x00000000001ba000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001bb000, wp: 0x00000000001bb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001bc000, wp: 0x00000000001bc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001bd000, wp: 0x00000000001bd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001be000, wp: 0x00000000001be000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001bf000, wp: 0x00000000001bf000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c0000, wp: 0x00000000001c0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c1000, wp: 0x00000000001c1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c2000, wp: 0x00000000001c2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c3000, wp: 0x00000000001c3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c4000, wp: 0x00000000001c4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c5000, wp: 0x00000000001c5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c6000, wp: 0x00000000001c6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c7000, wp: 0x00000000001c7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c8000, wp: 0x00000000001c8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001c9000, wp: 0x00000000001c9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ca000, wp: 0x00000000001ca000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001cb000, wp: 0x00000000001cb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001cc000, wp: 0x00000000001cc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001cd000, wp: 0x00000000001cd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ce000, wp: 0x00000000001ce000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001cf000, wp: 0x00000000001cf000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d0000, wp: 0x00000000001d0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d1000, wp: 0x00000000001d1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d2000, wp: 0x00000000001d2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d3000, wp: 0x00000000001d3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d4000, wp: 0x00000000001d4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d5000, wp: 0x00000000001d5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d6000, wp: 0x00000000001d6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d7000, wp: 0x00000000001d7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d8000, wp: 0x00000000001d8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001d9000, wp: 0x00000000001d9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001da000, wp: 0x00000000001da000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001db000, wp: 0x00000000001db000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001dc000, wp: 0x00000000001dc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001dd000, wp: 0x00000000001dd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001de000, wp: 0x00000000001de000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001df000, wp: 0x00000000001df000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e0000, wp: 0x00000000001e0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e1000, wp: 0x00000000001e1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e2000, wp: 0x00000000001e2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e3000, wp: 0x00000000001e3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e4000, wp: 0x00000000001e4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e5000, wp: 0x00000000001e5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e6000, wp: 0x00000000001e6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e7000, wp: 0x00000000001e7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e8000, wp: 0x00000000001e8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001e9000, wp: 0x00000000001e9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ea000, wp: 0x00000000001ea000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001eb000, wp: 0x00000000001eb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ec000, wp: 0x00000000001ec000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ed000, wp: 0x00000000001ed000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ee000, wp: 0x00000000001ee000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ef000, wp: 0x00000000001ef000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f0000, wp: 0x00000000001f0000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f1000, wp: 0x00000000001f1000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f2000, wp: 0x00000000001f2000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f3000, wp: 0x00000000001f3000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f4000, wp: 0x00000000001f4000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f5000, wp: 0x00000000001f5000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f6000, wp: 0x00000000001f6000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f7000, wp: 0x00000000001f7000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f8000, wp: 0x00000000001f8000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001f9000, wp: 0x00000000001f9000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001fa000, wp: 0x00000000001fa000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001fb000, wp: 0x00000000001fb000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001fc000, wp: 0x00000000001fc000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001fd000, wp: 0x00000000001fd000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001fe000, wp: 0x00000000001fe000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x00000000001ff000, wp: 0x00000000001ff000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieve-a-subset-of-the-device-report">
+<h3>Retrieve a subset of the device report<a class="headerlink" href="#retrieve-a-subset-of-the-device-report" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned report /dev/nvme0n2 --slba 0x0 --limit <span class="m">10</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Zone Information Report for lba: 0x0000000000000000, limit: 10</span>
+znd_report:
+  report_nbytes: <span class="m">704</span>
+  entries_nbytes: <span class="m">640</span>
+  zd_nbytes: <span class="m">64</span>
+  zdext_nbytes: <span class="m">0</span>
+  zrent_nbytes: <span class="m">64</span>
+  zslba: 0x0000000000000000
+  zelba: 0x0000000000009000
+  nzones: <span class="m">512</span>
+  nentries: <span class="m">10</span>
+  extended: <span class="m">0</span>
+  entries:
+    - <span class="o">{</span>zslba: 0x0000000000000000, wp: 0x0000000000000000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000001000, wp: 0x0000000000002000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000002000, wp: 0x0000000000003000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000003000, wp: 0x0000000000004000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000004000, wp: 0x0000000000005000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000005000, wp: 0x0000000000006000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000006000, wp: 0x0000000000007000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000007000, wp: 0x0000000000008000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000008000, wp: 0x0000000000009000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+    - <span class="o">{</span>zslba: 0x0000000000009000, wp: 0x000000000000a000, zcap: <span class="m">4096</span>, zt: 0x2, zs:    ZND_STATE_FULL, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="report-changes">
+<h2>Report Changes<a class="headerlink" href="#report-changes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned changes --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned changes &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Retrieve the Changed Zone list
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>In relation to the above commands, then you can ask the device about which
+zones has changed information since the last time you retrieve the report. You
+do this using the <code class="docutils literal notranslate"><span class="pre">changes</span></code> sub-command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned changes /dev/nvme0n2
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieving the Changed Zone List</span>
+znd_changes:
+  nidents: <span class="m">0</span>
+  idents: ~
+</pre></div>
+</div>
+</div>
+<div class="section" id="report-errors">
+<h2>Report Errors<a class="headerlink" href="#report-errors" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned errors --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned errors &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Retrieve the Error-Log
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
+  <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Get the errors logged on the given device:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned errors /dev/nvme0n2
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Error-Information-Log has 0 valid entries</span>
+xnvme_spec_log_erri:
+  - <span class="o">{</span>ecnt: <span class="m">0</span>, sqid: <span class="m">0</span>, cid: <span class="m">0</span>, status: <span class="m">0</span>, eloc: <span class="m">0</span>, lba: <span class="m">0</span>, nsid: <span class="m">0</span>, ven_si: <span class="m">0</span>, trtype: <span class="m">0</span>, cmd_si: <span class="m">0</span>, trtype_si: <span class="m">0</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="zone-management">
+<h2>Zone Management<a class="headerlink" href="#zone-management" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned mgmt --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned mgmt &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Zone Management Send Command with custom action
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  --slba 0xNUM                  <span class="p">;</span> Start Logical Block Address
+  --action 0xNUM                <span class="p">;</span> Command action
+  <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
+  <span class="o">[</span> --all <span class="o">]</span>                     <span class="p">;</span> Select / Affect all
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Explicitly controlling the Zone Management action:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned mgmt-reset /dev/nvme0n2 --slba 0x0
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># MGMT: zslba: 0x0000000000000000, action: 0x4, str: ZND_SEND_RESET</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reading">
+<h2>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned <span class="nb">read</span> /dev/nvme0n2 --slba 0x0 --nlb <span class="m">0</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reading nsid: 0x2, slba: 0x0000000000000000, nlb: 0</span>
+<span class="c1"># Alloc/clear dbuf, dbuf_nbytes: 4096</span>
+<span class="c1"># Sending the command...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing">
+<h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned &lt;command&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Where &lt;command&gt; is one of:
+
+  enum             <span class="p">|</span> Enumerate Zoned Namespaces on the system
+  info             <span class="p">|</span> Retrieve device info
+  idfy-ctrlr       <span class="p">|</span> Zoned Command Set specific identify-controller
+  idfy-ns          <span class="p">|</span> Zoned Command Set specific identify-controller
+  report           <span class="p">|</span> Retrieve Zone Information
+  changes          <span class="p">|</span> Retrieve the Changed Zone list
+  errors           <span class="p">|</span> Retrieve the Error-Log
+  <span class="nb">read</span>             <span class="p">|</span> Execute a Read Command
+  write            <span class="p">|</span> Execute a Write Command
+  append           <span class="p">|</span> Execute an Append Command
+  mgmt-open        <span class="p">|</span> Open a Zone
+  mgmt-close       <span class="p">|</span> Close a Zone
+  mgmt-finish      <span class="p">|</span> Finish a Zone
+  mgmt-reset       <span class="p">|</span> Reset a Zone
+  mgmt             <span class="p">|</span> Zone Management Send Command with custom action
+
+See <span class="s1">&#39;zoned &lt;command&gt; --help&#39;</span> <span class="k">for</span> the description of <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Note, for a write to success it has to write at the write-pointer of an open or
+empty zone. To use that, we reset the zone before writing.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned mgmt-reset /dev/nvme0n2 --slba 0x0
+zoned write /dev/nvme0n2 --slba 0x0 --nlb <span class="m">0</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># MGMT: zslba: 0x0000000000000000, action: 0x4, str: ZND_SEND_RESET</span>
+
+
+<span class="c1"># Writing nsid: 0x2, slba: 0x0000000000000000, nlb: 0</span>
+<span class="c1"># Alloc/fill dbuf, dbuf_nbytes: 4096</span>
+<span class="c1"># Sending the command...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing-with-append">
+<h2>Writing - with append<a class="headerlink" href="#writing-with-append" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned append --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: zoned append &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Execute an Append Command
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. /dev/nvme0n1, liou:/dev/nvme0n1 or pci:0000:01:00.1
+  --slba 0xNUM                  <span class="p">;</span> Start Logical Block Address
+  --nlb NUM                     <span class="p">;</span> Number of LBAs <span class="o">(</span>NOTE: zero-based value<span class="o">)</span>
+  <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier
+  <span class="o">[</span> --data-input FILE <span class="o">]</span>         <span class="p">;</span> Path to data input-file
+  <span class="o">[</span> --meta-input FILE <span class="o">]</span>         <span class="p">;</span> Path to meta input-file
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;zoned --help&#39;</span> <span class="k">for</span> other commands
+
+Zoned Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">20</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>When writing with append then we no longer need to respect the write-pointer.
+However, we still need to ensure that the Zone is not read-only, offline, or
+full.</p>
+<p>Write using <cite>append</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zoned mgmt-reset /dev/nvme0n2 --slba 0x0
+zoned report /dev/nvme0n2 --slba 0x0 --limit <span class="m">1</span>
+zoned append /dev/nvme0n2 --slba 0x0 --nlb <span class="m">0</span>
+zoned append /dev/nvme0n2 --slba 0x0 --nlb <span class="m">0</span>
+zoned append /dev/nvme0n2 --slba 0x0 --nlb <span class="m">0</span>
+zoned report /dev/nvme0n2 --slba 0x0 --limit <span class="m">1</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># MGMT: zslba: 0x0000000000000000, action: 0x4, str: ZND_SEND_RESET</span>
+
+
+<span class="c1"># Zone Information Report for lba: 0x0000000000000000, limit: 1</span>
+znd_report:
+  report_nbytes: <span class="m">128</span>
+  entries_nbytes: <span class="m">64</span>
+  zd_nbytes: <span class="m">64</span>
+  zdext_nbytes: <span class="m">0</span>
+  zrent_nbytes: <span class="m">64</span>
+  zslba: 0x0000000000000000
+  zelba: 0x0000000000000000
+  nzones: <span class="m">512</span>
+  nentries: <span class="m">1</span>
+  extended: <span class="m">0</span>
+  entries:
+    - <span class="o">{</span>zslba: 0x0000000000000000, wp: 0x0000000000000000, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_EMPTY, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+
+
+<span class="c1"># Zone Append nlb: 0 to zslba: 0x0000000000000000</span>
+<span class="c1"># Allocating dbuf</span>
+<span class="c1"># Appended to slba: 0x0000000000000000</span>
+
+
+<span class="c1"># Zone Append nlb: 0 to zslba: 0x0000000000000000</span>
+<span class="c1"># Allocating dbuf</span>
+<span class="c1"># Appended to slba: 0x0000000000000001</span>
+
+
+<span class="c1"># Zone Append nlb: 0 to zslba: 0x0000000000000000</span>
+<span class="c1"># Allocating dbuf</span>
+<span class="c1"># Appended to slba: 0x0000000000000002</span>
+
+
+<span class="c1"># Zone Information Report for lba: 0x0000000000000000, limit: 1</span>
+znd_report:
+  report_nbytes: <span class="m">128</span>
+  entries_nbytes: <span class="m">64</span>
+  zd_nbytes: <span class="m">64</span>
+  zdext_nbytes: <span class="m">0</span>
+  zrent_nbytes: <span class="m">64</span>
+  zslba: 0x0000000000000000
+  zelba: 0x0000000000000000
+  nzones: <span class="m">512</span>
+  nentries: <span class="m">1</span>
+  extended: <span class="m">0</span>
+  entries:
+    - <span class="o">{</span>zslba: 0x0000000000000000, wp: 0x0000000000000003, zcap: <span class="m">4096</span>, zt: 0x2, zs:   ZND_STATE_IOPEN, za: <span class="s1">&#39;0b00000000&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../lblk/index.html" class="btn btn-neutral float-right" title="lblk" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../xnvme/index.html" class="btn btn-neutral float-left" title="xnvme" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

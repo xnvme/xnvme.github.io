@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SPDK &mdash; xNVMe 0.0.20 documentation</title>
+  <title>SPDK &mdash; xNVMe 0.0.21 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Building xNVMe from source" href="../../building/index.html" />
-    <link rel="prev" title="Linux/libaio" href="../xnvme_be_laio.html" /> 
+    <link rel="prev" title="Linux" href="../xnvme_be_linux.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.20
+                0.0.21
               </div>
             
           
@@ -92,10 +92,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C APIs: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Backends</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_fioc.html">FreeBSD/IOCTL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_lioc.html">Linux/IOCTL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_liou.html">Linux/io_uring</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_laio.html">Linux/libaio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_fbsd.html">FreeBSD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_linux.html">Linux</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">SPDK</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#build-xnvme-with-spdk-support">Build <strong>xNVMe</strong> with <strong>SPDK</strong> support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compiling-and-linking-your-code-with-xnvme">Compiling and linking your code with <strong>xNVMe</strong></a><ul>
@@ -179,7 +177,7 @@
             
   <div class="section" id="spdk">
 <span id="sec-backends-spdk"></span><h1>SPDK<a class="headerlink" href="#spdk" title="Permalink to this headline">¶</a></h1>
-<p><strong>xNVMe</strong> provides a kernel-bypassing backend implemented using <a class="reference external" href="http://www.spdk.io/">Intel SPDK</a>. SPDK is built and embedded in the main static
+<p><strong>xNVMe</strong> provides a kernel-bypassing backend implemented using <a class="reference external" href="http://www.spdk.io/">SPDK</a>. SPDK is built and embedded in the main static
 <strong>xNVMe</strong> library <code class="docutils literal notranslate"><span class="pre">libxnvme.a</span></code>.</p>
 <div class="section" id="build-xnvme-with-spdk-support">
 <h2>Build <strong>xNVMe</strong> with <strong>SPDK</strong> support<a class="headerlink" href="#build-xnvme-with-spdk-support" title="Permalink to this headline">¶</a></h2>
@@ -238,6 +236,10 @@ give you errors such as <strong>device not found</strong>.</p>
     schm: <span class="s1">&#39;pci&#39;</span>
     opts: <span class="s1">&#39;?nsid=1&#39;</span>
     uri: <span class="s1">&#39;pci:0000:03:00.0?nsid=1&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;nvme_driver&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme_driver&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;spdk&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
   xnvme_cmd_opts:
     mask: <span class="s1">&#39;00000000000000000000000000000001&#39;</span>
     iomd: <span class="s1">&#39;SYNC&#39;</span>
@@ -273,7 +275,7 @@ device detached from the Kernel NVMe driver:</p>
 its dependencies.</p>
 <p>The command above should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
-<span class="m">0000</span>:00:05.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
+<span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
 </pre></div>
 </div>
 <p>If anything else that the above is output from <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code>, for example:</p>
@@ -301,7 +303,7 @@ its dependencies.</p>
 </div>
 <p>Should output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: vfio-pci -&gt; nvme
-<span class="m">0000</span>:00:05.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Already using the virtio-pci driver
+<span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Already using the virtio-pci driver
 </pre></div>
 </div>
 </div>
@@ -343,7 +345,7 @@ your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.020300<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.019667<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -371,7 +373,7 @@ your CPU.</p></li>
 </div>
 <p>Should rebind the device to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, eg.:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
-<span class="m">0000</span>:00:05.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
+<span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
 </pre></div>
 </div>
 </div>
@@ -424,7 +426,7 @@ a total of two gigabytes can be used.</p>
         <a href="../../building/index.html" class="btn btn-neutral float-right" title="Building xNVMe from source" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../xnvme_be_laio.html" class="btn btn-neutral float-left" title="Linux/libaio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../xnvme_be_linux.html" class="btn btn-neutral float-left" title="Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>C APIs: Examples &mdash; xNVMe 0.0.20 documentation</title>
+  <title>C APIs: Examples &mdash; xNVMe 0.0.21 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.20
+                0.0.21
               </div>
             
           
@@ -201,7 +201,7 @@ in the following sections.</p>
 <span class="c1">// Command-Line Interface (CLI) definition</span>
 <span class="c1">//</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec_sub</span> <span class="n">subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec_sub</span> <span class="n">g_subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">{</span>
 		<span class="s">&quot;hw&quot;</span><span class="p">,</span> <span class="s">&quot;Hello-World Example&quot;</span><span class="p">,</span> <span class="s">&quot;Hello-World Example&quot;</span><span class="p">,</span> <span class="n">sub_hw_example</span><span class="p">,</span> <span class="p">{</span>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_URI</span><span class="p">,</span> <span class="n">XNVMEC_POSA</span><span class="p">},</span>
@@ -209,17 +209,17 @@ in the following sections.</p>
 	<span class="p">},</span>
 <span class="p">};</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">cli</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;xNVMe hello-device example&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">descr_short</span> <span class="o">=</span> <span class="s">&quot;Open the given device and print its attributes&quot;</span><span class="p">,</span>
-	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">subs</span><span class="p">,</span>
-	<span class="p">.</span><span class="n">nsubs</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">subs</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">subs</span><span class="p">),</span>
+	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">g_subs</span><span class="p">,</span>
+	<span class="p">.</span><span class="n">nsubs</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">g_subs</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">g_subs</span><span class="p">),</span>
 <span class="p">};</span>
 
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">return</span> <span class="n">xnvmec</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">XNVMEC_INIT_NONE</span><span class="p">);</span>
+	<span class="k">return</span> <span class="n">xnvmec</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_cli</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">XNVMEC_INIT_NONE</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -267,6 +267,16 @@ in the following sections.</p>
 	<span class="n">SLIST_INSERT_HEAD</span><span class="p">(</span><span class="o">&amp;</span><span class="n">req</span><span class="o">-&gt;</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">link</span><span class="p">);</span>
 <span class="p">}</span>
 
+<span class="cm">/**</span>
+<span class="cm"> * This example shows how to do asynchronous reads</span>
+<span class="cm"> *</span>
+<span class="cm"> * - Allocate command-payload buffers</span>
+<span class="cm"> * - Setup async. context</span>
+<span class="cm"> * - Setup request pool</span>
+<span class="cm"> * - Submit read commands</span>
+<span class="cm"> * - Reap their completion</span>
+<span class="cm"> * - Teardown</span>
+<span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">int</span>
 <span class="nf">sub_async_read</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
@@ -279,9 +289,9 @@ in the following sections.</p>
 	<span class="kt">uint64_t</span> <span class="n">elba</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">elba</span><span class="p">;</span>
 	<span class="kt">size_t</span> <span class="n">nsect</span><span class="p">;</span>
 
+	<span class="k">struct</span> <span class="n">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
 	<span class="k">struct</span> <span class="n">xnvme_async_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 	<span class="k">struct</span> <span class="n">xnvme_req_pool</span> <span class="o">*</span><span class="n">reqs</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
 
 	<span class="kt">size_t</span> <span class="n">buf_nbytes</span><span class="p">;</span>
 	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -321,7 +331,6 @@ in the following sections.</p>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
-
 	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_req_pool_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="p">,</span> <span class="n">qd</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_req_pool_alloc()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
@@ -410,6 +419,16 @@ in the following sections.</p>
 	<span class="k">return</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="nl">err</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
+<span class="cm">/**</span>
+<span class="cm"> * This example shows how to do asynchronous write</span>
+<span class="cm"> *</span>
+<span class="cm"> * - Allocate command-payload buffers</span>
+<span class="cm"> * - Setup async. context</span>
+<span class="cm"> * - Setup request pool</span>
+<span class="cm"> * - Submit write commands</span>
+<span class="cm"> * - Reap their completion</span>
+<span class="cm"> * - Teardown</span>
+<span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">int</span>
 <span class="nf">sub_async_write</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
@@ -546,7 +565,7 @@ in the following sections.</p>
 <span class="c1">// Command-Line Interface (CLI) definition</span>
 <span class="c1">//</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec_sub</span> <span class="n">subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec_sub</span> <span class="n">g_subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">{</span>
 		<span class="s">&quot;read&quot;</span><span class="p">,</span>
 		<span class="s">&quot;Read the LBAs [SLBA,ELBA]&quot;</span><span class="p">,</span>
@@ -575,17 +594,17 @@ in the following sections.</p>
 	<span class="p">},</span>
 <span class="p">};</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">cli</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">descr_short</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example: write, read, and verify&quot;</span><span class="p">,</span>
-	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">subs</span><span class="p">,</span>
-	<span class="p">.</span><span class="n">nsubs</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">subs</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">subs</span><span class="p">),</span>
+	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">g_subs</span><span class="p">,</span>
+	<span class="p">.</span><span class="n">nsubs</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">g_subs</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">g_subs</span><span class="p">),</span>
 <span class="p">};</span>
 
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">return</span> <span class="n">xnvmec</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">XNVMEC_INIT_DEV_OPEN</span><span class="p">);</span>
+	<span class="k">return</span> <span class="n">xnvmec</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_cli</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">XNVMEC_INIT_DEV_OPEN</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
