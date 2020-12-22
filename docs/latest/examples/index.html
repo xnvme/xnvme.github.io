@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>C APIs: Examples &mdash; xNVMe 0.0.21 documentation</title>
+  <title>C API: Examples &mdash; xNVMe 0.0.22 documentation</title>
   
 
   
@@ -36,8 +36,7 @@
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tutorials" href="../tutorial/index.html" />
-    <link rel="prev" title="xnvmec: headers" href="../capis/xnvmec_headers.html" /> 
+    <link rel="prev" title="xnvmec" href="../capis/xnvmec.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +60,7 @@
             
             
               <div class="version">
-                0.0.21
+                0.0.22
               </div>
             
           
@@ -86,17 +85,14 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">C APIs: Examples</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">C API: Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hello-world">Hello World</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#asynchronous-io">Asynchronous IO</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
 </ul>
 
             
@@ -142,7 +138,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>C APIs: Examples</li>
+      <li>C API: Examples</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -161,8 +157,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="c-apis-examples">
-<span id="sec-examples"></span><h1>C APIs: Examples<a class="headerlink" href="#c-apis-examples" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="c-api-examples">
+<span id="sec-examples"></span><h1>C API: Examples<a class="headerlink" href="#c-api-examples" title="Permalink to this headline">¶</a></h1>
 <p>In the source repos you will find usage examples in the <code class="docutils literal notranslate"><span class="pre">examples</span></code> folder.
 Additionally, having a look at cli-tools in <code class="docutils literal notranslate"><span class="pre">tools</span></code> is also useful as they
 touch most of the C APIs including.</p>
@@ -186,9 +182,8 @@ in the following sections.</p>
 
 	<span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span> <span class="p">{</span>
-		<span class="kt">int</span> <span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">errno</span><span class="p">;</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-		<span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+		<span class="k">return</span> <span class="o">-</span><span class="n">errno</span><span class="p">;</span>
 	<span class="p">}</span>
 
 	<span class="n">xnvme_dev_pr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
@@ -231,20 +226,14 @@ in the following sections.</p>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_pp.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_nvm.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_lba.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvmec.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_util.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
 
 <span class="cp">#define DEFAULT_QD 8</span>
-
-<span class="k">static</span> <span class="kt">int</span>
-<span class="nf">lba_range</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">slba</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">elba</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="o">*</span><span class="n">slba</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="o">*</span><span class="n">elba</span> <span class="o">=</span> <span class="o">*</span><span class="n">slba</span> <span class="o">+</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">27</span><span class="p">)</span> <span class="o">/</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-
-	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
 
 <span class="k">struct</span> <span class="n">cb_args</span> <span class="p">{</span>
 	<span class="kt">uint32_t</span> <span class="n">ecount</span><span class="p">;</span>
@@ -253,28 +242,31 @@ in the following sections.</p>
 <span class="p">};</span>
 
 <span class="k">static</span> <span class="kt">void</span>
-<span class="nf">cb_pool</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
+<span class="nf">cb_pool</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
 <span class="p">{</span>
 	<span class="k">struct</span> <span class="n">cb_args</span> <span class="o">*</span><span class="n">cb_args</span> <span class="o">=</span> <span class="n">cb_arg</span><span class="p">;</span>
 
 	<span class="n">cb_args</span><span class="o">-&gt;</span><span class="n">completed</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
 
-	<span class="k">if</span> <span class="p">(</span><span class="n">xnvme_req_cpl_status</span><span class="p">(</span><span class="n">req</span><span class="p">))</span> <span class="p">{</span>
-		<span class="n">xnvme_req_pr</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span> <span class="p">{</span>
+		<span class="n">xnvme_cmd_ctx_pr</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 		<span class="n">cb_args</span><span class="o">-&gt;</span><span class="n">ecount</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">SLIST_INSERT_HEAD</span><span class="p">(</span><span class="o">&amp;</span><span class="n">req</span><span class="o">-&gt;</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">link</span><span class="p">);</span>
+	<span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">queue</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * This example shows how to do asynchronous reads</span>
 <span class="cm"> *</span>
-<span class="cm"> * - Allocate command-payload buffers</span>
-<span class="cm"> * - Setup async. context</span>
-<span class="cm"> * - Setup request pool</span>
-<span class="cm"> * - Submit read commands</span>
-<span class="cm"> * - Reap their completion</span>
+<span class="cm"> * - Allocate buffers for Command Payload</span>
+<span class="cm"> * - Setup a Command Queue</span>
+<span class="cm"> *   | Callback functions and callback arguments</span>
+<span class="cm"> *   | Using asynchronous command-contexts</span>
+<span class="cm"> * - Submit read commands to read a range of LBAs continously</span>
+<span class="cm"> *   | Re-submission when busy, reap completion, waiting till empty</span>
+<span class="cm"> * - Dumping buffers to file</span>
+<span class="cm"> * - Reporting on IO-errors</span>
 <span class="cm"> * - Teardown</span>
 <span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">int</span>
@@ -282,80 +274,58 @@ in the following sections.</p>
 <span class="p">{</span>
 	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
 	<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="p">;</span>
-	<span class="kt">uint32_t</span> <span class="n">nsid</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">nsid</span><span class="p">;</span>
-
-	<span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">qd</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">qdepth</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">qdepth</span> <span class="p">:</span> <span class="n">DEFAULT_QD</span><span class="p">;</span>
-	<span class="kt">uint64_t</span> <span class="n">slba</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">slba</span><span class="p">;</span>
-	<span class="kt">uint64_t</span> <span class="n">elba</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">elba</span><span class="p">;</span>
-	<span class="kt">size_t</span> <span class="n">nsect</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">xnvme_lba_range</span> <span class="n">rng</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">qd</span><span class="p">;</span>
 
 	<span class="k">struct</span> <span class="n">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="k">struct</span> <span class="n">xnvme_async_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">xnvme_req_pool</span> <span class="o">*</span><span class="n">reqs</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
-	<span class="kt">size_t</span> <span class="n">buf_nbytes</span><span class="p">;</span>
-	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-	<span class="kt">char</span> <span class="o">*</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">*</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 	<span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
 
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_NSID</span><span class="p">])</span> <span class="p">{</span>
-		<span class="n">nsid</span> <span class="o">=</span> <span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">);</span>
-	<span class="p">}</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_SLBA</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_ELBA</span><span class="p">]))</span> <span class="p">{</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">lba_range</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">slba</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">elba</span><span class="p">);</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;lba_range()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-			<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-		<span class="p">}</span>
+	<span class="n">qd</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_QDEPTH</span><span class="p">]</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">qdepth</span> <span class="p">:</span> <span class="n">DEFAULT_QD</span><span class="p">;</span>
+	<span class="n">nsid</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_NSID</span><span class="p">]</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">nsid</span> <span class="p">:</span> <span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+
+	<span class="n">rng</span> <span class="o">=</span> <span class="n">xnvme_lba_range_from_slba_elba</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">slba</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">elba</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rng</span><span class="p">.</span><span class="n">attr</span><span class="p">.</span><span class="n">is_valid</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;invalid range&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+		<span class="n">xnvme_lba_range_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rng</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+		<span class="k">return</span> <span class="n">err</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">nsect</span> <span class="o">=</span> <span class="n">elba</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">slba</span><span class="p">;</span>
-	<span class="n">buf_nbytes</span> <span class="o">=</span> <span class="n">nsect</span> <span class="o">*</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">;</span>
-
-	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Allocating and filling buf_nbytes: %zu&quot;</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">);</span>
-	<span class="n">buf</span> <span class="o">=</span> <span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Allocating and filling buf of nbytes: %zu&quot;</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">);</span>
+	<span class="n">buf</span> <span class="o">=</span> <span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">buf</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">errno</span><span class="p">;</span>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_buf_alloc()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvmec_buf_fill</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">,</span> <span class="s">&quot;zero&quot;</span><span class="p">);</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvmec_buf_fill</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="s">&quot;zero&quot;</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvmec_buf_fill()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Initializing async. context + alloc/init requests&quot;</span><span class="p">);</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_async_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">qd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Initializing queue and setting default callback function and arguments&quot;</span><span class="p">);</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">qd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_req_pool_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="p">,</span> <span class="n">qd</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_req_pool_alloc()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_req_pool_init</span><span class="p">(</span><span class="n">reqs</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">cb_pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cb_args</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_req_pool_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
+	<span class="n">xnvme_queue_set_cb</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">cb_pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cb_args</span><span class="p">);</span>
 
-	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Read nsect: %zu, [0x%016lx,0x%016lx], qd: %d, uri: &#39;%s&#39;&quot;</span><span class="p">,</span>
-		    <span class="n">nsect</span><span class="p">,</span> <span class="n">slba</span><span class="p">,</span> <span class="n">elba</span><span class="p">,</span> <span class="n">qd</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">);</span>
+	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Read uri: &#39;%s&#39;, qd: %d&quot;</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">qd</span><span class="p">);</span>
+	<span class="n">xnvme_lba_range_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rng</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 
 	<span class="n">xnvmec_timer_start</span><span class="p">(</span><span class="n">cli</span><span class="p">);</span>
 
 	<span class="n">payload</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="n">sect</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">sect</span> <span class="o">&lt;</span> <span class="n">nsect</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">;)</span> <span class="p">{</span>
-		<span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="n">SLIST_FIRST</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">);</span>
-
-		<span class="n">SLIST_REMOVE_HEAD</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span> <span class="n">link</span><span class="p">);</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="n">curs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">curs</span> <span class="o">&lt;</span> <span class="n">rng</span><span class="p">.</span><span class="n">naddrs</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">;)</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 
 <span class="nl">submit</span><span class="p">:</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_cmd_read</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">slba</span> <span class="o">+</span> <span class="n">sect</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span>
-				     <span class="nb">NULL</span><span class="p">,</span> <span class="n">XNVME_CMD_ASYNC</span><span class="p">,</span> <span class="n">req</span><span class="p">);</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_nvm_read</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">slba</span> <span class="o">+</span> <span class="n">curs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 		<span class="k">switch</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
 		<span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
 			<span class="n">cb_args</span><span class="p">.</span><span class="n">submitted</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
@@ -363,22 +333,23 @@ in the following sections.</p>
 
 		<span class="k">case</span> <span class="o">-</span><span class="nl">EBUSY</span><span class="p">:</span>
 		<span class="k">case</span> <span class="o">-</span><span class="nl">EAGAIN</span><span class="p">:</span>
-			<span class="n">xnvme_async_poke</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+			<span class="n">xnvme_queue_poke</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 			<span class="k">goto</span> <span class="n">submit</span><span class="p">;</span>
 
 		<span class="k">default</span><span class="o">:</span>
-			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;submission-error&quot;</span><span class="p">,</span> <span class="n">EIO</span><span class="p">);</span>
+			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;submission-error&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+			<span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
 			<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 		<span class="p">}</span>
 
 <span class="nl">next</span><span class="p">:</span>
-		<span class="o">++</span><span class="n">sect</span><span class="p">;</span>
+		<span class="o">++</span><span class="n">curs</span><span class="p">;</span>
 		<span class="n">payload</span> <span class="o">+=</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_async_wait</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_queue_wait</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_wait()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_wait()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
 
@@ -390,13 +361,12 @@ in the following sections.</p>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="s">&quot;wall-clock&quot;</span><span class="p">,</span> <span class="n">nsect</span> <span class="o">*</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">);</span>
+	<span class="n">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="s">&quot;wall-clock&quot;</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">naddrs</span> <span class="o">*</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">);</span>
 
 	<span class="k">if</span> <span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Dumping nbytes: %zu, to: &#39;%s&#39;&quot;</span><span class="p">,</span>
-			    <span class="n">buf_nbytes</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">);</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvmec_buf_to_file</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">,</span>
-					 <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">);</span>
+		<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Dumping nbytes: %zu, to: &#39;%s&#39;&quot;</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">);</span>
+
+		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvmec_buf_to_file</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">);</span>
 		<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
 			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvmec_buf_to_file()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="p">}</span>
@@ -404,16 +374,14 @@ in the following sections.</p>
 
 <span class="nl">exit</span><span class="p">:</span>
 	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;cb_args: {submitted: %u, completed: %u, ecount: %u}&quot;</span><span class="p">,</span>
-		    <span class="n">cb_args</span><span class="p">.</span><span class="n">submitted</span><span class="p">,</span> <span class="n">cb_args</span><span class="p">.</span><span class="n">completed</span><span class="p">,</span>
-		    <span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">);</span>
+		    <span class="n">cb_args</span><span class="p">.</span><span class="n">submitted</span><span class="p">,</span> <span class="n">cb_args</span><span class="p">.</span><span class="n">completed</span><span class="p">,</span> <span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">);</span>
 
-	<span class="p">{</span>
-		<span class="kt">int</span> <span class="n">err_exit</span> <span class="o">=</span> <span class="n">xnvme_async_term</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">queue</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kt">int</span> <span class="n">err_exit</span> <span class="o">=</span> <span class="n">xnvme_queue_term</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 		<span class="k">if</span> <span class="p">(</span><span class="n">err_exit</span><span class="p">)</span> <span class="p">{</span>
-			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_term()&quot;</span><span class="p">,</span> <span class="n">err_exit</span><span class="p">);</span>
+			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_term()&quot;</span><span class="p">,</span> <span class="n">err_exit</span><span class="p">);</span>
 		<span class="p">}</span>
 	<span class="p">}</span>
-	<span class="n">xnvme_req_pool_free</span><span class="p">(</span><span class="n">reqs</span><span class="p">);</span>
 	<span class="n">xnvme_buf_free</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
 
 	<span class="k">return</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="nl">err</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
@@ -423,8 +391,8 @@ in the following sections.</p>
 <span class="cm"> * This example shows how to do asynchronous write</span>
 <span class="cm"> *</span>
 <span class="cm"> * - Allocate command-payload buffers</span>
-<span class="cm"> * - Setup async. context</span>
-<span class="cm"> * - Setup request pool</span>
+<span class="cm"> * * - Setup a Command Queue</span>
+<span class="cm"> *   | Using asynchronous command-contexts</span>
 <span class="cm"> * - Submit write commands</span>
 <span class="cm"> * - Reap their completion</span>
 <span class="cm"> * - Teardown</span>
@@ -434,80 +402,59 @@ in the following sections.</p>
 <span class="p">{</span>
 	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
 	<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="p">;</span>
-	<span class="kt">uint32_t</span> <span class="n">nsid</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">nsid</span><span class="p">;</span>
-
-	<span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">qd</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">qdepth</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">qdepth</span> <span class="p">:</span> <span class="n">DEFAULT_QD</span><span class="p">;</span>
-	<span class="kt">uint64_t</span> <span class="n">slba</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">slba</span><span class="p">;</span>
-	<span class="kt">uint64_t</span> <span class="n">elba</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">elba</span><span class="p">;</span>
-	<span class="kt">size_t</span> <span class="n">nsect</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">xnvme_lba_range</span> <span class="n">rng</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">qd</span><span class="p">;</span>
 
 	<span class="k">struct</span> <span class="n">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="k">struct</span> <span class="n">xnvme_async_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">xnvme_req_pool</span> <span class="o">*</span><span class="n">reqs</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
-	<span class="kt">size_t</span> <span class="n">buf_nbytes</span><span class="p">;</span>
-	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-	<span class="kt">char</span> <span class="o">*</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">*</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 	<span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
 
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_NSID</span><span class="p">])</span> <span class="p">{</span>
-		<span class="n">nsid</span> <span class="o">=</span> <span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">);</span>
-	<span class="p">}</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_SLBA</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_ELBA</span><span class="p">]))</span> <span class="p">{</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">lba_range</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">slba</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">elba</span><span class="p">);</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;lba_range()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-			<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-		<span class="p">}</span>
+	<span class="n">qd</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_QDEPTH</span><span class="p">]</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">qdepth</span> <span class="p">:</span> <span class="n">DEFAULT_QD</span><span class="p">;</span>
+	<span class="n">nsid</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_NSID</span><span class="p">]</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">nsid</span> <span class="p">:</span> <span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">);</span>
+
+	<span class="n">rng</span> <span class="o">=</span> <span class="n">xnvme_lba_range_from_slba_elba</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">slba</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">elba</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rng</span><span class="p">.</span><span class="n">attr</span><span class="p">.</span><span class="n">is_valid</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;invalid range&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+		<span class="n">xnvme_lba_range_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rng</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+		<span class="k">return</span> <span class="n">err</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">nsect</span> <span class="o">=</span> <span class="n">elba</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">slba</span><span class="p">;</span>
-	<span class="n">buf_nbytes</span> <span class="o">=</span> <span class="n">nsect</span> <span class="o">*</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">;</span>
-
-	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Allocating and filling buf_nbytes: %zu&quot;</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">);</span>
-	<span class="n">buf</span> <span class="o">=</span> <span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Allocating and filling buf of nbytes: %zu&quot;</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">);</span>
+	<span class="n">buf</span> <span class="o">=</span> <span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">buf</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="n">errno</span><span class="p">;</span>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_buf_alloc()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvmec_buf_fill</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">buf_nbytes</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_input</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">data_input</span> <span class="p">:</span> <span class="s">&quot;anum&quot;</span><span class="p">);</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvmec_buf_fill</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">,</span>
+			      <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_input</span> <span class="o">?</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="nl">data_input</span> <span class="p">:</span> <span class="s">&quot;anum&quot;</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvmec_buf_fill()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Initializing async. context + alloc/init requests&quot;</span><span class="p">);</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_async_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">qd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Initializing queue and setting default callback function and arguments&quot;</span><span class="p">);</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">qd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_req_pool_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="p">,</span> <span class="n">qd</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_req_pool_alloc()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_req_pool_init</span><span class="p">(</span><span class="n">reqs</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">cb_pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cb_args</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_req_pool_init()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
+	<span class="n">xnvme_queue_set_cb</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">cb_pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cb_args</span><span class="p">);</span>
 
-	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Write nsect: %zu, [0x%016lx,0x%016lx], qd: %d, uri: &#39;%s&#39;&quot;</span><span class="p">,</span>
-		    <span class="n">nsect</span><span class="p">,</span> <span class="n">slba</span><span class="p">,</span> <span class="n">elba</span><span class="p">,</span> <span class="n">qd</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">);</span>
+	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;Write uri: &#39;%s&#39;, qd: %d&quot;</span><span class="p">,</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">qd</span><span class="p">);</span>
+	<span class="n">xnvme_lba_range_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rng</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 
 	<span class="n">xnvmec_timer_start</span><span class="p">(</span><span class="n">cli</span><span class="p">);</span>
 
 	<span class="n">payload</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="n">sect</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">sect</span> <span class="o">&lt;</span> <span class="n">nsect</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">;)</span> <span class="p">{</span>
-		<span class="k">struct</span> <span class="n">xnvme_req</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="n">SLIST_FIRST</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">);</span>
-
-		<span class="n">SLIST_REMOVE_HEAD</span><span class="p">(</span><span class="o">&amp;</span><span class="n">reqs</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span> <span class="n">link</span><span class="p">);</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="n">sect</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">sect</span> <span class="o">&lt;</span> <span class="n">rng</span><span class="p">.</span><span class="n">naddrs</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">;)</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 
 <span class="nl">submit</span><span class="p">:</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_cmd_write</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">slba</span> <span class="o">+</span> <span class="n">sect</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span>
-				      <span class="nb">NULL</span><span class="p">,</span> <span class="n">XNVME_CMD_ASYNC</span><span class="p">,</span> <span class="n">req</span><span class="p">);</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_nvm_write</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">slba</span> <span class="o">+</span> <span class="n">sect</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 		<span class="k">switch</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
 		<span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
 			<span class="n">cb_args</span><span class="p">.</span><span class="n">submitted</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
@@ -515,11 +462,12 @@ in the following sections.</p>
 
 		<span class="k">case</span> <span class="o">-</span><span class="nl">EBUSY</span><span class="p">:</span>
 		<span class="k">case</span> <span class="o">-</span><span class="nl">EAGAIN</span><span class="p">:</span>
-			<span class="n">xnvme_async_poke</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+			<span class="n">xnvme_queue_poke</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 			<span class="k">goto</span> <span class="n">submit</span><span class="p">;</span>
 
 		<span class="k">default</span><span class="o">:</span>
-			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;submission-error&quot;</span><span class="p">,</span> <span class="n">EIO</span><span class="p">);</span>
+			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;submission-error&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+			<span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
 			<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 		<span class="p">}</span>
 
@@ -528,9 +476,9 @@ in the following sections.</p>
 		<span class="n">payload</span> <span class="o">+=</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_async_wait</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_queue_wait</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_wait()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_wait()&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
 
@@ -542,20 +490,18 @@ in the following sections.</p>
 		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
 	<span class="p">}</span>
 
-	<span class="n">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="s">&quot;wall-clock&quot;</span><span class="p">,</span> <span class="n">nsect</span> <span class="o">*</span> <span class="n">geo</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">);</span>
+	<span class="n">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="s">&quot;wall-clock&quot;</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">nbytes</span><span class="p">);</span>
 
 <span class="nl">exit</span><span class="p">:</span>
 	<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="s">&quot;cb_args: {submitted: %u, completed: %u, ecount: %u}&quot;</span><span class="p">,</span>
-		    <span class="n">cb_args</span><span class="p">.</span><span class="n">submitted</span><span class="p">,</span> <span class="n">cb_args</span><span class="p">.</span><span class="n">completed</span><span class="p">,</span>
-		    <span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">);</span>
+		    <span class="n">cb_args</span><span class="p">.</span><span class="n">submitted</span><span class="p">,</span> <span class="n">cb_args</span><span class="p">.</span><span class="n">completed</span><span class="p">,</span> <span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">);</span>
 
-	<span class="p">{</span>
-		<span class="kt">int</span> <span class="n">err_exit</span> <span class="o">=</span> <span class="n">xnvme_async_term</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ctx</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">queue</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kt">int</span> <span class="n">err_exit</span> <span class="o">=</span> <span class="n">xnvme_queue_term</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 		<span class="k">if</span> <span class="p">(</span><span class="n">err_exit</span><span class="p">)</span> <span class="p">{</span>
-			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_async_term()&quot;</span><span class="p">,</span> <span class="n">err_exit</span><span class="p">);</span>
+			<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_term()&quot;</span><span class="p">,</span> <span class="n">err_exit</span><span class="p">);</span>
 		<span class="p">}</span>
 	<span class="p">}</span>
-	<span class="n">xnvme_req_pool_free</span><span class="p">(</span><span class="n">reqs</span><span class="p">);</span>
 	<span class="n">xnvme_buf_free</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
 
 	<span class="k">return</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="nl">err</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
@@ -596,7 +542,7 @@ in the following sections.</p>
 
 <span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example&quot;</span><span class="p">,</span>
-	<span class="p">.</span><span class="n">descr_short</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example: write, read, and verify&quot;</span><span class="p">,</span>
+	<span class="p">.</span><span class="n">descr_short</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example: write, read&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">g_subs</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">nsubs</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">g_subs</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">g_subs</span><span class="p">),</span>
 <span class="p">};</span>
@@ -619,10 +565,8 @@ in the following sections.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../tutorial/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="../capis/xnvmec_headers.html" class="btn btn-neutral float-left" title="xnvmec: headers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../capis/xnvmec.html" class="btn btn-neutral float-left" title="xnvmec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

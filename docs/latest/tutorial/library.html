@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Library Usage Notes &mdash; xNVMe 0.0.21 documentation</title>
+  <title>Library Usage Notes &mdash; xNVMe 0.0.22 documentation</title>
   
 
   
@@ -35,9 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="NVMe Introduction" href="nvme/index.html" />
-    <link rel="prev" title="Fabrics non-RDMA TCP transport setup on Linux" href="fabrics.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +59,7 @@
             
             
               <div class="version">
-                0.0.21
+                0.0.22
               </div>
             
           
@@ -85,27 +83,11 @@
               
             
             
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../quick_start/index.html">Quick Start</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C APIs: Examples</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="fabrics.html">Fabrics non-RDMA TCP transport setup on Linux</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Library Usage Notes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#backends">Backends</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#command-interfaces">Command Interfaces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#return-values-and-status-codes">Return Values and Status Codes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#memory-management">Memory Management</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#asynchronous-interface">Asynchronous Interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pretty-printing">Pretty-Printing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="nvme/index.html">NVMe Introduction</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building/index.html">Building xNVMe from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
 </ul>
 
             
@@ -151,8 +133,6 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="index.html">Tutorials</a> &raquo;</li>
-        
       <li>Library Usage Notes</li>
     
     
@@ -187,19 +167,19 @@
 <h2>Return Values and Status Codes<a class="headerlink" href="#return-values-and-status-codes" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions signal errors using the standard <code class="docutils literal notranslate"><span class="pre">errno</span></code>
 thread-local variable and a return value of <code class="docutils literal notranslate"><span class="pre">-1</span></code>. To gain more insights into
-what went wrong in a command, use the optional <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code> parameter that all
-<code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions take.  When supplied, the <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code> will contain
+what went wrong in a command, use the optional <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code> parameter that all
+<code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions take.  When supplied, the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code> will contain
 the NVMe status code in the <code class="docutils literal notranslate"><span class="pre">status</span></code> field.</p>
 <p><strong>Note</strong> that while the <a class="reference internal" href="../backends/xnvme_be_spdk/index.html#sec-backends-spdk"><span class="std std-ref">spdk</span></a> backend has a
-one-to-one correspondence between what is in the <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code> and what is
-reported by the device, the <a class="reference internal" href="../backends/xnvme_be_linux.html#sec-backends-linux"><span class="std std-ref">Linux/IOCTL</span></a> backend
-will transform certain errors from the kernel into their NVMe equivalents.</p>
+one-to-one correspondence between what is in the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code> and what is
+reported by the device, the <a class="reference internal" href="../backends/xnvme_be_linux.html#sec-backends-linux"><span class="std std-ref">Linux</span></a>, backend will
+transform certain errors from the kernel into their NVMe equivalents.</p>
 <p>This is because certain <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls may return <code class="docutils literal notranslate"><span class="pre">-1</span></code> and <code class="docutils literal notranslate"><span class="pre">Invalid</span>
 <span class="pre">Argument</span></code> without actually sending a command to the device. To align the
-backends with each other, such an error wil be transformed into the NVMe
-equivalent if possible. For example, <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Argument</span></code> will be transformed
+backends with each other, such an error will be transformed into the NVMe
+equivalent, if possible. For example, <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Argument</span></code> will be transformed
 into the NVMe status code <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Field</span> <span class="pre">in</span> <span class="pre">Command</span></code> and set that in the
-given <code class="docutils literal notranslate"><span class="pre">xnvme_req</span></code>.</p>
+given <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code>.</p>
 <p>TODO: add references to the C API</p>
 </div>
 <div class="section" id="memory-management">
@@ -215,7 +195,7 @@ functions to steer the asynchronous mechanics.</p>
 <div class="section" id="pretty-printing">
 <h2>Pretty-Printing<a class="headerlink" href="#pretty-printing" title="Permalink to this headline">¶</a></h2>
 <p>Every structure has a pretty-printer function. Even the opaque ones, e.g.
-<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xnvme_dev</span></code> has the printer function <a class="reference internal" href="../capis/xnvme.html#c.xnvme_dev_pr" title="xnvme_dev_pr"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_pr()</span></code></a>.  By
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xnvme_dev</span></code> has the printer function <a class="reference internal" href="../capis/xnvme_dev.html#c.xnvme_dev_pr" title="xnvme_dev_pr"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_pr()</span></code></a>.  By
 convention they are named the same as the structure plus a <cite>_pr</cite> postfix.</p>
 <p>The printers all take an <cite>opts</cite> parameter which controls how the structure
 should be printed, the current default is <a class="reference external" href="https://yaml.org/">YAML</a> representation.</p>
@@ -227,15 +207,6 @@ should be printed, the current default is <a class="reference external" href="ht
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="nvme/index.html" class="btn btn-neutral float-right" title="NVMe Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="fabrics.html" class="btn btn-neutral float-left" title="Fabrics non-RDMA TCP transport setup on Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

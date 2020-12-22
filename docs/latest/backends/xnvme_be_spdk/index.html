@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SPDK &mdash; xNVMe 0.0.21 documentation</title>
+  <title>SPDK &mdash; xNVMe 0.0.22 documentation</title>
   
 
   
@@ -35,9 +35,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Building xNVMe from source" href="../../building/index.html" />
-    <link rel="prev" title="Linux" href="../xnvme_be_linux.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +59,7 @@
             
             
               <div class="version">
-                0.0.21
+                0.0.22
               </div>
             
           
@@ -85,30 +83,11 @@
               
             
             
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../quick_start/index.html">Quick Start</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tools/index.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C APIs: Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorials</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Backends</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_fbsd.html">FreeBSD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_linux.html">Linux</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">SPDK</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#build-xnvme-with-spdk-support">Build <strong>xNVMe</strong> with <strong>SPDK</strong> support</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#compiling-and-linking-your-code-with-xnvme">Compiling and linking your code with <strong>xNVMe</strong></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#unbinding-devices-and-setting-up-memory">Unbinding devices and setting up memory</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#re-binding-devices">Re-binding devices</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#device-identifiers">Device Identifiers</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#enabling-vfio-without-limits">Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#inspecting-and-manually-changing-memory-available-to-spdk-aka-hugepages">Inspecting and manually changing memory available to <code class="docutils literal notranslate"><span class="pre">SPDK</span></code> aka <code class="docutils literal notranslate"><span class="pre">HUGEPAGES</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../building/index.html">Building xNVMe from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
 </ul>
 
             
@@ -154,8 +133,6 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">Backends</a> &raquo;</li>
-        
       <li>SPDK</li>
     
     
@@ -179,18 +156,12 @@
 <span id="sec-backends-spdk"></span><h1>SPDK<a class="headerlink" href="#spdk" title="Permalink to this headline">¶</a></h1>
 <p><strong>xNVMe</strong> provides a kernel-bypassing backend implemented using <a class="reference external" href="http://www.spdk.io/">SPDK</a>. SPDK is built and embedded in the main static
 <strong>xNVMe</strong> library <code class="docutils literal notranslate"><span class="pre">libxnvme.a</span></code>.</p>
-<div class="section" id="build-xnvme-with-spdk-support">
-<h2>Build <strong>xNVMe</strong> with <strong>SPDK</strong> support<a class="headerlink" href="#build-xnvme-with-spdk-support" title="Permalink to this headline">¶</a></h2>
-<p>With <strong>SPDK</strong> in place, configure the <strong>xNVMe</strong> build with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">be</span><span class="o">-</span><span class="n">spdk</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="compiling-and-linking-your-code-with-xnvme">
 <h2>Compiling and linking your code with <strong>xNVMe</strong><a class="headerlink" href="#compiling-and-linking-your-code-with-xnvme" title="Permalink to this headline">¶</a></h2>
 <p>To compile e.g. the following <code class="docutils literal notranslate"><span class="pre">hello.c</span></code> which uses <strong>xNVMe</strong>:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_pp.h&gt;</span><span class="cp"></span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
@@ -247,18 +218,18 @@ give you errors such as <strong>device not found</strong>.</p>
     payload_meta: <span class="s1">&#39;DRV&#39;</span>
     csi: 0x0
     nsid: 0x1
-    ssw: <span class="m">12</span>
+    ssw: <span class="m">9</span>
   xnvme_geo:
     type: XNVME_GEO_CONVENTIONAL
     npugrp: <span class="m">1</span>
     npunit: <span class="m">1</span>
     nzone: <span class="m">1</span>
-    nsect: <span class="m">2097152</span>
-    nbytes: <span class="m">4096</span>
+    nsect: <span class="m">16777216</span>
+    nbytes: <span class="m">512</span>
     nbytes_oob: <span class="m">0</span>
     tbytes: <span class="m">8589934592</span>
     mdts_nbytes: <span class="m">524288</span>
-    lba_nbytes: <span class="m">4096</span>
+    lba_nbytes: <span class="m">512</span>
     lba_extended: <span class="m">0</span>
 </pre></div>
 </div>
@@ -345,7 +316,7 @@ your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.019667<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.021117<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -420,15 +391,6 @@ a total of two gigabytes can be used.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../building/index.html" class="btn btn-neutral float-right" title="Building xNVMe from source" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../xnvme_be_linux.html" class="btn btn-neutral float-left" title="Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
