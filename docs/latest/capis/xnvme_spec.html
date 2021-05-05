@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvme_spec &mdash; xNVMe 0.0.22 documentation</title>
+  <title>xnvme_spec &mdash; xNVMe 0.0.23 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.22
+                0.0.23
               </div>
             
           
@@ -90,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">C API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
@@ -103,6 +104,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat-id">xnvme_spec_feat_id</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat-sel">xnvme_spec_feat_sel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-flag">xnvme_spec_flag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-fs-opcs">xnvme_spec_fs_opcs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-cns">xnvme_spec_idfy_cns</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-log-lpi">xnvme_spec_log_lpi</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-cmd-cpl-sc">xnvme_spec_nvm_cmd_cpl_sc</a></li>
@@ -135,6 +137,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-cs-vector">xnvme_spec_cs_vector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-dsm-range">xnvme_spec_dsm_range</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-feat">xnvme_spec_feat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-fs-idfy-ctrlr">xnvme_spec_fs_idfy_ctrlr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-fs-idfy-ns">xnvme_spec_fs_idfy_ns</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy">xnvme_spec_idfy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-cs">xnvme_spec_idfy_cs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-idfy-ctrlr">xnvme_spec_idfy_ctrlr</a></li>
@@ -540,11 +544,7 @@
 <span class="k">enum</span> <span class="n">xnvme_spec_csi</span> <span class="p">{</span>
 	<span class="n">XNVME_SPEC_CSI_NVM</span>	<span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_CSI_NVM</span>
 	<span class="n">XNVME_SPEC_CSI_ZONED</span>	<span class="o">=</span> <span class="mh">0x2</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_CSI_ZONED</span>
-
-	<span class="n">XNVME_SPEC_CSI_NOCHECK</span>	<span class="o">=</span> <span class="mh">0xFF</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_CSI_NOCHECK</span>
 <span class="p">};</span>
-
-
 
 <span class="cm">/**</span>
 <span class="cm"> * Representation of NVMe completion result Identify Namespace</span>
@@ -829,7 +829,12 @@
 			<span class="cm">/** Supports sending Firmware Activation Notices. */</span>
 			<span class="kt">uint32_t</span> <span class="nl">fw_activation_notices</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
 
-			<span class="kt">uint32_t</span> <span class="nl">reserved2</span>		<span class="p">:</span> <span class="mi">22</span><span class="p">;</span>
+			<span class="kt">uint32_t</span> <span class="nl">reserved2</span>		<span class="p">:</span> <span class="mi">17</span><span class="p">;</span>
+
+			<span class="cm">/** Supports Zone Descriptor Changed Notices/Changed Zoned List log page*/</span>
+			<span class="kt">uint32_t</span> <span class="nl">zone_changes</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+
+			<span class="kt">uint32_t</span> <span class="nl">reserved3</span>		<span class="p">:</span> <span class="mi">4</span><span class="p">;</span>
 		<span class="p">};</span>
 		<span class="kt">uint32_t</span> <span class="n">val</span><span class="p">;</span>
 	<span class="p">}</span> <span class="n">oaes</span><span class="p">;</span>
@@ -1233,6 +1238,7 @@
 <span class="cm"> * @enum xnvme_spec_nvm_opc</span>
 <span class="cm"> */</span>
 <span class="k">enum</span> <span class="n">xnvme_spec_nvm_opc</span> <span class="p">{</span>
+	<span class="n">XNVME_SPEC_NVM_OPC_FLUSH</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>    <span class="c1">///&lt; XNVME_SPEC_NVM_OPC_FLUSH</span>
 	<span class="n">XNVME_SPEC_NVM_OPC_WRITE</span> <span class="o">=</span> <span class="mh">0x01</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_NVM_OPC_WRITE</span>
 	<span class="n">XNVME_SPEC_NVM_OPC_READ</span> <span class="o">=</span> <span class="mh">0x02</span><span class="p">,</span>		<span class="c1">///&lt; XNVME_SPEC_NVM_OPC_READ</span>
 
@@ -2643,12 +2649,6 @@
 <dd><p>XNVME_SPEC_CSI_ZONED. </p>
 </dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.0xFF">
-<span class="target" id="libxnvme__spec_8h_1a11f85789e823c6a9b97f1472e22d0b22a781146ae6e5ed770fc07b76e4cfe9985"></span><code class="sig-name descname">0xFF</code><a class="headerlink" href="#c.0xFF" title="Permalink to this definition">¶</a></dt>
-<dd><p>XNVME_SPEC_CSI_NOCHECK. </p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -2778,6 +2778,13 @@
 
 </dd></dl>
 
+</div>
+<div class="section" id="xnvme-spec-fs-opcs">
+<span id="sec-c-api-xnvme-spec-enum-xnvme-spec-fs-opcs"></span><h3>xnvme_spec_fs_opcs<a class="headerlink" href="#xnvme-spec-fs-opcs" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenenum: Cannot find enum “xnvme_spec_fs_opcs” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
 </div>
 <div class="section" id="xnvme-spec-idfy-cns">
 <span id="sec-c-api-xnvme-spec-enum-xnvme-spec-idfy-cns"></span><h3>xnvme_spec_idfy_cns<a class="headerlink" href="#xnvme-spec-idfy-cns" title="Permalink to this headline">¶</a></h3>
@@ -3001,6 +3008,12 @@
 </dl>
 </p>
 <p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.0x00">
+<span class="target" id="libxnvme__spec_8h_1a714cf32784e38ecd4d3d3f100260f559a62bff8f2f314ec801f6b9c43e4095046"></span><code class="sig-name descname">0x00</code><a class="headerlink" href="#c.0x00" title="Permalink to this definition">¶</a></dt>
+<dd><p>XNVME_SPEC_NVM_OPC_FLUSH. </p>
+</dd></dl>
+
 <dl class="enumvalue">
 <dt id="c.0x01">
 <span class="target" id="libxnvme__spec_8h_1a714cf32784e38ecd4d3d3f100260f559a554cc2439fd8969ed9d12d3b59f104c7"></span><code class="sig-name descname">0x01</code><a class="headerlink" href="#c.0x01" title="Permalink to this definition">¶</a></dt>
@@ -4163,6 +4176,20 @@
 </div>
 </dd></dl>
 
+</div>
+<div class="section" id="xnvme-spec-fs-idfy-ctrlr">
+<span id="sec-c-api-xnvme-spec-struct-xnvme-spec-fs-idfy-ctrlr"></span><h3>xnvme_spec_fs_idfy_ctrlr<a class="headerlink" href="#xnvme-spec-fs-idfy-ctrlr" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenstruct: Cannot find class “xnvme_spec_fs_idfy_ctrlr” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
+</div>
+<div class="section" id="xnvme-spec-fs-idfy-ns">
+<span id="sec-c-api-xnvme-spec-struct-xnvme-spec-fs-idfy-ns"></span><h3>xnvme_spec_fs_idfy_ns<a class="headerlink" href="#xnvme-spec-fs-idfy-ns" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenstruct: Cannot find class “xnvme_spec_fs_idfy_ns” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
 </div>
 <div class="section" id="xnvme-spec-idfy">
 <span id="sec-c-api-xnvme-spec-struct-xnvme-spec-idfy"></span><h3>xnvme_spec_idfy<a class="headerlink" href="#xnvme-spec-idfy" title="Permalink to this headline">¶</a></h3>

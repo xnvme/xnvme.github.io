@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>lblk &mdash; xNVMe 0.0.22 documentation</title>
+  <title>lblk &mdash; xNVMe 0.0.23 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="fio xNVMe IO Engine" href="../fio/index.html" />
-    <link rel="prev" title="zoned" href="../zoned/index.html" /> 
+    <link rel="next" title="zoned" href="../zoned/index.html" />
+    <link rel="prev" title="xnvme" href="../xnvme/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.22
+                0.0.23
               </div>
             
           
@@ -89,7 +89,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">lblk</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#enumerate-logical-block-namespaces">Enumerate Logical Block Namespaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#device-information">Device Information</a></li>
@@ -98,6 +97,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#io-writing">IO: Writing</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file/index.html">file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fio/index.html">fio xNVMe IO Engine</a></li>
 </ul>
 </li>
@@ -185,7 +187,7 @@ Where &lt;command&gt; is one of:
 
 See <span class="s1">&#39;lblk &lt;command&gt; --help&#39;</span> <span class="k">for</span> the description of <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
-Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">22</span><span class="o">}</span>
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">23</span><span class="o">}</span>
 </pre></div>
 </div>
 <div class="section" id="enumerate-logical-block-namespaces">
@@ -206,7 +208,7 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
 
-Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">22</span><span class="o">}</span>
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">23</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -223,17 +225,13 @@ Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span cla
     opts: <span class="s1">&#39;&#39;</span>
     uri: <span class="s1">&#39;file:/dev/nvme0n1&#39;</span>
   xnvme_be:
-    async: <span class="o">{</span>id: <span class="s1">&#39;thr&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
-    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
-    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+    async: <span class="o">{</span>id: <span class="s1">&#39;emu&#39;</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
   xnvme_cmd_opts:
-    mask: <span class="s1">&#39;00000000000000000000000000000001&#39;</span>
-    iomd: <span class="s1">&#39;SYNC&#39;</span>
-    payload_data: <span class="s1">&#39;DRV&#39;</span>
-    payload_meta: <span class="s1">&#39;DRV&#39;</span>
     csi: 0x0
     nsid: 0x1
-    ssw: <span class="m">9</span>
   xnvme_geo:
     type: XNVME_GEO_CONVENTIONAL
     npugrp: <span class="m">1</span>
@@ -246,6 +244,7 @@ Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span cla
     mdts_nbytes: <span class="m">65024</span>
     lba_nbytes: <span class="m">512</span>
     lba_extended: <span class="m">0</span>
+    ssw: <span class="m">9</span>
 </pre></div>
 </div>
 </div>
@@ -268,7 +267,7 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
 
-Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">22</span><span class="o">}</span>
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">23</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -294,7 +293,7 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
 
-Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">22</span><span class="o">}</span>
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">23</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -320,7 +319,7 @@ Where &lt;args&gt; include:
 
 See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
 
-Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">22</span><span class="o">}</span>
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">23</span><span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -334,10 +333,10 @@ Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span cla
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../fio/index.html" class="btn btn-neutral float-right" title="fio xNVMe IO Engine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../zoned/index.html" class="btn btn-neutral float-right" title="zoned" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../zoned/index.html" class="btn btn-neutral float-left" title="zoned" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../xnvme/index.html" class="btn btn-neutral float-left" title="xnvme" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

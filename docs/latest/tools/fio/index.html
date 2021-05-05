@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.22 documentation</title>
+  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.23 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="C API" href="../../capis/index.html" />
-    <link rel="prev" title="lblk" href="../lblk/index.html" /> 
+    <link rel="prev" title="file" href="../file/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.22
+                0.0.23
               </div>
             
           
@@ -89,8 +89,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file/index.html">file</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">fio xNVMe IO Engine</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#caveat">Caveat</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
@@ -236,7 +238,7 @@ are attached to the Kernel NVMe driver:</p>
 <span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
 <span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
 <span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="p">;</span>   --async<span class="o">=</span>aio <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>libaio <span class="se">\</span>
 <span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
 <span class="p">;</span>
 <span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and io_uring async. impl.</span>
@@ -244,7 +246,7 @@ are attached to the Kernel NVMe driver:</p>
 <span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
 <span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
 <span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="p">;</span>   --async<span class="o">=</span>iou <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>io_uring <span class="se">\</span>
 <span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
 <span class="p">;</span>
 <span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with SPDK backend</span>
@@ -313,7 +315,7 @@ means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.
 <span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
 <span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
 <span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="p">;</span>   --async<span class="o">=</span>aio <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>libaio <span class="se">\</span>
 <span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
 <span class="p">;</span>
 <span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and io_uring async. impl.</span>
@@ -321,7 +323,7 @@ means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.
 <span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
 <span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
 <span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="p">;</span>   --async<span class="o">=</span>iou <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>io_uring <span class="se">\</span>
 <span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
 <span class="p">;</span>
 <span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with SPDK backend</span>
@@ -395,7 +397,7 @@ Zoned Command Set enabled.</p>
 <span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
 <span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
 <span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="p">;</span>   --async<span class="o">=</span>aio <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>libaio <span class="se">\</span>
 <span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
 <span class="p">;</span>
 <span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and io_uring async. impl.</span>
@@ -403,7 +405,7 @@ Zoned Command Set enabled.</p>
 <span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
 <span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
 <span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="p">;</span>   --async<span class="o">=</span>iou <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>io_uring <span class="se">\</span>
 <span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
 <span class="p">;</span>
 <span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with SPDK backend</span>
@@ -497,7 +499,7 @@ the options to enable/disable the IO engine are:</p>
         <a href="../../capis/index.html" class="btn btn-neutral float-right" title="C API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../lblk/index.html" class="btn btn-neutral float-left" title="lblk" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../file/index.html" class="btn btn-neutral float-left" title="file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

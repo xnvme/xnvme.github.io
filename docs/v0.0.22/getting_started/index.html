@@ -1,0 +1,1370 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; xNVMe 0.0.22 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tools" href="../tools/index.html" />
+    <link rel="prev" title="Cross-platform libraries and tools for NVMe devices" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.22
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#building-xnvme">Building xNVMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#toolchain">Toolchain</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arch-linux-20200306">Arch Linux 20200306</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centos-7">CentOS 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-11-bullseye">Debian 11 (Bullseye)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-10-buster">Debian 10 (Buster)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debian-9-stretch">Debian 9 (Stretch)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freebsd-12">Freebsd 12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-20-04-focal">Ubuntu 20.04 (Focal)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-18-04-bionic">Ubuntu 18.04 (Bionic)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-16-04-xenial">Ubuntu 16.04 (Xenial)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alpine-linux-3-11-3">Alpine Linux 3.11.3</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#backends-and-system-config">Backends and System Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#backends">Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kernel">Kernel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#nvme-driver-and-ioctls">NVMe Driver and IOCTLs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#block-layer">Block Layer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#block-zoned-ioctls">Block Zoned IOCTLs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-i-o-via-libaio">Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-i-o-via-io-uring">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#user-space">User Space</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#config">Config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unbinding-and-binding">Unbinding and binding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#device-identifiers">Device Identifiers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-an-xnvme-program">Building an xNVMe Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-code">Example code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-and-link">Compile and link</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run">Run!</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">User space</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#no-devices-found">No devices found</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#memory-issues">Memory Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#build-errors">Build Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#known-build-issues">Known Build Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-the-build">Customizing the Build</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#non-gcc-toolchain">Non-GCC Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-compiling-for-arm-on-x86">Cross-compiling for ARM on x86</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-configuration">Custom Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/getting_started/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<span id="sec-getting-started"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>Previously a <strong>quick start</strong> guide was available. However, it usually left one
+asking questions, and thus, did not as the name suggests; get you started
+quickly. Thus, a fuller story on getting started using <strong>xNVMe</strong> is provided
+here.  Needlessly, this section will have subsections that you can skip and
+revisit only in case you find <strong>xNVMe</strong>, or the system you are running on, to
+be misbehaving.</p>
+<p>If you have read through, and still have questions, then please raise a
+<a class="reference external" href="https://github.com/OpenMPDK/xNVMe/issues">issue</a>, start an asynchronous <a class="reference external" href="https://github.com/OpenMPDK/xNVMe/discussions">discussion</a>, or go to <a class="reference external" href="https://discord.com/invite/XCbBX9DmKf">Discord</a> for
+synchronous interaction.</p>
+<p>The task of getting started with <strong>xNVMe</strong> will take you through
+<a class="reference internal" href="#sec-building"><span class="std std-ref">Building xNVMe</span></a> with a companion section on <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a>
+prerequisites, followed by a section describing runtime requirements in
+<a class="reference internal" href="#sec-gs-system-config"><span class="std std-ref">Backends and System Config</span></a>, ending with an example of
+<a class="reference internal" href="#sec-building-example"><span class="std std-ref">Building an xNVMe Program</span></a>.</p>
+<div class="section" id="building-xnvme">
+<span id="sec-building"></span><h2>Building xNVMe<a class="headerlink" href="#building-xnvme" title="Permalink to this headline">¶</a></h2>
+<p><strong>xNVMe</strong> builds and runs on Linux, FreeBSD, and Windows. The latter is not
+publicly supported, however, if you are interested in Windows support then have
+a look at the <a class="reference internal" href="#sec-building-windows"><span class="std std-ref">Windows</span></a> section for more information.</p>
+<p>Retrieve the <strong>xNVMe</strong> repository from
+<a class="reference external" href="https://github.com/OpenMPDK/xNVMe">GitHUB</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the xNVMe repos</span>
+git clone https://github.com/OpenMPDK/xNVMe.git --recursive xnvme
+<span class="nb">cd</span> xnvme
+
+<span class="c1"># make: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+make
+
+<span class="c1"># make install: install via the apt package manager</span>
+sudo make install-deb
+
+<span class="c1"># make install: install in the &quot;usual&quot; manner</span>
+sudo make install
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The repository uses git-submodules, so make sure you are cloning with
+<code class="docutils literal notranslate"><span class="pre">--recursive</span></code>, if you overlooked that, then invoke <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span>
+<span class="pre">--init</span> <span class="pre">--recursive</span></code></p>
+</div>
+<p>If you want to change the build-configuration, then have a look at the
+following <a class="reference internal" href="#sec-building-config"><span class="std std-ref">Custom Configuration</span></a>, if you are seeing build errors, then jump
+to the <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> section describing packages to install on
+different Linux distributions and on FreeBSD.</p>
+<p>There you will also find notes on customizing the toolchain and
+cross-compilation.</p>
+</div>
+<div class="section" id="toolchain">
+<span id="sec-building-toolchain"></span><h2>Toolchain<a class="headerlink" href="#toolchain" title="Permalink to this headline">¶</a></h2>
+<p>The toolchain (compiler, archiver, and linker) used for building <strong>xNVMe</strong>
+must support <strong>C11</strong>, <strong>pthreads</strong> and on the system the following libraries
+and tools must be available:</p>
+<ul class="simple">
+<li><p>CMake (&gt;= 3.9, For <strong>xNVMe</strong>)</p></li>
+<li><p>glibc (&gt;= 2.28, for <strong>io_uring/liburing</strong>)</p></li>
+<li><p>libaio-dev (&gt;=0.3, For <strong>xNVMe</strong> and <strong>SPDK</strong>)</p></li>
+<li><p>libnuma-dev (&gt;=2, For <strong>SPDK</strong>)</p></li>
+<li><p>libssl-dev (&gt;=1.1, For <strong>SPDK</strong>)</p></li>
+<li><p>make (gmake)</p></li>
+<li><p>meson (&gt;=0.48, for <strong>SPDK</strong>)</p></li>
+<li><p>ninja (&gt;=, for <strong>SPDK</strong>)</p></li>
+<li><p>uuid-dev (&gt;=2.3, For <strong>SPDK</strong>)</p></li>
+</ul>
+<p>The preferred toolchain is <strong>gcc</strong> and the following sections describe how to
+install it and required libraries on FreeBSD and a set of popular Linux
+Distributions.</p>
+<p>If you which to use a different toolchain then see the
+<a class="reference internal" href="#sec-building-custom-toolchain"><span class="std std-ref">Non-GCC Toolchain</span></a>, on how to instrument the build-system
+using a compiler other than <strong>gcc</strong>.</p>
+<div class="section" id="arch-linux-20200306">
+<h3>Arch Linux 20200306<a class="headerlink" href="#arch-linux-20200306" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">pacman</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>base-devel
+cmake
+cunit
+gcc
+git
+git
+libaio
+libutil-linux
+make
+meson
+ncurses
+ninja
+numactl
+python3
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via pacman</span>
+pacman -Syyu --noconfirm
+pacman -S --noconfirm <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/archlinux:20200306.txt&quot;</span><span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="centos-7">
+<h3>CentOS 7<a class="headerlink" href="#centos-7" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">yum</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+git
+glibc-static
+libaio-devel
+libuuid-devel
+make
+nasm
+ncurses-devel
+numactl-devel
+openssl-devel
+patch
+python3
+python3-pip
+wget
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Developer Tools</span>
+yum install -y centos-release-scl
+yum-config-manager --enable rhel-server-rhscl-7-rpms
+yum install -y devtoolset-8
+
+<span class="c1"># Install packages via yum</span>
+yum install -y <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/centos:centos7.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install CMake using installer from GitHUB</span>
+wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-Linux-x86_64.sh -O cmake.sh
+chmod +x cmake.sh
+./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+
+<span class="c1"># Source them in for usage before building</span>
+<span class="nb">source</span> /opt/rh/devtoolset-8/enable
+
+gcc --version
+g++ --version
+
+<span class="c1"># Add to bash-profile if it makes sense to you</span>
+<span class="c1">#echo &quot;#!/bin/bash\nsource scl_source enable devtoolset-8&quot; &gt;&gt; /etc/profile.d/devtoolset.sh</span>
+<span class="c1">#echo &quot;#!/bin/bash\nsource scl_source enable devtoolset-8&quot; &gt;&gt; ~/.bashrc</span>
+<span class="c1">#echo &quot;#!/bin/bash\nsource scl_source enable devtoolset-8&quot; &gt;&gt; ~/.bash_profile</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-11-bullseye">
+<h3>Debian 11 (Bullseye)<a class="headerlink" href="#debian-11-bullseye" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>astyle
+build-essential
+cmake
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+python3
+python3-pip
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via aptitude -- seems to handle dependencies better</span>
+aptitude -q -y -f install <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/debian:bullseye.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-10-buster">
+<h3>Debian 10 (Buster)<a class="headerlink" href="#debian-10-buster" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+python3
+python3-pip
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt-get -qy autoclean
+
+<span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/debian:buster.txt&quot;</span><span class="k">)</span>
+
+apt-get -t buster-backports install -qy meson ninja-build
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-9-stretch">
+<h3>Debian 9 (Stretch)<a class="headerlink" href="#debian-9-stretch" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+python3
+python3-pip
+uuid-dev
+wget
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/debian:stretch.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install CMake using installer from GitHUB</span>
+wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-Linux-x86_64.sh -O cmake.sh
+chmod +x cmake.sh
+./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+<div class="section" id="freebsd-12">
+<h3>Freebsd 12<a class="headerlink" href="#freebsd-12" title="Permalink to this headline">¶</a></h3>
+<p>Ensure that you have kernel source in <code class="docutils literal notranslate"><span class="pre">/usr/src</span></code>, then install the following
+packages via <code class="docutils literal notranslate"><span class="pre">pkg</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+automake
+bash
+cmake
+cunit
+e2fsprogs-libuuid
+git
+gmake
+meson
+nasm
+ncurses
+ninja
+openssl
+python
+python3
+python3-pip
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via pkg</span>
+pkg install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/freebsd-12.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-20-04-focal">
+<h3>Ubuntu 20.04 (Focal)<a class="headerlink" href="#ubuntu-20-04-focal" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+g++
+gcc
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+python3
+python3-pip
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/ubuntu:focal.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-18-04-bionic">
+<h3>Ubuntu 18.04 (Bionic)<a class="headerlink" href="#ubuntu-18-04-bionic" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+cmake
+g++
+gcc
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+python3
+python3-pip
+uuid-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/ubuntu:bionic.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+<div class="section" id="ubuntu-16-04-xenial">
+<h3>Ubuntu 16.04 (Xenial)<a class="headerlink" href="#ubuntu-16-04-xenial" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+g++
+gcc
+git
+libaio-dev
+libcunit1-dev
+libncurses5-dev
+libnuma-dev
+libssl-dev
+nasm
+python3
+python3-pip
+uuid-dev
+wget
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/ubuntu:xenial.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install CMake using installer from GitHUB</span>
+wget https://github.com/Kitware/CMake/releases/download/v3.16.5/cmake-3.16.5-Linux-x86_64.sh -O cmake.sh
+chmod +x cmake.sh
+./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+<div class="section" id="alpine-linux-3-11-3">
+<h3>Alpine Linux 3.11.3<a class="headerlink" href="#alpine-linux-3-11-3" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apk</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash
+bsd-compat-headers
+build-base
+cmake
+coreutils
+gawk
+git
+libexecinfo-dev
+linux-headers
+meson
+ninja
+make
+musl-dev
+ncurses
+numactl-dev
+python3
+python3-pip
+util-linux-dev
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apk</span>
+apk add <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/alpine:3.12.0.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="backends-and-system-config">
+<span id="sec-gs-system-config"></span><h2>Backends and System Config<a class="headerlink" href="#backends-and-system-config" title="Permalink to this headline">¶</a></h2>
+<p><strong>xNVMe</strong> relies on certain Operating System Kernel features and infrastructure
+that must be available and correctly configured. This subsection goes through
+what is uses on Linux and how check whether is it available.</p>
+<div class="section" id="backends">
+<h3>Backends<a class="headerlink" href="#backends" title="Permalink to this headline">¶</a></h3>
+<p>The purpose of <strong>xNVMe</strong> backends are to provide an instrumental runtime
+supporting the <strong>xNVMe</strong> API in a single library with <strong>batteries included</strong>.</p>
+<p>That is, it comes with the essential third-party libraries bundled into the
+<strong>xNVMe</strong> library. Thus, you get a single C API to program against and a single
+library to link with. An similarly for the command-line tools; a single binary
+to communicating with devices via the I/O stacks that available on the system.</p>
+<p>To inspect the libraries which <strong>xNVMe</strong> is build against and the
+supported/enabled backends then invoke:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme library-info
+</pre></div>
+</div>
+<p>It should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">22</span><span class="o">}</span>
+xnvme_3p:
+  - <span class="s1">&#39;fio;git-describe:fio-3.25&#39;</span>
+  - <span class="s1">&#39;libnvme;git-rev:master/a458217&#39;</span>
+  - <span class="s1">&#39;liburing;git-describe:liburing-0.7&#39;</span>
+  - <span class="s1">&#39;spdk;git-describe:v20.10;+patches&#39;</span>
+  - <span class="s1">&#39;linux;LINUX_VERSION_CODE-UAPI/329995-5.9.11&#39;</span>
+xnvme_be_attr_list:
+  count: <span class="m">3</span>
+  capacity: <span class="m">3</span>
+  items:
+  - <span class="o">{</span>name: <span class="s1">&#39;spdk&#39;</span>, enabled: <span class="m">1</span>, schemes: <span class="o">[</span>pci, pcie, fab<span class="o">]}</span>
+  - <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span>, schemes: <span class="o">[</span>file<span class="o">]}</span>
+  - <span class="o">{</span>name: <span class="s1">&#39;fbsd&#39;</span>, enabled: <span class="m">0</span>, schemes: <span class="o">[</span>file, fbsd<span class="o">]}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">xnvme_3p</span></code> part of the output informs about the third-party projects
+which <strong>xNVMe</strong> was built against, and in the case of libraries, the version it
+has bundled.</p>
+<p>Although a single API and a single library is provided by <strong>xNVMe</strong>, then
+runtime and system configuration dependencies remain. The following subsections
+describe how to instrument <strong>xNVMe</strong> to utilize the different kernel interfaces
+and user space drivers.</p>
+</div>
+<div class="section" id="kernel">
+<h3>Kernel<a class="headerlink" href="#kernel" title="Permalink to this headline">¶</a></h3>
+<p>Linux Kernel version 5.9 or newer is currently preferred as it has all the
+features which <strong>xNVMe</strong> utilizes. This section also gives you a brief overview
+of the different I/O paths and APIs which the <strong>xNVMe</strong> API unifies access to.</p>
+<div class="section" id="nvme-driver-and-ioctls">
+<h4>NVMe Driver and IOCTLs<a class="headerlink" href="#nvme-driver-and-ioctls" title="Permalink to this headline">¶</a></h4>
+<p>The default for <strong>xNVMe</strong> is to communicate with devices via the operating
+system NVMe driver IOCTLs, specifically on Linux the following are used:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_ID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO_CMD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_ADMIN_CMD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO64_CMD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_ADMIN64_CMD</span></code></p></li>
+</ul>
+<p>In case the <code class="docutils literal notranslate"><span class="pre">*64_CMD</span></code> IOCTLs are not available then <strong>xNVMe</strong> falls back to
+using the non-64bit equivalents. The 64 vs 32 completion result mostly affect
+commands such as Zone Append. You can check that this interface is behaving as
+expected by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme info /dev/nvme0n1
+</pre></div>
+</div>
+<p>Which you yield output equivalent to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nvme0n1&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;thr&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>This tells you that <strong>xNVMe</strong> can communicate with the given device identifier
+and it informs you that it utilizes <strong>nvme_ioctl</strong> for synchronous command
+execution and it uses <strong>thr</strong> for asynchronous command execution.  Since IOCTLs
+are inherently synchronous then <strong>xNVMe</strong> mimics asynchronous behavior over
+IOCTLs to support the asynchronous primitives provided by the <strong>xNVMe</strong> API.</p>
+</div>
+<div class="section" id="block-layer">
+<h4>Block Layer<a class="headerlink" href="#block-layer" title="Permalink to this headline">¶</a></h4>
+<p>In case your device is <strong>not</strong> an NVMe device, then the NVMe IOCTLs won’t be
+available. <strong>xNVMe</strong> will then try to utilize the Linux Block Layer and treat
+a given block device as a NVMe device via shim-layer for NVMe admin commands
+such as identify and get-features.</p>
+<p>A brief example of checking this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a NULL Block instance</span>
+modprobe null_blk <span class="nv">nr_devices</span><span class="o">=</span><span class="m">1</span>
+<span class="c1"># Open and query the NULL Block instance with xNVMe</span>
+xnvme info /dev/nullb0
+<span class="c1"># Remove the NULL Block instance</span>
+modprobe -r null_blk
+</pre></div>
+</div>
+<p>Yielding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nullb0&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nullb0&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;thr&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;block_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+  xnvme_cmd_opts:
+    mask: <span class="s1">&#39;00000000000000000000000000000001&#39;</span>
+    iomd: <span class="s1">&#39;SYNC&#39;</span>
+    payload_data: <span class="s1">&#39;DRV&#39;</span>
+    payload_meta: <span class="s1">&#39;DRV&#39;</span>
+    csi: 0x0
+    nsid: 0x1
+    ssw: <span class="m">9</span>
+  xnvme_geo:
+    type: XNVME_GEO_CONVENTIONAL
+    npugrp: <span class="m">1</span>
+    npunit: <span class="m">1</span>
+    nzone: <span class="m">1</span>
+    nsect: <span class="m">524288000</span>
+    nbytes: <span class="m">512</span>
+    nbytes_oob: <span class="m">0</span>
+    tbytes: <span class="m">268435456000</span>
+    mdts_nbytes: <span class="m">65024</span>
+    lba_nbytes: <span class="m">512</span>
+    lba_extended: <span class="m">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="block-zoned-ioctls">
+<h4>Block Zoned IOCTLs<a class="headerlink" href="#block-zoned-ioctls" title="Permalink to this headline">¶</a></h4>
+<p>Building on the Linux Block model, then the Zoned Block Device model is also
+utilized, specifically the following IOCTLs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BLK_ZONE_REP_CAPACITY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLKCLOSEZONE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLKFINISHZONE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLKOPENZONE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLKRESETZONE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLKGETNRZONES</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLKREPORTZONE</span></code></p></li>
+</ul>
+<p>When available, then <strong>xNVMe</strong> can make use of the above IOCTLs. This is
+mostly useful when developing/testing using Linux Null Block devices.
+And similar for a Zoned NULL Block instance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a Zoned NULL Block instance</span>
+modprobe null_blk <span class="nv">nr_devices</span><span class="o">=</span><span class="m">1</span> <span class="nv">zoned</span><span class="o">=</span><span class="m">1</span>
+<span class="c1"># Open and query the Zoned NULL Block instance with xNVMe</span>
+xnvme info /dev/nullb0
+<span class="c1"># Remove the Zoned NULL Block instance</span>
+modprobe -r null_blk
+</pre></div>
+</div>
+<p>Yielding:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nullb0&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nullb0&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;thr&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;block_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+  xnvme_cmd_opts:
+    mask: <span class="s1">&#39;00000000000000000000000000000001&#39;</span>
+    iomd: <span class="s1">&#39;SYNC&#39;</span>
+    payload_data: <span class="s1">&#39;DRV&#39;</span>
+    payload_meta: <span class="s1">&#39;DRV&#39;</span>
+    csi: 0x2
+    nsid: 0x1
+    ssw: <span class="m">9</span>
+  xnvme_geo:
+    type: XNVME_GEO_ZONED
+    npugrp: <span class="m">1</span>
+    npunit: <span class="m">1</span>
+    nzone: <span class="m">1000</span>
+    nsect: <span class="m">524288</span>
+    nbytes: <span class="m">512</span>
+    nbytes_oob: <span class="m">0</span>
+    tbytes: <span class="m">268435456000</span>
+    mdts_nbytes: <span class="m">65024</span>
+    lba_nbytes: <span class="m">512</span>
+    lba_extended: <span class="m">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="async-i-o-via-libaio">
+<h4>Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code><a class="headerlink" href="#async-i-o-via-libaio" title="Permalink to this headline">¶</a></h4>
+<p>When AIO is available then the NVMe NVM Commands for <strong>read</strong> and <strong>write</strong> are
+sent over the Linux AIO interface. Doing so improves command-throughput at
+higher queue-depths when compared to sending the command over the driver-ioctl.</p>
+<p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">libaio</span></code> for async I/O by
+encoding it in the device identifier, like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use libaio for asynchronous read and write</span>
+xnvme info /dev/nvme0n1?async<span class="o">=</span>libaio
+</pre></div>
+</div>
+<p>Yielding the output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;?async=libaio&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nvme0n1?async=libaio&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;libaio&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="async-i-o-via-io-uring">
+<h4>Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code><a class="headerlink" href="#async-i-o-via-io-uring" title="Permalink to this headline">¶</a></h4>
+<p><strong>xNVMe</strong> utilizes the Linux <strong>io_uring</strong> interface, its support for
+feature-probing the <strong>io_uring</strong> interface and the <strong>io_uring</strong> opcodes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IORING_OP_READ</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IORING_OP_WRITE</span></code></p></li>
+</ul>
+<p>When available, then <strong>xNVMe</strong> can send the NVMe NVM Commands for <strong>read</strong> and
+<strong>write</strong> via the Linux <strong>io_uring</strong> interface. Doing so improves
+command-throughput at all io-depths when compared to sending the command via
+NVMe Driver IOCTLs and libaio. It also leverages the <strong>io_uring</strong> interface to
+enabling I/O polling and kernel-side submission polling.</p>
+<p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> for async I/O by
+encoding it in the device identifier, like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use io_uring for asynchronous read and write</span>
+xnvme info /dev/nvme0n1?async<span class="o">=</span>io_uring
+</pre></div>
+</div>
+<p>Yielding the output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;?async=io_uring&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nvme0n1?async=io_uring&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;io_uring&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="user-space">
+<span id="sec-gs-system-config-userspace"></span><h3>User Space<a class="headerlink" href="#user-space" title="Permalink to this headline">¶</a></h3>
+<p>Linux provides the <strong>Userspace I/O</strong> (<span class="target" id="uio">uio</span>) and <strong>Virtual Function I/O</strong>
+<span class="target" id="vfio">vfio</span> frameworks to write user space I/O drivers. Both interfaces work by
+binding a given device to an in-kernel stub-driver. The stub-driver in turn
+exposes device-memory and device-interrupts to user space. Thus enabling the
+implementation of device drivers entirely in user space.</p>
+<p>Although Linux provides a capable NVMe Driver with flexible IOCTLs, then a user
+space NVMe driver serves those who seek the lowest possible command per-command
+processing overhead or wants full control over NVMe command construction,
+including command-payloads.</p>
+<p>Fortunately, you do not need to go and write a user space NVMe driver since a
+highly efficient, mature and well-maintained driver already exists. Namely, the
+NVMe driver provided by the <strong>Storage Platform Development Kit</strong> (<span class="target" id="spdk">SPDK</span>).</p>
+<p>Another great fortune is that <strong>xNVMe</strong> bundles the SPDK NVMe Driver with the
+<strong>xNVMe</strong> library. So, if you have built and installed <strong>xNVMe</strong> then the
+<strong>SPDK</strong> NVMe Driver is readily available to <strong>xNVMe</strong>.</p>
+<p>The following subsections goes through a configuration checklist, then shows
+how to bind and unbind drivers, and lastly how to utilize non-devfs device
+identifiers by enumerating the system and inspecting a device.</p>
+<div class="section" id="config">
+<span id="sec-gs-system-config-userspace-config"></span><h4>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h4>
+<p>What remains is checking your system configuration, enabling IOMMU for use by
+the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> driver, and possibly falling back to the <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
+driver in case <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> is not working out.  <code class="docutils literal notranslate"><span class="pre">vfio</span></code> is preferred as
+hardware support for IOMMU allows for isolation between devices.</p>
+<ol class="arabic simple">
+<li><p>Verify that your CPU supports virtualization / VT-d and that it is enabled
+in your board BIOS.</p></li>
+<li><p>Enable your kernel for an intel CPU then provide the kernel option
+<code class="docutils literal notranslate"><span class="pre">intel_iommu=on</span></code>.  If you have a non-Intel CPU then consult documentation
+on enabling VT-d / IOMMU for your CPU.</p></li>
+<li><p>Increase limits, open <code class="docutils literal notranslate"><span class="pre">/etc/security/limits.conf</span></code> and add:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span>    <span class="n">soft</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="o">*</span>    <span class="n">hard</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="n">root</span> <span class="n">soft</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="n">root</span> <span class="n">hard</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+</pre></div>
+</div>
+<p>Once you have gone through these steps, and rebooted, then this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dmesg <span class="p">|</span> grep <span class="s2">&quot;DMAR: IOMMU&quot;</span>
+</pre></div>
+</div>
+<p>Should output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.119519<span class="o">]</span> DMAR: IOMMU enabled
+</pre></div>
+</div>
+<p>And this this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>find /sys/kernel/iommu_groups/ -type l
+</pre></div>
+</div>
+<p>Should have output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/sys/kernel/iommu_groups/7/devices/0000:01:00.0
+/sys/kernel/iommu_groups/5/devices/0000:00:05.0
+/sys/kernel/iommu_groups/3/devices/0000:00:03.0
+/sys/kernel/iommu_groups/1/devices/0000:00:01.0
+/sys/kernel/iommu_groups/8/devices/0000:03:00.0
+/sys/kernel/iommu_groups/8/devices/0000:02:00.0
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.2
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.0
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.3
+/sys/kernel/iommu_groups/4/devices/0000:00:04.0
+/sys/kernel/iommu_groups/2/devices/0000:00:02.0
+/sys/kernel/iommu_groups/0/devices/0000:00:00.0
+</pre></div>
+</div>
+</div>
+<div class="section" id="unbinding-and-binding">
+<h4>Unbinding and binding<a class="headerlink" href="#unbinding-and-binding" title="Permalink to this headline">¶</a></h4>
+<p>With the system configured then you can use the <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script bind
+and unbind devices. The <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script is a merge of the <strong>SPDK</strong>
+<code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script and its dependencies.</p>
+<p>By running the command below <strong>8GB</strong> of hugepages will be configured, the
+Kernel NVMe driver unbound, and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> bound to the device:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">8192</span> xnvme-driver
+</pre></div>
+</div>
+<p>The command above should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
+<span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
+</pre></div>
+</div>
+<p>To unbind from <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> and back to the Kernel NVMe driver, then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver reset
+</pre></div>
+</div>
+<p>Should output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: vfio-pci -&gt; nvme
+<span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Already using the virtio-pci driver
+</pre></div>
+</div>
+</div>
+<div class="section" id="device-identifiers">
+<span id="sec-backends-spdk-identifiers"></span><h4>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Permalink to this headline">¶</a></h4>
+<p>Since the Kernel NVMe driver is unbound from the device, then the kernel no
+longer know that the PCIe device is an NVMe device, thus, it no longer lives in
+Linux devfs, that is, no longer available in <code class="docutils literal notranslate"><span class="pre">/dev</span></code> as e.g. <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>.</p>
+<p>Instead of the filepath in devfs, then you use PCI ids and xNVMe options.</p>
+<p>As always, use the <code class="docutils literal notranslate"><span class="pre">xnvme</span></code> cli tool to enumerate devices:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme enum
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xnvme_enumerate()</span>
+xnvme_enumeration:
+  capacity: <span class="m">98</span>
+  nentries: <span class="m">2</span>
+  entries:
+  - <span class="o">{</span>trgt: <span class="s1">&#39;0000:03:00.0&#39;</span>, schm: <span class="s1">&#39;pci&#39;</span>, opts: <span class="s1">&#39;?nsid=1&#39;</span>, uri: <span class="s1">&#39;pci:0000:03:00.0?nsid=1&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>trgt: <span class="s1">&#39;0000:03:00.0&#39;</span>, schm: <span class="s1">&#39;pci&#39;</span>, opts: <span class="s1">&#39;?nsid=2&#39;</span>, uri: <span class="s1">&#39;pci:0000:03:00.0?nsid=2&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Notice that multiple URIs using the same PCI id but with different <strong>xNVMe</strong>
+<code class="docutils literal notranslate"><span class="pre">?opts=&lt;val&gt;</span></code>. This is provided as a means to tell <strong>xNVMe</strong> that you want to
+use the NVMe controller at <code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code> and the namespace identified by
+<code class="docutils literal notranslate"><span class="pre">nsid=1</span></code>.</p>
+<p>Similarly, when using the API, then you would use these URIs instead of
+filepaths:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s2">&quot;pci:0000:01:00.0?nsid=1&quot;</span><span class="p">);</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="building-an-xnvme-program">
+<span id="sec-building-example"></span><h2>Building an xNVMe Program<a class="headerlink" href="#building-an-xnvme-program" title="Permalink to this headline">¶</a></h2>
+<p>At this point you should have <strong>xNVMe</strong> built and installed on your system and
+have the system correctly configured and you should by now also be familiar
+with how to instrument <strong>xNVMe</strong> to utilize different backends and backend
+options.</p>
+<p>With all that in place, go ahead and compile your own <strong>xNVMe</strong> program.</p>
+<div class="section" id="example-code">
+<h3>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h3>
+<p>This <cite>“hello-world”</cite> example prints out device information of the NVMe
+device at <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>.</p>
+<p>To use <strong>xNVMe</strong> include the <code class="docutils literal notranslate"><span class="pre">libxnvme.h</span></code> header in your C/C++ source:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_pp.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>
+
+	<span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">perror</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open&quot;</span><span class="p">);</span>
+		<span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">xnvme_dev_pr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+	<span class="n">xnvme_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compile-and-link">
+<h3>Compile and link<a class="headerlink" href="#compile-and-link" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc ../getting_started/hello.c <span class="se">\</span>
+	-Wl,--whole-archive -Wl,--no-as-needed <span class="se">\</span>
+	-lxnvme <span class="se">\</span>
+	-Wl,--no-whole-archive -Wl,--as-needed <span class="se">\</span>
+	-laio -luuid -lnuma -pthread <span class="se">\</span>
+	-o hello
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You do not need to link with SPDK/DPDK/liburing, as these are bundled
+with <strong>xNVMe</strong>. However, do take note of the linker flags surrounding
+<code class="docutils literal notranslate"><span class="pre">-lxnvme</span></code>, these are required as SPDK makes use of
+<code class="docutils literal notranslate"><span class="pre">__attribute__((constructor))</span></code>. Without the linker flags, none of the SPDK
+transports will work, as <strong>ctors</strong> will be “linked-out”, and <strong>xNVMe</strong> will
+give you errors such as <strong>device not found</strong>.</p>
+</div>
+<p>Also, <strong>xNVMe</strong> provides three different libraries, two static, and a shared
+library as well. Here is what the different libraries are intended for:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">libxnvme.a</span></code>, this is static library version of <strong>xNVMe</strong> and it comes with
+<strong>batteries included</strong>, that is, all the third-party libraries are bundled
+within the static library <code class="docutils literal notranslate"><span class="pre">libxnvme.a</span></code>. Thus you only need to link with
+<strong>xNVMe</strong>, as described above, and need not worry about linking with SPDK,
+liburing etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libxnvme-static.a</span></code>, this is the same as <code class="docutils literal notranslate"><span class="pre">libxnvme.a</span></code> except it does
+<strong>not</strong> come with <strong>batteries included</strong>, so you have to manually link with
+SPDK, liburing, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libxnvme-shared.so</span></code>, this is the shared library version of <strong>xNVMe</strong>, this
+also does <strong>not</strong> come with <strong>batteries included</strong>, so when linking with, or
+dynamically loading, the shared library version of <strong>xNVMe</strong> then you also
+have to link or load the third-party dependencies.</p></li>
+</ul>
+<p>Using <code class="docutils literal notranslate"><span class="pre">libxnvme.a</span></code> is the preferred way to consume <strong>xNVMe</strong> as it comes with
+the correct version of the various third-party libraries and provides for
+a simpler link-target.</p>
+</div>
+<div class="section" id="run">
+<h3>Run!<a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod +x hello
+./hello
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    schm: <span class="s1">&#39;file&#39;</span>
+    opts: <span class="s1">&#39;&#39;</span>
+    uri: <span class="s1">&#39;file:/dev/nvme0n1&#39;</span>
+  xnvme_be:
+    async: <span class="o">{</span>id: <span class="s1">&#39;thr&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme_ioctl&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span>, enabled: <span class="m">1</span><span class="o">}</span>
+  xnvme_cmd_opts:
+    mask: <span class="s1">&#39;00000000000000000000000000000001&#39;</span>
+    iomd: <span class="s1">&#39;SYNC&#39;</span>
+    payload_data: <span class="s1">&#39;DRV&#39;</span>
+    payload_meta: <span class="s1">&#39;DRV&#39;</span>
+    csi: 0x0
+    nsid: 0x1
+    ssw: <span class="m">9</span>
+  xnvme_geo:
+    type: XNVME_GEO_CONVENTIONAL
+    npugrp: <span class="m">1</span>
+    npunit: <span class="m">1</span>
+    nzone: <span class="m">1</span>
+    nsect: <span class="m">16777216</span>
+    nbytes: <span class="m">512</span>
+    nbytes_oob: <span class="m">0</span>
+    tbytes: <span class="m">8589934592</span>
+    mdts_nbytes: <span class="m">65024</span>
+    lba_nbytes: <span class="m">512</span>
+    lba_extended: <span class="m">0</span>
+</pre></div>
+</div>
+<p>This should conclude the getting started guide of <strong>xNVMe</strong>, go ahead and
+explore the <a class="reference internal" href="../tools/index.html#sec-tools"><span class="std std-ref">Tools</span></a>, <a class="reference internal" href="../capis/index.html#sec-c-api"><span class="std std-ref">C API</span></a>, and <a class="reference internal" href="../examples/index.html#sec-examples"><span class="std std-ref">C API: Examples</span></a>.</p>
+<p>Should <strong>xNVMe</strong> or your system still be misbehaving, then take a look in the
+<a class="reference internal" href="#sec-troubleshooting"><span class="std std-ref">Troubleshooting</span></a> section or reach out by raising an <a class="reference external" href="https://github.com/OpenMPDK/xNVMe/issues">issue</a>, start an
+asynchronous <a class="reference external" href="https://github.com/OpenMPDK/xNVMe/discussions">discussion</a>, or go to <a class="reference external" href="https://discord.com/invite/XCbBX9DmKf">Discord</a> for synchronous interaction.</p>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<span id="sec-troubleshooting"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>User space<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>In case you are having issues using running with SPDK backend / using then make
+sure you following the config section
+<a class="reference internal" href="#sec-gs-system-config-userspace-config"><span class="std std-ref">Config</span></a> and if issues persist a solution
+might be found in the following subsections.</p>
+<div class="section" id="no-devices-found">
+<h4>No devices found<a class="headerlink" href="#no-devices-found" title="Permalink to this headline">¶</a></h4>
+<p>When running <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">enum</span></code> then the output-listing is empty, there are no
+devices. When running with <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> then this can occur when your devices
+are sharing iommu-group with other devices which are still bound to in-kernel
+drivers. This could be NICs, GPUs or other kinds of peripherals.</p>
+<p>The division of devices into groups is not something that can be easily
+switched, but you try to manually unbind the other devices in the iommu group
+from their kernel drivers.</p>
+<p>If that is not an option then you can try to re-organize your physical
+connectivity of deviecs, e.g. move devices around.</p>
+<p>Lastly you can try using <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> instead, this can most easily be
+done by disabling iommu by adding the kernel option: <code class="docutils literal notranslate"><span class="pre">iommu=off</span></code> to the
+kernel command-line and rebooting.</p>
+</div>
+<div class="section" id="memory-issues">
+<h4>Memory Issues<a class="headerlink" href="#memory-issues" title="Permalink to this headline">¶</a></h4>
+<p>If you see a message similar to the below while unbind devices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Current</span> <span class="n">user</span> <span class="n">memlock</span> <span class="n">limit</span><span class="p">:</span> <span class="mi">16</span> <span class="n">MB</span>
+
+<span class="n">This</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">amount</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span>
+<span class="n">able</span> <span class="n">to</span> <span class="n">use</span> <span class="k">with</span> <span class="n">DPDK</span> <span class="ow">and</span> <span class="n">VFIO</span> <span class="k">if</span> <span class="n">run</span> <span class="k">as</span> <span class="n">current</span> <span class="n">user</span><span class="o">.</span>
+<span class="n">To</span> <span class="n">change</span> <span class="n">this</span><span class="p">,</span> <span class="n">please</span> <span class="n">adjust</span> <span class="n">limits</span><span class="o">.</span><span class="n">conf</span> <span class="n">memlock</span> <span class="n">limit</span> <span class="k">for</span> <span class="n">current</span> <span class="n">user</span><span class="o">.</span>
+
+<span class="c1">## WARNING: memlock limit is less than 64MB</span>
+<span class="c1">## DPDK with VFIO may not be able to initialize if run as current user.</span>
+</pre></div>
+</div>
+<p>Then go you should do as suggested, that is, adjust <code class="docutils literal notranslate"><span class="pre">limits.conf</span></code>, see for an
+example of doing here <a class="reference internal" href="#sec-gs-system-config-userspace-config"><span class="std std-ref">Config</span></a>.</p>
+</div>
+</div>
+<div class="section" id="build-errors">
+<h3>Build Errors<a class="headerlink" href="#build-errors" title="Permalink to this headline">¶</a></h3>
+<p>If you are getting errors while attempting to configure and build <strong>xNVMe</strong>
+then it is likely due to one of the following:</p>
+<p><strong>git submodules</strong></p>
+<ul class="simple">
+<li><p>You did not clone with <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> or are for other reasons missing the
+submodules. Either clone again with the <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> flag, or update
+submodules: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--init</span> <span class="pre">--recursive</span></code>.</p></li>
+<li><p>You used the <strong>“Download Source”</strong> link on GitHUB, this does not work as it
+does not provide all the third-party repositories, only the xNVMe
+source-tree.</p></li>
+</ul>
+<p>In case you cannot use git submodules then a source-archive is provided with
+each xNVMe release, you can download it from the <a class="reference external" href="https://github.com/OpenMPDK/xNVMe/releases">GitHUB Release page</a> release page. It contains the
+xNVMe source code along with all the third-party dependencies, namely: SPDK,
+liburing, libnvme, and fio.</p>
+<p><strong>missing dependencies / toolchain</strong></p>
+<ul class="simple">
+<li><p>You are missing dependencies, see the <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> for
+installing these on FreeBSD and a handful of different Linux Distributions</p></li>
+</ul>
+<p>The <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> section describes preferred ways of
+installing libraries and tools. For example, on Ubuntu 18.04 it is preferred to
+install <code class="docutils literal notranslate"><span class="pre">meson</span></code> via <code class="docutils literal notranslate"><span class="pre">pip</span></code> since the version in the package registry is too
+old for SPDK, thus if installed via the package manager then you will
+experience build errors as the xNVMe build system starts building SPDK.</p>
+<p>Once you have the full source of xNVMe, third-party library dependencies, and
+setup the toolchain then run the following to ensure that the xNVMe repository
+is clean from any artifacts left behind by previous build failures:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clobber</span>
+</pre></div>
+</div>
+<p>And then go back to the <a class="reference internal" href="#sec-building"><span class="std std-ref">Building xNVMe</span></a> and follow the steps there.</p>
+</div>
+<div class="section" id="known-build-issues">
+<h3>Known Build Issues<a class="headerlink" href="#known-build-issues" title="Permalink to this headline">¶</a></h3>
+<p>If the above did not sort out your build-issues, then you might be facing one
+of the following known build-issues. If these do not apply to you, then please
+post an issue on GitHUB describing your build environment and output from the
+failed build.</p>
+<p>When building <strong>xNVMe</strong> on <strong>Alpine Linux</strong> you might encounter some issues due
+to musl standard library not being entirely compatible with <strong>GLIBC</strong> /
+<strong>BSD</strong>.</p>
+<p>The SPDK backend does not build on due to re-definition of <code class="docutils literal notranslate"><span class="pre">STAILQ_*</span></code>
+macros. As a work-around, then disable the SPDK backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">be</span><span class="o">-</span><span class="n">spdk</span>
+</pre></div>
+</div>
+<p>The Linux backend support for <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> fails on <strong>Alpine Linux</strong> due to a
+missing definition in <strong>musl</strong> leading to this error message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>include/liburing.h:195:17: error: unknown type name &#39;loff_t&#39;; did you mean
+&#39;off_t&#39;?
+</pre></div>
+</div>
+<p>As a work-around, then disable <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> support:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">be</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">iou</span>
+</pre></div>
+</div>
+<p>See more details on changing the default build-configuration of <strong>xNVMe</strong> in
+the section <a class="reference internal" href="#sec-building-config"><span class="std std-ref">Custom Configuration</span></a>.</p>
+</div>
+</div>
+<div class="section" id="customizing-the-build">
+<span id="sec-building-custom"></span><h2>Customizing the Build<a class="headerlink" href="#customizing-the-build" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="non-gcc-toolchain">
+<span id="sec-building-custom-toolchain"></span><h3>Non-GCC Toolchain<a class="headerlink" href="#non-gcc-toolchain" title="Permalink to this headline">¶</a></h3>
+<p>To use a compiler other than <strong>gcc</strong>, then:</p>
+<ol class="arabic simple">
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">CC</span></code> and <code class="docutils literal notranslate"><span class="pre">CXX</span></code> environment variable for the <code class="docutils literal notranslate"><span class="pre">./configure</span></code> script</p></li>
+<li><p>Pass <code class="docutils literal notranslate"><span class="pre">CC</span></code>, and <code class="docutils literal notranslate"><span class="pre">CXX</span></code> as arguments to <code class="docutils literal notranslate"><span class="pre">make</span></code></p></li>
+</ol>
+<p>For example, compiling <strong>xNVMe</strong> on a system where the default compiler is not
+<strong>gcc</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">CXX</span><span class="o">=</span>g++ ./configure &lt;YOUR_OPTIONS_HERE&gt;
+make <span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">CXX</span><span class="o">=</span>g++
+make install <span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">CXX</span><span class="o">=</span>g++
+</pre></div>
+</div>
+<p>Recent versions of <strong>icc</strong>, <strong>clang</strong>, and <strong>pgi</strong> should at be able to satisfy
+the <strong>C11</strong> and <strong>pthreads</strong> requirements. However, it will most likely require
+a bit of fiddling.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>icc</strong> works well after you bought a license and installed it
+correctly. There is a free option with Intel System Suite 2019.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <strong>pgi</strong> compiler has some issues linking with <strong>SPDK/DPDK</strong> due
+to unstable <strong>ABI</strong> for <strong>RTE</strong> it seems.</p>
+</div>
+<p>The path of least fiddling around is to just install the toolchain and
+libraries as described in the <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> section.</p>
+</div>
+<div class="section" id="cross-compiling-for-arm-on-x86">
+<span id="sec-building-crosscompiling"></span><h3>Cross-compiling for ARM on x86<a class="headerlink" href="#cross-compiling-for-arm-on-x86" title="Permalink to this headline">¶</a></h3>
+<p>In case you do not have the build-tools available on your ARM target, then you
+can cross-compile g by parsing <code class="docutils literal notranslate"><span class="pre">CC</span></code> parameter to make e.g.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>aarch64-linux-gnu-gcc-9 ./configure &lt;config_options&gt;
+make <span class="nv">CC</span><span class="o">=</span>aarch64-linux-gnu-gcc-9
+</pre></div>
+</div>
+<p>Then transfer and unpack <code class="docutils literal notranslate"><span class="pre">xnvme0.tar.gz</span></code> from the <code class="docutils literal notranslate"><span class="pre">build</span></code> directory to your
+ARM machine.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is currently not supported with the SPDK backend</p>
+</div>
+</div>
+<div class="section" id="custom-configuration">
+<span id="sec-building-config"></span><h3>Custom Configuration<a class="headerlink" href="#custom-configuration" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>xNVMe</strong> build system configures itself, so you do not have to run
+configure script yourself. Manually invoking the <strong>xNVMe</strong> build-configuration
+should not be needed, for the common task of enabling debugging then just do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span>
+<span class="n">make</span> <span class="n">config</span><span class="o">-</span><span class="n">debug</span>
+<span class="n">make</span>
+</pre></div>
+</div>
+<p>However, if for some reason you want to manually run the <strong>xNVMe</strong>
+build-configuration, then this section describes how to accomplish that.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">configure</span></code> script is provided to configure the build of <strong>xNVMe</strong>. You can
+inspect configuration options by invoking:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Boolean options are enabled by prefixing <code class="docutils literal notranslate"><span class="pre">--enable-&lt;OPTION&gt;</span></code></p></li>
+<li><p>Boolean options are disabled by prefixing <code class="docutils literal notranslate"><span class="pre">--disable-&lt;OPTION&gt;</span></code></p></li>
+<li><p>A couple of examples:</p>
+<ul>
+<li><p>Enable debug with: <code class="docutils literal notranslate"><span class="pre">--enable-debug</span></code></p></li>
+<li><p>Disable the SPDK backend with: <code class="docutils literal notranslate"><span class="pre">--disable-be-spdk</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>The configure-script will enable backends relevant to the system platform
+determined by the environment variable <code class="docutils literal notranslate"><span class="pre">OSTYPE</span></code>.</p>
+<p>On Linux, the configure script enables the SPDK backend <code class="docutils literal notranslate"><span class="pre">be:spdk</span></code> and the
+Linux native backend <code class="docutils literal notranslate"><span class="pre">be:linux</span></code>, with all features enabled, that is, support
+for <code class="docutils literal notranslate"><span class="pre">libaio</span></code>, <code class="docutils literal notranslate"><span class="pre">io_uring</span></code>, <code class="docutils literal notranslate"><span class="pre">nil</span></code>, and <code class="docutils literal notranslate"><span class="pre">thr</span></code>.</p>
+<p>On FreeBSD, the configure script enables the SPDK backend <code class="docutils literal notranslate"><span class="pre">be:spdk</span></code> and the
+FreeBSD native backend <code class="docutils literal notranslate"><span class="pre">be:fbsd</span></code>. For more information about these so-called
+library backends, see the <a class="reference internal" href="../backends/index.html#sec-backends"><span class="std std-ref">Backends</span></a> section.</p>
+<p><strong>xNVMe</strong> provides third-party libraries via submodules, it builds these and
+embeds them in the <strong>xNVMe</strong> static libraries and executables. If you want to
+link with your version of these libraries then you can overwrite the respective
+include and library paths. See <code class="docutils literal notranslate"><span class="pre">./configure</span> <span class="pre">--help</span></code> for details.</p>
+</div>
+<div class="section" id="windows">
+<span id="sec-building-windows"></span><h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>Windows is not supported in public domain. However, if you want to roll your
+support into <strong>xNVMe</strong>, then you could follow the pointers below.</p>
+<p>C11 support is quite poor with most compilers on Windows except for Intel ICC
+and the GCC port <a class="reference external" href="http://tdm-gcc.tdragon.net/">TDM-GCC</a>.</p>
+<p>A backend implementation for Windows could utilize an IO path, sending
+read/write IO to the block device and then wrap all other NVMe commands around
+the NVMe driver IOCTL interface.</p>
+<p>Such as the one provided by the Open-Source NVMe Driver for Windows:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://svn.openfabrics.org/svnrepo/nvmewin/">https://svn.openfabrics.org/svnrepo/nvmewin/</a></p></li>
+</ul>
+<p>Or use the IOCTL interface of the built-in NVMe driver:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/fileio/working-with-nvme-devices">https://docs.microsoft.com/en-us/windows/win32/fileio/working-with-nvme-devices</a></p></li>
+</ul>
+<p>A bit of care has been taken in <strong>xNVMe</strong>, e.g. buffer-allocation, to support /
+run on Windows. So, you “only” have to worry about implementing the
+command-transport and async interface.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../tools/index.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Cross-platform libraries and tools for NVMe devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

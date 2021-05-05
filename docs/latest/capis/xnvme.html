@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvme &mdash; xNVMe 0.0.22 documentation</title>
+  <title>xnvme &mdash; xNVMe 0.0.23 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="xnvme_nvm" href="xnvme_nvm.html" />
+    <link rel="next" title="xnvme_file" href="xnvme_file.html" />
     <link rel="prev" title="C API" href="index.html" /> 
 </head>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.22
+                0.0.23
               </div>
             
           
@@ -110,6 +110,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-ilog2">XNVME_ILOG2</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-max">XNVME_MAX</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-min">XNVME_MIN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-min-s64">XNVME_MIN_S64</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-min-u64">XNVME_MIN_U64</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-be-attr-fpr">xnvme_be_attr_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-be-attr-list-bundled">xnvme_be_attr_list_bundled</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-be-attr-list-fpr">xnvme_be_attr_list_fpr</a></li>
@@ -117,6 +119,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-be-attr-pr">xnvme_be_attr_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-alloc">xnvme_buf_alloc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-free">xnvme_buf_free</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-phys-alloc">xnvme_buf_phys_alloc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-phys-free">xnvme_buf_phys_free</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-phys-realloc">xnvme_buf_phys_realloc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-realloc">xnvme_buf_realloc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-virt-alloc">xnvme_buf_virt_alloc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-buf-virt-free">xnvme_buf_virt_free</a></li>
@@ -126,6 +131,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-from-dev">xnvme_cmd_ctx_from_dev</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-from-queue">xnvme_cmd_ctx_from_queue</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-pr">xnvme_cmd_ctx_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-set-cb">xnvme_cmd_ctx_set_cb</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass">xnvme_cmd_pass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass-admin">xnvme_cmd_pass_admin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumerate">xnvme_enumerate</a></li>
@@ -169,6 +175,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
@@ -279,6 +286,7 @@
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_util.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_geo.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_dev.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_buf.h&gt;</span><span class="cp"></span>
 
 <span class="cm">/**</span>
 <span class="cm"> * List of devices found on the system usable with xNVMe</span>
@@ -344,14 +352,12 @@
 <span class="cm"> *</span>
 <span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
 <span class="cm"> * @param nbytes The size of the allocated buffer in bytes</span>
-<span class="cm"> * @param phys A pointer to the variable to hold the physical address of the allocated buffer. If</span>
-<span class="cm"> * NULL, the physical address is not returned.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, a pointer to the allocated memory is returned. On error, NULL is returned</span>
 <span class="cm"> * and `errno` set to indicate the error.</span>
 <span class="cm"> */</span>
 <span class="kt">void</span> <span class="o">*</span>
-<span class="nf">xnvme_buf_alloc</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">phys</span><span class="p">);</span>
+<span class="nf">xnvme_buf_alloc</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Reallocate a buffer for IO with the given device</span>
@@ -367,14 +373,12 @@
 <span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
 <span class="cm"> * @param buf The buffer to reallocate</span>
 <span class="cm"> * @param nbytes The size of the allocated buffer in bytes</span>
-<span class="cm"> * @param phys A pointer to the variable to hold the physical address of the allocated buffer. If</span>
-<span class="cm"> * NULL, the physical address is not returned.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, a pointer to the allocated memory is returned. On error, NULL is returned</span>
 <span class="cm"> * and `errno` set to indicate the error.</span>
 <span class="cm"> */</span>
 <span class="kt">void</span> <span class="o">*</span>
-<span class="nf">xnvme_buf_realloc</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">phys</span><span class="p">);</span>
+<span class="nf">xnvme_buf_realloc</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Free the given IO buffer allocated with xnvme_buf_alloc()</span>
@@ -384,41 +388,6 @@
 <span class="cm"> */</span>
 <span class="kt">void</span>
 <span class="nf">xnvme_buf_free</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">);</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Retrieve the physical address of the given buffer</span>
-<span class="cm"> *</span>
-<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
-<span class="cm"> * @param buf Pointer to a buffer allocated with xnvme_buf_alloc()</span>
-<span class="cm"> * @param phys A pointer to the variable to hold the physical address of the given buffer.</span>
-<span class="cm"> *</span>
-<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
-<span class="cm"> */</span>
-<span class="kt">int</span>
-<span class="nf">xnvme_buf_vtophys</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">phys</span><span class="p">);</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Allocate a buffer of virtual memory of the given `alignment` and `nbytes`</span>
-<span class="cm"> *</span>
-<span class="cm"> * @note</span>
-<span class="cm"> * You must use xnvme_buf_virt_free() to de-allocate the buffer</span>
-<span class="cm"> *</span>
-<span class="cm"> * @param alignment The alignment in bytes</span>
-<span class="cm"> * @param nbytes The size of the buffer in bytes</span>
-<span class="cm"> *</span>
-<span class="cm"> * @return On success, a pointer to the allocated memory is return. On error, NULL is returned and</span>
-<span class="cm"> * `errno` set to indicate the error</span>
-<span class="cm"> */</span>
-<span class="kt">void</span> <span class="o">*</span>
-<span class="nf">xnvme_buf_virt_alloc</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">alignment</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Free the given virtual memory buffer</span>
-<span class="cm"> *</span>
-<span class="cm"> * @param buf Pointer to a buffer allocated with xnvme_buf_virt_alloc()</span>
-<span class="cm"> */</span>
-<span class="kt">void</span>
-<span class="nf">xnvme_buf_virt_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Opaque Command Queue Handle to be initialized by xnvme_queue_init()</span>
@@ -571,6 +540,22 @@
 	<span class="c1">///&lt; Field for including the command-context in BSD-style singly-linked-lists (SLIST)</span>
 	<span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">xnvme_cmd_ctx</span><span class="p">)</span> <span class="n">link</span><span class="p">;</span>
 <span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Assign a callback-function and argument to be used with the given command-context</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to setup callback for</span>
+<span class="cm"> * @param cb The callback function to use</span>
+<span class="cm"> * @param cb_arg The callback argument to use</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
+<span class="nf">xnvme_cmd_ctx_set_cb</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="n">xnvme_queue_cb</span> <span class="n">cb</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb</span> <span class="o">=</span> <span class="n">cb</span><span class="p">;</span>
+	<span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb_arg</span> <span class="o">=</span> <span class="n">cb_arg</span><span class="p">;</span>
+<span class="p">}</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Assign a callback-function and argument to be used with the ::xnvme_cmd_ctx of the queue</span>
@@ -747,15 +732,20 @@
 
 <dl class="variable">
 <dt id="c.xnvme_be_attr::nschemes">
-<span class="target" id="structxnvme__be__attr_1a3e02eb7427949a1077a983ee7bb4ee12"></span>uint32_t <code class="sig-name descname">nschemes</code><a class="headerlink" href="#c.xnvme_be_attr::nschemes" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__be__attr_1a73f23d2d8673220fb3f0342aacc6963c"></span>uint8_t <code class="sig-name descname">nschemes</code><a class="headerlink" href="#c.xnvme_be_attr::nschemes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of schemes in ‘schemes’. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.xnvme_be_attr::enabled">
-<span class="target" id="structxnvme__be__attr_1ae99093592fac7682baae13078f00202e"></span>uint32_t <code class="sig-name descname">enabled</code><a class="headerlink" href="#c.xnvme_be_attr::enabled" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structxnvme__be__attr_1a4ecc55d9ee4d3ccf604ec4b13ba895e2"></span>uint8_t <code class="sig-name descname">enabled</code><a class="headerlink" href="#c.xnvme_be_attr::enabled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the backend is ‘enabled’. </p>
 </dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structxnvme__be__attr_1a7f02bbf351a3a3d6e310fdc3addfea22"></span><code class="sig-name descname">uint8_t xnvme_be_attr::_rsvd[6]</code></dt>
+<dd></dd></dl>
 
 </div>
 </dd></dl>
@@ -1023,6 +1013,44 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-min-s64">
+<span id="sec-c-api-xnvme-func-xnvme-min-s64"></span><h3>XNVME_MIN_S64<a class="headerlink" href="#xnvme-min-s64" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.XNVME_MIN_S64">
+<span class="target" id="libxnvme__util_8h_1af59f427ec39c34b73fb0b6971a6cf42e"></span>static int64_t <code class="sig-name descname">XNVME_MIN_S64</code><span class="sig-paren">(</span>int64_t<em> x</em>, int64_t<em> y</em><span class="sig-paren">)</span><a class="headerlink" href="#c.XNVME_MIN_S64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the minimum of the given <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The maximum of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-min-u64">
+<span id="sec-c-api-xnvme-func-xnvme-min-u64"></span><h3>XNVME_MIN_U64<a class="headerlink" href="#xnvme-min-u64" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.XNVME_MIN_U64">
+<span class="target" id="libxnvme__util_8h_1a07b2cf2d4b8b4f576b7a01a78995dfa6"></span>static uint64_t <code class="sig-name descname">XNVME_MIN_U64</code><span class="sig-paren">(</span>uint64_t<em> x</em>, uint64_t<em> y</em><span class="sig-paren">)</span><a class="headerlink" href="#c.XNVME_MIN_U64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the minimum of the given <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The maximum of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-be-attr-fpr">
 <span id="sec-c-api-xnvme-func-xnvme-be-attr-fpr"></span><h3>xnvme_be_attr_fpr<a class="headerlink" href="#xnvme-be-attr-fpr" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
@@ -1119,7 +1147,7 @@
 <span id="sec-c-api-xnvme-func-xnvme-buf-alloc"></span><h3>xnvme_buf_alloc<a class="headerlink" href="#xnvme-buf-alloc" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="c.xnvme_buf_alloc">
-<span class="target" id="libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"></span>void* <code class="sig-name descname">xnvme_buf_alloc</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em>, size_t<em> nbytes</em>, uint64_t *<em> phys</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_alloc" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libxnvme_8h_1aa61c331982922d038a6af22fbe4e1a1a"></span>void* <code class="sig-name descname">xnvme_buf_alloc</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em>, size_t<em> nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_alloc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allocate a buffer for IO with the given device. </p>
 <p>The buffer will be aligned to device geometry and DMA allocated if required by the backend for command payloads</p>
 <p><dl class="simple">
@@ -1131,8 +1159,7 @@
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: The size of the allocated buffer in bytes </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">phys</span></code>: A pointer to the variable to hold the physical address of the allocated buffer. If NULL, the physical address is not returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: The size of the allocated buffer in bytes</p></li>
 </ul>
 </dd>
 </dl>
@@ -1145,11 +1172,11 @@
 <dl class="function">
 <dt id="c.xnvme_buf_free">
 <span class="target" id="libxnvme_8h_1ab93616483922d16f4d21369c9f610d8c"></span>void <code class="sig-name descname">xnvme_buf_free</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em>, void *<em> buf</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_free" title="Permalink to this definition">¶</a></dt>
-<dd><p>Free the given IO buffer allocated with <a class="reference internal" href="#libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p>
+<dd><p>Free the given IO buffer allocated with <a class="reference internal" href="#libxnvme_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
 </ul>
 </dd>
 </dl>
@@ -1157,11 +1184,32 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-buf-phys-alloc">
+<span id="sec-c-api-xnvme-func-xnvme-buf-phys-alloc"></span><h3>xnvme_buf_phys_alloc<a class="headerlink" href="#xnvme-buf-phys-alloc" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_buf_phys_alloc” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
+</div>
+<div class="section" id="xnvme-buf-phys-free">
+<span id="sec-c-api-xnvme-func-xnvme-buf-phys-free"></span><h3>xnvme_buf_phys_free<a class="headerlink" href="#xnvme-buf-phys-free" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_buf_phys_free” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
+</div>
+<div class="section" id="xnvme-buf-phys-realloc">
+<span id="sec-c-api-xnvme-func-xnvme-buf-phys-realloc"></span><h3>xnvme_buf_phys_realloc<a class="headerlink" href="#xnvme-buf-phys-realloc" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_buf_phys_realloc” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
+</div>
 <div class="section" id="xnvme-buf-realloc">
 <span id="sec-c-api-xnvme-func-xnvme-buf-realloc"></span><h3>xnvme_buf_realloc<a class="headerlink" href="#xnvme-buf-realloc" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="c.xnvme_buf_realloc">
-<span class="target" id="libxnvme_8h_1a084950ab401e274e135e40af66341225"></span>void* <code class="sig-name descname">xnvme_buf_realloc</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em>, void *<em> buf</em>, size_t<em> nbytes</em>, uint64_t *<em> phys</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_realloc" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libxnvme_8h_1a293130c0335f28d3c2d3ebedde981594"></span>void* <code class="sig-name descname">xnvme_buf_realloc</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em>, void *<em> buf</em>, size_t<em> nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_realloc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reallocate a buffer for IO with the given device. </p>
 <p>The buffer will be aligned to device geometry and DMA allocated if required by the backend for IO</p>
 <p><dl class="simple">
@@ -1174,8 +1222,7 @@
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: The buffer to reallocate </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: The size of the allocated buffer in bytes </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">phys</span></code>: A pointer to the variable to hold the physical address of the allocated buffer. If NULL, the physical address is not returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: The size of the allocated buffer in bytes</p></li>
 </ul>
 </dd>
 </dl>
@@ -1185,60 +1232,24 @@
 </div>
 <div class="section" id="xnvme-buf-virt-alloc">
 <span id="sec-c-api-xnvme-func-xnvme-buf-virt-alloc"></span><h3>xnvme_buf_virt_alloc<a class="headerlink" href="#xnvme-buf-virt-alloc" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt id="c.xnvme_buf_virt_alloc">
-<span class="target" id="libxnvme_8h_1a2ee3b44e77fbc0c3fbc62686f80d330f"></span>void* <code class="sig-name descname">xnvme_buf_virt_alloc</code><span class="sig-paren">(</span>size_t<em> alignment</em>, size_t<em> nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_virt_alloc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allocate a buffer of virtual memory of the given <code class="docutils literal notranslate"><span class="pre">alignment</span></code> and <code class="docutils literal notranslate"><span class="pre">nbytes</span></code> </p>
-<p><dl class="simple">
-<dt><strong>Note</strong></dt><dd><p>You must use <a class="reference internal" href="#libxnvme_8h_1a703c51315a407f2b57fc0f69dcdcfa96"><span class="std std-ref">xnvme_buf_virt_free()</span></a> to de-allocate the buffer</p>
-</dd>
-<dt><strong>Return</strong></dt><dd><p>On success, a pointer to the allocated memory is return. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate the error </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">alignment</span></code>: The alignment in bytes </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: The size of the buffer in bytes</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_buf_virt_alloc” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
 </div>
 <div class="section" id="xnvme-buf-virt-free">
 <span id="sec-c-api-xnvme-func-xnvme-buf-virt-free"></span><h3>xnvme_buf_virt_free<a class="headerlink" href="#xnvme-buf-virt-free" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt id="c.xnvme_buf_virt_free">
-<span class="target" id="libxnvme_8h_1a703c51315a407f2b57fc0f69dcdcfa96"></span>void <code class="sig-name descname">xnvme_buf_virt_free</code><span class="sig-paren">(</span>void *<em> buf</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_virt_free" title="Permalink to this definition">¶</a></dt>
-<dd><p>Free the given virtual memory buffer. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme_8h_1a2ee3b44e77fbc0c3fbc62686f80d330f"><span class="std std-ref">xnvme_buf_virt_alloc()</span></a> </p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_buf_virt_free” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
 </div>
 <div class="section" id="xnvme-buf-vtophys">
 <span id="sec-c-api-xnvme-func-xnvme-buf-vtophys"></span><h3>xnvme_buf_vtophys<a class="headerlink" href="#xnvme-buf-vtophys" title="Permalink to this headline">¶</a></h3>
-<dl class="function">
-<dt id="c.xnvme_buf_vtophys">
-<span class="target" id="libxnvme_8h_1a09bbd3e980bb0a71192a11a3e21e351d"></span>int <code class="sig-name descname">xnvme_buf_vtophys</code><span class="sig-paren">(</span>const struct  xnvme_dev  *<em> dev</em>, void *<em> buf</em>, uint64_t *<em> phys</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_vtophys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve the physical address of the given buffer. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1a25bad861462fe56a17cfb20787a97723"><span class="std std-ref">xnvme_dev_open()</span></a> / <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a634658635877439481933c923915d7b0"><span class="std std-ref">xnvme_dev_openf()</span></a> </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme_8h_1aeb50c09405e05c31705b1b48823b5a10"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">phys</span></code>: A pointer to the variable to hold the physical address of the given buffer.</p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_buf_vtophys” in doxygen xml output for project “xNVMe” from directory: /home/safl/git/xnvme/docs/autogen/build/doxy/xml</p>
+</div>
 </div>
 <div class="section" id="xnvme-cmd-ctx-clear">
 <span id="sec-c-api-xnvme-func-xnvme-cmd-ctx-clear"></span><h3>xnvme_cmd_ctx_clear<a class="headerlink" href="#xnvme-cmd-ctx-clear" title="Permalink to this headline">¶</a></h3>
@@ -1315,11 +1326,31 @@
 <dl class="function">
 <dt id="c.xnvme_cmd_ctx_pr">
 <span class="target" id="libxnvme__pp_8h_1a76400ae8c389ae64da29c82ec0a7bece"></span>void <code class="sig-name descname">xnvme_cmd_ctx_pr</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a>  *<em> ctx</em>, int<em> UNUSED_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_pr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints a humanly readable representation the given #xnvme_req. </p>
+<dd><p>Prints a humanly readable representation the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to the #xnvme_req to print </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to print </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UNUSED_opts</span></code>: Printer options </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-cmd-ctx-set-cb">
+<span id="sec-c-api-xnvme-func-xnvme-cmd-ctx-set-cb"></span><h3>xnvme_cmd_ctx_set_cb<a class="headerlink" href="#xnvme-cmd-ctx-set-cb" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.xnvme_cmd_ctx_set_cb">
+<span class="target" id="libxnvme_8h_1afcb44b4b22d8e47dcbe283f256f63093"></span>static void <code class="sig-name descname">xnvme_cmd_ctx_set_cb</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a>  *<em> ctx</em>, xnvme_queue_cb<em> cb</em>, void *<em> cb_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_set_cb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign a callback-function and argument to be used with the given command-context. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to setup callback for </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb</span></code>: The callback function to use </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb_arg</span></code>: The callback argument to use</p></li>
 </ul>
 </dd>
 </dl>
@@ -2057,7 +2088,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="xnvme_nvm.html" class="btn btn-neutral float-right" title="xnvme_nvm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="xnvme_file.html" class="btn btn-neutral float-right" title="xnvme_file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="C API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

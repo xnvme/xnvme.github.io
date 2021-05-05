@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xnvmec &mdash; xNVMe 0.0.22 documentation</title>
+  <title>xnvmec &mdash; xNVMe 0.0.23 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.22
+                0.0.23
               </div>
             
           
@@ -90,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">C API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
@@ -378,7 +379,9 @@
 	<span class="kt">uint32_t</span> <span class="n">feat</span><span class="p">;</span>
 
 	<span class="kt">uint32_t</span> <span class="n">seed</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">iosize</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">qdepth</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">direct</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">limit</span><span class="p">;</span>
 
 	<span class="kt">uint64_t</span> <span class="n">count</span><span class="p">;</span>
@@ -475,7 +478,9 @@
 
 	<span class="n">XNVMEC_OPT_SEED</span> <span class="o">=</span> <span class="sc">&#39;r&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SEED</span>
 	<span class="n">XNVMEC_OPT_LIMIT</span> <span class="o">=</span> <span class="sc">&#39;s&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LIMIT</span>
+	<span class="n">XNVMEC_OPT_IOSIZE</span> <span class="o">=</span> <span class="sc">&#39;}&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_IOSIZE</span>
 	<span class="n">XNVMEC_OPT_QDEPTH</span> <span class="o">=</span> <span class="sc">&#39;t&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_QDEPTH</span>
+	<span class="n">XNVMEC_OPT_DIRECT</span> <span class="o">=</span> <span class="sc">&#39;~&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DIRECT</span>
 
 	<span class="n">XNVMEC_OPT_STATUS</span> <span class="o">=</span> <span class="sc">&#39;u&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_STATUS</span>
 	<span class="n">XNVMEC_OPT_SAVE</span> <span class="o">=</span> <span class="sc">&#39;v&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SAVE</span>
@@ -491,8 +496,6 @@
 
 	<span class="n">XNVMEC_OPT_ALL</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ALL</span>
 
-	<span class="n">XNVMEC_OPT_UNUSED01</span> <span class="o">=</span> <span class="sc">&#39;}&#39;</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_UNUSED02</span> <span class="o">=</span> <span class="sc">&#39;~&#39;</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_UNUSED03</span> <span class="o">=</span> <span class="sc">&#39;!&#39;</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_UNUSED04</span> <span class="o">=</span> <span class="sc">&#39;&quot;&#39;</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_UNUSED05</span> <span class="o">=</span> <span class="sc">&#39;$&#39;</span><span class="p">,</span>
@@ -601,14 +604,9 @@
 	<span class="k">return</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">.</span><span class="n">stop</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">prefix</span><span class="p">,</span>
-				      <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">)</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">prefix</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="kt">double</span> <span class="n">secs</span> <span class="o">=</span> <span class="n">xnvme_timer_elapsed_secs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">);</span>
-	<span class="kt">double</span> <span class="n">mb</span> <span class="o">=</span> <span class="n">nbytes</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="mi">1048576</span><span class="p">;</span>
-
-	<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s: {elapsed: %.4f, mb: %.2f, mbsec: %.2f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-	       <span class="n">prefix</span><span class="p">,</span> <span class="n">secs</span><span class="p">,</span> <span class="n">mb</span><span class="p">,</span> <span class="n">mb</span> <span class="o">/</span> <span class="n">secs</span><span class="p">);</span>
+	<span class="n">xnvme_timer_bw_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">nbytes</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kt">void</span> <span class="nf">xnvmec_pinf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">format</span><span class="p">,</span> <span class="p">...);</span>
@@ -1002,8 +1000,20 @@
 
 <dl class="enumvalue">
 <dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a8b8f157764ae977bc61ce2bdce16345a"></span></dt>
+<dd><p>XNVMEC_OPT_IOSIZE. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
 <span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a669e0fb4498287724bdf8cd7d7a34e5a"></span></dt>
 <dd><p>XNVMEC_OPT_QDEPTH. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt>
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a952dcd37410d8df89be37585292ef607"></span></dt>
+<dd><p>XNVMEC_OPT_DIRECT. </p>
 </dd></dl>
 
 <dl class="enumvalue">
@@ -1065,16 +1075,6 @@
 <span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a88653f7751615846a07ea2f37fa73221"></span></dt>
 <dd><p>XNVMEC_OPT_ALL. </p>
 </dd></dl>
-
-<dl class="enumvalue">
-<dt>
-<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a33fc296d6554f5a4422967e4ac707623"></span></dt>
-<dd></dd></dl>
-
-<dl class="enumvalue">
-<dt>
-<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a5297de9e4f28cdaf22f3d0f3ec0dbc4e"></span></dt>
-<dd></dd></dl>
 
 <dl class="enumvalue">
 <dt>
@@ -1508,8 +1508,18 @@
 <dd></dd></dl>
 
 <dl class="variable">
+<dt id="c.xnvmec_args::iosize">
+<span class="target" id="structxnvmec__args_1a250e4bbc39c641db96990578916aa141"></span>uint32_t <code class="sig-name descname">iosize</code><a class="headerlink" href="#c.xnvmec_args::iosize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
 <dt id="c.xnvmec_args::qdepth">
 <span class="target" id="structxnvmec__args_1a3f69d209058ce20bd3887b64021a0d29"></span>uint32_t <code class="sig-name descname">qdepth</code><a class="headerlink" href="#c.xnvmec_args::qdepth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.xnvmec_args::direct">
+<span class="target" id="structxnvmec__args_1ab06bfd34d9a37c9db14ebca1e5b47043"></span>uint32_t <code class="sig-name descname">direct</code><a class="headerlink" href="#c.xnvmec_args::direct" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="variable">
