@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>FreeBSD &mdash; xNVMe 0.0.23 documentation</title>
+  <title>FreeBSD &mdash; xNVMe 0.0.24 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.23
+                0.0.24
               </div>
             
           
@@ -166,16 +166,17 @@
 </pre></div>
 </div>
 <p>The FreeBSD backend uses synchronous <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls to have the kernel perform
-NVMe commands. Note that the backend needs a re-implementation it is currently
-not in a very usable state.</p>
-<div class="section" id="note-on-errors">
-<h2>Note on Errors<a class="headerlink" href="#note-on-errors" title="Permalink to this headline">¶</a></h2>
-<p>Some commands may be issued through <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> that are invalid. While most
-commands will still be issued to the drive and the error relayed back to the
-user, some violations may be picked up by the kernel cause the <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> to
-fail with <code class="docutils literal notranslate"><span class="pre">-1</span></code> and <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Argument</span></code>.</p>
+NVMe commands.</p>
+<div class="section" id="nvme-driver-ioctl">
+<h2>NVMe Driver IOCTL<a class="headerlink" href="#nvme-driver-ioctl" title="Permalink to this headline">¶</a></h2>
+<p>The FreeBSD NVMe Driver IOCTL provides a rich interface for submitting commands
+similar to that of the Linux NVMe Driver IOCTL. However, for completion-errors,
+the FreeBSD NVMe Driver IOCTL provides the entire NVMe Completion result, where
+the Linux IOCTL maps the completion-result to an <code class="docutils literal notranslate"><span class="pre">errno</span></code> value and returns
+that instead.</p>
 <p>In this case, the backend will transform such errors into the NVMe equivalent.
-See the documentation on <a class="reference internal" href="../capis/xnvme.html#sec-c-api-xnvme-struct-xnvme-cmd-ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>.</p>
+See the documentation on
+<a class="reference internal" href="../capis/xnvme.html#sec-c-api-xnvme-struct-xnvme-cmd-ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>.</p>
 </div>
 </div>
 
