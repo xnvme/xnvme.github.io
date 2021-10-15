@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fio xNVMe IO Engine &mdash; xNVMe 0.0.24 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="C API" href="../../capis/index.html" />
+    <link rel="prev" title="file" href="../file/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.24
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file/index.html">file</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fio xNVMe IO Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#caveat">Caveat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-io-engine-verification">fio xNVMe IO Engine verification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-io-engine-on-nvme-device">fio xNVMe IO Engine on NVMe Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-io-engine-on-nvme-device-with-zoned-command-set">fio xNVMe IO Engine on NVMe Device with Zoned Command Set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-notes">Build Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Tools</a> &raquo;</li>
+        
+      <li>fio xNVMe IO Engine</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/tools/fio/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fio-xnvme-io-engine">
+<span id="sec-tools-fio"></span><h1>fio xNVMe IO Engine<a class="headerlink" href="#fio-xnvme-io-engine" title="Permalink to this headline">¶</a></h1>
+<p>Provided with <strong>xNVMe</strong> is an external <a class="reference external" href="https://github.com/axboe/fio">fio</a> IO engine.</p>
+<div class="section" id="caveat">
+<h2>Caveat<a class="headerlink" href="#caveat" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>For “raw” device-files only
+- That is, <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/nullb0</span></code> and <strong>NOT</strong> file-system files</p></li>
+<li><p>Must be used with <code class="docutils literal notranslate"><span class="pre">--thread=1</span></code></p></li>
+</ol>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Given that you have installed <strong>xNVMe</strong> then the IO engine should be available
+as a shared library.</p>
+<p>The library prefix, and suffix vary based on distribution and platform,
+however, on a Debian-like distribution it is available under the filename
+<code class="docutils literal notranslate"><span class="pre">libxnvme-fio-engine.so</span></code> and located in <code class="docutils literal notranslate"><span class="pre">/usr/lib/</span></code> when installed.</p>
+<p>In the examples below, it is assumed that the io-engine is available at:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">ioengine</span><span class="o">=</span><span class="n">external</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libxnvme</span><span class="o">-</span><span class="n">fio</span><span class="o">-</span><span class="n">engine</span><span class="o">.</span><span class="n">so</span>
+</pre></div>
+</div>
+<p>Adjust the fio <code class="docutils literal notranslate"><span class="pre">--ioengine=external:</span></code> to match your system.</p>
+<p>Also, when, using the <strong>SPDK</strong> backend do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unbind devices from Linux Kernel NVMe Driver</span>
+<span class="n">xnvme</span><span class="o">-</span><span class="n">driver</span>
+
+<span class="c1"># Run fio using &quot;be:spdk&quot;</span>
+<span class="n">fio</span> <span class="n">xnvme</span><span class="o">-</span><span class="n">compare</span><span class="o">-</span><span class="n">nvme</span><span class="o">.</span><span class="n">fio</span> <span class="o">--</span><span class="n">section</span><span class="o">=</span><span class="n">xnvme_spdk</span>
+</pre></div>
+</div>
+<p>Aslo, when, using any of the non <strong>SPDK</strong> backends make sure that your devices
+are attached to the Kernel NVMe driver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unbind devices from Linux Kernel NVMe Driver</span>
+<span class="n">xnvme</span><span class="o">-</span><span class="n">driver</span> <span class="n">reset</span>
+
+<span class="c1"># Run fio using &quot;be:spdk&quot;</span>
+<span class="n">fio</span> <span class="n">xnvme</span><span class="o">-</span><span class="n">compare</span><span class="o">-</span><span class="n">nvme</span><span class="o">.</span><span class="n">fio</span> <span class="o">--</span><span class="n">section</span><span class="o">=</span><span class="n">xnvme_spdk</span>
+</pre></div>
+</div>
+<p>See details on the parameters of the <code class="docutils literal notranslate"><span class="pre">.fio</span></code> file in the following section.</p>
+</div>
+<div class="section" id="fio-xnvme-io-engine-verification">
+<h2>fio xNVMe IO Engine verification<a class="headerlink" href="#fio-xnvme-io-engine-verification" title="Permalink to this headline">¶</a></h2>
+<p>This fio-script is used for verifying <strong>xNVMe</strong> under load.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> Verify fio IO engines with a random-write workload using <span class="nv">BS</span><span class="o">=</span>4k at <span class="nv">QD</span><span class="o">=</span><span class="m">16</span>
+<span class="p">;</span>
+<span class="p">;</span> Writes, at random, 1GB at QD16 using 4K BS and verifies it.
+<span class="p">;</span>
+<span class="p">;</span> README
+<span class="p">;</span>
+<span class="p">;</span> Make sure you provide the correct path to <span class="s1">&#39;libxnvme-fio-engine.so&#39;</span> when
+<span class="p">;</span> invoking fio. This job-file is intended to be used as:
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the built-in io_uring engine to get baseline numbers</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>io_uring <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and libaio async. impl.</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>libaio <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and io_uring async. impl.</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>io_uring <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with SPDK backend</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>pci<span class="se">\\</span>:0000<span class="se">\\</span>:01<span class="se">\\</span>:00.0?nsid<span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> NOTE: The URI encoded in the filename above, the <span class="s2">&quot;:&quot;</span> must be escaped.
+<span class="p">;</span>
+<span class="p">;</span> On the command-line using two <span class="s2">&quot;\\&quot;</span>:
+<span class="p">;</span>
+<span class="p">;</span> --filename<span class="o">=</span>pci<span class="se">\\</span>:0000<span class="se">\\</span>:01<span class="se">\\</span>:00.0?nsid<span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> Within a fio-script using a single <span class="s2">&quot;\&quot;:</span>
+<span class="s2">;</span>
+<span class="s2">; filename=pci\:0000\:01\:00.0?nsid=1</span>
+<span class="s2">;</span>
+<span class="s2">; NOTE: If you want to override the default bs, iodepth, and workload, then</span>
+<span class="s2">; invoke it as:</span>
+<span class="s2">;</span>
+<span class="s2">; FIO_BS=&quot;</span><span class="m">512</span><span class="s2">&quot; FIO_RW=&quot;</span>verify<span class="s2">&quot; FIO_IODEPTH=16 fio xnvme-compare.fio \</span>
+<span class="s2">;   --section=override</span>
+<span class="s2">;</span>
+<span class="s2">[global]</span>
+<span class="s2">rw=randwrite</span>
+<span class="s2">size=1G</span>
+<span class="s2">iodepth=16</span>
+<span class="s2">bs=4k</span>
+<span class="s2">direct=1</span>
+<span class="s2">thread=1</span>
+<span class="s2">verify=crc32c</span>
+
+<span class="s2">; Avoid accidentally creating device files; e.g. &quot;</span>/dev/nvme0n1<span class="s2">&quot;, &quot;</span>/dev/nullb0<span class="s2">&quot;</span>
+<span class="s2">allow_file_create=0</span>
+
+<span class="s2">[default]</span>
+
+<span class="s2">[override]</span>
+<span class="s2">rw=</span><span class="si">${</span><span class="nv">FIO_RW</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">iodepth=</span><span class="si">${</span><span class="nv">FIO_IODEPTH</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">bs=</span><span class="si">${</span><span class="nv">FIO_BS</span><span class="si">}</span><span class="s2"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fio-xnvme-io-engine-on-nvme-device">
+<h2>fio xNVMe IO Engine on NVMe Device<a class="headerlink" href="#fio-xnvme-io-engine-on-nvme-device" title="Permalink to this headline">¶</a></h2>
+<p>This fio-script can be used for comparing the performance of <strong>xNVMe</strong> to other
+means of shipping IO to your device. E.g. <strong>xNVMe/uring vs uring</strong>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> Compare fio IO engines with a random-read workload using <span class="nv">BS</span><span class="o">=</span>4k at <span class="nv">QD</span><span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> README
+<span class="p">;</span>
+<span class="p">;</span> Make sure you provide the correct path to <span class="s1">&#39;libxnvme-fio-engine.so&#39;</span> when
+<span class="p">;</span> invoking fio. This job-file is intended to be used as:
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the built-in io_uring engine to get baseline numbers</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>io_uring <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and libaio async. impl.</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>libaio <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and io_uring async. impl.</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>io_uring <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with SPDK backend</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>pci<span class="se">\\</span>:0000<span class="se">\\</span>:01<span class="se">\\</span>:00.0?nsid<span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> NOTE: The URI encoded in the filename above, the <span class="s2">&quot;:&quot;</span> must be escaped.
+<span class="p">;</span>
+<span class="p">;</span> On the command-line using two <span class="s2">&quot;\\&quot;</span>:
+<span class="p">;</span>
+<span class="p">;</span> --filename<span class="o">=</span>pci<span class="se">\\</span>:0000<span class="se">\\</span>:01<span class="se">\\</span>:00.0?nsid<span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> Within a fio-script using a single <span class="s2">&quot;\&quot;:</span>
+<span class="s2">;</span>
+<span class="s2">; filename=pci\:0000\:01\:00.0?nsid=1</span>
+<span class="s2">;</span>
+<span class="s2">; NOTE: If you want to override the default bs, iodepth, and workload, then</span>
+<span class="s2">; invoke it as:</span>
+<span class="s2">;</span>
+<span class="s2">; FIO_BS=&quot;</span><span class="m">512</span><span class="s2">&quot; FIO_RW=&quot;</span>verify<span class="s2">&quot; FIO_IODEPTH=16 fio xnvme-compare.fio \</span>
+<span class="s2">;   --section=override</span>
+<span class="s2">;</span>
+<span class="s2">[global]</span>
+<span class="s2">rw=randread</span>
+<span class="s2">size=12G</span>
+<span class="s2">iodepth=1</span>
+<span class="s2">bs=4K</span>
+<span class="s2">direct=1</span>
+<span class="s2">thread=1</span>
+<span class="s2">time_based=1</span>
+<span class="s2">runtime=7</span>
+<span class="s2">ramp_time=3</span>
+<span class="s2">norandommap=1</span>
+
+<span class="s2">; Avoid accidentally creating device files; e.g. &quot;</span>/dev/nvme0n1<span class="s2">&quot;, &quot;</span>/dev/nullb0<span class="s2">&quot;</span>
+<span class="s2">allow_file_create=0</span>
+
+<span class="s2">[default]</span>
+
+<span class="s2">[override]</span>
+<span class="s2">rw=</span><span class="si">${</span><span class="nv">FIO_RW</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">iodepth=</span><span class="si">${</span><span class="nv">FIO_IODEPTH</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">bs=</span><span class="si">${</span><span class="nv">FIO_BS</span><span class="si">}</span><span class="s2"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fio-xnvme-io-engine-on-nvme-device-with-zoned-command-set">
+<h2>fio xNVMe IO Engine on NVMe Device with Zoned Command Set<a class="headerlink" href="#fio-xnvme-io-engine-on-nvme-device-with-zoned-command-set" title="Permalink to this headline">¶</a></h2>
+<p>This fio-script provides the basics for running on an NVMe device with the
+Zoned Command Set enabled.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> Running xNVMe/fio on a Zoned Device
+<span class="p">;</span>
+<span class="p">;</span> Writes 1GB at QD1 using 4K BS and verifies it.
+<span class="p">;</span>
+<span class="p">;</span> README
+<span class="p">;</span>
+<span class="p">;</span> Make sure you provide the correct path to <span class="s1">&#39;libxnvme-fio-engine.so&#39;</span> when
+<span class="p">;</span> invoking fio. This job-file is intended to be used as:
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the built-in io_uring engine to get baseline numbers</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>io_uring <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and libaio async. impl.</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>libaio <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with Linux backend and io_uring async. impl.</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --sqthread_poll<span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="p">;</span>   --async<span class="o">=</span>io_uring <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>/dev/nvme0n1
+<span class="p">;</span>
+<span class="p">;</span> <span class="c1"># Use the xNVMe io-engine engine with SPDK backend</span>
+<span class="p">;</span> fio xnvme-compare.fio <span class="se">\</span>
+<span class="p">;</span>   --ioengine<span class="o">=</span>external:/usr/lib/libxnvme-fio-engine.so <span class="se">\</span>
+<span class="p">;</span>   --section<span class="o">=</span>default <span class="se">\</span>
+<span class="p">;</span>   --filename<span class="o">=</span>pci<span class="se">\\</span>:0000<span class="se">\\</span>:01<span class="se">\\</span>:00.0?nsid<span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> NOTE: The URI encoded in the filename above, the <span class="s2">&quot;:&quot;</span> must be escaped.
+<span class="p">;</span>
+<span class="p">;</span> On the command-line using two <span class="s2">&quot;\\&quot;</span>:
+<span class="p">;</span>
+<span class="p">;</span> --filename<span class="o">=</span>pci<span class="se">\\</span>:0000<span class="se">\\</span>:01<span class="se">\\</span>:00.0?nsid<span class="o">=</span><span class="m">1</span>
+<span class="p">;</span>
+<span class="p">;</span> Within a fio-script using a single <span class="s2">&quot;\&quot;:</span>
+<span class="s2">;</span>
+<span class="s2">; filename=pci\:0000\:01\:00.0?nsid=1</span>
+<span class="s2">;</span>
+<span class="s2">; NOTE: If you want to override the default bs, iodepth, and workload, then</span>
+<span class="s2">; invoke it as:</span>
+<span class="s2">;</span>
+<span class="s2">; FIO_BS=&quot;</span><span class="m">512</span><span class="s2">&quot; FIO_RW=&quot;</span>verify<span class="s2">&quot; FIO_IODEPTH=16 fio xnvme-compare.fio \</span>
+<span class="s2">;   --section=override</span>
+<span class="s2">;</span>
+<span class="s2">; NOTE: I/O errors have been observed with fio 3.20, however, not with 3.22,</span>
+<span class="s2">; in any case, if you encounter them, then you can clean up the drive by first</span>
+<span class="s2">; invoking:</span>
+<span class="s2">;</span>
+<span class="s2">; # zoned mgmt-reset /dev/nvme0n2 --slba 0x0 --all</span>
+<span class="s2">;</span>
+<span class="s2">; This will reset all zones on the device to EMPTY aka. wipe the entire device.</span>
+<span class="s2">;</span>
+<span class="s2">[global]</span>
+<span class="s2">zonemode=zbd</span>
+<span class="s2">rw=write</span>
+<span class="s2">size=1G</span>
+<span class="s2">iodepth=1</span>
+<span class="s2">bs=4K</span>
+<span class="s2">direct=1</span>
+<span class="s2">thread=1</span>
+<span class="s2">ramp_time=1</span>
+<span class="s2">norandommap=1</span>
+<span class="s2">verify=crc32c</span>
+<span class="s2">; Avoid accidentally creating device files; e.g. &quot;</span>/dev/nvme0n1<span class="s2">&quot;, &quot;</span>/dev/nullb0<span class="s2">&quot;</span>
+<span class="s2">allow_file_create=0</span>
+<span class="s2">;</span>
+<span class="s2">; NOTE: If fio complains about zone-size, then run:</span>
+<span class="s2">;</span>
+<span class="s2">; # zoned info /dev/nvme0n1</span>
+<span class="s2">;</span>
+<span class="s2">; The command will provide the values you need, then in the fio-script define:</span>
+<span class="s2">;</span>
+<span class="s2">; zonesize=nsect * nbytes</span>
+<span class="s2">;</span>
+<span class="s2">;zonesize=</span>
+
+<span class="s2">[default]</span>
+
+<span class="s2">[override]</span>
+<span class="s2">rw=</span><span class="si">${</span><span class="nv">FIO_RW</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">iodepth=</span><span class="si">${</span><span class="nv">FIO_IODEPTH</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">bs=</span><span class="si">${</span><span class="nv">FIO_BS</span><span class="si">}</span><span class="s2"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-notes">
+<h2>Build Notes<a class="headerlink" href="#build-notes" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">fio</span></code> <strong>xNVMe</strong> IO engine is enabled by default via the autoconfiguration
+produced by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span>
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span><span class="o">-</span><span class="n">deb</span>
+</pre></div>
+</div>
+<p>If, for some reason you are manually instrumenting CMake / configuration, then
+the options to enable/disable the IO engine are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">fio</span>
+<span class="o">--</span><span class="n">disable</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">fio</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../capis/index.html" class="btn btn-neutral float-right" title="C API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../file/index.html" class="btn btn-neutral float-left" title="file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, xNVMe
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

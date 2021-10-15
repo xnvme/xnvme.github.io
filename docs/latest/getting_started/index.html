@@ -1,39 +1,43 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Getting Started &mdash; xNVMe 0.0.24 documentation</title>
+  <title>Getting Started &mdash; xNVMe 0.0.25 documentation</title>
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Tools" href="../tools/index.html" />
@@ -61,7 +65,7 @@
             
             
               <div class="version">
-                0.0.24
+                0.0.25
               </div>
             
           
@@ -78,6 +82,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -95,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#debian-10-buster">Debian 10 (Buster)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#debian-9-stretch">Debian 9 (Stretch)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freebsd-12">Freebsd 12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gentoo">Gentoo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-20-04-focal">Ubuntu 20.04 (Focal)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-18-04-bionic">Ubuntu 18.04 (Bionic)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-16-04-xenial">Ubuntu 16.04 (Xenial)</a></li>
@@ -152,6 +158,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -186,18 +193,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Getting Started</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/getting_started/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -474,6 +483,31 @@ pip3 install meson ninja
 </pre></div>
 </div>
 </div>
+<div class="section" id="gentoo">
+<h3>Gentoo<a class="headerlink" href="#gentoo" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages using <code class="docutils literal notranslate"><span class="pre">emerge</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dev-lang/nasm
+dev-libs/libaio
+dev-util/cmake
+dev-util/cunit
+dev-util/meson
+dev-util/ninja
+sys-libs/ncurses
+sys-process/numactl
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via emerge</span>
+emerge <span class="k">$(</span>&lt; scripts/pkgs/gentoo-latest.txt <span class="k">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In case you get: <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">adding</span> <span class="pre">symbols:</span> <span class="pre">DSO</span> <span class="pre">missing</span> <span class="pre">from</span> <span class="pre">command</span>
+<span class="pre">line</span></code>, during compilation, then add <code class="docutils literal notranslate"><span class="pre">-ltinfo</span> <span class="pre">-lnurces</span></code> to <code class="docutils literal notranslate"><span class="pre">LDFLAGS</span></code>.
+For example: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">LDFLAGS=-ltinfo</span> <span class="pre">-lncurses&quot;</span></code>.</p>
+</div>
+</div>
 <div class="section" id="ubuntu-20-04-focal">
 <h3>Ubuntu 20.04 (Focal)<a class="headerlink" href="#ubuntu-20-04-focal" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>:</p>
@@ -619,13 +653,13 @@ supported/enabled backends then invoke:</p>
 </div>
 <p>It should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
-ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">24</span><span class="o">}</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">25</span><span class="o">}</span>
 xnvme_3p:
   - <span class="s1">&#39;fio;git-describe:fio-3.27&#39;</span>
   - <span class="s1">&#39;libnvme;git-rev:master/a458217&#39;</span>
   - <span class="s1">&#39;liburing;git-describe:liburing-2.0&#39;</span>
   - <span class="s1">&#39;spdk;git-describe:v21.04;+patches&#39;</span>
-  - <span class="s1">&#39;linux;LINUX_VERSION_CODE-UAPI/330752-5.12.0&#39;</span>
+  - <span class="s1">&#39;linux;LINUX_VERSION_CODE-UAPI/330286-5.10.46&#39;</span>
 xnvme_be_attr_list:
   count: <span class="m">4</span>
   capacity: <span class="m">4</span>
@@ -681,10 +715,10 @@ expected by running:</p>
 <p>Which you yield output equivalent to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
   xnvme_ident:
-    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
-    schm: <span class="s1">&#39;file&#39;</span>
-    opts: <span class="s1">&#39;&#39;</span>
-    uri: <span class="s1">&#39;file:/dev/nvme0n1&#39;</span>
+    uri: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    dtype: 0x2
+    nsid: 0x1
+    csi: 0x0
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
@@ -715,18 +749,23 @@ modprobe -r null_blk
 <p>Yielding:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
   xnvme_ident:
-    trgt: <span class="s1">&#39;/dev/nullb0&#39;</span>
-    schm: <span class="s1">&#39;file&#39;</span>
-    opts: <span class="s1">&#39;&#39;</span>
-    uri: <span class="s1">&#39;file:/dev/nullb0&#39;</span>
+    uri: <span class="s1">&#39;/dev/nullb0&#39;</span>
+    dtype: 0x3
+    nsid: 0x1
+    csi: 0x1f
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
     async: <span class="o">{</span>id: <span class="s1">&#39;emu&#39;</span><span class="o">}</span>
     attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
-  xnvme_cmd_opts:
-    csi: 0x1f
-    nsid: 0x1
+  xnvme_opts:
+    be: <span class="s1">&#39;linux&#39;</span>
+    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    admin: <span class="s1">&#39;block&#39;</span>
+    sync: <span class="s1">&#39;block&#39;</span>
+    async: <span class="s1">&#39;emu&#39;</span>
+    oflags: 0x4
   xnvme_geo:
     type: XNVME_GEO_CONVENTIONAL
     npugrp: <span class="m">1</span>
@@ -770,18 +809,23 @@ modprobe -r null_blk
 <p>Yielding:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
   xnvme_ident:
-    trgt: <span class="s1">&#39;/dev/nullb0&#39;</span>
-    schm: <span class="s1">&#39;file&#39;</span>
-    opts: <span class="s1">&#39;&#39;</span>
-    uri: <span class="s1">&#39;file:/dev/nullb0&#39;</span>
+    uri: <span class="s1">&#39;/dev/nullb0&#39;</span>
+    dtype: 0x3
+    nsid: 0x1
+    csi: 0x2
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
     async: <span class="o">{</span>id: <span class="s1">&#39;emu&#39;</span><span class="o">}</span>
     attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
-  xnvme_cmd_opts:
-    csi: 0x2
-    nsid: 0x1
+  xnvme_opts:
+    be: <span class="s1">&#39;linux&#39;</span>
+    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    admin: <span class="s1">&#39;block&#39;</span>
+    sync: <span class="s1">&#39;block&#39;</span>
+    async: <span class="s1">&#39;emu&#39;</span>
+    oflags: 0x4
   xnvme_geo:
     type: XNVME_GEO_ZONED
     npugrp: <span class="m">1</span>
@@ -802,24 +846,25 @@ modprobe -r null_blk
 <h4>Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code><a class="headerlink" href="#async-i-o-via-libaio" title="Permalink to this headline">¶</a></h4>
 <p>When AIO is available then the NVMe NVM Commands for <strong>read</strong> and <strong>write</strong> are
 sent over the Linux AIO interface. Doing so improves command-throughput at
-higher queue-depths when compared to sending the command over the driver-ioctl.</p>
+higher queue-depths when compared to sending the command over via the NVMe
+driver ioctl().</p>
 <p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">libaio</span></code> for async I/O by
 encoding it in the device identifier, like so:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use libaio for asynchronous read and write</span>
-xnvme info /dev/nvme0n1?async<span class="o">=</span>libaio
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_io_async <span class="nb">read</span> /dev/nvme0n1 --slba 0x0 --qdepth <span class="m">1</span> --async libaio
 </pre></div>
 </div>
 <p>Yielding the output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
-  xnvme_ident:
-    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
-    schm: <span class="s1">&#39;file&#39;</span>
-    opts: <span class="s1">&#39;?async=libaio&#39;</span>
-    uri: <span class="s1">&#39;file:/dev/nvme0n1?async=libaio&#39;</span>
-  xnvme_be:
-    admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
-    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
-    async: <span class="o">{</span>id: <span class="s1">&#39;libaio&#39;</span><span class="o">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<span class="c1"># Initializing queue and setting default callback function and arguments</span>
+<span class="c1"># Read uri: &#39;/dev/nvme0n1&#39;, qd: 1</span>
+xnvme_lba_range:
+  slba: 0x0000000000000000
+  elba: 0x0000000000000000
+  naddrs: <span class="m">1</span>
+  nbytes: <span class="m">512</span>
+  attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0003, mib: <span class="m">0</span>.00, mib_sec: <span class="m">1</span>.50<span class="o">}</span>
+<span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
 </div>
@@ -838,21 +883,21 @@ NVMe Driver IOCTLs and libaio. It also leverages the <strong>io_uring</strong> i
 enabling I/O polling and kernel-side submission polling.</p>
 <p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> for async I/O by
 encoding it in the device identifier, like so:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use io_uring for asynchronous read and write</span>
-xnvme info /dev/nvme0n1?async<span class="o">=</span>io_uring
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_io_async <span class="nb">read</span> /dev/nvme0n1 --slba 0x0 --qdepth <span class="m">1</span> --async io_uring
 </pre></div>
 </div>
 <p>Yielding the output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
-  xnvme_ident:
-    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
-    schm: <span class="s1">&#39;file&#39;</span>
-    opts: <span class="s1">&#39;?async=io_uring&#39;</span>
-    uri: <span class="s1">&#39;file:/dev/nvme0n1?async=io_uring&#39;</span>
-  xnvme_be:
-    admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
-    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
-    async: <span class="o">{</span>id: <span class="s1">&#39;io_uring&#39;</span><span class="o">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<span class="c1"># Initializing queue and setting default callback function and arguments</span>
+<span class="c1"># Read uri: &#39;/dev/nvme0n1&#39;, qd: 1</span>
+xnvme_lba_range:
+  slba: 0x0000000000000000
+  elba: 0x0000000000000000
+  naddrs: <span class="m">1</span>
+  nbytes: <span class="m">512</span>
+  attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0000, mib: <span class="m">0</span>.00, mib_sec: <span class="m">65</span>.68<span class="o">}</span>
+<span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
 </div>
@@ -902,7 +947,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.128297<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.014696<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -960,13 +1005,9 @@ Linux devfs, that is, no longer available in <code class="docutils literal notra
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme enum
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xnvme_enumerate()</span>
-xnvme_enumeration:
-  capacity: <span class="m">98</span>
-  nentries: <span class="m">2</span>
-  entries:
-  - <span class="o">{</span>trgt: <span class="s1">&#39;0000:03:00.0&#39;</span>, schm: <span class="s1">&#39;pci&#39;</span>, opts: <span class="s1">&#39;?nsid=1&#39;</span>, uri: <span class="s1">&#39;pci:0000:03:00.0?nsid=1&#39;</span><span class="o">}</span>
-  - <span class="o">{</span>trgt: <span class="s1">&#39;0000:03:00.0&#39;</span>, schm: <span class="s1">&#39;pci&#39;</span>, opts: <span class="s1">&#39;?nsid=2&#39;</span>, uri: <span class="s1">&#39;pci:0000:03:00.0?nsid=2&#39;</span><span class="o">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_enumeration:
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0<span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x2, csi: 0x2<span class="o">}</span>
 </pre></div>
 </div>
 <p>Notice that multiple URIs using the same PCI id but with different <strong>xNVMe</strong>
@@ -1001,11 +1042,12 @@ device at <code class="docutils literal notranslate"><span class="pre">/dev/nvme
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="n">opts</span> <span class="o">=</span> <span class="n">xnvme_opts_default</span><span class="p">();</span>
+	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>
 
-	<span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">);</span>
+	<span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">perror</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open&quot;</span><span class="p">);</span>
+		<span class="n">perror</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">);</span>
 		<span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 	<span class="p">}</span>
 
@@ -1064,18 +1106,23 @@ a simpler link-target.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
   xnvme_ident:
-    trgt: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
-    schm: <span class="s1">&#39;file&#39;</span>
-    opts: <span class="s1">&#39;&#39;</span>
-    uri: <span class="s1">&#39;file:/dev/nvme0n1&#39;</span>
+    uri: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    dtype: 0x2
+    nsid: 0x1
+    csi: 0x0
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
     async: <span class="o">{</span>id: <span class="s1">&#39;emu&#39;</span><span class="o">}</span>
     attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
-  xnvme_cmd_opts:
-    csi: 0x0
-    nsid: 0x1
+  xnvme_opts:
+    be: <span class="s1">&#39;linux&#39;</span>
+    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    admin: <span class="s1">&#39;nvme&#39;</span>
+    sync: <span class="s1">&#39;nvme&#39;</span>
+    async: <span class="s1">&#39;emu&#39;</span>
+    oflags: 0x4
   xnvme_geo:
     type: XNVME_GEO_CONVENTIONAL
     npugrp: <span class="m">1</span>
@@ -1317,29 +1364,29 @@ command-transport and async interface.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../tools/index.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../index.html" class="btn btn-neutral float-left" title="Cross-platform libraries and tools for NVMe devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="../tools/index.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Cross-platform libraries and tools for NVMe devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, xNVMe
+        &#169; Copyright 2020, xNVMe.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -1347,7 +1394,6 @@ command-transport and async interface.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
@@ -1366,6 +1412,7 @@ command-transport and async interface.</p>
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-159785887-1', 'auto');
+    
     ga('send', 'pageview');
     </script>
 

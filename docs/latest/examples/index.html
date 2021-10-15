@@ -1,39 +1,43 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>C API: Examples &mdash; xNVMe 0.0.24 documentation</title>
+  <title>C API: Examples &mdash; xNVMe 0.0.25 documentation</title>
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="xnvmec" href="../capis/xnvmec.html" /> 
@@ -60,7 +64,7 @@
             
             
               <div class="version">
-                0.0.24
+                0.0.25
               </div>
             
           
@@ -77,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -98,6 +103,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -132,18 +138,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>C API: Examples</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/examples/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -176,11 +184,17 @@ in the following sections.</p>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvmec.h&gt;</span><span class="cp"></span>
 
 <span class="k">static</span> <span class="kt">int</span>
-<span class="nf">sub_hw_example</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
+<span class="nf">sub_hw_example</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="n">opts</span> <span class="o">=</span> <span class="n">xnvme_opts_default</span><span class="p">();</span>
+	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
-	<span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">xnvmec_cli_to_opts</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">))</span> <span class="p">{</span>
+		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvmec_cli_to_opts()&quot;</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+		<span class="k">return</span> <span class="o">-</span><span class="n">errno</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">xnvmec_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
 		<span class="k">return</span> <span class="o">-</span><span class="n">errno</span><span class="p">;</span>
@@ -196,15 +210,20 @@ in the following sections.</p>
 <span class="c1">// Command-Line Interface (CLI) definition</span>
 <span class="c1">//</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec_sub</span> <span class="n">g_subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="n">g_subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">{</span>
-		<span class="s">&quot;hw&quot;</span><span class="p">,</span> <span class="s">&quot;Hello-World Example&quot;</span><span class="p">,</span> <span class="s">&quot;Hello-World Example&quot;</span><span class="p">,</span> <span class="n">sub_hw_example</span><span class="p">,</span> <span class="p">{</span>
+		<span class="s">&quot;hw&quot;</span><span class="p">,</span> <span class="s">&quot;Hello-World Example&quot;</span><span class="p">,</span> <span class="s">&quot;Hello-World Example&quot;</span><span class="p">,</span>
+		<span class="n">sub_hw_example</span><span class="p">,</span> <span class="p">{</span>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_URI</span><span class="p">,</span> <span class="n">XNVMEC_POSA</span><span class="p">},</span>
+
+			<span class="p">{</span><span class="n">XNVMEC_OPT_DEV_NSID</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_BE</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_ADMIN</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 		<span class="p">}</span>
 	<span class="p">},</span>
 <span class="p">};</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;xNVMe hello-device example&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">descr_short</span> <span class="o">=</span> <span class="s">&quot;Open the given device and print its attributes&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">g_subs</span><span class="p">,</span>
@@ -235,16 +254,16 @@ in the following sections.</p>
 
 <span class="cp">#define DEFAULT_QD 8</span>
 
-<span class="k">struct</span> <span class="n">cb_args</span> <span class="p">{</span>
+<span class="k">struct</span> <span class="nc">cb_args</span> <span class="p">{</span>
 	<span class="kt">uint32_t</span> <span class="n">ecount</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">completed</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">submitted</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="k">static</span> <span class="kt">void</span>
-<span class="nf">cb_pool</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
+<span class="nf">cb_pool</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">cb_args</span> <span class="o">*</span><span class="n">cb_args</span> <span class="o">=</span> <span class="n">cb_arg</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">cb_args</span> <span class="o">*</span><span class="n">cb_args</span> <span class="o">=</span> <span class="n">cb_arg</span><span class="p">;</span>
 
 	<span class="n">cb_args</span><span class="o">-&gt;</span><span class="n">completed</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
 
@@ -270,15 +289,15 @@ in the following sections.</p>
 <span class="cm"> * - Teardown</span>
 <span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">int</span>
-<span class="nf">sub_async_read</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
+<span class="nf">sub_async_read</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
-	<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">xnvme_lba_range</span> <span class="n">rng</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
+	<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">xnvme_lba_range</span> <span class="n">rng</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
 	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">qd</span><span class="p">;</span>
 
-	<span class="k">struct</span> <span class="n">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="k">struct</span> <span class="n">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	<span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
 	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">*</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 	<span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
@@ -322,7 +341,7 @@ in the following sections.</p>
 
 	<span class="n">payload</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
 	<span class="k">for</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="n">curs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">curs</span> <span class="o">&lt;</span> <span class="n">rng</span><span class="p">.</span><span class="n">naddrs</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">;)</span> <span class="p">{</span>
-		<span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+		<span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 
 <span class="nl">submit</span><span class="p">:</span>
 		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_nvm_read</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">slba</span> <span class="o">+</span> <span class="n">curs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
@@ -398,15 +417,15 @@ in the following sections.</p>
 <span class="cm"> * - Teardown</span>
 <span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">int</span>
-<span class="nf">sub_async_write</span><span class="p">(</span><span class="k">struct</span> <span class="n">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
+<span class="nf">sub_async_write</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
-	<span class="k">const</span> <span class="k">struct</span> <span class="n">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="p">;</span>
-	<span class="k">struct</span> <span class="n">xnvme_lba_range</span> <span class="n">rng</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
+	<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span> <span class="o">=</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">geo</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">xnvme_lba_range</span> <span class="n">rng</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
 	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">qd</span><span class="p">;</span>
 
-	<span class="k">struct</span> <span class="n">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="k">struct</span> <span class="n">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="nc">cb_args</span> <span class="n">cb_args</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+	<span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
 	<span class="kt">char</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">*</span><span class="n">payload</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 	<span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
@@ -451,7 +470,7 @@ in the following sections.</p>
 
 	<span class="n">payload</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
 	<span class="k">for</span> <span class="p">(</span><span class="kt">uint64_t</span> <span class="n">sect</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">sect</span> <span class="o">&lt;</span> <span class="n">rng</span><span class="p">.</span><span class="n">naddrs</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">cb_args</span><span class="p">.</span><span class="n">ecount</span><span class="p">;)</span> <span class="p">{</span>
-		<span class="k">struct</span> <span class="n">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+		<span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 
 <span class="nl">submit</span><span class="p">:</span>
 		<span class="n">err</span> <span class="o">=</span> <span class="n">xnvme_nvm_write</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">nsid</span><span class="p">,</span> <span class="n">rng</span><span class="p">.</span><span class="n">slba</span> <span class="o">+</span> <span class="n">sect</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
@@ -511,7 +530,7 @@ in the following sections.</p>
 <span class="c1">// Command-Line Interface (CLI) definition</span>
 <span class="c1">//</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec_sub</span> <span class="n">g_subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="n">g_subs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">{</span>
 		<span class="s">&quot;read&quot;</span><span class="p">,</span>
 		<span class="s">&quot;Read the LBAs [SLBA,ELBA]&quot;</span><span class="p">,</span>
@@ -523,6 +542,11 @@ in the following sections.</p>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_ELBA</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_DATA_OUTPUT</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_SEED</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+
+			<span class="p">{</span><span class="n">XNVMEC_OPT_DEV_NSID</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_BE</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_ADMIN</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_ASYNC</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 		<span class="p">}</span>
 	<span class="p">},</span>
 
@@ -536,11 +560,16 @@ in the following sections.</p>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_SLBA</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_ELBA</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 			<span class="p">{</span><span class="n">XNVMEC_OPT_DATA_INPUT</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+
+			<span class="p">{</span><span class="n">XNVMEC_OPT_DEV_NSID</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_BE</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_ADMIN</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
+			<span class="p">{</span><span class="n">XNVMEC_OPT_ASYNC</span><span class="p">,</span> <span class="n">XNVMEC_LOPT</span><span class="p">},</span>
 		<span class="p">}</span>
 	<span class="p">},</span>
 <span class="p">};</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">xnvmec</span> <span class="n">g_cli</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">descr_short</span> <span class="o">=</span> <span class="s">&quot;xNVMe: Asynchronous IO Example: write, read&quot;</span><span class="p">,</span>
 	<span class="p">.</span><span class="n">subs</span> <span class="o">=</span> <span class="n">g_subs</span><span class="p">,</span>
@@ -562,27 +591,28 @@ in the following sections.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="../capis/xnvmec.html" class="btn btn-neutral float-left" title="xnvmec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="../capis/xnvmec.html" class="btn btn-neutral float-left" title="xnvmec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, xNVMe
+        &#169; Copyright 2020, xNVMe.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -590,7 +620,6 @@ in the following sections.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
@@ -609,6 +638,7 @@ in the following sections.</p>
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-159785887-1', 'auto');
+    
     ga('send', 'pageview');
     </script>
 

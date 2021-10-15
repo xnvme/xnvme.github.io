@@ -1,39 +1,43 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Debian custom kernel package &mdash; xNVMe 0.0.24 documentation</title>
+  <title>Debian custom kernel package &mdash; xNVMe 0.0.25 documentation</title>
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
@@ -59,7 +63,7 @@
             
             
               <div class="version">
-                0.0.24
+                0.0.25
               </div>
             
           
@@ -76,6 +80,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -93,6 +98,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -127,18 +133,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Debian custom kernel package</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/tutorial/custom_kernel_deb.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -162,17 +170,17 @@
 </ul>
 <p>Install pre-reqs:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> \
-        <span class="n">bc</span> \
-        <span class="n">build</span><span class="o">-</span><span class="n">essential</span> \
-        <span class="n">cpio</span> \
-        <span class="n">flex</span> \
-        <span class="n">kmod</span> \
-        <span class="n">libelf</span><span class="o">-</span><span class="n">dev</span> \
-        <span class="n">libncurses5</span><span class="o">-</span><span class="n">dev</span> \
-        <span class="n">libssl</span><span class="o">-</span><span class="n">dev</span> \
-        <span class="n">linux</span><span class="o">-</span><span class="n">source</span> \
-        <span class="n">rsync</span> \
-        <span class="n">time</span>
+  <span class="n">bc</span> \
+  <span class="n">build</span><span class="o">-</span><span class="n">essential</span> \
+  <span class="n">cpio</span> \
+  <span class="n">flex</span> \
+  <span class="n">kmod</span> \
+  <span class="n">libelf</span><span class="o">-</span><span class="n">dev</span> \
+  <span class="n">libncurses5</span><span class="o">-</span><span class="n">dev</span> \
+  <span class="n">libssl</span><span class="o">-</span><span class="n">dev</span> \
+  <span class="n">linux</span><span class="o">-</span><span class="n">source</span> \
+  <span class="n">rsync</span> \
+  <span class="n">time</span>
 </pre></div>
 </div>
 <p>Base the kernel-configuration on the currently running kernel:</p>
@@ -192,18 +200,24 @@
 The build-time is about 8 minutes on a desktop platform based on AMD 5800x with a SATA SSD.
 The build-time is about 15 minutes on a mobile platform based on AMD 5700u with a SATA SSD.
 With <code class="docutils literal notranslate"><span class="pre">CONFIG_DEBUG_INFO</span></code> enabled, the time is closer to and beyond 60min.</p>
+<p>Define the environment variable <code class="docutils literal notranslate"><span class="pre">LOCALVERSION</span></code>, this will embed the string in
+the kernel-version, making it easy to identify your customized Kernel:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LOCALVERSION</span><span class="o">=</span><span class="s2">&quot;foo&quot;</span>
+</pre></div>
+</div>
 <p>Then go ahead and build:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/usr/bin/time make -j`nproc` bindeb-pkg
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>LOCALVERSION=&quot;foo&quot; /usr/bin/time make -j`nproc` bindeb-pkg
 </pre></div>
 </div>
 <p>The Debian packages are emitted in the parent directory, this can get messy.
 So, go ahead and put the packages somewhere else, e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span> <span class="s2">&quot;$HOME/packages/build01&quot;</span>
-<span class="n">mv</span> <span class="o">../</span><span class="p">{</span><span class="o">*.</span><span class="n">deb</span><span class="p">,</span><span class="o">*.</span><span class="n">buildinfo</span><span class="p">,</span><span class="o">*.</span><span class="n">changes</span><span class="p">}</span> <span class="s2">&quot;$HOME/packages/build01&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">r</span> <span class="s2">&quot;$</span><span class="si">{HOME}</span><span class="s2">/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">&quot;</span>
+<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;$</span><span class="si">{HOME}</span><span class="s2">/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">&quot;</span>
+<span class="n">mv</span> <span class="o">../</span><span class="p">{</span><span class="o">*.</span><span class="n">deb</span><span class="p">,</span><span class="o">*.</span><span class="n">buildinfo</span><span class="p">,</span><span class="o">*.</span><span class="n">changes</span><span class="p">}</span> <span class="s2">&quot;$HOME/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 <p>Go ahead and install it by invoking:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;$HOME/packages/build01/*.deb&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;$HOME/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">/*.deb&quot;</span>
 </pre></div>
 </div>
 <p>You organize the packages as you see fit, but something like the above is not a bad idea.</p>
@@ -214,20 +228,25 @@ So, go ahead and put the packages somewhere else, e.g.:</p>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, xNVMe
+        &#169; Copyright 2020, xNVMe.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -235,7 +254,6 @@ So, go ahead and put the packages somewhere else, e.g.:</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
@@ -254,6 +272,7 @@ So, go ahead and put the packages somewhere else, e.g.:</p>
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-159785887-1', 'auto');
+    
     ga('send', 'pageview');
     </script>
 

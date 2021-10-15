@@ -152,6 +152,25 @@ For example, from the root of the **xNVMe** source repository, do:
    :language: bash
    :lines: 8-
 
+Gentoo
+------
+
+Install the following packages using ``emerge``:
+
+
+.. literalinclude:: ../../scripts/pkgs/gentoo-latest.txt
+   :language: bash
+
+For example, from the root of the **xNVMe** source repository, do:
+
+.. literalinclude:: ../../scripts/pkgs/gentoo-latest.sh
+   :language: bash
+   :lines: 9-
+
+.. note:: In case you get: ``error adding symbols: DSO missing from command
+   line``, during compilation, then add ``-ltinfo -lnurces`` to ``LDFLAGS``.
+   For example: ``export LDFLAGS=-ltinfo -lncurses"``.
+
 Ubuntu 20.04 (Focal)
 --------------------
 
@@ -341,17 +360,18 @@ Async I/O via ``libaio``
 
 When AIO is available then the NVMe NVM Commands for **read** and **write** are
 sent over the Linux AIO interface. Doing so improves command-throughput at
-higher queue-depths when compared to sending the command over the driver-ioctl.
+higher queue-depths when compared to sending the command over via the NVMe
+driver ioctl().
 
 One can explicitly tell **xNVMe** to utilize ``libaio`` for async I/O by
 encoding it in the device identifier, like so:
 
-.. literalinclude:: xnvme_info_async_libaio.cmd
+.. literalinclude:: xnvme_io_async_read_libaio.cmd
    :language: bash
 
 Yielding the output:
 
-.. literalinclude:: xnvme_info_async_libaio.out
+.. literalinclude:: xnvme_io_async_read_libaio.out
    :language: bash
    :lines: 1-12
 
@@ -373,12 +393,12 @@ enabling I/O polling and kernel-side submission polling.
 One can explicitly tell **xNVMe** to utilize ``io_uring`` for async I/O by
 encoding it in the device identifier, like so:
 
-.. literalinclude:: xnvme_info_async_io_uring.cmd
+.. literalinclude:: xnvme_io_async_read_io_uring.cmd
    :language: bash
 
 Yielding the output:
 
-.. literalinclude:: xnvme_info_async_io_uring.out
+.. literalinclude:: xnvme_io_async_read_io_uring.out
    :language: bash
    :lines: 1-12
 
