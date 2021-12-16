@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>xnvme_znd &mdash; xNVMe 0.0.25 documentation</title>
+  <title>xnvme_znd &mdash; xNVMe 0.0.26 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.0.25
+                0.0.26
               </div>
             
           
@@ -119,6 +119,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-znd-report-from-dev">xnvme_znd_report_from_dev</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-znd-report-pr">xnvme_znd_report_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-znd-stat">xnvme_znd_stat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-znd-zrwa-flush">xnvme_znd_zrwa_flush</a></li>
 </ul>
 </li>
 </ul>
@@ -344,7 +345,7 @@
 <span class="cm"> * @param select_all Ignore zslba, command affects all LBAs</span>
 <span class="cm"> * @param action Management the ::xnvme_spec_znd_cmd_mgmt_send_action to perform with zone at zslba</span>
 <span class="cm"> * or all LBAs when select_all is true</span>
-<span class="cm"> * @param action_sf the ::xnvme_spec_znd_mgmt_send_action_sf option</span>
+<span class="cm"> * @param action_so the ::xnvme_spec_znd_mgmt_send_action_so option</span>
 <span class="cm"> * @param dbuf For action=ZND_SEND_DESCRIPTOR provide buffer</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
@@ -352,7 +353,7 @@
 <span class="kt">int</span>
 <span class="nf">xnvme_znd_mgmt_send</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">zslba</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">select_all</span><span class="p">,</span>
 		    <span class="k">enum</span> <span class="n">xnvme_spec_znd_cmd_mgmt_send_action</span> <span class="n">action</span><span class="p">,</span>
-		    <span class="k">enum</span> <span class="n">xnvme_spec_znd_mgmt_send_action_sf</span> <span class="n">action_sf</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
+		    <span class="k">enum</span> <span class="n">xnvme_spec_znd_mgmt_send_action_so</span> <span class="n">action_so</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Submit, and optionally wait for completion of, a Zone Append</span>
@@ -370,6 +371,18 @@
 <span class="nf">xnvme_znd_append</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">zslba</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">nlb</span><span class="p">,</span>
 		 <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span>
 		 <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">mbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of, a Zone RWA Commit</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param lba Commit from ZRWA to Zone up-to and including the given &#39;lba&#39;</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_znd_zrwa_flush</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">lba</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Encapsulation of Zone Descriptors and Zone Descriptor Extensions</span>
@@ -793,7 +806,7 @@
 <span id="sec-c-api-xnvme-znd-func-xnvme-znd-mgmt-send"></span><h3>xnvme_znd_mgmt_send<a class="headerlink" href="#xnvme-znd-mgmt-send" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_znd_mgmt_send">
-<span class="target" id="libxnvme__znd_8h_1a3fa64f1c25acfa1c56d3e29742af9321"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_znd_mgmt_send</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">zslba</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">select_all</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_cmd_mgmt_send_action" title="xnvme_spec_znd_cmd_mgmt_send_action"><span class="n"><span class="pre">xnvme_spec_znd_cmd_mgmt_send_action</span></span></a><span class="w"> </span><span class="n"><span class="pre">action</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_mgmt_send_action_sf" title="xnvme_spec_znd_mgmt_send_action_sf"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_sf</span></span></a><span class="w"> </span><span class="n"><span class="pre">action_sf</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_znd_mgmt_send" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvme__znd_8h_1aab3c40ac45227432aa14a28719727fbd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_znd_mgmt_send</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">zslba</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">select_all</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_cmd_mgmt_send_action" title="xnvme_spec_znd_cmd_mgmt_send_action"><span class="n"><span class="pre">xnvme_spec_znd_cmd_mgmt_send_action</span></span></a><span class="w"> </span><span class="n"><span class="pre">action</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_mgmt_send_action_so" title="xnvme_spec_znd_mgmt_send_action_so"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_so</span></span></a><span class="w"> </span><span class="n"><span class="pre">action_so</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_znd_mgmt_send" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Submit, and optionally wait for completion of, a Zone Management Send. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -803,7 +816,7 @@
 <li><p><strong>zslba</strong> – Start LBA of the Zone to manage </p></li>
 <li><p><strong>select_all</strong> – Ignore zslba, command affects all LBAs </p></li>
 <li><p><strong>action</strong> – Management the <a class="reference internal" href="xnvme_spec.html#libxnvme__spec_8h_1a6cdea7a252ea22d38d3c5eccc8631ead"><span class="std std-ref">xnvme_spec_znd_cmd_mgmt_send_action</span></a> to perform with zone at zslba or all LBAs when select_all is true </p></li>
-<li><p><strong>action_sf</strong> – the <a class="reference internal" href="xnvme_spec.html#libxnvme__spec_8h_1a4e3b1d3efa57a0cd3401abf9f71656bc"><span class="std std-ref">xnvme_spec_znd_mgmt_send_action_sf</span></a> option </p></li>
+<li><p><strong>action_so</strong> – the <a class="reference internal" href="xnvme_spec.html#libxnvme__spec_8h_1a8a6f34f9c5d138c9f8709967bf2920e7"><span class="std std-ref">xnvme_spec_znd_mgmt_send_action_so</span></a> option </p></li>
 <li><p><strong>dbuf</strong> – For action=ZND_SEND_DESCRIPTOR provide buffer</p></li>
 </ul>
 </dd>
@@ -919,6 +932,27 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>On Success, 0 is returned and ‘nzones’ filled with stat. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned to indicate the error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-znd-zrwa-flush">
+<span id="sec-c-api-xnvme-znd-func-xnvme-znd-zrwa-flush"></span><h3>xnvme_znd_zrwa_flush<a class="headerlink" href="#xnvme-znd-zrwa-flush" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_znd_zrwa_flush">
+<span class="target" id="libxnvme__znd_8h_1a1673f74b79fb2ea7aa0b2fc0d3f8348b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_znd_zrwa_flush</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">lba</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_znd_zrwa_flush" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of, a Zone RWA Commit. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>lba</strong> – Commit from ZRWA to Zone up-to and including the given ‘lba’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
 </dd></dl>

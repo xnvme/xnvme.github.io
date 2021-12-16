@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>xnvme_spec &mdash; xNVMe 0.0.25 documentation</title>
+  <title>xnvme_spec &mdash; xNVMe 0.0.26 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.0.25
+                0.0.26
               </div>
             
           
@@ -121,7 +121,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-cmd-mgmt-recv-action-sf">xnvme_spec_znd_cmd_mgmt_recv_action_sf</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-cmd-mgmt-send-action">xnvme_spec_znd_cmd_mgmt_send_action</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-log-lid">xnvme_spec_znd_log_lid</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-mgmt-send-action-sf">xnvme_spec_znd_mgmt_send_action_sf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-mgmt-send-action-so">xnvme_spec_znd_mgmt_send_action_so</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-opc">xnvme_spec_znd_opc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-state">xnvme_spec_znd_state</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-status-code">xnvme_spec_znd_status_code</a></li>
@@ -225,7 +225,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-log-changes-fpr">xnvme_spec_znd_log_changes_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-log-changes-pr">xnvme_spec_znd_log_changes_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-log-lid-str">xnvme_spec_znd_log_lid_str</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-mgmt-send-action-sf-str">xnvme_spec_znd_mgmt_send_action_sf_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-mgmt-send-action-so-str">xnvme_spec_znd_mgmt_send_action_so_str</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-opc-str">xnvme_spec_znd_opc_str</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-report-hdr-fpr">xnvme_spec_znd_report_hdr_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-znd-report-hdr-pr">xnvme_spec_znd_report_hdr_pr</a></li>
@@ -1558,9 +1558,14 @@
 <span class="k">struct</span> <span class="nc">xnvme_spec_cmd_gfeat</span> <span class="p">{</span>
 	<span class="kt">uint32_t</span> <span class="n">cdw00_09</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>		<span class="c1">///&lt; Command dword 0 to 9</span>
 
-	<span class="kt">uint32_t</span> <span class="nl">fid</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>	<span class="c1">///&lt; Feature Identifier</span>
-	<span class="kt">uint32_t</span> <span class="nl">sel</span>		<span class="p">:</span> <span class="mi">3</span><span class="p">;</span>	<span class="c1">///&lt; Select</span>
-	<span class="kt">uint32_t</span> <span class="nl">rsvd10</span>		<span class="p">:</span> <span class="mi">21</span><span class="p">;</span>
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="kt">uint32_t</span> <span class="nl">fid</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>	<span class="c1">///&lt; Feature Identifier</span>
+			<span class="kt">uint32_t</span> <span class="nl">sel</span>		<span class="p">:</span> <span class="mi">3</span><span class="p">;</span>	<span class="c1">///&lt; Select</span>
+			<span class="kt">uint32_t</span> <span class="nl">rsvd10</span>		<span class="p">:</span> <span class="mi">21</span><span class="p">;</span>
+		<span class="p">};</span>
+		<span class="kt">uint32_t</span> <span class="n">val</span><span class="p">;</span>
+	<span class="p">}</span> <span class="n">cdw10</span><span class="p">;</span>
 
 	<span class="kt">uint32_t</span> <span class="n">cdw11_15</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>		<span class="c1">///&lt; Command dword 11 to 15</span>
 <span class="p">};</span>
@@ -1574,9 +1579,14 @@
 <span class="k">struct</span> <span class="nc">xnvme_spec_cmd_sfeat</span> <span class="p">{</span>
 	<span class="kt">uint32_t</span> <span class="n">cdw00_09</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>		<span class="c1">///&lt; Command dword 0 to 9</span>
 
-	<span class="kt">uint32_t</span> <span class="nl">fid</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>	<span class="c1">///&lt; Feature Identifier</span>
-	<span class="kt">uint32_t</span> <span class="nl">rsvd10</span>		<span class="p">:</span> <span class="mi">23</span><span class="p">;</span>
-	<span class="kt">uint32_t</span> <span class="nl">save</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Save</span>
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="kt">uint32_t</span> <span class="nl">fid</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>	<span class="c1">///&lt; Feature Identifier</span>
+			<span class="kt">uint32_t</span> <span class="nl">rsvd10</span>		<span class="p">:</span> <span class="mi">23</span><span class="p">;</span>
+			<span class="kt">uint32_t</span> <span class="nl">save</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Save</span>
+		<span class="p">};</span>
+		<span class="kt">uint32_t</span> <span class="n">val</span><span class="p">;</span>
+	<span class="p">}</span> <span class="n">cdw10</span><span class="p">;</span>
 
 	<span class="k">struct</span> <span class="nc">xnvme_spec_feat</span> <span class="n">feat</span><span class="p">;</span>	<span class="c1">///&lt; Feature</span>
 
@@ -1889,12 +1899,13 @@
 	<span class="cm">/* cdw 10-11 */</span>
 	<span class="kt">uint64_t</span> <span class="n">slba</span><span class="p">;</span>			<span class="c1">///&lt; Start LBA</span>
 
-	<span class="kt">uint32_t</span> <span class="n">cdw12</span><span class="p">;</span>
+	<span class="cm">/* cdw 12 */</span>
+	<span class="kt">uint32_t</span> <span class="n">nrange</span><span class="p">;</span>                <span class="c1">///&lt; Number of ranges &lt;= 32</span>
 
 	<span class="cm">/* cdw 13 */</span>
 	<span class="kt">uint32_t</span> <span class="nl">zsa</span>		<span class="p">:</span> <span class="mi">8</span><span class="p">;</span>	<span class="c1">///&lt; Zone Send Action</span>
 	<span class="kt">uint32_t</span> <span class="nl">select_all</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Select All, that is, ignore the slba, affects all LBAs</span>
-	<span class="kt">uint32_t</span> <span class="nl">zsasf</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Zone Send Action Specific Field</span>
+	<span class="kt">uint32_t</span> <span class="nl">zsaso</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Zone Send Action Specific Option</span>
 	<span class="kt">uint32_t</span> <span class="nl">rsvd</span>		<span class="p">:</span> <span class="mi">22</span><span class="p">;</span>
 
 	<span class="kt">uint32_t</span> <span class="n">cdw14_15</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>		<span class="c1">///&lt; Command dword 14 to 15</span>
@@ -1999,6 +2010,8 @@
 	<span class="n">XNVME_SPEC_ZND_SC_INVALID_FORMAT</span>	<span class="o">=</span> <span class="mh">0x7F</span><span class="p">,</span>	<span class="c1">///&lt; ZND_SC_INVALID_FORMAT</span>
 
 	<span class="c1">/// Zoned Command Set</span>
+	<span class="n">XNVME_SPEC_ZND_SC_INVALID_ZONE_OP</span>	<span class="o">=</span> <span class="mh">0xB6</span><span class="p">,</span> <span class="c1">///&lt; ZND_SC_INVALID_ZONE_OP</span>
+	<span class="n">XNVME_SPEC_ZND_SC_NOZRWA</span>		<span class="o">=</span> <span class="mh">0xB7</span><span class="p">,</span> <span class="c1">///&lt; ZND_SC_NOZRWA</span>
 	<span class="n">XNVME_SPEC_ZND_SC_BOUNDARY_ERROR</span>	<span class="o">=</span> <span class="mh">0xB8</span><span class="p">,</span>	<span class="c1">///&lt; ZND_SC_BOUNDARY_ERROR</span>
 	<span class="n">XNVME_SPEC_ZND_SC_IS_FULL</span>		<span class="o">=</span> <span class="mh">0xB9</span><span class="p">,</span>	<span class="c1">///&lt; ZND_SC_IS_FULL</span>
 	<span class="n">XNVME_SPEC_ZND_SC_IS_READONLY</span>		<span class="o">=</span> <span class="mh">0xBA</span><span class="p">,</span>	<span class="c1">///&lt; ZND_SC_IS_READONLY</span>
@@ -2012,10 +2025,10 @@
 <span class="cm">/**</span>
 <span class="cm"> * This is not defined in any spec... it would just seem sane if it was...</span>
 <span class="cm"> *</span>
-<span class="cm"> * @enum xnvme_spec_znd_mgmt_send_action_sf</span>
+<span class="cm"> * @enum xnvme_spec_znd_mgmt_send_action_so</span>
 <span class="cm"> */</span>
-<span class="k">enum</span> <span class="n">xnvme_spec_znd_mgmt_send_action_sf</span> <span class="p">{</span>
-	<span class="n">XNVME_SPEC_ZND_MGMT_SEND_ASF_SALL</span>	<span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_ZND_MGMT_SEND_ASF_SALL</span>
+<span class="k">enum</span> <span class="n">xnvme_spec_znd_mgmt_send_action_so</span> <span class="p">{</span>
+	<span class="n">XNVME_SPEC_ZND_MGMT_OPEN_WITH_ZRWA</span>	<span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_ZND_MGMT_OPEN_WITH_ZRWA</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -2032,6 +2045,7 @@
 	<span class="n">XNVME_SPEC_ZND_CMD_MGMT_SEND_RESET</span>	<span class="o">=</span> <span class="mh">0x4</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_ZND_CMD_MGMT_SEND_RESET</span>
 	<span class="n">XNVME_SPEC_ZND_CMD_MGMT_SEND_OFFLINE</span>	<span class="o">=</span> <span class="mh">0x5</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_ZND_CMD_MGMT_SEND_OFFLINE</span>
 	<span class="n">XNVME_SPEC_ZND_CMD_MGMT_SEND_DESCRIPTOR</span>	<span class="o">=</span> <span class="mh">0x10</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_ZND_CMD_MGMT_SEND_DESCRIPTOR</span>
+	<span class="n">XNVME_SPEC_ZND_CMD_MGMT_SEND_FLUSH</span>	<span class="o">=</span> <span class="mh">0x11</span><span class="p">,</span>	<span class="c1">///&lt; XNVME_SPEC_ZND_CMD_MGMT_SEND_FLUSH</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -2126,18 +2140,25 @@
 <span class="cm"> * @struct xnvme_spec_znd_idfy_ns</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvme_spec_znd_idfy_ns</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="p">{</span>
-		<span class="kt">uint16_t</span> <span class="nl">vzcap</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Variable Zone Capacity</span>
-		<span class="kt">uint16_t</span> <span class="nl">zae</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Zone Active Excursions</span>
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="kt">uint16_t</span> <span class="nl">vzcap</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Variable Zone Capacity</span>
+			<span class="kt">uint16_t</span> <span class="nl">zae</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Zone Active Excursions</span>
 
-		<span class="kt">uint16_t</span> <span class="nl">rsvd</span>	<span class="p">:</span> <span class="mi">14</span><span class="p">;</span>
+			<span class="kt">uint16_t</span> <span class="nl">rsvd</span>	<span class="p">:</span> <span class="mi">14</span><span class="p">;</span>
+		<span class="p">}</span> <span class="n">bits</span><span class="p">;</span>
+		<span class="kt">uint16_t</span> <span class="n">val</span><span class="p">;</span>
 	<span class="p">}</span> <span class="n">zoc</span><span class="p">;</span> <span class="c1">///&lt; Zone Operation Characteristics</span>
 
-	<span class="k">struct</span> <span class="p">{</span>
-		<span class="kt">uint16_t</span> <span class="nl">razb</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Read Across zone boundaries</span>
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="kt">uint16_t</span> <span class="nl">razb</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>    <span class="c1">///&lt; Read Across zone boundaries</span>
+			<span class="kt">uint16_t</span> <span class="nl">zrwasup</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>    <span class="c1">///&lt; Namespace supports Zone-Random-Write-Area (ZRWA)</span>
 
-		<span class="kt">uint16_t</span> <span class="nl">rsvd</span>	<span class="p">:</span> <span class="mi">15</span><span class="p">;</span>
-	<span class="p">}</span> <span class="n">ozcs</span><span class="p">;</span> <span class="c1">///&lt; Optional Zoned Command Support</span>
+			<span class="kt">uint16_t</span> <span class="nl">rsvd</span>    <span class="p">:</span> <span class="mi">14</span><span class="p">;</span>
+		<span class="p">}</span> <span class="n">bits</span><span class="p">;</span> <span class="c1">///&lt; Optional Zoned Command Support</span>
+		<span class="kt">uint16_t</span> <span class="n">val</span><span class="p">;</span>
+	<span class="p">}</span> <span class="n">ozcs</span><span class="p">;</span>
 
 	<span class="kt">uint32_t</span> <span class="n">mar</span><span class="p">;</span>		<span class="c1">///&lt; Maximum Active Resources</span>
 	<span class="kt">uint32_t</span> <span class="n">mor</span><span class="p">;</span>		<span class="c1">///&lt; Maximum Open Resources</span>
@@ -2145,11 +2166,26 @@
 	<span class="kt">uint32_t</span> <span class="n">rrl</span><span class="p">;</span>		<span class="c1">///&lt; Reset Recommended Limit</span>
 	<span class="kt">uint32_t</span> <span class="n">frl</span><span class="p">;</span>		<span class="c1">///&lt; Finish Recommended Limit</span>
 
-	<span class="kt">uint8_t</span> <span class="n">rsvd20_2815</span><span class="p">[</span><span class="mi">2796</span><span class="p">];</span>
+	<span class="kt">uint8_t</span> <span class="n">rsvd12</span><span class="p">[</span><span class="mi">24</span><span class="p">];</span>
+
+	<span class="kt">uint32_t</span> <span class="n">numzrwa</span><span class="p">;</span>       <span class="c1">///&lt; Number of ZRWA resources available to the namespace</span>
+	<span class="kt">uint16_t</span> <span class="n">zrwafg</span><span class="p">;</span>        <span class="c1">///&lt; ZRWA Flush Granularity; in unit of LBAs</span>
+	<span class="kt">uint16_t</span> <span class="n">zrwas</span><span class="p">;</span>        <span class="c1">///&lt; ZRWA Size; in unit of LBAs</span>
+
+	<span class="k">union</span> <span class="p">{</span>
+		<span class="k">struct</span> <span class="p">{</span>
+			<span class="kt">uint8_t</span> <span class="nl">expflushsup</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; Explicit Flush Supported</span>
+
+			<span class="kt">uint8_t</span> <span class="nl">rsvd0</span> <span class="p">:</span> <span class="mi">7</span><span class="p">;</span>
+		<span class="p">}</span> <span class="n">bits</span><span class="p">;</span>
+		<span class="kt">uint8_t</span> <span class="n">val</span><span class="p">;</span>
+	<span class="p">}</span> <span class="n">zrwacap</span><span class="p">;</span>
+
+	<span class="kt">uint8_t</span> <span class="n">rsvd53</span><span class="p">[</span><span class="mi">2763</span><span class="p">];</span>
 
 	<span class="k">struct</span> <span class="nc">xnvme_spec_znd_idfy_lbafe</span> <span class="n">lbafe</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
 
-	<span class="kt">uint8_t</span> <span class="n">rsvd3072_3839</span><span class="p">[</span><span class="mi">768</span><span class="p">];</span>
+	<span class="kt">uint8_t</span> <span class="n">rsvd3072</span><span class="p">[</span><span class="mi">768</span><span class="p">];</span>
 
 	<span class="kt">uint8_t</span> <span class="n">vs</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>	<span class="c1">///&lt; Vendor Specific</span>
 <span class="p">};</span>
@@ -2208,8 +2244,9 @@
 			<span class="kt">uint8_t</span> <span class="nl">zfc</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>		<span class="c1">///&lt; Zone Finished by controller</span>
 			<span class="kt">uint8_t</span> <span class="nl">zfr</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>		<span class="c1">///&lt; Zone Finish Recommended</span>
 			<span class="kt">uint8_t</span> <span class="nl">rzr</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>		<span class="c1">///&lt; Reset Zone Recommended</span>
+			<span class="kt">uint8_t</span> <span class="nl">zrwav</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>       <span class="c1">///&lt; Zone has a ZRWA associated</span>
 
-			<span class="kt">uint8_t</span> <span class="nl">rsvd3</span> <span class="p">:</span> <span class="mi">4</span><span class="p">;</span>
+			<span class="kt">uint8_t</span> <span class="nl">rsvd3</span> <span class="p">:</span> <span class="mi">3</span><span class="p">;</span>
 
 			<span class="kt">uint8_t</span> <span class="nl">zdev</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; Zone Descriptor Valid</span>
 		<span class="p">};</span>
@@ -3328,6 +3365,12 @@
 <dd><p>XNVME_SPEC_ZND_CMD_MGMT_SEND_DESCRIPTOR. </p>
 </dd></dl>
 
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd_mgmt_send_action.XNVME_SPEC_ZND_CMD_MGMT_SEND_FLUSH">
+<span class="target" id="libxnvme__spec_8h_1a6cdea7a252ea22d38d3c5eccc8631eada781611c8417bd045af5486edf1b26f09"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_ZND_CMD_MGMT_SEND_FLUSH</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd_mgmt_send_action.XNVME_SPEC_ZND_CMD_MGMT_SEND_FLUSH" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVME_SPEC_ZND_CMD_MGMT_SEND_FLUSH. </p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -3348,18 +3391,18 @@
 </dd></dl>
 
 </div>
-<div class="section" id="xnvme-spec-znd-mgmt-send-action-sf">
-<span id="sec-c-api-xnvme-spec-enum-xnvme-spec-znd-mgmt-send-action-sf"></span><h3>xnvme_spec_znd_mgmt_send_action_sf<a class="headerlink" href="#xnvme-spec-znd-mgmt-send-action-sf" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xnvme-spec-znd-mgmt-send-action-so">
+<span id="sec-c-api-xnvme-spec-enum-xnvme-spec-znd-mgmt-send-action-so"></span><h3>xnvme_spec_znd_mgmt_send_action_so<a class="headerlink" href="#xnvme-spec-znd-mgmt-send-action-so" title="Permalink to this headline">¶</a></h3>
 <dl class="c enum">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_mgmt_send_action_sf">
-<span class="target" id="libxnvme__spec_8h_1a4e3b1d3efa57a0cd3401abf9f71656bc"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_sf</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_mgmt_send_action_sf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_mgmt_send_action_so">
+<span class="target" id="libxnvme__spec_8h_1a8a6f34f9c5d138c9f8709967bf2920e7"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_so</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_mgmt_send_action_so" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>This is not defined in any spec… </p>
 <p>it would just seem sane if it was… </p>
 <p><em>Values:</em></p>
 <dl class="c enumerator">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_mgmt_send_action_sf.XNVME_SPEC_ZND_MGMT_SEND_ASF_SALL">
-<span class="target" id="libxnvme__spec_8h_1a4e3b1d3efa57a0cd3401abf9f71656bca7d734f451c66b9e40a27ef35cdda4713"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_ZND_MGMT_SEND_ASF_SALL</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_mgmt_send_action_sf.XNVME_SPEC_ZND_MGMT_SEND_ASF_SALL" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>XNVME_SPEC_ZND_MGMT_SEND_ASF_SALL. </p>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_mgmt_send_action_so.XNVME_SPEC_ZND_MGMT_OPEN_WITH_ZRWA">
+<span class="target" id="libxnvme__spec_8h_1a8a6f34f9c5d138c9f8709967bf2920e7a17d4a1a4d768ec768fa4927a9a14a52a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_ZND_MGMT_OPEN_WITH_ZRWA</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_mgmt_send_action_so.XNVME_SPEC_ZND_MGMT_OPEN_WITH_ZRWA" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVME_SPEC_ZND_MGMT_OPEN_WITH_ZRWA. </p>
 </dd></dl>
 
 </dd></dl>
@@ -3468,10 +3511,22 @@
 </dd></dl>
 
 <dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_status_code.XNVME_SPEC_ZND_SC_INVALID_ZONE_OP">
+<span class="target" id="libxnvme__spec_8h_1a1e3a13ba2deea98e437219deea7afb90ac55bfa9a3467ca6a869f8ed52304ba3d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_ZND_SC_INVALID_ZONE_OP</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_status_code.XNVME_SPEC_ZND_SC_INVALID_ZONE_OP" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Zoned Command Set. </p>
+<p>ZND_SC_INVALID_ZONE_OP </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_status_code.XNVME_SPEC_ZND_SC_NOZRWA">
+<span class="target" id="libxnvme__spec_8h_1a1e3a13ba2deea98e437219deea7afb90afd59aa600e71c03f9b165b74d787e18f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_ZND_SC_NOZRWA</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_status_code.XNVME_SPEC_ZND_SC_NOZRWA" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>ZND_SC_NOZRWA. </p>
+</dd></dl>
+
+<dl class="c enumerator">
 <dt class="sig sig-object c" id="c.xnvme_spec_znd_status_code.XNVME_SPEC_ZND_SC_BOUNDARY_ERROR">
 <span class="target" id="libxnvme__spec_8h_1a1e3a13ba2deea98e437219deea7afb90a6a02d0150d42a9204577f1ecd488681e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_ZND_SC_BOUNDARY_ERROR</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_status_code.XNVME_SPEC_ZND_SC_BOUNDARY_ERROR" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Zoned Command Set. </p>
-<p>ZND_SC_BOUNDARY_ERROR </p>
+<dd><p>ZND_SC_BOUNDARY_ERROR. </p>
 </dd></dl>
 
 <dl class="c enumerator">
@@ -3552,8 +3607,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd.&#64;117">
-<span class="target" id="structxnvme__spec__cmd_1a3b3803cc3acd0dcfdca40c8ce6dd3a21"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_cmd" title="xnvme_spec_cmd"><span class="n"><span class="pre">xnvme_spec_cmd</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd.@117" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_cmd.&#64;123">
+<span class="target" id="structxnvme__spec__cmd_1abcc6ef52a2cbd917b557889d4dee1814"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_cmd" title="xnvme_spec_cmd"><span class="n"><span class="pre">xnvme_spec_cmd</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd.@123" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -3747,20 +3802,8 @@
 </dd></dl>
 
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd_gfeat.fid">
-<span class="target" id="structxnvme__spec__cmd__gfeat_1aa4a286566270fedec182b43647e21399"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fid</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_gfeat.fid" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Feature Identifier. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd_gfeat.sel">
-<span class="target" id="structxnvme__spec__cmd__gfeat_1a5ca54c024cf3280320dfe2db94824159"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sel</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_gfeat.sel" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Select. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd_gfeat.rsvd10">
-<span class="target" id="structxnvme__spec__cmd__gfeat_1ac50c19adaa123018f902a6bf9ac734ac"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd10</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_gfeat.rsvd10" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_cmd_gfeat.cdw10">
+<span class="target" id="structxnvme__spec__cmd__gfeat_1abccd4606108af19ef8e3095ffef3c797"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_cmd_gfeat" title="xnvme_spec_cmd_gfeat"><span class="n"><span class="pre">xnvme_spec_cmd_gfeat</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cdw10</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_gfeat.cdw10" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c var">
@@ -4074,21 +4117,9 @@
 </dd></dl>
 
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd_sfeat.fid">
-<span class="target" id="structxnvme__spec__cmd__sfeat_1a711d02ea2dc599eb4a60662155170d0b"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fid</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_sfeat.fid" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Feature Identifier. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd_sfeat.rsvd10">
-<span class="target" id="structxnvme__spec__cmd__sfeat_1ab3d0daab08ee7640c7466cc8ac61a1fb"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd10</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_sfeat.rsvd10" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_cmd_sfeat.cdw10">
+<span class="target" id="structxnvme__spec__cmd__sfeat_1aa3ee131409f1c3fdd0df23504a9607b4"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_cmd_sfeat" title="xnvme_spec_cmd_sfeat"><span class="n"><span class="pre">xnvme_spec_cmd_sfeat</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cdw10</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_sfeat.cdw10" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_cmd_sfeat.save">
-<span class="target" id="structxnvme__spec__cmd__sfeat_1a73d75d5090d360b0bf926b2f956ba82f"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">save</span></span></span><a class="headerlink" href="#c.xnvme_spec_cmd_sfeat.save" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Save. </p>
-</dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_cmd_sfeat.feat">
@@ -5121,8 +5152,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_nvm_cmd.&#64;105">
-<span class="target" id="structxnvme__spec__nvm__cmd_1a0018340ff8e0fbbc01f813a0bfbe58c7"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_cmd" title="xnvme_spec_nvm_cmd"><span class="n"><span class="pre">xnvme_spec_nvm_cmd</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_cmd.@105" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_cmd.&#64;111">
+<span class="target" id="structxnvme__spec__nvm__cmd_1ad678806ed32f3af656c80c199e0b221b"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_cmd" title="xnvme_spec_nvm_cmd"><span class="n"><span class="pre">xnvme_spec_nvm_cmd</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_cmd.@111" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -5269,8 +5300,8 @@
 <dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_nvm_idfy.&#64;113">
-<span class="target" id="structxnvme__spec__nvm__idfy_1a092f87f856006a9384a4fcc38cc67321"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_idfy" title="xnvme_spec_nvm_idfy"><span class="n"><span class="pre">xnvme_spec_nvm_idfy</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_idfy.@113" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_idfy.&#64;119">
+<span class="target" id="structxnvme__spec__nvm__idfy_1ac13e5049af1b3cbe986ed21ba6349fc2"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_idfy" title="xnvme_spec_nvm_idfy"><span class="n"><span class="pre">xnvme_spec_nvm_idfy</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_idfy.@119" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -5291,7 +5322,7 @@
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_nvm_idfy_ctrlr.oncs">
-<span class="target" id="structxnvme__spec__nvm__idfy__ctrlr_1aaf3bd673ebb5d190f784f974d50b3df4"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_idfy_ctrlr" title="xnvme_spec_nvm_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_nvm_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">oncs</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_idfy_ctrlr.oncs" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__spec__nvm__idfy__ctrlr_1a2ea9820a3d7b1f4011da78f4e4f21cfb"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_idfy_ctrlr" title="xnvme_spec_nvm_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_nvm_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">oncs</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_idfy_ctrlr.oncs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>optional nvm command support </p>
 </dd></dl>
 
@@ -5302,7 +5333,7 @@
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_nvm_idfy_ctrlr.ocfs">
-<span class="target" id="structxnvme__spec__nvm__idfy__ctrlr_1a3aba83eb689b57cf6c53bc86b05ed439"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_idfy_ctrlr" title="xnvme_spec_nvm_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_nvm_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ocfs</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_idfy_ctrlr.ocfs" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__spec__nvm__idfy__ctrlr_1a134aaeb0fff9593199c3ba968675e846"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_nvm_idfy_ctrlr" title="xnvme_spec_nvm_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_nvm_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ocfs</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_idfy_ctrlr.ocfs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Optional Copy Format Supported. </p>
 </dd></dl>
 
@@ -5655,8 +5686,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd.&#64;115">
-<span class="target" id="structxnvme__spec__znd__cmd_1aca15c4209408a544cc1d79980b6534b3"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_cmd" title="xnvme_spec_znd_cmd"><span class="n"><span class="pre">xnvme_spec_znd_cmd</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd.@115" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd.&#64;121">
+<span class="target" id="structxnvme__spec__znd__cmd_1a0528c2df4d1dc64f29044e3546e7dc51"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_cmd" title="xnvme_spec_znd_cmd"><span class="n"><span class="pre">xnvme_spec_znd_cmd</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd.@121" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -5818,9 +5849,10 @@
 </dd></dl>
 
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd_mgmt_send.cdw12">
-<span class="target" id="structxnvme__spec__znd__cmd__mgmt__send_1a884ae39e135544963e5f3cc5bcd49cce"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cdw12</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd_mgmt_send.cdw12" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd_mgmt_send.nrange">
+<span class="target" id="structxnvme__spec__znd__cmd__mgmt__send_1a421a33468dd95821a202cc1ecc4585da"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nrange</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd_mgmt_send.nrange" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Number of ranges &lt;= 32. </p>
+</dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd_mgmt_send.zsa">
@@ -5835,9 +5867,9 @@
 </dd></dl>
 
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd_mgmt_send.zsasf">
-<span class="target" id="structxnvme__spec__znd__cmd__mgmt__send_1aca42a7736de49a7190a74364cd2cb439"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zsasf</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd_mgmt_send.zsasf" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Zone Send Action Specific Field. </p>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_cmd_mgmt_send.zsaso">
+<span class="target" id="structxnvme__spec__znd__cmd__mgmt__send_1ade549e094b2f30d95f6264ff0576c961"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zsaso</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_cmd_mgmt_send.zsaso" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Zone Send Action Specific Option. </p>
 </dd></dl>
 
 <dl class="c var">
@@ -5892,7 +5924,7 @@
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_znd_descr.za">
-<span class="target" id="structxnvme__spec__znd__descr_1a8cbfdd3c897222b86bd040368a400e41"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_descr" title="xnvme_spec_znd_descr"><span class="n"><span class="pre">xnvme_spec_znd_descr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">za</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_descr.za" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__spec__znd__descr_1a2a344e3dce5192d6250a9db4528a4e2b"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_descr" title="xnvme_spec_znd_descr"><span class="n"><span class="pre">xnvme_spec_znd_descr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">za</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_descr.za" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Zone Attributes. </p>
 </dd></dl>
 
@@ -5944,8 +5976,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy.&#64;121">
-<span class="target" id="structxnvme__spec__znd__idfy_1aaef3604c2de7225b5ae9c2eaa17f1b01"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy" title="xnvme_spec_znd_idfy"><span class="n"><span class="pre">xnvme_spec_znd_idfy</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy.@121" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy.&#64;131">
+<span class="target" id="structxnvme__spec__znd__idfy_1ab709af9a92393b9bbfb42d532364485a"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy" title="xnvme_spec_znd_idfy"><span class="n"><span class="pre">xnvme_spec_znd_idfy</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy.@131" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -6029,15 +6061,14 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.zoc">
-<span class="target" id="structxnvme__spec__znd__idfy__ns_1a559c7ea7fab195f86cfe196bae3126b4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy_ns" title="xnvme_spec_znd_idfy_ns"><span class="n"><span class="pre">xnvme_spec_znd_idfy_ns</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zoc</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.zoc" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1a87ed257ffd9463f565a220fc3d641199"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy_ns" title="xnvme_spec_znd_idfy_ns"><span class="n"><span class="pre">xnvme_spec_znd_idfy_ns</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zoc</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.zoc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Zone Operation Characteristics. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.ozcs">
-<span class="target" id="structxnvme__spec__znd__idfy__ns_1a7573aa8b9386a7e14713dfdf8f84f4cc"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy_ns" title="xnvme_spec_znd_idfy_ns"><span class="n"><span class="pre">xnvme_spec_znd_idfy_ns</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ozcs</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.ozcs" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Optional Zoned Command Support. </p>
-</dd></dl>
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1a2b08a7ed3d9b0279bc6ace75e9add42a"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy_ns" title="xnvme_spec_znd_idfy_ns"><span class="n"><span class="pre">xnvme_spec_znd_idfy_ns</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ozcs</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.ozcs" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.mar">
@@ -6064,8 +6095,36 @@
 </dd></dl>
 
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.rsvd20_2815">
-<span class="target" id="structxnvme__spec__znd__idfy__ns_1a746e5c556907a58e340d0d7b3cae2d69"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd20_2815</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">2796</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.rsvd20_2815" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.rsvd12">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1aed84210f687ccbd328ffe5171e5c13d5"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd12</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">24</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.rsvd12" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.numzrwa">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1a25ab2b479fa14a8d7603aeab57839a20"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numzrwa</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.numzrwa" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Number of ZRWA resources available to the namespace. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.zrwafg">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1a09db7517bbe7ac26f755ed42cb1005bc"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zrwafg</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.zrwafg" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>ZRWA Flush Granularity; in unit of LBAs. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.zrwas">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1ac63c6e3825b063a48a5e278b626a7a1e"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zrwas</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.zrwas" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>ZRWA Size; in unit of LBAs. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.zrwacap">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1afe9ed4aadeb3e8100932660f1f5ac1cd"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_idfy_ns" title="xnvme_spec_znd_idfy_ns"><span class="n"><span class="pre">xnvme_spec_znd_idfy_ns</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zrwacap</span></span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.zrwacap" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.rsvd53">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1ae5269e8c98e690f9505fca00d5f7e29c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd53</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">2763</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.rsvd53" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c var">
@@ -6074,8 +6133,8 @@
 <dd></dd></dl>
 
 <dl class="c var">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.rsvd3072_3839">
-<span class="target" id="structxnvme__spec__znd__idfy__ns_1a668b49ccd53a64f1b90067bb618cf599"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd3072_3839</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">768</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.rsvd3072_3839" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_idfy_ns.rsvd3072">
+<span class="target" id="structxnvme__spec__znd__idfy__ns_1a31d13f7afde2b0afc519573727a2ecd6"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd3072</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">768</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_znd_idfy_ns.rsvd3072" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c var">
@@ -7059,12 +7118,12 @@
 </dd></dl>
 
 </div>
-<div class="section" id="xnvme-spec-znd-mgmt-send-action-sf-str">
-<span id="sec-c-api-xnvme-spec-func-xnvme-spec-znd-mgmt-send-action-sf-str"></span><h3>xnvme_spec_znd_mgmt_send_action_sf_str<a class="headerlink" href="#xnvme-spec-znd-mgmt-send-action-sf-str" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xnvme-spec-znd-mgmt-send-action-so-str">
+<span id="sec-c-api-xnvme-spec-func-xnvme-spec-znd-mgmt-send-action-so-str"></span><h3>xnvme_spec_znd_mgmt_send_action_so_str<a class="headerlink" href="#xnvme-spec-znd-mgmt-send-action-so-str" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt class="sig sig-object c" id="c.xnvme_spec_znd_mgmt_send_action_sf_str">
-<span class="target" id="libxnvme__spec__pp_8h_1a45571b2daafe16c0411e7c5b0d443fbd"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_sf_str</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_mgmt_send_action_sf" title="xnvme_spec_znd_mgmt_send_action_sf"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_sf</span></span></a><span class="w"> </span><span class="n"><span class="pre">eval</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_spec_znd_mgmt_send_action_sf_str" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Produces a string representation of the given <a class="reference internal" href="#libxnvme__spec_8h_1a4e3b1d3efa57a0cd3401abf9f71656bc"><span class="std std-ref">xnvme_spec_znd_mgmt_send_action_sf</span></a>. </p>
+<dt class="sig sig-object c" id="c.xnvme_spec_znd_mgmt_send_action_so_str">
+<span class="target" id="libxnvme__spec__pp_8h_1a30704198b773db8710f8866b369633eb"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_so_str</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_znd_mgmt_send_action_so" title="xnvme_spec_znd_mgmt_send_action_so"><span class="n"><span class="pre">xnvme_spec_znd_mgmt_send_action_so</span></span></a><span class="w"> </span><span class="n"><span class="pre">eval</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_spec_znd_mgmt_send_action_so_str" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Produces a string representation of the given <a class="reference internal" href="#libxnvme__spec_8h_1a8a6f34f9c5d138c9f8709967bf2920e7"><span class="std std-ref">xnvme_spec_znd_mgmt_send_action_so</span></a>. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

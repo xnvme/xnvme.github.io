@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Getting Started &mdash; xNVMe 0.0.25 documentation</title>
+  <title>Getting Started &mdash; xNVMe 0.0.26 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.0.25
+                0.0.26
               </div>
             
           
@@ -105,6 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-18-04-bionic">Ubuntu 18.04 (Bionic)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-16-04-xenial">Ubuntu 16.04 (Xenial)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#alpine-linux-3-11-3">Alpine Linux 3.11.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#backends-and-system-config">Backends and System Config</a><ul>
@@ -145,7 +146,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#non-gcc-toolchain">Non-GCC Toolchain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cross-compiling-for-arm-on-x86">Cross-compiling for ARM on x86</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#custom-configuration">Custom Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
 </ul>
@@ -238,23 +238,11 @@ prerequisites, followed by a section describing runtime requirements in
 <a class="reference internal" href="#sec-building-example"><span class="std std-ref">Building an xNVMe Program</span></a>.</p>
 <div class="section" id="building-xnvme">
 <span id="sec-building"></span><h2>Building xNVMe<a class="headerlink" href="#building-xnvme" title="Permalink to this headline">¶</a></h2>
-<p><strong>xNVMe</strong> builds and runs on Linux, FreeBSD, and Windows. The latter is not
-publicly supported, however, if you are interested in Windows support then have
-a look at the <a class="reference internal" href="#sec-building-windows"><span class="std std-ref">Windows</span></a> section for more information.</p>
-<p>Retrieve the <strong>xNVMe</strong> repository from
-<a class="reference external" href="https://github.com/OpenMPDK/xNVMe">GitHUB</a>:</p>
+<p><strong>xNVMe</strong> builds and runs on Linux, FreeBSD and Windows. First, retrieve the
+<strong>xNVMe</strong> repository from  <a class="reference external" href="https://github.com/OpenMPDK/xNVMe">GitHUB</a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the xNVMe repos</span>
 git clone https://github.com/OpenMPDK/xNVMe.git --recursive xnvme
 <span class="nb">cd</span> xnvme
-
-<span class="c1"># make: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
-make
-
-<span class="c1"># make install: install via the apt package manager</span>
-sudo make install-deb
-
-<span class="c1"># make install: install in the &quot;usual&quot; manner</span>
-sudo make install
 </pre></div>
 </div>
 <div class="admonition note">
@@ -263,12 +251,39 @@ sudo make install
 <code class="docutils literal notranslate"><span class="pre">--recursive</span></code>, if you overlooked that, then invoke <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span>
 <span class="pre">--init</span> <span class="pre">--recursive</span></code></p>
 </div>
-<p>If you want to change the build-configuration, then have a look at the
-following <a class="reference internal" href="#sec-building-config"><span class="std std-ref">Custom Configuration</span></a>, if you are seeing build errors, then jump
-to the <a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> section describing packages to install on
-different Linux distributions and on FreeBSD.</p>
+<p>Then build and install xNVMe in one of the three following ways, depending on
+your operating system and distribution.</p>
+<p><strong>1)</strong> On Linux, with a distribution supporting <code class="docutils literal notranslate"><span class="pre">.deb</span></code> package installation
+via <code class="docutils literal notranslate"><span class="pre">dpkg</span></code>, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># make: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+make
+
+<span class="c1"># make install: install via the apt package manager</span>
+sudo make install-deb
+</pre></div>
+</div>
+<p><strong>2)</strong> On FreeBSD or a Linux distribution without <code class="docutils literal notranslate"><span class="pre">dpkg</span></code>, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># make: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+make
+
+<span class="c1"># make install: install in the &quot;usual&quot; manner</span>
+sudo make install
+</pre></div>
+</div>
+<p><strong>3)</strong> On Windows, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+build.bat
+
+<span class="c1"># In case you want to enable debugging then use the following instead</span>
+<span class="c1"># build.bat debug</span>
+</pre></div>
+</div>
+<p>In case you are seeing build errors, then jump to the
+<a class="reference internal" href="#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a> section describing packages to install on
+different Linux distributions, FreeBSD and Windows.</p>
 <p>There you will also find notes on customizing the toolchain and
-cross-compilation.</p>
+cross-compilation. If you want to change the build-configuration, then have a
+look at the following <a class="reference internal" href="#sec-building-config"><span class="std std-ref">Custom Configuration</span></a>.</p>
 </div>
 <div class="section" id="toolchain">
 <span id="sec-building-toolchain"></span><h2>Toolchain<a class="headerlink" href="#toolchain" title="Permalink to this headline">¶</a></h2>
@@ -287,8 +302,8 @@ and tools must be available:</p>
 <li><p>uuid-dev (&gt;=2.3, For <strong>SPDK</strong>)</p></li>
 </ul>
 <p>The preferred toolchain is <strong>gcc</strong> and the following sections describe how to
-install it and required libraries on FreeBSD and a set of popular Linux
-Distributions.</p>
+install it and required libraries on FreeBSD, a set of popular Linux
+Distributions and Windows.</p>
 <p>If you which to use a different toolchain then see the
 <a class="reference internal" href="#sec-building-custom-toolchain"><span class="std std-ref">Non-GCC Toolchain</span></a>, on how to instrument the build-system
 using a compiler other than <strong>gcc</strong>.</p>
@@ -308,6 +323,7 @@ meson
 ncurses
 ninja
 numactl
+python-pyelftools
 python3
 </pre></div>
 </div>
@@ -352,7 +368,7 @@ chmod +x cmake.sh
 ./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 
 <span class="c1"># Source them in for usage before building</span>
 <span class="nb">source</span> /opt/rh/devtoolset-8/enable
@@ -390,7 +406,7 @@ uuid-dev
 aptitude -q -y -f install <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/debian-bullseye.txt&quot;</span><span class="k">)</span>
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
 </div>
 </div>
@@ -417,7 +433,7 @@ uuid-dev
 <span class="c1"># Install packages via apt-get</span>
 apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/debian-buster.txt&quot;</span><span class="k">)</span>
 
-apt-get -t buster-backports install -qy meson ninja-build
+apt-get -t buster-backports install -qy meson ninja-build python3-pyelftools
 </pre></div>
 </div>
 </div>
@@ -448,7 +464,7 @@ chmod +x cmake.sh
 ./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
 </div>
 </div>
@@ -479,7 +495,7 @@ python3-pip
 pkg install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/freebsd-12.txt&quot;</span><span class="k">)</span>
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
 </div>
 </div>
@@ -488,6 +504,7 @@ pip3 install meson ninja
 <p>Install the following packages using <code class="docutils literal notranslate"><span class="pre">emerge</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dev-lang/nasm
 dev-libs/libaio
+dev-python/pyelftools
 dev-util/cmake
 dev-util/cunit
 dev-util/meson
@@ -532,7 +549,7 @@ uuid-dev
 apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/ubuntu-focal.txt&quot;</span><span class="k">)</span>
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
 </div>
 </div>
@@ -560,7 +577,7 @@ uuid-dev
 apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/ubuntu-bionic.txt&quot;</span><span class="k">)</span>
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
 </div>
 </div>
@@ -596,7 +613,7 @@ chmod +x cmake.sh
 ./cmake.sh --skip-license --prefix<span class="o">=</span>/usr/
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
 </div>
 </div>
@@ -628,8 +645,46 @@ util-linux-dev
 apk add <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/alpine-3.12.0.txt&quot;</span><span class="k">)</span>
 
 <span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+pip3 install meson ninja pyelftools
 </pre></div>
+</div>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>xNVMe builds <strong>natively</strong> with the MSVC compiler via CMake. However, the
+libraries produced by the MSVC compiler depends on runtimes which are not
+compatible with fio, thus when using MSVC, then the xNVMe fio IO-engine is not
+usable.</p>
+<p>To obtain fio-compatibility, then a gcc-based toolchain is recommended,
+specfically <a class="reference external" href="https://www.mingw-w64.org/">MinGW</a>. The toolchain,  consists of:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Via PowerShell</span>
+choco
+<span class="c1"># via Chocolatey</span>
+msys2
+cmake
+<span class="c1"># Via msys2-shell / pacman</span>
+make
+mingw-w64-x86_64-toolchain
+mingw-w64-x86_64-clang
+mingw-w64-x86_64-nsis
+</pre></div>
+</div>
+<p>Installing it can be done by first installing the <a class="reference external" href="https://chocolatey.org/">Chocolatey</a> Windows package
+manager via PowerShell, then install CMake and msys2 via <a class="reference external" href="https://chocolatey.org/">Chocolatey</a>, lastly
+the actual compiler-toolchain is installed via <strong>pacman</strong> provided by the
+<code class="docutils literal notranslate"><span class="pre">msys2</span></code> Shell.</p>
+<p>A batch-script comes with xNVMe, <code class="docutils literal notranslate"><span class="pre">scripts/pkgs/windows-2019.bat</span></code>, which does
+what is described above. Invoke the script in an elevated command-prompt
+(<code class="docutils literal notranslate"><span class="pre">cmd.exe</span></code> as Administrator):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">scripts</span>\<span class="n">pkgs</span>
+<span class="n">windows</span><span class="o">-</span><span class="mf">2019.</span><span class="n">bat</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>in case you see .dll loader-errors, then check that the environment
+variable <code class="docutils literal notranslate"><span class="pre">PATH</span></code> contains the various library locations of the the
+toolchain.</p>
 </div>
 </div>
 </div>
@@ -653,32 +708,31 @@ supported/enabled backends then invoke:</p>
 </div>
 <p>It should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
-ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">25</span><span class="o">}</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">26</span><span class="o">}</span>
 xnvme_3p:
-  - <span class="s1">&#39;fio;git-describe:fio-3.27&#39;</span>
+  - <span class="s1">&#39;fio;git-describe:fio-3.28&#39;</span>
   - <span class="s1">&#39;libnvme;git-rev:master/a458217&#39;</span>
   - <span class="s1">&#39;liburing;git-describe:liburing-2.0&#39;</span>
-  - <span class="s1">&#39;spdk;git-describe:v21.04;+patches&#39;</span>
-  - <span class="s1">&#39;linux;LINUX_VERSION_CODE-UAPI/330286-5.10.46&#39;</span>
+  - <span class="s1">&#39;spdk;git-describe:v21.10;+patches&#39;</span>
+  - <span class="s1">&#39;linux;LINUX_VERSION_CODE-UAPI/330310-5.10.70&#39;</span>
 xnvme_be_attr_list:
-  count: <span class="m">4</span>
-  capacity: <span class="m">4</span>
+  count: <span class="m">5</span>
+  capacity: <span class="m">5</span>
   items:
   - name: <span class="s1">&#39;spdk&#39;</span>
     enabled: <span class="m">1</span>
-    schemes: <span class="o">[</span><span class="s1">&#39;pci&#39;</span>, <span class="s1">&#39;pcie&#39;</span>, <span class="s1">&#39;fab&#39;</span>, <span class="s1">&#39;spdk&#39;</span><span class="o">]</span>
 
   - name: <span class="s1">&#39;linux&#39;</span>
     enabled: <span class="m">1</span>
-    schemes: <span class="o">[</span><span class="s1">&#39;file&#39;</span>, <span class="s1">&#39;lnx&#39;</span><span class="o">]</span>
 
   - name: <span class="s1">&#39;fbsd&#39;</span>
     enabled: <span class="m">0</span>
-    schemes: <span class="o">[</span><span class="s1">&#39;file&#39;</span>, <span class="s1">&#39;fbsd&#39;</span><span class="o">]</span>
 
   - name: <span class="s1">&#39;posix&#39;</span>
     enabled: <span class="m">1</span>
-    schemes: <span class="o">[</span><span class="s1">&#39;file&#39;</span>, <span class="s1">&#39;psx&#39;</span><span class="o">]</span>
+
+  - name: <span class="s1">&#39;windows&#39;</span>
+    enabled: <span class="m">0</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">xnvme_3p</span></code> part of the output informs about the third-party projects
@@ -854,16 +908,16 @@ encoding it in the device identifier, like so:</p>
 </pre></div>
 </div>
 <p>Yielding the output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 4096</span>
 <span class="c1"># Initializing queue and setting default callback function and arguments</span>
 <span class="c1"># Read uri: &#39;/dev/nvme0n1&#39;, qd: 1</span>
 xnvme_lba_range:
   slba: 0x0000000000000000
   elba: 0x0000000000000000
   naddrs: <span class="m">1</span>
-  nbytes: <span class="m">512</span>
+  nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0003, mib: <span class="m">0</span>.00, mib_sec: <span class="m">1</span>.50<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0000, mib: <span class="m">0</span>.00, mib_sec: <span class="m">214</span>.58<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -887,16 +941,16 @@ encoding it in the device identifier, like so:</p>
 </pre></div>
 </div>
 <p>Yielding the output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 4096</span>
 <span class="c1"># Initializing queue and setting default callback function and arguments</span>
 <span class="c1"># Read uri: &#39;/dev/nvme0n1&#39;, qd: 1</span>
 xnvme_lba_range:
   slba: 0x0000000000000000
   elba: 0x0000000000000000
   naddrs: <span class="m">1</span>
-  nbytes: <span class="m">512</span>
+  nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0000, mib: <span class="m">0</span>.00, mib_sec: <span class="m">65</span>.68<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0000, mib: <span class="m">0</span>.00, mib_sec: <span class="m">243</span>.52<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -947,7 +1001,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.014696<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.023354<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -1065,7 +1119,7 @@ device at <code class="docutils literal notranslate"><span class="pre">/dev/nvme
 	-Wl,--whole-archive -Wl,--no-as-needed <span class="se">\</span>
 	-lxnvme <span class="se">\</span>
 	-Wl,--no-whole-archive -Wl,--as-needed <span class="se">\</span>
-	-lrt -laio -luuid -lnuma -pthread <span class="se">\</span>
+	-lm -lrt -laio -luuid -lnuma -pthread <span class="se">\</span>
 	-o hello
 </pre></div>
 </div>
@@ -1128,14 +1182,14 @@ a simpler link-target.</p>
     npugrp: <span class="m">1</span>
     npunit: <span class="m">1</span>
     nzone: <span class="m">1</span>
-    nsect: <span class="m">16777216</span>
-    nbytes: <span class="m">512</span>
+    nsect: <span class="m">2097152</span>
+    nbytes: <span class="m">4096</span>
     nbytes_oob: <span class="m">0</span>
     tbytes: <span class="m">8589934592</span>
-    mdts_nbytes: <span class="m">65024</span>
-    lba_nbytes: <span class="m">512</span>
+    mdts_nbytes: <span class="m">520192</span>
+    lba_nbytes: <span class="m">4096</span>
     lba_extended: <span class="m">0</span>
-    ssw: <span class="m">9</span>
+    ssw: <span class="m">12</span>
 </pre></div>
 </div>
 <p>This should conclude the getting started guide of <strong>xNVMe</strong>, go ahead and
@@ -1334,27 +1388,6 @@ library backends, see the <a class="reference internal" href="../backends/index.
 embeds them in the <strong>xNVMe</strong> static libraries and executables. If you want to
 link with your version of these libraries then you can overwrite the respective
 include and library paths. See <code class="docutils literal notranslate"><span class="pre">./configure</span> <span class="pre">--help</span></code> for details.</p>
-</div>
-<div class="section" id="windows">
-<span id="sec-building-windows"></span><h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
-<p>Windows is not supported in public domain. However, if you want to roll your
-support into <strong>xNVMe</strong>, then you could follow the pointers below.</p>
-<p>C11 support is quite poor with most compilers on Windows except for Intel ICC
-and the GCC port <a class="reference external" href="http://tdm-gcc.tdragon.net/">TDM-GCC</a>.</p>
-<p>A backend implementation for Windows could utilize an IO path, sending
-read/write IO to the block device and then wrap all other NVMe commands around
-the NVMe driver IOCTL interface.</p>
-<p>Such as the one provided by the Open-Source NVMe Driver for Windows:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://svn.openfabrics.org/svnrepo/nvmewin/">https://svn.openfabrics.org/svnrepo/nvmewin/</a></p></li>
-</ul>
-<p>Or use the IOCTL interface of the built-in NVMe driver:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/fileio/working-with-nvme-devices">https://docs.microsoft.com/en-us/windows/win32/fileio/working-with-nvme-devices</a></p></li>
-</ul>
-<p>A bit of care has been taken in <strong>xNVMe</strong>, e.g. buffer-allocation, to support /
-run on Windows. So, you “only” have to worry about implementing the
-command-transport and async interface.</p>
 </div>
 </div>
 </div>
