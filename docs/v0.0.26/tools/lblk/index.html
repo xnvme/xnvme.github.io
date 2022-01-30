@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>lblk &mdash; xNVMe 0.0.26 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="zoned" href="../zoned/index.html" />
+    <link rel="prev" title="xnvme" href="../xnvme/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.26
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lblk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerate-logical-block-namespaces">Enumerate Logical Block Namespaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#device-information">Device Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#namespace-identification">Namespace Identification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#io-reading">IO: Reading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#io-writing">IO: Writing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file/index.html">file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fio/index.html">fio xNVMe IO Engine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Tools</a> &raquo;</li>
+        
+      <li>lblk</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/tools/lblk/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lblk">
+<span id="sec-tools-lblk"></span><h1>lblk<a class="headerlink" href="#lblk" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: lblk &lt;command&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Where &lt;command&gt; is one of:
+
+  enum             <span class="p">|</span> Enumerate Logical Block Namespaces on the system
+  info             <span class="p">|</span> Retrieve derived information <span class="k">for</span> the given URI
+  idfy             <span class="p">|</span> Identify the namespace <span class="k">for</span> the given URI
+  <span class="nb">read</span>             <span class="p">|</span> Read data and optionally metadata
+  write            <span class="p">|</span> Writes data and optionally metadata
+  write-zeros      <span class="p">|</span> Set a range of logical blocks to zero
+  write-uncor      <span class="p">|</span> Mark a range of logical blocks as invalid
+
+See <span class="s1">&#39;lblk &lt;command&gt; --help&#39;</span> <span class="k">for</span> the description of <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">26</span><span class="o">}</span>
+</pre></div>
+</div>
+<div class="section" id="enumerate-logical-block-namespaces">
+<h2>Enumerate Logical Block Namespaces<a class="headerlink" href="#enumerate-logical-block-namespaces" title="Permalink to this headline">¶</a></h2>
+<p>Enumerate namespaces:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lblk enum --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: lblk enum <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Enumerate Logical Block Namespaces on the system
+
+Where &lt;args&gt; include:
+
+  <span class="o">[</span> --uri uri <span class="o">]</span>                 <span class="p">;</span> System URI e.g. <span class="s1">&#39;10.9.8.1:8888&#39;</span>
+  <span class="o">[</span> --flags 0xNUM <span class="o">]</span>             <span class="p">;</span> Command flags
+  <span class="o">[</span> --be STRING <span class="o">]</span>               <span class="p">;</span> xNVMe backend, e.g. <span class="s1">&#39;linux&#39;</span>, <span class="s1">&#39;spdk&#39;</span>, <span class="s1">&#39;fbsd&#39;</span>, <span class="s1">&#39;posix&#39;</span>, <span class="s1">&#39;windows&#39;</span>
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
+
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">26</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="device-information">
+<h2>Device Information<a class="headerlink" href="#device-information" title="Permalink to this headline">¶</a></h2>
+<p>Device information:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lblk info /dev/nvme0n1
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+  xnvme_ident:
+    uri: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
+    dtype: 0x2
+    nsid: 0x1
+    csi: 0x0
+  xnvme_be:
+    admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+    sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+    async: <span class="o">{</span>id: <span class="s1">&#39;emu&#39;</span><span class="o">}</span>
+    attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
+  xnvme_opts:
+    be: <span class="s1">&#39;linux&#39;</span>
+    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    admin: <span class="s1">&#39;nvme&#39;</span>
+    sync: <span class="s1">&#39;nvme&#39;</span>
+    async: <span class="s1">&#39;emu&#39;</span>
+    oflags: 0x4
+  xnvme_geo:
+    type: XNVME_GEO_CONVENTIONAL
+    npugrp: <span class="m">1</span>
+    npunit: <span class="m">1</span>
+    nzone: <span class="m">1</span>
+    nsect: <span class="m">2097152</span>
+    nbytes: <span class="m">4096</span>
+    nbytes_oob: <span class="m">0</span>
+    tbytes: <span class="m">8589934592</span>
+    mdts_nbytes: <span class="m">520192</span>
+    lba_nbytes: <span class="m">4096</span>
+    lba_extended: <span class="m">0</span>
+    ssw: <span class="m">12</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="namespace-identification">
+<h2>Namespace Identification<a class="headerlink" href="#namespace-identification" title="Permalink to this headline">¶</a></h2>
+<p>Namespace identification:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lblk idfy --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: lblk idfy &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Identify the namespace <span class="k">for</span> the given URI
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. <span class="s1">&#39;/dev/nvme0n1&#39;</span>, <span class="s1">&#39;0000:01:00.1&#39;</span>, <span class="s1">&#39;10.9.8.1.8888&#39;</span>, <span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+  <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier <span class="k">for</span> Command Construction
+  <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
+  <span class="o">[</span> --dev-nsid 0xNUM <span class="o">]</span>          <span class="p">;</span> Namespace Identifier <span class="k">for</span> Device Handle
+  <span class="o">[</span> --be STRING <span class="o">]</span>               <span class="p">;</span> xNVMe backend, e.g. <span class="s1">&#39;linux&#39;</span>, <span class="s1">&#39;spdk&#39;</span>, <span class="s1">&#39;fbsd&#39;</span>, <span class="s1">&#39;posix&#39;</span>, <span class="s1">&#39;windows&#39;</span>
+  <span class="o">[</span> --admin STRING <span class="o">]</span>            <span class="p">;</span> xNVMe admin. command-interface, e.g. <span class="s1">&#39;nvme&#39;</span>, <span class="s1">&#39;block&#39;</span>
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
+
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">26</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="io-reading">
+<h2>IO: Reading<a class="headerlink" href="#io-reading" title="Permalink to this headline">¶</a></h2>
+<p>Reading:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lblk <span class="nb">read</span> --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: lblk <span class="nb">read</span> &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Read data and optionally metadata
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. <span class="s1">&#39;/dev/nvme0n1&#39;</span>, <span class="s1">&#39;0000:01:00.1&#39;</span>, <span class="s1">&#39;10.9.8.1.8888&#39;</span>, <span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+  --slba 0xNUM                  <span class="p">;</span> Start Logical Block Address
+  --nlb NUM                     <span class="p">;</span> Number of LBAs <span class="o">(</span>NOTE: zero-based value<span class="o">)</span>
+  <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier <span class="k">for</span> Command Construction
+  <span class="o">[</span> --data-output FILE <span class="o">]</span>        <span class="p">;</span> Path to data output-file
+  <span class="o">[</span> --meta-output FILE <span class="o">]</span>        <span class="p">;</span> Path to meta output-file
+  <span class="o">[</span> --dev-nsid 0xNUM <span class="o">]</span>          <span class="p">;</span> Namespace Identifier <span class="k">for</span> Device Handle
+  <span class="o">[</span> --be STRING <span class="o">]</span>               <span class="p">;</span> xNVMe backend, e.g. <span class="s1">&#39;linux&#39;</span>, <span class="s1">&#39;spdk&#39;</span>, <span class="s1">&#39;fbsd&#39;</span>, <span class="s1">&#39;posix&#39;</span>, <span class="s1">&#39;windows&#39;</span>
+  <span class="o">[</span> --admin STRING <span class="o">]</span>            <span class="p">;</span> xNVMe admin. command-interface, e.g. <span class="s1">&#39;nvme&#39;</span>, <span class="s1">&#39;block&#39;</span>
+  <span class="o">[</span> --sync STRING <span class="o">]</span>             <span class="p">;</span> xNVMe sync. command-interface, e.g. <span class="s1">&#39;nvme&#39;</span>, <span class="s1">&#39;block&#39;</span>
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
+
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">26</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="io-writing">
+<h2>IO: Writing<a class="headerlink" href="#io-writing" title="Permalink to this headline">¶</a></h2>
+<p>Writing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lblk write --help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage: lblk write &lt;uri&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Writes data and optionally metadata
+
+Where &lt;args&gt; include:
+
+  uri                           <span class="p">;</span> Device URI e.g. <span class="s1">&#39;/dev/nvme0n1&#39;</span>, <span class="s1">&#39;0000:01:00.1&#39;</span>, <span class="s1">&#39;10.9.8.1.8888&#39;</span>, <span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+  --slba 0xNUM                  <span class="p">;</span> Start Logical Block Address
+  --nlb NUM                     <span class="p">;</span> Number of LBAs <span class="o">(</span>NOTE: zero-based value<span class="o">)</span>
+  <span class="o">[</span> --nsid 0xNUM <span class="o">]</span>              <span class="p">;</span> Namespace Identifier <span class="k">for</span> Command Construction
+  <span class="o">[</span> --data-input FILE <span class="o">]</span>         <span class="p">;</span> Path to data input-file
+  <span class="o">[</span> --meta-input FILE <span class="o">]</span>         <span class="p">;</span> Path to meta input-file
+  <span class="o">[</span> --dev-nsid 0xNUM <span class="o">]</span>          <span class="p">;</span> Namespace Identifier <span class="k">for</span> Device Handle
+  <span class="o">[</span> --be STRING <span class="o">]</span>               <span class="p">;</span> xNVMe backend, e.g. <span class="s1">&#39;linux&#39;</span>, <span class="s1">&#39;spdk&#39;</span>, <span class="s1">&#39;fbsd&#39;</span>, <span class="s1">&#39;posix&#39;</span>, <span class="s1">&#39;windows&#39;</span>
+  <span class="o">[</span> --admin STRING <span class="o">]</span>            <span class="p">;</span> xNVMe admin. command-interface, e.g. <span class="s1">&#39;nvme&#39;</span>, <span class="s1">&#39;block&#39;</span>
+  <span class="o">[</span> --sync STRING <span class="o">]</span>             <span class="p">;</span> xNVMe sync. command-interface, e.g. <span class="s1">&#39;nvme&#39;</span>, <span class="s1">&#39;block&#39;</span>
+  <span class="o">[</span> --help <span class="o">]</span>                    <span class="p">;</span> Show usage / <span class="nb">help</span>
+
+See <span class="s1">&#39;lblk --help&#39;</span> <span class="k">for</span> other commands
+
+Logical Block Namespace Utility -- ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">0</span>, patch: <span class="m">26</span><span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../zoned/index.html" class="btn btn-neutral float-right" title="zoned" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../xnvme/index.html" class="btn btn-neutral float-left" title="xnvme" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, xNVMe.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

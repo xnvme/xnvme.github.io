@@ -1,0 +1,670 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>xnvme_dev &mdash; xNVMe 0.0.26 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="xnvme_geo" href="xnvme_geo.html" />
+    <link rel="prev" title="xnvme_adm" href="xnvme_adm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.26
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">C API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">xnvme_dev</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#header">Header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-close">xnvme_dev_close</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-fpr">xnvme_dev_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-be-state">xnvme_dev_get_be_state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-csi">xnvme_dev_get_csi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ctrlr">xnvme_dev_get_ctrlr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ctrlr-css">xnvme_dev_get_ctrlr_css</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-geo">xnvme_dev_get_geo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ident">xnvme_dev_get_ident</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ns">xnvme_dev_get_ns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ns-css">xnvme_dev_get_ns_css</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-nsid">xnvme_dev_get_nsid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-ssw">xnvme_dev_get_ssw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-open">xnvme_dev_open</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-pr">xnvme_dev_pr</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_sgl.html">xnvme_sgl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_3p.html">xnvme_3p</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">C API</a> &raquo;</li>
+        
+      <li>xnvme_dev</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/capis/xnvme_dev.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="xnvme-dev">
+<span id="sec-c-api-xnvme-dev"></span><h1>xnvme_dev<a class="headerlink" href="#xnvme-dev" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="header">
+<span id="sec-c-api-xnvme-dev-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef __LIBXNVME_DEV_H</span>
+<span class="cp">#define __LIBXNVME_DEV_H</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Opaque device handle.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_dev</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">xnvme_dev</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the geometry of the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return The geometry (struct xnvme_geo) of given device handle</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_geo</span> <span class="o">*</span>
+<span class="n">xnvme_dev_get_geo</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe identify controller structure associated with the given</span>
+<span class="cm"> * device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, pointer to namespace structure. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_spec_idfy_ctrlr</span> <span class="o">*</span>
+<span class="n">xnvme_dev_get_ctrlr</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe identify controller structure specific to the Command Set</span>
+<span class="cm"> * and Namespace associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, pointer to namespace structure. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_spec_idfy_ctrlr</span> <span class="o">*</span>
+<span class="n">xnvme_dev_get_ctrlr_css</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe identify namespace structure associated with the given</span>
+<span class="cm"> * device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, pointer to namespace structure. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_spec_idfy_ns</span> <span class="o">*</span>
+<span class="n">xnvme_dev_get_ns</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe identify namespace structure specific to the Command Set and</span>
+<span class="cm"> * Namespace associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, pointer to namespace structure. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_spec_idfy_ns</span> <span class="o">*</span>
+<span class="n">xnvme_dev_get_ns_css</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe namespace identifier associated with the given `dev`</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, NVMe namespace identifier is returned</span>
+<span class="cm"> */</span>
+<span class="kt">uint32_t</span>
+<span class="nf">xnvme_dev_get_nsid</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the NVMe Command Set Identifier associated with the given `dev`</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, NVMe Command Set Identifier is returned</span>
+<span class="cm"> */</span>
+<span class="kt">uint8_t</span>
+<span class="nf">xnvme_dev_get_csi</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the representation of device identifier once decoded from</span>
+<span class="cm"> * text-representation for the given `dev`</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open() / xnvme_dev_openf()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, device identifier is returned</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="o">*</span>
+<span class="n">xnvme_dev_get_ident</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the internal backend state of the given `dev`</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the internal backend state is returned.</span>
+<span class="cm"> */</span>
+<span class="k">const</span> <span class="kt">void</span> <span class="o">*</span>
+<span class="nf">xnvme_dev_get_be_state</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the sector-shift-width of the device, that is, the value used for</span>
+<span class="cm"> * converting block-device offset to lba, and vice-versa</span>
+<span class="cm"> *</span>
+<span class="cm"> * lba = ofz &gt;&gt; ssw</span>
+<span class="cm"> * ofz = lba &lt;&lt; ssw</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the ssw is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">uint64_t</span>
+<span class="nf">xnvme_dev_get_ssw</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_NVM */</span><span class="cp"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="enums">
+<span id="sec-c-api-xnvme-dev-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="structs">
+<span id="sec-c-api-xnvme-dev-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions">
+<span id="sec-c-api-xnvme-dev-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="xnvme-dev-close">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-close"></span><h3>xnvme_dev_close<a class="headerlink" href="#xnvme-dev-close" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_close">
+<span class="target" id="libxnvme_8h_1a54a4f6077d8c7af52d2f3ff1bd988f4f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_close</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_close" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy the given device handle (xnvme_dev) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-fpr">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-fpr"></span><h3>xnvme_dev_fpr<a class="headerlink" href="#xnvme-dev-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_fpr">
+<span class="target" id="libxnvme__pp_8h_1ab8a7310d7edb210c0e3db4dc353d7a67"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_fpr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">FILE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">stream</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_fpr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given xnvme_dev to the given output stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – output stream used for printing </p></li>
+<li><p><strong>dev</strong> – pointer to structure to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-be-state">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-be-state"></span><h3>xnvme_dev_get_be_state<a class="headerlink" href="#xnvme-dev-get-be-state" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_be_state">
+<span class="target" id="libxnvme__dev_8h_1a087f39bbb2a906984da485ef7a488a1d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_be_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_be_state" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the internal backend state of the given <code class="docutils literal notranslate"><span class="pre">dev</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the internal backend state is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-csi">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-csi"></span><h3>xnvme_dev_get_csi<a class="headerlink" href="#xnvme-dev-get-csi" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_csi">
+<span class="target" id="libxnvme__dev_8h_1a5b5992f3ef6666253c03935e6ab4806f"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_csi</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_csi" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the NVMe Command Set Identifier associated with the given <code class="docutils literal notranslate"><span class="pre">dev</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, NVMe Command Set Identifier is returned </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ctrlr">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-ctrlr"></span><h3>xnvme_dev_get_ctrlr<a class="headerlink" href="#xnvme-dev-get-ctrlr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_ctrlr">
+<span class="target" id="libxnvme__dev_8h_1aaff4b71fb80f3fdf7f5a5595822263cd"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_idfy_ctrlr</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_ctrlr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ctrlr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the NVMe identify controller structure associated with the given device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ctrlr-css">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-ctrlr-css"></span><h3>xnvme_dev_get_ctrlr_css<a class="headerlink" href="#xnvme-dev-get-ctrlr-css" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_ctrlr_css">
+<span class="target" id="libxnvme__dev_8h_1a7f13fadedf586a8830726423410bd00d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_idfy_ctrlr" title="xnvme_spec_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_idfy_ctrlr</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_ctrlr_css</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ctrlr_css" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the NVMe identify controller structure specific to the Command Set and Namespace associated with the given device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-geo">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-geo"></span><h3>xnvme_dev_get_geo<a class="headerlink" href="#xnvme-dev-get-geo" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_geo">
+<span class="target" id="libxnvme__dev_8h_1a9718652159c2164361266ab458ce3512"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_geo.html#c.xnvme_geo" title="xnvme_geo"><span class="n"><span class="pre">xnvme_geo</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_geo</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_geo" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the geometry of the given device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The geometry (struct <a class="reference internal" href="xnvme_geo.html#structxnvme__geo"><span class="std std-ref">xnvme_geo</span></a>) of given device handle </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ident">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-ident"></span><h3>xnvme_dev_get_ident<a class="headerlink" href="#xnvme-dev-get-ident" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_ident">
+<span class="target" id="libxnvme__dev_8h_1ae47c30e832fbf37652e0d374500b9925"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme.html#c.xnvme_ident" title="xnvme_ident"><span class="n"><span class="pre">xnvme_ident</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_ident</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ident" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the representation of device identifier once decoded from text-representation for the given <code class="docutils literal notranslate"><span class="pre">dev</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> / xnvme_dev_openf()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, device identifier is returned </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ns">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-ns"></span><h3>xnvme_dev_get_ns<a class="headerlink" href="#xnvme-dev-get-ns" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_ns">
+<span class="target" id="libxnvme__dev_8h_1af72db35731e0ddb02f32c07563bae72e"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns"><span class="n"><span class="pre">xnvme_spec_idfy_ns</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_ns</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ns" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the NVMe identify namespace structure associated with the given device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ns-css">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-ns-css"></span><h3>xnvme_dev_get_ns_css<a class="headerlink" href="#xnvme-dev-get-ns-css" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_ns_css">
+<span class="target" id="libxnvme__dev_8h_1a647ec999ef1227575e6c6310987de9cd"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_idfy_ns" title="xnvme_spec_idfy_ns"><span class="n"><span class="pre">xnvme_spec_idfy_ns</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_ns_css</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ns_css" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the NVMe identify namespace structure specific to the Command Set and Namespace associated with the given device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, pointer to namespace structure. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-nsid">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-nsid"></span><h3>xnvme_dev_get_nsid<a class="headerlink" href="#xnvme-dev-get-nsid" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_nsid">
+<span class="target" id="libxnvme__dev_8h_1adcf54622e4d1a6b4b32a00a51c1957cf"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_nsid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_nsid" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the NVMe namespace identifier associated with the given <code class="docutils literal notranslate"><span class="pre">dev</span></code> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, NVMe namespace identifier is returned </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-get-ssw">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-get-ssw"></span><h3>xnvme_dev_get_ssw<a class="headerlink" href="#xnvme-dev-get-ssw" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_get_ssw">
+<span class="target" id="libxnvme__dev_8h_1a67e7e261753e8c884d9ce3568652b46c"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_get_ssw</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_get_ssw" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the sector-shift-width of the device, that is, the value used for converting block-device offset to lba, and vice-versa. </p>
+<p>lba = ofz &gt;&gt; ssw ofz = lba &lt;&lt; ssw</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>On success, the ssw is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-open">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-open"></span><h3>xnvme_dev_open<a class="headerlink" href="#xnvme-dev-open" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_open">
+<span class="target" id="libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_uri</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme.html#c.xnvme_opts" title="xnvme_opts"><span class="n"><span class="pre">xnvme_opts</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_open" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a device handle (xnvme_dev) based on the given device-uri. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_uri</strong> – File path “/dev/nvme0n1” or “0000:04.01” </p></li>
+<li><p><strong>opts</strong> – Options for library backend and system-interfaces</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, a handle to the device. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate the error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-dev-pr">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-pr"></span><h3>xnvme_dev_pr<a class="headerlink" href="#xnvme-dev-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_pr">
+<span class="target" id="libxnvme__pp_8h_1a6885303c803b79b456d3ac371e5ec4c0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_pr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_pr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given xnvme_dev to stdout. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – pointer to structure to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="xnvme_geo.html" class="btn btn-neutral float-right" title="xnvme_geo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="xnvme_adm.html" class="btn btn-neutral float-left" title="xnvme_adm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, xNVMe.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-159785887-1', 'auto');
+    
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
