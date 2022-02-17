@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backend Interface &mdash; xNVMe 0.0.29 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          </a>
+              <div class="version">
+                0.0.29
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Backend Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/backends/xnvme_be_intf.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="backend-interface">
+<span id="sec-backends-intf"></span><h1>Backend Interface<a class="headerlink" href="#backend-interface" title="Permalink to this headline">¶</a></h1>
+<p>The core of the xNVMe API is encapsulated by a backend interface. The backend
+interface consists of implementations of the following.</p>
+<div class="section" id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>, name of the backend</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schemes</span></code>, array of supported prefixes e.g. <code class="docutils literal notranslate"><span class="pre">file</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nschemes</span></code>, number of schemes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code>, property indicating whether the backend-support is compiled in</p></li>
+</ul>
+</div>
+<div class="section" id="device">
+<h2>Device<a class="headerlink" href="#device" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enumerate()</span></code>, lists devices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev_from_ident()</span></code>, open of a given device and return a handle</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev_close()</span></code>, close a device handle</p></li>
+</ul>
+</div>
+<div class="section" id="memory">
+<h2>Memory<a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">buf_alloc()</span></code>, allocate buffer usable with commands</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buf_free()</span></code>, de-allocate buffers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buf_vtophys()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buf_realloc()</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="asynchronous">
+<h2>Asynchronous<a class="headerlink" href="#asynchronous" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd_io()</span></code>, submit an IO-command to a qpair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">poke()</span></code>, process completions on a qpair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wait()</span></code>, wait until all outstanding commands are completed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init()</span></code>, initialize a qpair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">term()</span></code>, terminate a qpair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supported()</span></code>, informed whether async. commands are supported</p></li>
+</ul>
+</div>
+<div class="section" id="synchronous">
+<h2>Synchronous<a class="headerlink" href="#synchronous" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd_io()</span></code>, submit an IO-command and wait for its completion</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd_admin()</span></code>, submit and Admin-command and wait for its completion</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supported()</span></code>, inform wether sync. commands are supported</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="backend-interface-implementation">
+<h1>Backend Interface - Implementation<a class="headerlink" href="#backend-interface-implementation" title="Permalink to this headline">¶</a></h1>
+<p>If you want to add a backend for e.g. Windows 10, you could add the
+implementation in <code class="docutils literal notranslate"><span class="pre">src/xnvme_be_win10.c</span></code> and then it to the backend registry
+in <code class="docutils literal notranslate"><span class="pre">include/xnvme_be_registry.h</span></code> and <code class="docutils literal notranslate"><span class="pre">src/xnvme_be.c</span></code>.</p>
+<p>Have a look at the existing backend-implementations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_be.c</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_*.c</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include/xnvme_be_registry.h</span></code></p></li>
+</ul>
+<p>And the definition of the backend-interface in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">include/xnvme_be.h</span></code></p></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
