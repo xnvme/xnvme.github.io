@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debian custom kernel package &mdash; xNVMe 0.1.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Debian custom kernel package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorial/custom_kernel_deb.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="debian-custom-kernel-package">
+<h1>Debian custom kernel package<a class="headerlink" href="#debian-custom-kernel-package" title="Permalink to this headline">¶</a></h1>
+<p>These are instructions for building a custom Linux Kernel as a Debian package on the system where it will be installed.</p>
+<ul class="simple">
+<li><p>The kernel will be built using the current Kernel configuration with minimal custom changes, you can add more.</p></li>
+<li><p>The kernel will be built as an installable Debian Package, this is conventient as it can easily be uninstalled again.</p></li>
+<li><p>The kernel is built from sources available in the folder <code class="docutils literal notranslate"><span class="pre">$HOME/git/linux</span></code>.</p></li>
+</ul>
+<p>Install pre-reqs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> \
+  <span class="n">bc</span> \
+  <span class="n">build</span><span class="o">-</span><span class="n">essential</span> \
+  <span class="n">cpio</span> \
+  <span class="n">flex</span> \
+  <span class="n">kmod</span> \
+  <span class="n">libelf</span><span class="o">-</span><span class="n">dev</span> \
+  <span class="n">libncurses5</span><span class="o">-</span><span class="n">dev</span> \
+  <span class="n">libssl</span><span class="o">-</span><span class="n">dev</span> \
+  <span class="n">linux</span><span class="o">-</span><span class="n">source</span> \
+  <span class="n">rsync</span> \
+  <span class="n">time</span>
+</pre></div>
+</div>
+<p>Base the kernel-configuration on the currently running kernel:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">git</span><span class="o">/</span><span class="n">linux</span>
+<span class="n">cp</span> <span class="s2">&quot;/boot/config-$(uname -r)&quot;</span> <span class="o">.</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>Edit the <code class="docutils literal notranslate"><span class="pre">.config</span></code> making sure that the following is set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONFIG_SYSTEM_TRUSTED_KEYS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>And unless you need it, then disable debug info, with the option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONFIG_DEBUG_INFO</span><span class="o">=</span><span class="n">n</span>
+</pre></div>
+</div>
+<p>It will significantly reduce the time it takes to build the kernel.
+The build-time is about 8 minutes on a desktop platform based on AMD 5800x with a SATA SSD.
+The build-time is about 15 minutes on a mobile platform based on AMD 5700u with a SATA SSD.
+With <code class="docutils literal notranslate"><span class="pre">CONFIG_DEBUG_INFO</span></code> enabled, the time is closer to and beyond 60min.</p>
+<p>Define the environment variable <code class="docutils literal notranslate"><span class="pre">LOCALVERSION</span></code>, this will embed the string in
+the kernel-version, making it easy to identify your customized Kernel:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LOCALVERSION</span><span class="o">=</span><span class="s2">&quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>Then go ahead and build:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>LOCALVERSION=&quot;foo&quot; /usr/bin/time make -j`nproc` bindeb-pkg
+</pre></div>
+</div>
+<p>The Debian packages are emitted in the parent directory, this can get messy.
+So, go ahead and put the packages somewhere else, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">r</span> <span class="s2">&quot;$</span><span class="si">{HOME}</span><span class="s2">/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">&quot;</span>
+<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;$</span><span class="si">{HOME}</span><span class="s2">/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">&quot;</span>
+<span class="n">mv</span> <span class="o">../</span><span class="p">{</span><span class="o">*.</span><span class="n">deb</span><span class="p">,</span><span class="o">*.</span><span class="n">buildinfo</span><span class="p">,</span><span class="o">*.</span><span class="n">changes</span><span class="p">}</span> <span class="s2">&quot;$HOME/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Go ahead and install it by invoking:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="s2">&quot;$HOME/packages/$</span><span class="si">{LOCALVERSION}</span><span class="s2">/*.deb&quot;</span>
+</pre></div>
+</div>
+<p>You organize the packages as you see fit, but something like the above is not a bad idea.</p>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
