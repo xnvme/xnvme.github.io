@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-libconf-fpr">xnvme_libconf_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-libconf-pr">xnvme_libconf_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-opts-default">xnvme_opts_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-drain">xnvme_queue_drain</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-capacity">xnvme_queue_get_capacity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-cmd-ctx">xnvme_queue_get_cmd_ctx</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-outstanding">xnvme_queue_get_outstanding</a></li>
@@ -454,11 +455,22 @@
 <span class="nf">xnvme_queue_poke</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">max</span><span class="p">);</span>
 
 <span class="cm">/**</span>
-<span class="cm"> * Wait for completion of all outstanding commands in the given ::xnvme_queue</span>
+<span class="cm"> * Process outstanding commands on the given ::xnvme_queue until it is empty</span>
 <span class="cm"> *</span>
-<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait for completions on</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return On success, number of completions processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_drain</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * DEPRECATED: expect that this function will be removed in an upcoming release</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
 <span class="cm"> * returned.</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
@@ -2006,6 +2018,24 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-queue-drain">
+<span id="sec-c-api-xnvme-func-xnvme-queue-drain"></span><h3>xnvme_queue_drain<a class="headerlink" href="#xnvme-queue-drain" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_drain">
+<span class="target" id="libxnvme_8h_1aad1259925c536a27e69488bc439dbeb1"></span>int <code class="sig-name descname">xnvme_queue_drain</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_drain" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Process outstanding commands on the given xnvme_queue until it is empty. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, number of commands processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">queue</span></code>: Pointer to the xnvme_queue to wait/process commands on</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-queue-get-capacity">
 <span id="sec-c-api-xnvme-func-xnvme-queue-get-capacity"></span><h3>xnvme_queue_get_capacity<a class="headerlink" href="#xnvme-queue-get-capacity" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
@@ -2170,12 +2200,12 @@
 <dl class="c function">
 <dt id="c.xnvme_queue_wait">
 <span class="target" id="libxnvme_8h_1afc7e44345e6cd351f93f1758123eca90"></span>int <code class="sig-name descname">xnvme_queue_wait</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_wait" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Wait for completion of all outstanding commands in the given xnvme_queue. </p>
+<dd><p>DEPRECATED: expect that this function will be removed in an upcoming release. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>On success, number of completions processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+<dt><strong>Return</strong></dt><dd><p>On success, number of commands processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">queue</span></code>: Pointer to the xnvme_queue to wait for completions on</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">queue</span></code>: Pointer to the xnvme_queue to wait/process commands on</p></li>
 </ul>
 </dd>
 </dl>
