@@ -89,6 +89,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-set-cb">xnvme_cmd_ctx_set_cb</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass">xnvme_cmd_pass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass-admin">xnvme_cmd_pass_admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-passv">xnvme_cmd_passv</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumerate">xnvme_enumerate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumeration-alloc">xnvme_enumeration_alloc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumeration-append">xnvme_enumeration_append</a></li>
@@ -204,6 +205,7 @@
 <span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/queue.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/uio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_be.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_dev.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_buf.h&gt;</span><span class="cp"></span>
@@ -621,6 +623,21 @@
 <span class="kt">int</span>
 <span class="n">xnvme_cmd_pass</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dbuf_nbytes</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">mbuf</span><span class="p">,</span>
 	       <span class="kt">size_t</span> <span class="n">mbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dvec array of data iovecs</span>
+<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
+<span class="cm"> * @param mvec array of metadata iovecs</span>
+<span class="cm"> * @param mvec_cnt number of elements in mvec</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_passv</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">iovec</span> <span class="o">*</span><span class="n">dvec</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dvec_cnt</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dvec_nbytes</span><span class="p">,</span>
+		<span class="k">struct</span> <span class="nc">iovec</span> <span class="o">*</span><span class="n">mvec</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">mvec_cnt</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">mvec_nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Pass a NVMe Admin Command through to the device with minimal intervention</span>
@@ -1621,6 +1638,28 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">dbuf_nbytes</span></code>: size of data-payload in bytes </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mbuf</span></code>: pointer to meta-payload </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mbuf_nbytes</span></code>: size of the meta-payload in bytes</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-cmd-passv">
+<span id="sec-c-api-xnvme-func-xnvme-cmd-passv"></span><h3>xnvme_cmd_passv<a class="headerlink" href="#xnvme-cmd-passv" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_cmd_passv">
+<span class="target" id="libxnvme_8h_1a96530cf3a73c7e0b0984f626575fc2cf"></span>int <code class="sig-name descname">xnvme_cmd_passv</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, <em class="property">struct</em> iovec *<em>dvec</em>, size_t <em>dvec_cnt</em>, size_t <em>dvec_nbytes</em>, <em class="property">struct</em> iovec *<em>mvec</em>, size_t <em>mvec_cnt</em>, size_t <em>mvec_nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_passv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pass a vectored NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dvec</span></code>: array of data iovecs </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dvec_cnt</span></code>: number of elements in dvec </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mvec</span></code>: array of metadata iovecs </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mvec_cnt</span></code>: number of elements in mvec</p></li>
 </ul>
 </dd>
 </dl>
