@@ -54,6 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#fedora-34">Fedora (34)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freebsd-13">Freebsd 13</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gentoo">Gentoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#macos">macOS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-tumbleweed">openSUSE Tumbleweed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-leap-15-4">openSUSE Leap (15.4)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-leap-15-3">openSUSE Leap (15.3)</a></li>
@@ -759,6 +760,38 @@ meson install -C builddir
 it is done in the commands above.</p>
 </div>
 </div>
+<div class="section" id="macos">
+<h3>macOS<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">brew</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clang-format
+git
+python3
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via brew</span>
+brew update
+brew install <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/macos-11.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+meson setup builddir
+
+<span class="c1"># build xNVMe</span>
+meson compile -C builddir
+
+<span class="c1"># install xNVMe</span>
+meson install -C builddir
+
+<span class="c1"># uninstall xNVMe</span>
+<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="opensuse-tumbleweed">
 <h3>openSUSE Tumbleweed<a class="headerlink" href="#opensuse-tumbleweed" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">zypper</span></code>:</p>
@@ -1282,7 +1315,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0000, mib: <span class="m">0</span>.00, mib_sec: <span class="m">139</span>.33<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0004, mib: <span class="m">0</span>.00, mib_sec: <span class="m">9</span>.35<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1315,7 +1348,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0005, mib: <span class="m">0</span>.00, mib_sec: <span class="m">8</span>.55<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0007, mib: <span class="m">0</span>.00, mib_sec: <span class="m">5</span>.71<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1366,7 +1399,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.076943<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.074357<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
