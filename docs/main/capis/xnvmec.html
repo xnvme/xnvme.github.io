@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvmec &mdash; xNVMe 0.1.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvmec &mdash; xNVMe 0.2.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.1.0
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -180,8 +180,7 @@
 <span class="cm"> * @param opts</span>
 <span class="cm"> */</span>
 <span class="kt">void</span>
-<span class="nf">xnvmec_buf_diff_pr</span><span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">expected</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">actual</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span>
-		   <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+<span class="nf">xnvmec_buf_diff_pr</span><span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">expected</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">actual</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Write content of buffer into file</span>
@@ -239,8 +238,8 @@
 <span class="cm"> * @struct xnvmec_args</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvmec_args</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>				<span class="c1">///&lt; Created</span>
-	<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span><span class="p">;</span>			<span class="c1">///&lt; Created</span>
+	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>       <span class="c1">///&lt; Created</span>
+	<span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_geo</span> <span class="o">*</span><span class="n">geo</span><span class="p">;</span> <span class="c1">///&lt; Created</span>
 
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">uri</span><span class="p">;</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sys_uri</span><span class="p">;</span>
@@ -326,9 +325,9 @@
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">core_mask</span><span class="p">;</span>
 
 	<span class="k">struct</span> <span class="p">{</span>
-		<span class="kt">uint32_t</span> <span class="nl">value</span>	<span class="p">:</span> <span class="mi">31</span><span class="p">;</span>
-		<span class="kt">uint32_t</span> <span class="nl">given</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
-	<span class="p">}</span> <span class="n">css</span><span class="p">;</span>			<span class="c1">///&lt; SPDK controller-setup: do command-set-selection</span>
+		<span class="kt">uint32_t</span> <span class="nl">value</span> <span class="p">:</span> <span class="mi">31</span><span class="p">;</span>
+		<span class="kt">uint32_t</span> <span class="nl">given</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span> <span class="n">css</span><span class="p">;</span> <span class="c1">///&lt; SPDK controller-setup: do command-set-selection</span>
 
 	<span class="kt">uint32_t</span> <span class="n">use_cmb_sqs</span><span class="p">;</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">adrfam</span><span class="p">;</span>
@@ -345,9 +344,12 @@
 	<span class="kt">uint32_t</span> <span class="n">create</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">create_mode</span><span class="p">;</span>
 	<span class="kt">uint32_t</span> <span class="n">oflags</span><span class="p">;</span>
+
+	<span class="kt">uint32_t</span> <span class="n">vec_cnt</span><span class="p">;</span>
 <span class="p">};</span>
 
-<span class="kt">void</span> <span class="nf">xnvmec_args_pr</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec_args</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+<span class="kt">void</span>
+<span class="nf">xnvmec_args_pr</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec_args</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Command-Line Options, each command-line option can be one of ::xnvmec_opt_type</span>
@@ -355,128 +357,130 @@
 <span class="cm"> * @enum xnvmec_opt</span>
 <span class="cm"> */</span>
 <span class="k">enum</span> <span class="n">xnvmec_opt</span> <span class="p">{</span>
-	<span class="n">XNVMEC_OPT_NONE</span>		<span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NONE</span>
+	<span class="n">XNVMEC_OPT_NONE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NONE</span>
 
-	<span class="n">XNVMEC_OPT_CDW00</span>	<span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW00</span>
-	<span class="n">XNVMEC_OPT_CDW01</span>	<span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW01</span>
-	<span class="n">XNVMEC_OPT_CDW02</span>	<span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW02</span>
-	<span class="n">XNVMEC_OPT_CDW03</span>	<span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW03</span>
-	<span class="n">XNVMEC_OPT_CDW04</span>	<span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW04</span>
-	<span class="n">XNVMEC_OPT_CDW05</span>	<span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW05</span>
-	<span class="n">XNVMEC_OPT_CDW06</span>	<span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW06</span>
-	<span class="n">XNVMEC_OPT_CDW07</span>	<span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW07</span>
-	<span class="n">XNVMEC_OPT_CDW08</span>	<span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW08</span>
-	<span class="n">XNVMEC_OPT_CDW09</span>	<span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW09</span>
-	<span class="n">XNVMEC_OPT_CDW10</span>	<span class="o">=</span> <span class="mi">11</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW10</span>
-	<span class="n">XNVMEC_OPT_CDW11</span>	<span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW11</span>
-	<span class="n">XNVMEC_OPT_CDW12</span>	<span class="o">=</span> <span class="mi">13</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW12</span>
-	<span class="n">XNVMEC_OPT_CDW13</span>	<span class="o">=</span> <span class="mi">14</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW13</span>
-	<span class="n">XNVMEC_OPT_CDW14</span>	<span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW14</span>
-	<span class="n">XNVMEC_OPT_CDW15</span>	<span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW15</span>
+	<span class="n">XNVMEC_OPT_CDW00</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW00</span>
+	<span class="n">XNVMEC_OPT_CDW01</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW01</span>
+	<span class="n">XNVMEC_OPT_CDW02</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW02</span>
+	<span class="n">XNVMEC_OPT_CDW03</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW03</span>
+	<span class="n">XNVMEC_OPT_CDW04</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW04</span>
+	<span class="n">XNVMEC_OPT_CDW05</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW05</span>
+	<span class="n">XNVMEC_OPT_CDW06</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW06</span>
+	<span class="n">XNVMEC_OPT_CDW07</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW07</span>
+	<span class="n">XNVMEC_OPT_CDW08</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>  <span class="c1">///&lt; XNVMEC_OPT_CDW08</span>
+	<span class="n">XNVMEC_OPT_CDW09</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW09</span>
+	<span class="n">XNVMEC_OPT_CDW10</span> <span class="o">=</span> <span class="mi">11</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW10</span>
+	<span class="n">XNVMEC_OPT_CDW11</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW11</span>
+	<span class="n">XNVMEC_OPT_CDW12</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW12</span>
+	<span class="n">XNVMEC_OPT_CDW13</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW13</span>
+	<span class="n">XNVMEC_OPT_CDW14</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW14</span>
+	<span class="n">XNVMEC_OPT_CDW15</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CDW15</span>
 
-	<span class="n">XNVMEC_OPT_CMD_INPUT</span>	<span class="o">=</span> <span class="mi">17</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CMD_INPUT</span>
-	<span class="n">XNVMEC_OPT_CMD_OUTPUT</span>	<span class="o">=</span> <span class="mi">18</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CMD_OUTPUT</span>
+	<span class="n">XNVMEC_OPT_CMD_INPUT</span>  <span class="o">=</span> <span class="mi">17</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CMD_INPUT</span>
+	<span class="n">XNVMEC_OPT_CMD_OUTPUT</span> <span class="o">=</span> <span class="mi">18</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CMD_OUTPUT</span>
 
-	<span class="n">XNVMEC_OPT_DATA_NBYTES</span>	<span class="o">=</span> <span class="mi">19</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DATA_NBYTES</span>
-	<span class="n">XNVMEC_OPT_DATA_INPUT</span>	<span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DATA_INPUT</span>
-	<span class="n">XNVMEC_OPT_DATA_OUTPUT</span>	<span class="o">=</span> <span class="mi">21</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DATA_OUTPUT</span>
+	<span class="n">XNVMEC_OPT_DATA_NBYTES</span> <span class="o">=</span> <span class="mi">19</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DATA_NBYTES</span>
+	<span class="n">XNVMEC_OPT_DATA_INPUT</span>  <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DATA_INPUT</span>
+	<span class="n">XNVMEC_OPT_DATA_OUTPUT</span> <span class="o">=</span> <span class="mi">21</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DATA_OUTPUT</span>
 
-	<span class="n">XNVMEC_OPT_META_NBYTES</span>	<span class="o">=</span> <span class="mi">22</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_META_NBYTES</span>
-	<span class="n">XNVMEC_OPT_META_INPUT</span>	<span class="o">=</span> <span class="mi">23</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_META_INPUT</span>
-	<span class="n">XNVMEC_OPT_META_OUTPUT</span>	<span class="o">=</span> <span class="mi">24</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_META_OUTPUT</span>
+	<span class="n">XNVMEC_OPT_META_NBYTES</span> <span class="o">=</span> <span class="mi">22</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_META_NBYTES</span>
+	<span class="n">XNVMEC_OPT_META_INPUT</span>  <span class="o">=</span> <span class="mi">23</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_META_INPUT</span>
+	<span class="n">XNVMEC_OPT_META_OUTPUT</span> <span class="o">=</span> <span class="mi">24</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_META_OUTPUT</span>
 
-	<span class="n">XNVMEC_OPT_LBAF</span>		<span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LBAF</span>
-	<span class="n">XNVMEC_OPT_SLBA</span>		<span class="o">=</span> <span class="mi">26</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SLBA</span>
-	<span class="n">XNVMEC_OPT_ELBA</span>		<span class="o">=</span> <span class="mi">27</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ELBA</span>
-	<span class="n">XNVMEC_OPT_LBA</span>		<span class="o">=</span> <span class="mi">28</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LBA</span>
-	<span class="n">XNVMEC_OPT_NLB</span>		<span class="o">=</span> <span class="mi">29</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NLB</span>
+	<span class="n">XNVMEC_OPT_LBAF</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LBAF</span>
+	<span class="n">XNVMEC_OPT_SLBA</span> <span class="o">=</span> <span class="mi">26</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SLBA</span>
+	<span class="n">XNVMEC_OPT_ELBA</span> <span class="o">=</span> <span class="mi">27</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ELBA</span>
+	<span class="n">XNVMEC_OPT_LBA</span>  <span class="o">=</span> <span class="mi">28</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LBA</span>
+	<span class="n">XNVMEC_OPT_NLB</span>  <span class="o">=</span> <span class="mi">29</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NLB</span>
 
-	<span class="n">XNVMEC_OPT_URI</span>		<span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_URI</span>
-	<span class="n">XNVMEC_OPT_SYS_URI</span>	<span class="o">=</span> <span class="mi">31</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SYS_URI</span>
-	<span class="n">XNVMEC_OPT_UUID</span>		<span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_UUID</span>
-	<span class="n">XNVMEC_OPT_NSID</span>		<span class="o">=</span> <span class="mi">33</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NSID</span>
-	<span class="n">XNVMEC_OPT_CNS</span>		<span class="o">=</span> <span class="mi">34</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CNS</span>
-	<span class="n">XNVMEC_OPT_CSI</span>		<span class="o">=</span> <span class="mi">35</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CSI</span>
-	<span class="n">XNVMEC_OPT_INDEX</span>	<span class="o">=</span> <span class="mi">36</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_INDEX</span>
-	<span class="n">XNVMEC_OPT_SETID</span>	<span class="o">=</span> <span class="mi">37</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SETID</span>
+	<span class="n">XNVMEC_OPT_URI</span>     <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_URI</span>
+	<span class="n">XNVMEC_OPT_SYS_URI</span> <span class="o">=</span> <span class="mi">31</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SYS_URI</span>
+	<span class="n">XNVMEC_OPT_UUID</span>    <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_UUID</span>
+	<span class="n">XNVMEC_OPT_NSID</span>    <span class="o">=</span> <span class="mi">33</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NSID</span>
+	<span class="n">XNVMEC_OPT_CNS</span>     <span class="o">=</span> <span class="mi">34</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CNS</span>
+	<span class="n">XNVMEC_OPT_CSI</span>     <span class="o">=</span> <span class="mi">35</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CSI</span>
+	<span class="n">XNVMEC_OPT_INDEX</span>   <span class="o">=</span> <span class="mi">36</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_INDEX</span>
+	<span class="n">XNVMEC_OPT_SETID</span>   <span class="o">=</span> <span class="mi">37</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SETID</span>
 
-	<span class="n">XNVMEC_OPT_CNTID</span>	<span class="o">=</span> <span class="mi">38</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CNTID</span>
-	<span class="n">XNVMEC_OPT_LID</span>		<span class="o">=</span> <span class="mi">39</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LID</span>
-	<span class="n">XNVMEC_OPT_LSP</span>		<span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LSP</span>
-	<span class="n">XNVMEC_OPT_LPO_NBYTES</span>	<span class="o">=</span> <span class="mi">41</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LPO_NBYTES</span>
-	<span class="n">XNVMEC_OPT_RAE</span>		<span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RAE</span>
-	<span class="n">XNVMEC_OPT_CLEAR</span>	<span class="o">=</span> <span class="mi">43</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CLEAR</span>
-	<span class="n">XNVMEC_OPT_ZF</span>		<span class="o">=</span> <span class="mi">44</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ZF</span>
-	<span class="n">XNVMEC_OPT_SES</span>		<span class="o">=</span> <span class="mi">45</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SES</span>
-	<span class="n">XNVMEC_OPT_SEL</span>		<span class="o">=</span> <span class="mi">46</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SEL</span>
-	<span class="n">XNVMEC_OPT_MSET</span>		<span class="o">=</span> <span class="mi">47</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_MSET</span>
-	<span class="n">XNVMEC_OPT_AUSE</span>		<span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_AUSE</span>
-	<span class="n">XNVMEC_OPT_OVRPAT</span>	<span class="o">=</span> <span class="mi">49</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OVRPAT</span>
-	<span class="n">XNVMEC_OPT_OWPASS</span>	<span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OWPASS</span>
-	<span class="n">XNVMEC_OPT_OIPBP</span>	<span class="o">=</span> <span class="mi">51</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OIPBP</span>
-	<span class="n">XNVMEC_OPT_NODAS</span>	<span class="o">=</span> <span class="mi">52</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NODAS</span>
+	<span class="n">XNVMEC_OPT_CNTID</span>      <span class="o">=</span> <span class="mi">38</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CNTID</span>
+	<span class="n">XNVMEC_OPT_LID</span>        <span class="o">=</span> <span class="mi">39</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LID</span>
+	<span class="n">XNVMEC_OPT_LSP</span>        <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LSP</span>
+	<span class="n">XNVMEC_OPT_LPO_NBYTES</span> <span class="o">=</span> <span class="mi">41</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LPO_NBYTES</span>
+	<span class="n">XNVMEC_OPT_RAE</span>        <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RAE</span>
+	<span class="n">XNVMEC_OPT_CLEAR</span>      <span class="o">=</span> <span class="mi">43</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CLEAR</span>
+	<span class="n">XNVMEC_OPT_ZF</span>         <span class="o">=</span> <span class="mi">44</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ZF</span>
+	<span class="n">XNVMEC_OPT_SES</span>        <span class="o">=</span> <span class="mi">45</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SES</span>
+	<span class="n">XNVMEC_OPT_SEL</span>        <span class="o">=</span> <span class="mi">46</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SEL</span>
+	<span class="n">XNVMEC_OPT_MSET</span>       <span class="o">=</span> <span class="mi">47</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_MSET</span>
+	<span class="n">XNVMEC_OPT_AUSE</span>       <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_AUSE</span>
+	<span class="n">XNVMEC_OPT_OVRPAT</span>     <span class="o">=</span> <span class="mi">49</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OVRPAT</span>
+	<span class="n">XNVMEC_OPT_OWPASS</span>     <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OWPASS</span>
+	<span class="n">XNVMEC_OPT_OIPBP</span>      <span class="o">=</span> <span class="mi">51</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OIPBP</span>
+	<span class="n">XNVMEC_OPT_NODAS</span>      <span class="o">=</span> <span class="mi">52</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NODAS</span>
 
-	<span class="n">XNVMEC_OPT_ACTION</span>	<span class="o">=</span> <span class="mi">53</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ACTION</span>
-	<span class="n">XNVMEC_OPT_ZRMS</span>		<span class="o">=</span> <span class="mi">54</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ZRMS</span>
+	<span class="n">XNVMEC_OPT_ACTION</span> <span class="o">=</span> <span class="mi">53</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ACTION</span>
+	<span class="n">XNVMEC_OPT_ZRMS</span>   <span class="o">=</span> <span class="mi">54</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ZRMS</span>
 
-	<span class="n">XNVMEC_OPT_PI</span>		<span class="o">=</span> <span class="mi">55</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_PI</span>
-	<span class="n">XNVMEC_OPT_PIL</span>		<span class="o">=</span> <span class="mi">56</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_PIL</span>
+	<span class="n">XNVMEC_OPT_PI</span>  <span class="o">=</span> <span class="mi">55</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_PI</span>
+	<span class="n">XNVMEC_OPT_PIL</span> <span class="o">=</span> <span class="mi">56</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_PIL</span>
 
-	<span class="n">XNVMEC_OPT_FID</span>		<span class="o">=</span> <span class="mi">57</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_FID</span>
-	<span class="n">XNVMEC_OPT_FEAT</span>		<span class="o">=</span> <span class="mi">58</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_FEAT</span>
+	<span class="n">XNVMEC_OPT_FID</span>  <span class="o">=</span> <span class="mi">57</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_FID</span>
+	<span class="n">XNVMEC_OPT_FEAT</span> <span class="o">=</span> <span class="mi">58</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_FEAT</span>
 
-	<span class="n">XNVMEC_OPT_SEED</span>		<span class="o">=</span> <span class="mi">59</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SEED</span>
-	<span class="n">XNVMEC_OPT_LIMIT</span>	<span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LIMIT</span>
-	<span class="n">XNVMEC_OPT_IOSIZE</span>	<span class="o">=</span> <span class="mi">61</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_IOSIZE</span>
-	<span class="n">XNVMEC_OPT_QDEPTH</span>	<span class="o">=</span> <span class="mi">62</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_QDEPTH</span>
-	<span class="n">XNVMEC_OPT_DIRECT</span>	<span class="o">=</span> <span class="mi">63</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DIRECT</span>
+	<span class="n">XNVMEC_OPT_SEED</span>   <span class="o">=</span> <span class="mi">59</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SEED</span>
+	<span class="n">XNVMEC_OPT_LIMIT</span>  <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_LIMIT</span>
+	<span class="n">XNVMEC_OPT_IOSIZE</span> <span class="o">=</span> <span class="mi">61</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_IOSIZE</span>
+	<span class="n">XNVMEC_OPT_QDEPTH</span> <span class="o">=</span> <span class="mi">62</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_QDEPTH</span>
+	<span class="n">XNVMEC_OPT_DIRECT</span> <span class="o">=</span> <span class="mi">63</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DIRECT</span>
 
-	<span class="n">XNVMEC_OPT_STATUS</span>	<span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_STATUS</span>
-	<span class="n">XNVMEC_OPT_SAVE</span>		<span class="o">=</span> <span class="mi">65</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SAVE</span>
-	<span class="n">XNVMEC_OPT_RESET</span>	<span class="o">=</span> <span class="mi">66</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RESET</span>
-	<span class="n">XNVMEC_OPT_VERBOSE</span>	<span class="o">=</span> <span class="mi">67</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_VERBOSE</span>
-	<span class="n">XNVMEC_OPT_HELP</span>		<span class="o">=</span> <span class="mi">68</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_HELP</span>
+	<span class="n">XNVMEC_OPT_STATUS</span>  <span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_STATUS</span>
+	<span class="n">XNVMEC_OPT_SAVE</span>    <span class="o">=</span> <span class="mi">65</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SAVE</span>
+	<span class="n">XNVMEC_OPT_RESET</span>   <span class="o">=</span> <span class="mi">66</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RESET</span>
+	<span class="n">XNVMEC_OPT_VERBOSE</span> <span class="o">=</span> <span class="mi">67</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_VERBOSE</span>
+	<span class="n">XNVMEC_OPT_HELP</span>    <span class="o">=</span> <span class="mi">68</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_HELP</span>
 
-	<span class="n">XNVMEC_OPT_COUNT</span>	<span class="o">=</span> <span class="mi">69</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_COUNT</span>
-	<span class="n">XNVMEC_OPT_OFFSET</span>	<span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OFFSET</span>
+	<span class="n">XNVMEC_OPT_COUNT</span>  <span class="o">=</span> <span class="mi">69</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_COUNT</span>
+	<span class="n">XNVMEC_OPT_OFFSET</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OFFSET</span>
 
-	<span class="n">XNVMEC_OPT_OPCODE</span>	<span class="o">=</span> <span class="mi">71</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OPCODE</span>
-	<span class="n">XNVMEC_OPT_FLAGS</span>	<span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_FLAGS</span>
+	<span class="n">XNVMEC_OPT_OPCODE</span> <span class="o">=</span> <span class="mi">71</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OPCODE</span>
+	<span class="n">XNVMEC_OPT_FLAGS</span>  <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_FLAGS</span>
 
-	<span class="n">XNVMEC_OPT_ALL</span>		<span class="o">=</span> <span class="mi">73</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ALL</span>
+	<span class="n">XNVMEC_OPT_ALL</span> <span class="o">=</span> <span class="mi">73</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ALL</span>
 
-	<span class="n">XNVMEC_OPT_BE</span>		<span class="o">=</span> <span class="mi">74</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_BE</span>
-	<span class="n">XNVMEC_OPT_MEM</span>		<span class="o">=</span> <span class="mi">75</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_MEM</span>
-	<span class="n">XNVMEC_OPT_SYNC</span>		<span class="o">=</span> <span class="mi">76</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SYNC</span>
-	<span class="n">XNVMEC_OPT_ASYNC</span>	<span class="o">=</span> <span class="mi">77</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ASYNC</span>
-	<span class="n">XNVMEC_OPT_ADMIN</span>	<span class="o">=</span> <span class="mi">78</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ADMIN</span>
+	<span class="n">XNVMEC_OPT_BE</span>    <span class="o">=</span> <span class="mi">74</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_BE</span>
+	<span class="n">XNVMEC_OPT_MEM</span>   <span class="o">=</span> <span class="mi">75</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_MEM</span>
+	<span class="n">XNVMEC_OPT_SYNC</span>  <span class="o">=</span> <span class="mi">76</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SYNC</span>
+	<span class="n">XNVMEC_OPT_ASYNC</span> <span class="o">=</span> <span class="mi">77</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ASYNC</span>
+	<span class="n">XNVMEC_OPT_ADMIN</span> <span class="o">=</span> <span class="mi">78</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ADMIN</span>
 
-	<span class="n">XNVMEC_OPT_SHM_ID</span>	<span class="o">=</span> <span class="mi">79</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SHM_ID</span>
-	<span class="n">XNVMEC_OPT_MAIN_CORE</span>	<span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_MAIN_CORE</span>
-	<span class="n">XNVMEC_OPT_CORE_MASK</span>	<span class="o">=</span> <span class="mi">81</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CORE_MASK</span>
+	<span class="n">XNVMEC_OPT_SHM_ID</span>    <span class="o">=</span> <span class="mi">79</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_SHM_ID</span>
+	<span class="n">XNVMEC_OPT_MAIN_CORE</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_MAIN_CORE</span>
+	<span class="n">XNVMEC_OPT_CORE_MASK</span> <span class="o">=</span> <span class="mi">81</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CORE_MASK</span>
 
-	<span class="n">XNVMEC_OPT_USE_CMB_SQS</span>  <span class="o">=</span> <span class="mi">82</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_USE_CMB_SQS</span>
-	<span class="n">XNVMEC_OPT_CSS</span>		<span class="o">=</span> <span class="mi">83</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CSS</span>
+	<span class="n">XNVMEC_OPT_USE_CMB_SQS</span> <span class="o">=</span> <span class="mi">82</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_USE_CMB_SQS</span>
+	<span class="n">XNVMEC_OPT_CSS</span>         <span class="o">=</span> <span class="mi">83</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CSS</span>
 
-	<span class="n">XNVMEC_OPT_POLL_IO</span>	<span class="o">=</span> <span class="mi">84</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_POLL_IO</span>
-	<span class="n">XNVMEC_OPT_POLL_SQ</span>	<span class="o">=</span> <span class="mi">85</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_POLL_SQ</span>
-	<span class="n">XNVMEC_OPT_REGISTER_FILES</span>	<span class="o">=</span> <span class="mi">86</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_REGISTER_FILES</span>
-	<span class="n">XNVMEC_OPT_REGISTER_BUFFERS</span>	<span class="o">=</span> <span class="mi">87</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_REGISTER_BUFFERS</span>
+	<span class="n">XNVMEC_OPT_POLL_IO</span>          <span class="o">=</span> <span class="mi">84</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_POLL_IO</span>
+	<span class="n">XNVMEC_OPT_POLL_SQ</span>          <span class="o">=</span> <span class="mi">85</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_POLL_SQ</span>
+	<span class="n">XNVMEC_OPT_REGISTER_FILES</span>   <span class="o">=</span> <span class="mi">86</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_REGISTER_FILES</span>
+	<span class="n">XNVMEC_OPT_REGISTER_BUFFERS</span> <span class="o">=</span> <span class="mi">87</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_REGISTER_BUFFERS</span>
 
-	<span class="n">XNVMEC_OPT_TRUNCATE</span>	<span class="o">=</span> <span class="mi">88</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_TRUNCATE</span>
-	<span class="n">XNVMEC_OPT_RDONLY</span>	<span class="o">=</span> <span class="mi">89</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RDONLY</span>
-	<span class="n">XNVMEC_OPT_WRONLY</span>	<span class="o">=</span> <span class="mi">90</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_WRONLY</span>
-	<span class="n">XNVMEC_OPT_RDWR</span>		<span class="o">=</span> <span class="mi">91</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RDWR</span>
+	<span class="n">XNVMEC_OPT_TRUNCATE</span> <span class="o">=</span> <span class="mi">88</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_TRUNCATE</span>
+	<span class="n">XNVMEC_OPT_RDONLY</span>   <span class="o">=</span> <span class="mi">89</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RDONLY</span>
+	<span class="n">XNVMEC_OPT_WRONLY</span>   <span class="o">=</span> <span class="mi">90</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_WRONLY</span>
+	<span class="n">XNVMEC_OPT_RDWR</span>     <span class="o">=</span> <span class="mi">91</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_RDWR</span>
 
-	<span class="n">XNVMEC_OPT_CREATE</span>	<span class="o">=</span> <span class="mi">92</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CREATE</span>
-	<span class="n">XNVMEC_OPT_CREATE_MODE</span>	<span class="o">=</span> <span class="mi">93</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CREATE_MODE</span>
+	<span class="n">XNVMEC_OPT_CREATE</span>      <span class="o">=</span> <span class="mi">92</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CREATE</span>
+	<span class="n">XNVMEC_OPT_CREATE_MODE</span> <span class="o">=</span> <span class="mi">93</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_CREATE_MODE</span>
 
-	<span class="n">XNVMEC_OPT_OFLAGS</span>	<span class="o">=</span> <span class="mi">94</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OFLAGS</span>
+	<span class="n">XNVMEC_OPT_OFLAGS</span> <span class="o">=</span> <span class="mi">94</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_OFLAGS</span>
 
-	<span class="n">XNVMEC_OPT_ADRFAM</span>	<span class="o">=</span> <span class="mi">95</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ADRFAM</span>
-	<span class="n">XNVMEC_OPT_DEV_NSID</span>	<span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DEV_NSID</span>
+	<span class="n">XNVMEC_OPT_ADRFAM</span>   <span class="o">=</span> <span class="mi">95</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ADRFAM</span>
+	<span class="n">XNVMEC_OPT_DEV_NSID</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DEV_NSID</span>
 
-	<span class="n">XNVMEC_OPT_END</span>		<span class="o">=</span> <span class="mi">97</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_END</span>
+	<span class="n">XNVMEC_OPT_VEC_CNT</span> <span class="o">=</span> <span class="mi">97</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_VEC_CNT</span>
+
+	<span class="n">XNVMEC_OPT_END</span> <span class="o">=</span> <span class="mi">98</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_END</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -495,11 +499,11 @@
 <span class="p">};</span>
 
 <span class="k">enum</span> <span class="n">xnvmec_opt_value_type</span> <span class="p">{</span>
-	<span class="n">XNVMEC_OPT_VTYPE_URI</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_VTYPE_NUM</span> <span class="o">=</span> <span class="mh">0x2</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_VTYPE_HEX</span> <span class="o">=</span> <span class="mh">0x3</span><span class="p">,</span>
+	<span class="n">XNVMEC_OPT_VTYPE_URI</span>  <span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>
+	<span class="n">XNVMEC_OPT_VTYPE_NUM</span>  <span class="o">=</span> <span class="mh">0x2</span><span class="p">,</span>
+	<span class="n">XNVMEC_OPT_VTYPE_HEX</span>  <span class="o">=</span> <span class="mh">0x3</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_VTYPE_FILE</span> <span class="o">=</span> <span class="mh">0x4</span><span class="p">,</span>
-	<span class="n">XNVMEC_OPT_VTYPE_STR</span> <span class="o">=</span> <span class="mh">0x5</span><span class="p">,</span>
+	<span class="n">XNVMEC_OPT_VTYPE_STR</span>  <span class="o">=</span> <span class="mh">0x5</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="nc">xnvmec_opt_attr</span> <span class="p">{</span>
@@ -508,7 +512,7 @@
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr</span><span class="p">;</span>
 
-	<span class="kt">char</span> <span class="n">getoptval</span><span class="p">;</span>		<span class="c1">// character returned by getopt_log() when found</span>
+	<span class="kt">char</span> <span class="n">getoptval</span><span class="p">;</span> <span class="c1">// character returned by getopt_log() when found</span>
 <span class="p">};</span>
 
 <span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvmec_opt_attr</span> <span class="o">*</span>
@@ -537,39 +541,39 @@
 <span class="cm"> * Filled by the user of libxnvmc, usually statically right above main</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="p">{</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>		<span class="c1">///&lt; Short name of the sub-command</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_short</span><span class="p">;</span>	<span class="c1">///&lt; Short sub-command description</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_long</span><span class="p">;</span>		<span class="c1">///&lt; Long sub-command description</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>        <span class="c1">///&lt; Short name of the sub-command</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_short</span><span class="p">;</span> <span class="c1">///&lt; Short sub-command description</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_long</span><span class="p">;</span>  <span class="c1">///&lt; Long sub-command description</span>
 
-	<span class="n">xnvmec_subfunc</span> <span class="n">command</span><span class="p">;</span>		<span class="c1">///&lt; Function to execute</span>
+	<span class="n">xnvmec_subfunc</span> <span class="n">command</span><span class="p">;</span> <span class="c1">///&lt; Function to execute</span>
 
 	<span class="c1">///&lt; Options to parse into args and pass onto func</span>
 	<span class="k">struct</span> <span class="nc">xnvmec_sub_opt</span> <span class="n">opts</span><span class="p">[</span><span class="n">XNVMEC_SUB_OPTS_LEN</span><span class="p">];</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="nc">xnvmec</span> <span class="p">{</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">title</span><span class="p">;</span>		<span class="c1">///&lt; Setup by user</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_short</span><span class="p">;</span>	<span class="c1">///&lt; Setup by user</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_long</span><span class="p">;</span>		<span class="c1">///&lt; Setup by user</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">title</span><span class="p">;</span>       <span class="c1">///&lt; Setup by user</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_short</span><span class="p">;</span> <span class="c1">///&lt; Setup by user</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">descr_long</span><span class="p">;</span>  <span class="c1">///&lt; Setup by user</span>
 
-	<span class="kt">int</span> <span class="n">nsubs</span><span class="p">;</span>			<span class="c1">///&lt; Setup by user</span>
-	<span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="o">*</span><span class="n">subs</span><span class="p">;</span>	<span class="c1">///&lt; Setup by user</span>
+	<span class="kt">int</span> <span class="n">nsubs</span><span class="p">;</span>               <span class="c1">///&lt; Setup by user</span>
+	<span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="o">*</span><span class="n">subs</span><span class="p">;</span> <span class="c1">///&lt; Setup by user</span>
 
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ver_pr</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span>		<span class="c1">///&lt; Setup by library if unset</span>
+	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ver_pr</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span> <span class="c1">///&lt; Setup by library if unset</span>
 
-	<span class="kt">int</span> <span class="n">argc</span><span class="p">;</span>			<span class="c1">///&lt; Setup by library</span>
-	<span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">;</span>			<span class="c1">///&lt; Setup by library</span>
-	<span class="k">struct</span> <span class="nc">xnvmec_args</span> <span class="n">args</span><span class="p">;</span>	<span class="c1">///&lt; Setup by library</span>
+	<span class="kt">int</span> <span class="n">argc</span><span class="p">;</span>                <span class="c1">///&lt; Setup by library</span>
+	<span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">;</span>             <span class="c1">///&lt; Setup by library</span>
+	<span class="k">struct</span> <span class="nc">xnvmec_args</span> <span class="n">args</span><span class="p">;</span> <span class="c1">///&lt; Setup by library</span>
 
-	<span class="kt">int</span> <span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_END</span><span class="p">];</span>	<span class="c1">///&lt; Setup by library</span>
+	<span class="kt">int</span> <span class="n">given</span><span class="p">[</span><span class="n">XNVMEC_OPT_END</span><span class="p">];</span> <span class="c1">///&lt; Setup by library</span>
 
-	<span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="o">*</span><span class="n">sub</span><span class="p">;</span>		<span class="c1">///&lt; Setup by library</span>
+	<span class="k">struct</span> <span class="nc">xnvmec_sub</span> <span class="o">*</span><span class="n">sub</span><span class="p">;</span> <span class="c1">///&lt; Setup by library</span>
 
-	<span class="k">struct</span> <span class="nc">xnvme_timer</span> <span class="n">timer</span><span class="p">;</span>	<span class="c1">///&lt; Used by xnvmec_timer_*</span>
+	<span class="k">struct</span> <span class="nc">xnvme_timer</span> <span class="n">timer</span><span class="p">;</span> <span class="c1">///&lt; Used by xnvmec_timer_*</span>
 <span class="p">};</span>
 
 <span class="k">enum</span> <span class="n">xnvmec_opts</span> <span class="p">{</span>
-	<span class="n">XNVMEC_INIT_NONE</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>
+	<span class="n">XNVMEC_INIT_NONE</span>     <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>
 	<span class="n">XNVMEC_INIT_DEV_OPEN</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>
 <span class="p">};</span>
 
@@ -579,9 +583,9 @@
 <span class="cm"> * @struct xnvme_enumeration</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvme_enumeration</span> <span class="p">{</span>
-	<span class="kt">uint32_t</span> <span class="n">capacity</span><span class="p">;</span>		<span class="c1">///&lt; Remaining unused entries</span>
-	<span class="kt">uint32_t</span> <span class="n">nentries</span><span class="p">;</span>		<span class="c1">///&lt; Used entries</span>
-	<span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="n">entries</span><span class="p">[];</span>	<span class="c1">///&lt; Device entries</span>
+	<span class="kt">uint32_t</span> <span class="n">capacity</span><span class="p">;</span>            <span class="c1">///&lt; Remaining unused entries</span>
+	<span class="kt">uint32_t</span> <span class="n">nentries</span><span class="p">;</span>            <span class="c1">///&lt; Used entries</span>
+	<span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="n">entries</span><span class="p">[];</span> <span class="c1">///&lt; Device entries</span>
 <span class="p">};</span>
 
 <span class="kt">int</span>
@@ -593,28 +597,34 @@
 <span class="kt">int</span>
 <span class="nf">xnvme_enumeration_append</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_enumeration</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="o">*</span><span class="n">entry</span><span class="p">);</span>
 
-<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="n">xnvmec_timer_start</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span>
+<span class="n">xnvmec_timer_start</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
 	<span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">_xnvme_timer_clock_sample</span><span class="p">();</span>
 	<span class="k">return</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">.</span><span class="n">start</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="n">xnvmec_timer_stop</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span>
+<span class="n">xnvmec_timer_stop</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
 	<span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">_xnvme_timer_clock_sample</span><span class="p">();</span>
 	<span class="k">return</span> <span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">.</span><span class="n">stop</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="n">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">prefix</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">)</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
+<span class="n">xnvmec_timer_bw_pr</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">prefix</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">)</span>
 <span class="p">{</span>
 	<span class="n">xnvme_timer_bw_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">timer</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">nbytes</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="kt">void</span> <span class="n">xnvmec_pinf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">format</span><span class="p">,</span> <span class="p">...);</span>
+<span class="kt">void</span>
+<span class="n">xnvmec_pinf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">format</span><span class="p">,</span> <span class="p">...);</span>
 
-<span class="kt">void</span> <span class="nf">xnvmec_perr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">err</span><span class="p">);</span>
+<span class="kt">void</span>
+<span class="nf">xnvmec_perr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">err</span><span class="p">);</span>
 
-<span class="kt">int</span> <span class="nf">xnvmec</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
+<span class="kt">int</span>
+<span class="nf">xnvmec</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Fill the given &#39;opts&#39; with values parsed in the given &#39;cli&#39;</span>
@@ -1228,6 +1238,12 @@
 </dd></dl>
 
 <dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_VEC_CNT">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115af51b6028785303a03946ec31a02c78a9"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_VEC_CNT</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_VEC_CNT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_VEC_CNT. </p>
+</dd></dl>
+
+<dl class="c enumerator">
 <dt id="c.xnvmec_opt.XNVMEC_OPT_END">
 <span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac830349031802c23206f6aed39764b85"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_END</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_END" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>XNVMEC_OPT_END. </p>
@@ -1767,7 +1783,7 @@
 
 <dl class="c var">
 <dt id="c.xnvmec_args.css">
-<span class="target" id="structxnvmec__args_1a2d0f8eceaabda089413d2c03c37def3a"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvmec_args" title="xnvmec_args">xnvmec_args</a>.<strong>[anonymous]</strong> <code class="sig-name descname">css</code><a class="headerlink" href="#c.xnvmec_args.css" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvmec__args_1a17b2927a4dd6fb713de96d9e000246e7"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvmec_args" title="xnvmec_args">xnvmec_args</a>.<strong>[anonymous]</strong> <code class="sig-name descname">css</code><a class="headerlink" href="#c.xnvmec_args.css" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>SPDK controller-setup: do command-set-selection. </p>
 </dd></dl>
 
@@ -1834,6 +1850,11 @@
 <dl class="c var">
 <dt id="c.xnvmec_args.oflags">
 <span class="target" id="structxnvmec__args_1a15245b67f00af85004d3d030ee062a59"></span>uint32_t <code class="sig-name descname">oflags</code><a class="headerlink" href="#c.xnvmec_args.oflags" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.vec_cnt">
+<span class="target" id="structxnvmec__args_1ae2ea88efe63044d774ad62731d45c97c"></span>uint32_t <code class="sig-name descname">vec_cnt</code><a class="headerlink" href="#c.xnvmec_args.vec_cnt" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
