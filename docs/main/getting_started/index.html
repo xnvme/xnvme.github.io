@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; xNVMe 0.1.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Getting Started &mdash; xNVMe 0.2.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.1.0
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,6 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#fedora-34">Fedora (34)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freebsd-13">Freebsd 13</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gentoo">Gentoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#macos">macOS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-tumbleweed">openSUSE Tumbleweed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-leap-15-4">openSUSE Leap (15.4)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-leap-15-3">openSUSE Leap (15.3)</a></li>
@@ -759,6 +760,38 @@ meson install -C builddir
 it is done in the commands above.</p>
 </div>
 </div>
+<div class="section" id="macos">
+<h3>macOS<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">brew</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clang-format
+git
+python3
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via brew</span>
+brew update
+brew install <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/macos-11.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via PyPI</span>
+pip3 install meson ninja
+</pre></div>
+</div>
+<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+meson setup builddir
+
+<span class="c1"># build xNVMe</span>
+meson compile -C builddir
+
+<span class="c1"># install xNVMe</span>
+meson install -C builddir
+
+<span class="c1"># uninstall xNVMe</span>
+<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="opensuse-tumbleweed">
 <h3>openSUSE Tumbleweed<a class="headerlink" href="#opensuse-tumbleweed" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">zypper</span></code>:</p>
@@ -784,8 +817,8 @@ tar
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zypper --non-interactive refresh
 
-<span class="c1"># Install packages via dnf</span>
-zypper --non-interactive install -y <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/opensuse-tumbleweed-latest.txt&quot;</span><span class="k">)</span>
+<span class="c1"># Install packages via zypper</span>
+zypper --non-interactive install -y --allow-downgrade <span class="k">$(</span>cat <span class="s2">&quot;scripts/pkgs/opensuse-tumbleweed-latest.txt&quot;</span><span class="k">)</span>
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -1060,13 +1093,28 @@ supported/enabled backends then invoke:</p>
 </div>
 <p>It should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
-ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">1</span>, patch: <span class="m">0</span><span class="o">}</span>
-xnvme_3p:
-  - <span class="s1">&#39;fio;git-describe:fio-3.28&#39;</span>
-  - <span class="s1">&#39;libnvme;git-rev:master/a458217&#39;</span>
-  - <span class="s1">&#39;liburing;git-describe:liburing-2.0&#39;</span>
-  - <span class="s1">&#39;spdk;git-describe:v21.10;+patches&#39;</span>
-  - <span class="s1">&#39;linux;LINUX_VERSION_CODE-UAPI/330343-5.10.103&#39;</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">2</span>, patch: <span class="m">0</span><span class="o">}</span>
+xnvme_libconf:
+  - <span class="s1">&#39;3p: fio;git-describe:fio-3.28&#39;</span>
+  - <span class="s1">&#39;3p: liburing;git-describe:liburing-2.1&#39;</span>
+  - <span class="s1">&#39;3p: spdk;git-describe:v21.10;+patches&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_LINUX_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_LINUX_BLOCK_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_LINUX_BLOCK_ZONED_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_LINUX_LIBAIO_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_LINUX_LIBURING_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_POSIX_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_SPDK_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_PCIE_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_TCP_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_RDMA_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_FC_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_ASYNC_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_ASYNC_EMU_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_ASYNC_THRPOOL_ENABLED&#39;</span>
+  - <span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/330346-5.10.106&#39;</span>
+  - <span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD&#39;</span>
+  - <span class="s1">&#39;3p: NVME_IOCTL_ADMIN64_CMD&#39;</span>
 xnvme_be_attr_list:
   count: <span class="m">5</span>
   capacity: <span class="m">5</span>
@@ -1269,7 +1317,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0000, mib: <span class="m">0</span>.00, mib_sec: <span class="m">120</span>.41<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0004, mib: <span class="m">0</span>.00, mib_sec: <span class="m">8</span>.76<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1302,7 +1350,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0006, mib: <span class="m">0</span>.00, mib_sec: <span class="m">6</span>.53<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0004, mib: <span class="m">0</span>.00, mib_sec: <span class="m">9</span>.37<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1353,7 +1401,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.089605<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.074366<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -1451,7 +1499,8 @@ device at <code class="docutils literal notranslate"><span class="pre">/dev/nvme
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_pp.h&gt;</span><span class="cp"></span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="kt">int</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
 	<span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="n">opts</span> <span class="o">=</span> <span class="n">xnvme_opts_default</span><span class="p">();</span>
 	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>

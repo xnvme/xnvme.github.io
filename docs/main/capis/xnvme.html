@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme &mdash; xNVMe 0.1.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme &mdash; xNVMe 0.2.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.1.0
+                0.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -89,6 +89,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-set-cb">xnvme_cmd_ctx_set_cb</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass">xnvme_cmd_pass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass-admin">xnvme_cmd_pass_admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-passv">xnvme_cmd_passv</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumerate">xnvme_enumerate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumeration-alloc">xnvme_enumeration_alloc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-enumeration-append">xnvme_enumeration_append</a></li>
@@ -100,6 +101,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-ident-fpr">xnvme_ident_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-ident-from-uri">xnvme_ident_from_uri</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-ident-pr">xnvme_ident_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-ident-yaml">xnvme_ident_yaml</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-is-pow2">xnvme_is_pow2</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-fpr">xnvme_lba_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-fprn">xnvme_lba_fprn</a></li>
@@ -111,7 +113,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-from-slba-naddrs">xnvme_lba_range_from_slba_naddrs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-from-zdescr">xnvme_lba_range_from_zdescr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-pr">xnvme_lba_range_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-libconf-fpr">xnvme_libconf_fpr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-libconf-pr">xnvme_libconf_pr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-opts-default">xnvme_opts_default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-drain">xnvme_queue_drain</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-capacity">xnvme_queue_get_capacity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-cmd-ctx">xnvme_queue_get_cmd_ctx</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-outstanding">xnvme_queue_get_outstanding</a></li>
@@ -201,6 +206,7 @@
 <span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/queue.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/uio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_be.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_dev.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_buf.h&gt;</span><span class="cp"></span>
@@ -217,40 +223,40 @@
 <span class="cm"> * @struct xnvme_opts</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="p">{</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">be</span><span class="p">;</span>		<span class="c1">///&lt; Backend/system interface to use</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>	<span class="c1">///&lt; Device manager/enumerator</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">mem</span><span class="p">;</span>	<span class="c1">///&lt; Memory allocator to use for buffers</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sync</span><span class="p">;</span>	<span class="c1">///&lt; Synchronous Command-interface</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">async</span><span class="p">;</span>	<span class="c1">///&gt; Asynchronous Command-interface</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">admin</span><span class="p">;</span>	<span class="c1">///&lt; Administrative Command-interface</span>
-	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">;</span>		<span class="c1">///&lt; Namespace identifier</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">be</span><span class="p">;</span>    <span class="c1">///&lt; Backend/system interface to use</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>   <span class="c1">///&lt; Device manager/enumerator</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">mem</span><span class="p">;</span>   <span class="c1">///&lt; Memory allocator to use for buffers</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sync</span><span class="p">;</span>  <span class="c1">///&lt; Synchronous Command-interface</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">async</span><span class="p">;</span> <span class="c1">///&gt; Asynchronous Command-interface</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">admin</span><span class="p">;</span> <span class="c1">///&lt; Administrative Command-interface</span>
+	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">;</span>     <span class="c1">///&lt; Namespace identifier</span>
 	<span class="k">union</span> <span class="p">{</span>
 		<span class="k">struct</span> <span class="p">{</span>
-			<span class="kt">uint32_t</span> <span class="nl">rdonly</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; OS open; read-only</span>
-			<span class="kt">uint32_t</span> <span class="nl">wronly</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; OS open; write-only</span>
-			<span class="kt">uint32_t</span> <span class="nl">rdwr</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; OS open; for read and only</span>
-			<span class="kt">uint32_t</span> <span class="nl">create</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; OS open; create if it does not exist</span>
-			<span class="kt">uint32_t</span> <span class="nl">truncate</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; OS open; truncate content</span>
-			<span class="kt">uint32_t</span> <span class="nl">direct</span>		<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>	<span class="c1">///&lt; OS open; attempt bypass OS-caching</span>
-			<span class="kt">uint32_t</span> <span class="nl">_rsvd</span>		<span class="p">:</span> <span class="mi">26</span><span class="p">;</span>
+			<span class="kt">uint32_t</span> <span class="nl">rdonly</span>   <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; OS open; read-only</span>
+			<span class="kt">uint32_t</span> <span class="nl">wronly</span>   <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; OS open; write-only</span>
+			<span class="kt">uint32_t</span> <span class="nl">rdwr</span>     <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; OS open; for read and only</span>
+			<span class="kt">uint32_t</span> <span class="nl">create</span>   <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; OS open; create if it does not exist</span>
+			<span class="kt">uint32_t</span> <span class="nl">truncate</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; OS open; truncate content</span>
+			<span class="kt">uint32_t</span> <span class="nl">direct</span>   <span class="p">:</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">///&lt; OS open; attempt bypass OS-caching</span>
+			<span class="kt">uint32_t</span> <span class="nl">_rsvd</span>    <span class="p">:</span> <span class="mi">26</span><span class="p">;</span>
 		<span class="p">};</span>
 		<span class="kt">uint32_t</span> <span class="n">oflags</span><span class="p">;</span>
 	<span class="p">};</span>
-	<span class="kt">uint32_t</span> <span class="n">create_mode</span><span class="p">;</span>		<span class="c1">///&lt; OS file creation-mode</span>
-	<span class="kt">uint8_t</span> <span class="n">poll_io</span><span class="p">;</span>		<span class="c1">///&lt; io_uring: enable io-polling</span>
-	<span class="kt">uint8_t</span> <span class="n">poll_sq</span><span class="p">;</span>		<span class="c1">///&lt; io_uring: enable sqthread-polling</span>
-	<span class="kt">uint8_t</span> <span class="n">register_files</span><span class="p">;</span>		<span class="c1">///&lt; io_uring: enable file-regirations</span>
-	<span class="kt">uint8_t</span> <span class="n">register_buffers</span><span class="p">;</span>	<span class="c1">///&lt; io_uring: enable buffer-registration</span>
+	<span class="kt">uint32_t</span> <span class="n">create_mode</span><span class="p">;</span>     <span class="c1">///&lt; OS file creation-mode</span>
+	<span class="kt">uint8_t</span> <span class="n">poll_io</span><span class="p">;</span>          <span class="c1">///&lt; io_uring: enable io-polling</span>
+	<span class="kt">uint8_t</span> <span class="n">poll_sq</span><span class="p">;</span>          <span class="c1">///&lt; io_uring: enable sqthread-polling</span>
+	<span class="kt">uint8_t</span> <span class="n">register_files</span><span class="p">;</span>   <span class="c1">///&lt; io_uring: enable file-regirations</span>
+	<span class="kt">uint8_t</span> <span class="n">register_buffers</span><span class="p">;</span> <span class="c1">///&lt; io_uring: enable buffer-registration</span>
 	<span class="k">struct</span> <span class="p">{</span>
-		<span class="kt">uint32_t</span> <span class="nl">value</span>	<span class="p">:</span> <span class="mi">31</span><span class="p">;</span>
-		<span class="kt">uint32_t</span> <span class="nl">given</span>	<span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
-	<span class="p">}</span> <span class="n">css</span><span class="p">;</span>			<span class="c1">///&lt; SPDK controller-setup: do command-set-selection</span>
-	<span class="kt">uint32_t</span> <span class="n">use_cmb_sqs</span><span class="p">;</span>	<span class="c1">///&lt; SPDK controller-setup: use controller-memory-buffer for sq</span>
-	<span class="kt">uint32_t</span> <span class="n">shm_id</span><span class="p">;</span>	<span class="c1">///&lt; SPDK multi-processing: shared-memory-id</span>
-	<span class="kt">uint32_t</span> <span class="n">main_core</span><span class="p">;</span>	<span class="c1">///&lt; SPDK multi-processing: main-core</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">core_mask</span><span class="p">;</span>	<span class="c1">///&lt; SPDK multi-processing: core-mask</span>
-	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">adrfam</span><span class="p">;</span>	<span class="c1">///&lt; SPDK fabrics: address-family, IPv4/IPv6</span>
-	<span class="kt">uint32_t</span> <span class="n">spdk_fabrics</span><span class="p">;</span>	<span class="c1">///&lt; Is assigned a value by backend if SPDK uses fabrics</span>
+		<span class="kt">uint32_t</span> <span class="nl">value</span> <span class="p">:</span> <span class="mi">31</span><span class="p">;</span>
+		<span class="kt">uint32_t</span> <span class="nl">given</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span> <span class="n">css</span><span class="p">;</span>                 <span class="c1">///&lt; SPDK controller-setup: do command-set-selection</span>
+	<span class="kt">uint32_t</span> <span class="n">use_cmb_sqs</span><span class="p">;</span>  <span class="c1">///&lt; SPDK controller-setup: use controller-memory-buffer for sq</span>
+	<span class="kt">uint32_t</span> <span class="n">shm_id</span><span class="p">;</span>       <span class="c1">///&lt; SPDK multi-processing: shared-memory-id</span>
+	<span class="kt">uint32_t</span> <span class="n">main_core</span><span class="p">;</span>    <span class="c1">///&lt; SPDK multi-processing: main-core</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">core_mask</span><span class="p">;</span> <span class="c1">///&lt; SPDK multi-processing: core-mask</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">adrfam</span><span class="p">;</span>    <span class="c1">///&lt; SPDK fabrics: address-family, IPv4/IPv6</span>
+	<span class="kt">uint32_t</span> <span class="n">spdk_fabrics</span><span class="p">;</span> <span class="c1">///&lt; Is assigned a value by backend if SPDK uses fabrics</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -271,8 +277,8 @@
 <span class="k">struct</span> <span class="nc">xnvme_dev</span><span class="p">;</span>
 
 <span class="k">enum</span> <span class="n">xnvme_enumerate_action</span> <span class="p">{</span>
-	<span class="n">XNVME_ENUMERATE_DEV_KEEP_OPEN</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span>	<span class="c1">///&lt; Keep device-handle open after callback returns</span>
-	<span class="n">XNVME_ENUMERATE_DEV_CLOSE</span> <span class="o">=</span> <span class="mh">0x1</span>		<span class="c1">///&lt; Close device-handle when callback returns</span>
+	<span class="n">XNVME_ENUMERATE_DEV_KEEP_OPEN</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">,</span> <span class="c1">///&lt; Keep device-handle open after callback returns</span>
+	<span class="n">XNVME_ENUMERATE_DEV_CLOSE</span>     <span class="o">=</span> <span class="mh">0x1</span>  <span class="c1">///&lt; Close device-handle when callback returns</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -387,8 +393,8 @@
 <span class="cm"> * @enum xnvme_queue_opts</span>
 <span class="cm"> */</span>
 <span class="k">enum</span> <span class="n">xnvme_queue_opts</span> <span class="p">{</span>
-	<span class="n">XNVME_QUEUE_IOPOLL</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>       <span class="c1">///&lt; XNVME_QUEUE_IOPOLL: queue. is polled for completions</span>
-	<span class="n">XNVME_QUEUE_SQPOLL</span> <span class="o">=</span> <span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1">///&lt; XNVME_QUEUE_SQPOLL: queue. is polled for submissions</span>
+	<span class="n">XNVME_QUEUE_IOPOLL</span> <span class="o">=</span> <span class="mh">0x1</span><span class="p">,</span>      <span class="c1">///&lt; XNVME_QUEUE_IOPOLL: queue. is polled for completions</span>
+	<span class="n">XNVME_QUEUE_SQPOLL</span> <span class="o">=</span> <span class="mh">0x1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">///&lt; XNVME_QUEUE_SQPOLL: queue. is polled for submissions</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -452,11 +458,22 @@
 <span class="nf">xnvme_queue_poke</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">max</span><span class="p">);</span>
 
 <span class="cm">/**</span>
-<span class="cm"> * Wait for completion of all outstanding commands in the given ::xnvme_queue</span>
+<span class="cm"> * Process outstanding commands on the given ::xnvme_queue until it is empty</span>
 <span class="cm"> *</span>
-<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait for completions on</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return On success, number of completions processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_drain</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * DEPRECATED: expect that this function will be removed in an upcoming release</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
 <span class="cm"> * returned.</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
@@ -502,22 +519,22 @@
 <span class="cm"> * @struct xnvme_cmd_ctx</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="p">{</span>
-	<span class="k">struct</span> <span class="nc">xnvme_spec_cmd</span> <span class="n">cmd</span><span class="p">;</span>		<span class="c1">///&lt; Command to be processed</span>
-	<span class="k">struct</span> <span class="nc">xnvme_spec_cpl</span> <span class="n">cpl</span><span class="p">;</span>		<span class="c1">///&lt; Completion result from processing</span>
+	<span class="k">struct</span> <span class="nc">xnvme_spec_cmd</span> <span class="n">cmd</span><span class="p">;</span> <span class="c1">///&lt; Command to be processed</span>
+	<span class="k">struct</span> <span class="nc">xnvme_spec_cpl</span> <span class="n">cpl</span><span class="p">;</span> <span class="c1">///&lt; Completion result from processing</span>
 
-	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>			<span class="c1">///&lt; Device associated with the command</span>
+	<span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span> <span class="c1">///&lt; Device associated with the command</span>
 
 	<span class="c1">///&lt; Fields for command option: XNVME_CMD_ASYNC</span>
 	<span class="k">struct</span> <span class="p">{</span>
-		<span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">;</span>	<span class="c1">///&lt; Queue used for command processing</span>
-		<span class="n">xnvme_queue_cb</span> <span class="n">cb</span><span class="p">;</span>		<span class="c1">///&lt; User defined callback function</span>
-		<span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span>			<span class="c1">///&lt; User defined callback function arguments</span>
+		<span class="k">struct</span> <span class="nc">xnvme_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">;</span> <span class="c1">///&lt; Queue used for command processing</span>
+		<span class="n">xnvme_queue_cb</span> <span class="n">cb</span><span class="p">;</span>         <span class="c1">///&lt; User defined callback function</span>
+		<span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span>              <span class="c1">///&lt; User defined callback function arguments</span>
 	<span class="p">}</span> <span class="n">async</span><span class="p">;</span>
 
 	<span class="c1">///&lt; Field containing command-options, the field is initialized by helper-functions</span>
 	<span class="kt">uint32_t</span> <span class="n">opts</span><span class="p">;</span>
 
-	<span class="kt">uint8_t</span> <span class="n">be_rsvd</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>		<span class="c1">///&lt; Fields reserved for use by library internals</span>
+	<span class="kt">uint8_t</span> <span class="n">be_rsvd</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span> <span class="c1">///&lt; Fields reserved for use by library internals</span>
 
 	<span class="c1">///&lt; Field for including the command-context in BSD-style singly-linked-lists (SLIST)</span>
 	<span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">xnvme_cmd_ctx</span><span class="p">)</span> <span class="n">link</span><span class="p">;</span>
@@ -529,13 +546,11 @@
 <span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to setup callback for</span>
 <span class="cm"> * @param cb The callback function to use</span>
 <span class="cm"> * @param cb_arg The callback argument to use</span>
-<span class="cm"> *</span>
-<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
 <span class="cm"> */</span>
 <span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
 <span class="n">xnvme_cmd_ctx_set_cb</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="n">xnvme_queue_cb</span> <span class="n">cb</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb</span> <span class="o">=</span> <span class="n">cb</span><span class="p">;</span>
+	<span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb</span>     <span class="o">=</span> <span class="n">cb</span><span class="p">;</span>
 	<span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb_arg</span> <span class="o">=</span> <span class="n">cb_arg</span><span class="p">;</span>
 <span class="p">}</span>
 
@@ -607,6 +622,21 @@
 <span class="kt">int</span>
 <span class="n">xnvme_cmd_pass</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dbuf_nbytes</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">mbuf</span><span class="p">,</span>
 	       <span class="kt">size_t</span> <span class="n">mbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dvec array of data iovecs</span>
+<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
+<span class="cm"> * @param mvec array of metadata iovecs</span>
+<span class="cm"> * @param mvec_cnt number of elements in mvec</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_passv</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">iovec</span> <span class="o">*</span><span class="n">dvec</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dvec_cnt</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dvec_nbytes</span><span class="p">,</span>
+		<span class="k">struct</span> <span class="nc">iovec</span> <span class="o">*</span><span class="n">mvec</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">mvec_cnt</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">mvec_nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Pass a NVMe Admin Command through to the device with minimal intervention</span>
@@ -929,7 +959,7 @@
 
 <dl class="c var">
 <dt id="c.xnvme_lba_range.attr">
-<span class="target" id="structxnvme__lba__range_1aae9cf858a0da5d5d43b173f4439a09fd"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a>.<strong>[anonymous]</strong> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__lba__range_1a979c48b50b5a318acd7a04364e7cc55d"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a>.<strong>[anonymous]</strong> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -1557,12 +1587,10 @@
 <span class="target" id="libxnvme_8h_1afcb44b4b22d8e47dcbe283f256f63093"></span>void <code class="sig-name descname">xnvme_cmd_ctx_set_cb</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, xnvme_queue_cb <em>cb</em>, void *<em>cb_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_set_cb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Assign a callback-function and argument to be used with the given command-context. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
-</dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to setup callback for </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cb</span></code>: The callback function to use </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cb_arg</span></code>: The callback argument to use</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb_arg</span></code>: The callback argument to use </p></li>
 </ul>
 </dd>
 </dl>
@@ -1607,6 +1635,28 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">dbuf_nbytes</span></code>: size of data-payload in bytes </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mbuf</span></code>: pointer to meta-payload </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mbuf_nbytes</span></code>: size of the meta-payload in bytes</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-cmd-passv">
+<span id="sec-c-api-xnvme-func-xnvme-cmd-passv"></span><h3>xnvme_cmd_passv<a class="headerlink" href="#xnvme-cmd-passv" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_cmd_passv">
+<span class="target" id="libxnvme_8h_1a96530cf3a73c7e0b0984f626575fc2cf"></span>int <code class="sig-name descname">xnvme_cmd_passv</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, <em class="property">struct</em> iovec *<em>dvec</em>, size_t <em>dvec_cnt</em>, size_t <em>dvec_nbytes</em>, <em class="property">struct</em> iovec *<em>mvec</em>, size_t <em>mvec_cnt</em>, size_t <em>mvec_nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_passv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pass a vectored NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dvec</span></code>: array of data iovecs </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dvec_cnt</span></code>: number of elements in dvec </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mvec</span></code>: array of metadata iovecs </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mvec_cnt</span></code>: number of elements in mvec</p></li>
 </ul>
 </dd>
 </dl>
@@ -1769,6 +1819,15 @@
 </dd>
 </dl>
 </p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-ident-yaml">
+<span id="sec-c-api-xnvme-func-xnvme-ident-yaml"></span><h3>xnvme_ident_yaml<a class="headerlink" href="#xnvme-ident-yaml" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_ident_yaml">
+<span class="target" id="libxnvme__pp_8h_1ac39fceeb254a5802d89ec4eac7d3a97e"></span>int <code class="sig-name descname">xnvme_ident_yaml</code><span class="sig-paren">(</span>FILE *<em>stream</em>, <em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.xnvme_ident" title="xnvme_ident">xnvme_ident</a> *<em>ident</em>, int <em>indent</em>, <em class="property">const</em> char *<em>sep</em>, int <em>head</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_ident_yaml" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Writes a YAML-representation of the given ‘ident’ to stream. </p>
 </dd></dl>
 
 </div>
@@ -1976,6 +2035,43 @@
 </dd></dl>
 
 </div>
+<div class="section" id="xnvme-libconf-fpr">
+<span id="sec-c-api-xnvme-func-xnvme-libconf-fpr"></span><h3>xnvme_libconf_fpr<a class="headerlink" href="#xnvme-libconf-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_libconf_fpr">
+<span class="target" id="libxnvme__libconf_8h_1a950f559403e6a7f8b4f9e45d5eb6ea75"></span>int <code class="sig-name descname">xnvme_libconf_fpr</code><span class="sig-paren">(</span>FILE *<em>stream</em>, <em class="property">enum</em> <a class="reference internal" href="#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a> <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_libconf_fpr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given array of version-strings to the given output stream. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream</span></code>: output stream used for printing </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-libconf-pr">
+<span id="sec-c-api-xnvme-func-xnvme-libconf-pr"></span><h3>xnvme_libconf_pr<a class="headerlink" href="#xnvme-libconf-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_libconf_pr">
+<span class="target" id="libxnvme__libconf_8h_1a02a7138f7201367d6b9b2cdf1e21cf54"></span>int <code class="sig-name descname">xnvme_libconf_pr</code><span class="sig-paren">(</span><em class="property">enum</em> <a class="reference internal" href="#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a> <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_libconf_pr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given array of version-strings to stdout. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, the number of characters printed is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-opts-default">
 <span id="sec-c-api-xnvme-func-xnvme-opts-default"></span><h3>xnvme_opts_default<a class="headerlink" href="#xnvme-opts-default" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
@@ -1984,6 +2080,24 @@
 <dd><p>Returns an initialized option-struct with default values. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Zero-initialized and with default values where applicable </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-queue-drain">
+<span id="sec-c-api-xnvme-func-xnvme-queue-drain"></span><h3>xnvme_queue_drain<a class="headerlink" href="#xnvme-queue-drain" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_drain">
+<span class="target" id="libxnvme_8h_1aad1259925c536a27e69488bc439dbeb1"></span>int <code class="sig-name descname">xnvme_queue_drain</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_drain" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Process outstanding commands on the given xnvme_queue until it is empty. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, number of commands processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">queue</span></code>: Pointer to the xnvme_queue to wait/process commands on</p></li>
+</ul>
 </dd>
 </dl>
 </p>
@@ -2154,12 +2268,12 @@
 <dl class="c function">
 <dt id="c.xnvme_queue_wait">
 <span class="target" id="libxnvme_8h_1afc7e44345e6cd351f93f1758123eca90"></span>int <code class="sig-name descname">xnvme_queue_wait</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_wait" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Wait for completion of all outstanding commands in the given xnvme_queue. </p>
+<dd><p>DEPRECATED: expect that this function will be removed in an upcoming release. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>On success, number of completions processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+<dt><strong>Return</strong></dt><dd><p>On success, number of commands processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">queue</span></code>: Pointer to the xnvme_queue to wait for completions on</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">queue</span></code>: Pointer to the xnvme_queue to wait/process commands on</p></li>
 </ul>
 </dd>
 </dl>
