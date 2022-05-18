@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvmec &mdash; xNVMe 0.2.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvmec &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -13,6 +13,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -43,6 +44,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">C API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">xnvme_ident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">xnvme_opts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
@@ -51,7 +54,7 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_sgl.html">xnvme_sgl</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_3p.html">xnvme_3p</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">xnvmec</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#header">Header</a></li>
@@ -95,6 +98,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -148,7 +153,7 @@
 <span class="cm"> * Fills `buf` with content `nbytes` of content</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param buf Pointer to the buffer to fill</span>
-<span class="cm"> * @param content Name of a file, or special &quot;zero&quot;, or &quot;anum&quot;</span>
+<span class="cm"> * @param content Name of a file, or special &quot;zero&quot;, &quot;anum&quot;, &quot;rand-k&quot;, &quot;rand-t&quot;</span>
 <span class="cm"> * @param nbytes Amount of bytes to fill in buf</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
@@ -2037,7 +2042,7 @@
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to the buffer to fill </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">content</span></code>: Name of a file, or special “zero”, or “anum” </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">content</span></code>: Name of a file, or special “zero”, “anum”, “rand-k”, “rand-t” </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: Amount of bytes to fill in buf</p></li>
 </ul>
 </dd>
@@ -2096,7 +2101,7 @@
 <span id="sec-c-api-xnvmec-func-xnvmec-cli-to-opts"></span><h3>xnvmec_cli_to_opts<a class="headerlink" href="#xnvmec-cli-to-opts" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.xnvmec_cli_to_opts">
-<span class="target" id="libxnvmec_8h_1ad25ab8bac65e7f13d27c7131e48e6dcd"></span>int <code class="sig-name descname">xnvmec_cli_to_opts</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a> *<em>cli</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme.html#c.xnvme_opts" title="xnvme_opts">xnvme_opts</a> *<em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_cli_to_opts" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvmec_8h_1ad25ab8bac65e7f13d27c7131e48e6dcd"></span>int <code class="sig-name descname">xnvmec_cli_to_opts</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a> *<em>cli</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts">xnvme_opts</a> *<em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_cli_to_opts" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Fill the given ‘opts’ with values parsed in the given ‘cli’. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>On success, the 0 is returned. On error, -1 is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate the error. </p>
