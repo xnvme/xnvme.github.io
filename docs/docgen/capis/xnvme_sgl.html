@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xnvme_sgl &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="xnvme_libconf" href="xnvme_libconf.html" />
+    <link rel="prev" title="xnvme_spec" href="xnvme_spec.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> xNVMe
+          </a>
+              <div class="version">
+                0.4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">C API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">xnvme_ident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">xnvme_opts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">xnvme_sgl</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#header">Header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-add">xnvme_sgl_add</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-alloc">xnvme_sgl_alloc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-create">xnvme_sgl_create</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-destroy">xnvme_sgl_destroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-free">xnvme_sgl_free</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-pool-create">xnvme_sgl_pool_create</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-pool-destroy">xnvme_sgl_pool_destroy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-sgl-reset">xnvme_sgl_reset</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">C API</a> &raquo;</li>
+      <li>xnvme_sgl</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/capis/xnvme_sgl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="xnvme-sgl">
+<span id="sec-c-api-xnvme-sgl"></span><h1>xnvme_sgl<a class="headerlink" href="#xnvme-sgl" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="header">
+<span id="sec-c-api-xnvme-sgl-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * libxnvme_sgl - NVMe Scatter-Gather Lists</span>
+<span class="cm"> *</span>
+<span class="cm"> * Copyright (C) Simon A. F. Lund &lt;simon.lund@samsung.com&gt;</span>
+<span class="cm"> * Copyright (C) Klaus B. A. Jensen &lt;k.jensen@samsung.com&gt;</span>
+<span class="cm"> * SPDX-License-Identifier: Apache-2.0</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_sgl.h</span>
+<span class="cm"> */</span>
+<span class="cp">#ifndef __LIBXNVME_SGL_H</span>
+<span class="cp">#define __LIBXNVME_SGL_H</span>
+<span class="cp">#include</span> <span class="cpf">&lt;libxnvme.h&gt;</span><span class="cp"></span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Opaque handle for Scatter Gather List (SGL).</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_sgl</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">xnvme_sgl</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Opaque handle for Scatter Gather List (SGL) pool</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note A separate pool should be used for each asynchronous context</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_sgl_pool</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">xnvme_sgl_pool</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Create an pool of Scather-Gather-List (SGL)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return An initialized pool that can be used to amortize the cost of repeated</span>
+<span class="cm"> * SGL allocations</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">xnvme_sgl_pool</span> <span class="o">*</span>
+<span class="n">xnvme_sgl_pool_create</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Destroy an SGL pool (and all SGLs in the pool).</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param pool Pointer to the #xnvme_sgl_pool to destroy</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_sgl_pool_destroy</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_sgl_pool</span> <span class="o">*</span><span class="n">pool</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Create a Scatter-Gather-List (SGL)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_sgl_destroy</span>
+<span class="cm"> * @see xnvme_sgl_alloc</span>
+<span class="cm"> * @see xnvme_sgl_free</span>
+<span class="cm"> * @see xnvme_sgl_add</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param hint Allocation hint.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized (empty) SGL is returned. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate any error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">xnvme_sgl</span> <span class="o">*</span>
+<span class="n">xnvme_sgl_create</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hint</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Destroy an SGL, freeing the memory used</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_sgl_free</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param sgl Pointer to SGL as allocated by xnvme_sgl_alloc() or</span>
+<span class="cm"> * xnvme_sgl_create()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_sgl_destroy</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">xnvme_sgl</span> <span class="o">*</span><span class="n">sgl</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Allocate an SGL from a pool</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_sgl_create</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param pool Pool to allocate SGL from</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized (empty) SGL is returned. On error, NULL is</span>
+<span class="cm"> * returned and `errno` is set to indicate any error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">xnvme_sgl</span> <span class="o">*</span>
+<span class="n">xnvme_sgl_alloc</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_sgl_pool</span> <span class="o">*</span><span class="n">pool</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Free an SGL, returning it to the pool</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_sgl_destroy</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param pool Pool to return the given `sgl` to</span>
+<span class="cm"> * @param sgl Pointer to SGL as allocated by xnvme_sgl_alloc() or</span>
+<span class="cm"> *  xnvme_sgl_create()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_sgl_free</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_sgl_pool</span> <span class="o">*</span><span class="n">pool</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">xnvme_sgl</span> <span class="o">*</span><span class="n">sgl</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Reset an SGL</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param sgl Pointer to SGL as allocated by xnvme_sgl_alloc() or</span>
+<span class="cm"> * xnvme_sgl_create()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_sgl_reset</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_sgl</span> <span class="o">*</span><span class="n">sgl</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Add an entry to the SGL</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_sgl_alloc</span>
+<span class="cm"> * @see xnvme_buf_alloc</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param sgl Pointer to sgl as allocated by xnvme_sgl_alloc()</span>
+<span class="cm"> * @param buf Pointer to buffer as allocated with xnvme_buf_alloc()</span>
+<span class="cm"> * @param nbytes Size of the given buffer in bytes</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_sgl_add</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">xnvme_sgl</span> <span class="o">*</span><span class="n">sgl</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="enums">
+<span id="sec-c-api-xnvme-sgl-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="structs">
+<span id="sec-c-api-xnvme-sgl-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="functions">
+<span id="sec-c-api-xnvme-sgl-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="xnvme-sgl-add">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-add"></span><h3>xnvme_sgl_add<a class="headerlink" href="#xnvme-sgl-add" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_add">
+<span class="target" id="libxnvme__sgl_8h_1a407b0a524d067fa5c6b48934b5d86751"></span>int <code class="sig-name descname">xnvme_sgl_add</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, <em class="property">struct</em> xnvme_sgl *<em>sgl</em>, void *<em>buf</em>, size_t <em>nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_add" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add an entry to the SGL. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"><span class="std std-ref">xnvme_sgl_alloc</span></a> </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="xnvme.html#libxnvme_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc</span></a></p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sgl</span></code>: Pointer to sgl as allocated by <a class="reference internal" href="#libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"><span class="std std-ref">xnvme_sgl_alloc()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Pointer to buffer as allocated with <a class="reference internal" href="xnvme.html#libxnvme_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nbytes</span></code>: Size of the given buffer in bytes </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-alloc">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-alloc"></span><h3>xnvme_sgl_alloc<a class="headerlink" href="#xnvme-sgl-alloc" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_alloc">
+<span class="target" id="libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"></span><em class="property">struct</em> xnvme_sgl *<code class="sig-name descname">xnvme_sgl_alloc</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_sgl_pool *<em>pool</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocate an SGL from a pool. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1abbac32ea16a720170bc0f7eb3f78df4e"><span class="std std-ref">xnvme_sgl_create</span></a></p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>On success, an initialized (empty) SGL is returned. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate any error. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pool</span></code>: Pool to allocate SGL from</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-create">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-create"></span><h3>xnvme_sgl_create<a class="headerlink" href="#xnvme-sgl-create" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_create">
+<span class="target" id="libxnvme__sgl_8h_1abbac32ea16a720170bc0f7eb3f78df4e"></span><em class="property">struct</em> xnvme_sgl *<code class="sig-name descname">xnvme_sgl_create</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, int <em>hint</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_create" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a Scatter-Gather-List (SGL) </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1ad47c3bd355c91b16e9c9e513602c2d53"><span class="std std-ref">xnvme_sgl_destroy</span></a> </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"><span class="std std-ref">xnvme_sgl_alloc</span></a> </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1a20edf4600c53a05bca93aa6610793136"><span class="std std-ref">xnvme_sgl_free</span></a> </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1a407b0a524d067fa5c6b48934b5d86751"><span class="std std-ref">xnvme_sgl_add</span></a></p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>On success, an initialized (empty) SGL is returned. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate any error. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hint</span></code>: Allocation hint.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-destroy">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-destroy"></span><h3>xnvme_sgl_destroy<a class="headerlink" href="#xnvme-sgl-destroy" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_destroy">
+<span class="target" id="libxnvme__sgl_8h_1ad47c3bd355c91b16e9c9e513602c2d53"></span>void <code class="sig-name descname">xnvme_sgl_destroy</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, <em class="property">struct</em> xnvme_sgl *<em>sgl</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_destroy" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy an SGL, freeing the memory used. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1a20edf4600c53a05bca93aa6610793136"><span class="std std-ref">xnvme_sgl_free</span></a></p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sgl</span></code>: Pointer to SGL as allocated by <a class="reference internal" href="#libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"><span class="std std-ref">xnvme_sgl_alloc()</span></a> or <a class="reference internal" href="#libxnvme__sgl_8h_1abbac32ea16a720170bc0f7eb3f78df4e"><span class="std std-ref">xnvme_sgl_create()</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-free">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-free"></span><h3>xnvme_sgl_free<a class="headerlink" href="#xnvme-sgl-free" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_free">
+<span class="target" id="libxnvme__sgl_8h_1a20edf4600c53a05bca93aa6610793136"></span>void <code class="sig-name descname">xnvme_sgl_free</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_sgl_pool *<em>pool</em>, <em class="property">struct</em> xnvme_sgl *<em>sgl</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_free" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Free an SGL, returning it to the pool. </p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#libxnvme__sgl_8h_1ad47c3bd355c91b16e9c9e513602c2d53"><span class="std std-ref">xnvme_sgl_destroy</span></a></p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pool</span></code>: Pool to return the given <code class="docutils literal notranslate"><span class="pre">sgl</span></code> to </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sgl</span></code>: Pointer to SGL as allocated by <a class="reference internal" href="#libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"><span class="std std-ref">xnvme_sgl_alloc()</span></a> or <a class="reference internal" href="#libxnvme__sgl_8h_1abbac32ea16a720170bc0f7eb3f78df4e"><span class="std std-ref">xnvme_sgl_create()</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-pool-create">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-pool-create"></span><h3>xnvme_sgl_pool_create<a class="headerlink" href="#xnvme-sgl-pool-create" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_pool_create">
+<span class="target" id="libxnvme__sgl_8h_1a9d8d65de8f36df9da8b853602c1d048a"></span><em class="property">struct</em> xnvme_sgl_pool *<code class="sig-name descname">xnvme_sgl_pool_create</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_pool_create" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create an pool of Scather-Gather-List (SGL) </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>An initialized pool that can be used to amortize the cost of repeated SGL allocations </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-pool-destroy">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-pool-destroy"></span><h3>xnvme_sgl_pool_destroy<a class="headerlink" href="#xnvme-sgl-pool-destroy" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_pool_destroy">
+<span class="target" id="libxnvme__sgl_8h_1a1e91bfe34d7fbb4170c85126df12765e"></span>void <code class="sig-name descname">xnvme_sgl_pool_destroy</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_sgl_pool *<em>pool</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_pool_destroy" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy an SGL pool (and all SGLs in the pool). </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pool</span></code>: Pointer to the xnvme_sgl_pool to destroy </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-sgl-reset">
+<span id="sec-c-api-xnvme-sgl-func-xnvme-sgl-reset"></span><h3>xnvme_sgl_reset<a class="headerlink" href="#xnvme-sgl-reset" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_sgl_reset">
+<span class="target" id="libxnvme__sgl_8h_1a7a063081038e5e1b25d27a8d5d0fbd73"></span>void <code class="sig-name descname">xnvme_sgl_reset</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_sgl *<em>sgl</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_sgl_reset" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reset an SGL. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sgl</span></code>: Pointer to SGL as allocated by <a class="reference internal" href="#libxnvme__sgl_8h_1a83ef317bbcd510b16efe75778c0292dc"><span class="std std-ref">xnvme_sgl_alloc()</span></a> or <a class="reference internal" href="#libxnvme__sgl_8h_1abbac32ea16a720170bc0f7eb3f78df4e"><span class="std std-ref">xnvme_sgl_create()</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xnvme_spec.html" class="btn btn-neutral float-left" title="xnvme_spec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xnvme_libconf.html" class="btn btn-neutral float-right" title="xnvme_libconf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
