@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Getting Started &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -45,11 +45,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#toolchain">Toolchain</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#alpine-linux">Alpine Linux</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arch-linux">Arch Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centos-stream9">CentOS Stream9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centos-stream8">CentOS Stream8</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#centos-7">CentOS 7</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#debian-12-bookworm">Debian 12 (Bookworm)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#debian-11-bullseye">Debian 11 (Bullseye)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#debian-10-buster">Debian 10 (Buster)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#debian-9-stretch">Debian 9 (Stretch)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fedora-36">Fedora (36)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fedora-35">Fedora (35)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fedora-34">Fedora (34)</a></li>
@@ -59,7 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-tumbleweed">openSUSE Tumbleweed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-leap-15-4">openSUSE Leap (15.4)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opensuse-leap-15-3">openSUSE Leap (15.3)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ubuntu-21-10-impish">Ubuntu 21.10 (Impish)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-22-04-jammy">Ubuntu 22.04 (Jammy)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-20-04-focal">Ubuntu 20.04 (Focal)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntu-18-04-bionic">Ubuntu 18.04 (Bionic)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
@@ -111,6 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
 </ul>
 
@@ -215,8 +217,7 @@ must support <strong>C11</strong>, <strong>pthreads</strong> and on the system t
 be available:</p>
 <ul class="simple">
 <li><p>Python (&gt;=3.7)</p></li>
-<li><p>meson (&gt;=0.61)</p></li>
-<li><p>ninja (&gt;=)</p></li>
+<li><p>meson (&gt;=0.58) and matching version of ninja</p></li>
 <li><p>make (gmake)</p></li>
 <li><p>gcc/mingw/clang</p></li>
 </ul>
@@ -226,25 +227,44 @@ be available:</p>
 <li><p>libaio-dev (&gt;=0.3, For <strong>xNVMe</strong> and <strong>SPDK</strong>)</p></li>
 <li><p>libnuma-dev (&gt;=2, For <strong>SPDK</strong>)</p></li>
 <li><p>libssl-dev (&gt;=1.1, For <strong>SPDK</strong>)</p></li>
+<li><p>liburing (&gt;=2.2, for <strong>xNVMe</strong>)</p></li>
 <li><p>uuid-dev (&gt;=2.3, For <strong>SPDK</strong>)</p></li>
 </ul>
 <p>The preferred toolchain is <strong>gcc</strong> and the following sections describe how to
-install it and required libraries on FreeBSD, a set of popular Linux
-Distributions and Windows.</p>
-<p>If you which to use a different toolchain then see the
-<a class="reference internal" href="#sec-building-custom-toolchain"><span class="std std-ref">Non-GCC Toolchain</span></a>, on how to instrument the build-system
+install it and required libraries on a set of popular Linux Distributions,
+FreeBSD, MacOS, and Windows. If you wish to use a different toolchain then see
+the <a class="reference internal" href="#sec-building-custom-toolchain"><span class="std std-ref">Non-GCC Toolchain</span></a>, on how to instrument the build-system
 using a compiler other than <strong>gcc</strong>.</p>
+<p>In the following sections, the then the system package-manager is used whenever
+possible to install the toolchain and libraries. However, on some Linux
+distribution there are not recent enough versions. To circurvent that, then the
+packages are installed via the Python package-manager. In some cases even a
+recent enough version of Python is not available, to bootstrap it, then Python
+is built and installed from source.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When installing packages via the Python package-manager (<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span>
+<span class="pre">pip</span> <span class="pre">install</span></code>), then packages should be installed system-wide. This is
+ensure that the installed packages behave as though they were installed
+using the system package-manager.</p>
+</div>
 <div class="section" id="alpine-linux">
 <h3>Alpine Linux<a class="headerlink" href="#alpine-linux" title="Permalink to this headline">¶</a></h3>
 <p>From the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apk</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (apk)</span>
 apk add <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/alpine-latest.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install pyelftools
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
-<p>This will install the packages listed below via the sytems package manager.</p>
+<p>The commands above will install the following packages via the system
+package-manager (<code class="docutils literal notranslate"><span class="pre">apk</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash
 bsd-compat-headers
 build-base
@@ -260,9 +280,11 @@ musl-dev
 ncurses
 ninja
 numactl-dev
+perl
 pkgconf
 py3-pip
 python3
+python3-dev
 util-linux-dev
 </pre></div>
 </div>
@@ -290,25 +312,96 @@ most welcome, until then, disable support for the SPDK NVMe driver as the
 </div>
 <div class="section" id="arch-linux">
 <h3>Arch Linux<a class="headerlink" href="#arch-linux" title="Permalink to this headline">¶</a></h3>
-<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">pacman</span></code>:</p>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (pacman)</span>
+pacman -Syyu --noconfirm
+pacman -S --noconfirm <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/archlinux-latest.txt&quot;</span><span class="k">)</span>
+</pre></div>
+</div>
+<p>The commands above will install the following packages via the system
+package-manager (<code class="docutils literal notranslate"><span class="pre">pacman</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>base-devel
 cunit
 git
 libaio
+liburing
 libutil-linux
 meson
+nasm
 ncurses
 ninja
 numactl
-pkgconf
+python-pip
 python-pyelftools
 python3
 </pre></div>
 </div>
+<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+meson setup builddir --prefix<span class="o">=</span>/usr
+
+<span class="c1"># build xNVMe</span>
+meson compile -C builddir
+
+<span class="c1"># install xNVMe</span>
+meson install -C builddir
+
+<span class="c1"># uninstall xNVMe</span>
+<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The build is configured to install with <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code> this is
+intentional such the the <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> files end up in the default search
+path on the system. If you do not want this, then remove <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code>
+and adjust your <code class="docutils literal notranslate"><span class="pre">$PKG_CONFIG_PATH</span></code> accordingly.</p>
+</div>
+</div>
+<div class="section" id="centos-stream9">
+<h3>CentOS Stream9<a class="headerlink" href="#centos-stream9" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">dnf</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+autoconf
+diffutils
+findutils
+gcc
+gcc-c++
+git
+libaio-devel
+libtool
+libuuid-devel
+make
+nasm
+numactl-devel
+openssl-devel
+patch
+pkgconfig
+procps
+python3
+python3-devel
+python3-pip
+</pre></div>
+</div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via pacman</span>
-pacman -Syyu --noconfirm
-pacman -S --noconfirm <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/archlinux-latest.txt&quot;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This repos has CUnit-devel</span>
+dnf install -y <span class="s1">&#39;dnf-command(config-manager)&#39;</span>
+dnf config-manager --set-enabled crb
+
+<span class="c1"># Install packages via the system package-manager (dnf)</span>
+dnf install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/centos-stream9.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install packages via the Python package-mange (pip)</span>
+python3 -m pip install --upgrade pip <span class="c1"># Otherwise too old to understand new Manylinux formats</span>
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure --libdir<span class="o">=</span>/usr/lib64 --libdevdir<span class="o">=</span>/usr/lib64
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -326,58 +419,57 @@ meson install -C builddir
 </pre></div>
 </div>
 </div>
-<div class="section" id="centos-7">
-<h3>CentOS 7<a class="headerlink" href="#centos-7" title="Permalink to this headline">¶</a></h3>
-<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">yum</span></code>:</p>
+<div class="section" id="centos-stream8">
+<h3>CentOS Stream8<a class="headerlink" href="#centos-stream8" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">dnf</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+autoconf
+diffutils
+findutils
+gcc
+gcc-c++
 git
-glibc-static
 libaio-devel
 libffi-devel
+libtool
 libuuid-devel
 make
 nasm
-ncurses-devel
 numactl-devel
 openssl-devel
 patch
+pkgconfig
+procps
+python39
+python39-devel
+python39-pip
 unzip
 wget
 zlib-devel
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Developer Tools</span>
-yum install -y centos-release-scl
-yum-config-manager --enable rhel-server-rhscl-7-rpms
-yum install -y devtoolset-8
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This repos has CUnit-devel</span>
+dnf config-manager --set-enabled powertools
 
-<span class="c1"># Install packages via yum</span>
-yum install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/centos-centos7.txt&quot;</span><span class="k">)</span>
+<span class="c1"># Install packages via the system package-manager (dnf)</span>
+dnf install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/centos-stream8.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># The meson version available via yum is tool old &lt; 0.54 and the Python version is tool old to</span>
-<span class="c1"># support the next release of meson, so to fix this, Python3 is installed from source and meson</span>
-<span class="c1"># installed via pip3 / PyPI</span>
-wget https://www.python.org/ftp/python/3.7.12/Python-3.7.12.tgz
-tar xzf Python-3.7.12.tgz
-<span class="nb">cd</span> Python-3.7.12
-./configure --enable-optimizations
-make altinstall -j <span class="k">$(</span>nproc<span class="k">)</span>
+<span class="c1"># Install packages via the Python package-mange (pip)</span>
+python3 -m pip install meson ninja pyelftools
 
-<span class="c1"># Setup handling of python3 and pip3</span>
-ln -s /usr/local/bin/pip3.7 /usr/local/bin/pip3
-ln -s /usr/local/bin/python3.7 /usr/local/bin/python3
-
-<span class="c1"># Install packages via pip3 / PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure --libdir<span class="o">=</span>/usr/lib64 --libdevdir<span class="o">=</span>/usr/lib64
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source in the newer gcc-toolchain before building</span>
-<span class="nb">source</span> /opt/rh/devtoolset-8/enable
-
-<span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
-meson setup builddir -Dwith-liburing<span class="o">=</span><span class="nb">false</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+meson setup builddir --prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson compile -C builddir
@@ -389,11 +481,104 @@ meson install -C builddir
 <span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The build is configured to install with <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code> this is
+intentional such the the <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> files end up in the default search
+path on the system. If you do not want this, then remove <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code>
+and adjust your <code class="docutils literal notranslate"><span class="pre">$PKG_CONFIG_PATH</span></code> accordingly.</p>
+</div>
+</div>
+<div class="section" id="centos-7">
+<h3>CentOS 7<a class="headerlink" href="#centos-7" title="Permalink to this headline">¶</a></h3>
+<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">yum</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+autoconf
+git
+glibc-static
+libaio-devel
+libffi-devel
+libtool
+libuuid-devel
+make
+ncurses-devel
+numactl-devel
+openssl-devel
+patch
+pkgconfig
+unzip
+wget
+zlib-devel
+</pre></div>
+</div>
+<p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Developer Tools</span>
+yum install -y centos-release-scl
+yum-config-manager --enable rhel-server-rhscl-7-rpms
+yum install -y devtoolset-8
+
+<span class="c1"># Install packages via the system package-manager (yum)</span>
+yum install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/centos-centos7.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install nasm from source</span>
+git clone https://github.com/netwide-assembler/nasm.git
+<span class="nb">cd</span> nasm
+git checkout nasm-2.15
+./autogen.sh
+./configure --prefix<span class="o">=</span>/usr
+make -j <span class="k">$(</span>nproc<span class="k">)</span>
+make install
+<span class="nb">cd</span> ..
+
+<span class="c1"># The meson version available via yum is tool old &lt; 0.54 and the Python version is tool old to</span>
+<span class="c1"># support the next release of meson, so to fix this, Python3 is installed from source and meson</span>
+<span class="c1"># installed via the Python package-manager pip</span>
+wget https://www.python.org/ftp/python/3.7.12/Python-3.7.12.tgz
+tar xzf Python-3.7.12.tgz
+<span class="nb">cd</span> Python-3.7.12
+./configure --enable-optimizations --enable-shared
+make altinstall -j <span class="k">$(</span>nproc<span class="k">)</span>
+
+<span class="c1"># Setup handling of python3</span>
+ln -s /usr/local/bin/python3.7 /usr/local/bin/python3
+<span class="nb">hash</span> -d python3 <span class="o">||</span> <span class="nb">true</span>
+
+<span class="c1"># Avoid error with &quot;libpython3.7m.so.1.0: cannot open shared object file: No such file or directory&quot;</span>
+ldconfig /usr/local/lib
+
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install meson ninja pyelftools
+</pre></div>
+</div>
+<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source in the newer gcc-toolchain before building</span>
+<span class="nb">source</span> /opt/rh/devtoolset-8/enable
+
+<span class="c1"># configure xNVMe and build dependencies (fio and SPDK, disabling liburing)</span>
+meson setup builddir -Dwith-liburing<span class="o">=</span><span class="nb">false</span> --prefix<span class="o">=</span>/usr
+
+<span class="c1"># build xNVMe</span>
+meson compile -C builddir
+
+<span class="c1"># install xNVMe</span>
+meson install -C builddir
+
+<span class="c1"># uninstall xNVMe</span>
+<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The build is configured to install with <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code> this is
+intentional such the the <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> files end up in the default search
+path on the system. If you do not want this, then remove <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code>
+and adjust your <code class="docutils literal notranslate"><span class="pre">$PKG_CONFIG_PATH</span></code> accordingly.</p>
+</div>
 </div>
 <div class="section" id="debian-12-bookworm">
 <h3>Debian 12 (Bookworm)<a class="headerlink" href="#debian-12-bookworm" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code> and <code class="docutils literal notranslate"><span class="pre">aptitude</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>astyle
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
 build-essential
 clang-format
 git
@@ -402,17 +587,28 @@ libcunit1-dev
 libncurses5-dev
 libnuma-dev
 libssl-dev
+libtool
 meson
 nasm
 pkg-config
 python3
+python3-pip
 python3-pyelftools
+python3-venv
 uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via aptitude -- seems to handle dependencies better</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (aptitude)</span>
 aptitude -q -y -f install <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/debian-bookworm.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -433,7 +629,7 @@ meson install -C builddir
 <div class="section" id="debian-11-bullseye">
 <h3>Debian 11 (Bullseye)<a class="headerlink" href="#debian-11-bullseye" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>, <code class="docutils literal notranslate"><span class="pre">aptitude</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>astyle
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
 build-essential
 clang-format
 git
@@ -442,19 +638,29 @@ libcunit1-dev
 libncurses5-dev
 libnuma-dev
 libssl-dev
+libtool
 nasm
 pkg-config
 python3
 python3-pip
+python3-venv
 uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via aptitude -- seems to handle dependencies better</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (aptitude)</span>
 aptitude -q -y -f install <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/debian-bullseye.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -475,93 +681,43 @@ meson install -C builddir
 <div class="section" id="debian-10-buster">
 <h3>Debian 10 (Buster)<a class="headerlink" href="#debian-10-buster" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>, <code class="docutils literal notranslate"><span class="pre">aptitude</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+build-essential
 git
 libaio-dev
 libcunit1-dev
 libncurses5-dev
 libnuma-dev
 libssl-dev
+libtool
 nasm
 pkg-config
 python3
 python3-pip
+python3-venv
 uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt-get -qy autoclean
 
-<span class="c1"># Install packages via apt-get</span>
+<span class="c1"># Install packages via the system package-manager (apt-get)</span>
 apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/debian-buster.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install --upgrade pip
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
-meson setup builddir
-
-<span class="c1"># build xNVMe</span>
-meson compile -C builddir
-
-<span class="c1"># install xNVMe</span>
-meson install -C builddir
-
-<span class="c1"># uninstall xNVMe</span>
-<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="debian-9-stretch">
-<h3>Debian 9 (Stretch)<a class="headerlink" href="#debian-9-stretch" title="Permalink to this headline">¶</a></h3>
-<p>From the root of the <strong>xNVMe</strong> repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
-apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/debian-stretch.txt&quot;</span><span class="k">)</span>
-
-<span class="c1"># The meson version available via yum is tool old &lt; 0.54 and the Python version is tool old to</span>
-<span class="c1"># support the next release of meson, so to fix this, Python3 is installed from source and meson</span>
-<span class="c1"># installed via pip3 / PyPI</span>
-wget https://www.python.org/ftp/python/3.7.12/Python-3.7.12.tgz
-tar xzf Python-3.7.12.tgz
-<span class="nb">cd</span> Python-3.7.12
-./configure --enable-optimizations
-make altinstall -j <span class="k">$(</span>nproc<span class="k">)</span>
-
-<span class="c1"># Setup handling of python3 and pip3</span>
-update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.7 <span class="m">10</span>
-update-alternatives --install /usr/bin/pip3 pip3 /usr/local/bin/pip3.7 <span class="m">10</span>
-
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
-</pre></div>
-</div>
-<p>The above will install following packages seen below via the system
-package-manager and via <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
-git
-libaio-dev
-libcunit1-dev
-libffi-dev
-libncurses5-dev
-libnuma-dev
-libssl-dev
-nasm
-pkg-config
-procps
-uuid-dev
-wget
-zlib1g-dev
-</pre></div>
-</div>
-<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Debian 9 / stretch is EOL, LTS support is available EOL June 2022.
-After this date xNVMe will stop supporting it. Currently, liburing 2.1 is
-not supported, so dropping that via configuration options.</p>
-</div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
 meson setup builddir
 
@@ -579,27 +735,36 @@ meson install -C builddir
 <div class="section" id="fedora-36">
 <h3>Fedora (36)<a class="headerlink" href="#fedora-36" title="Permalink to this headline">¶</a></h3>
 <p>From the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via dnf</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (dnf)</span>
 dnf install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/fedora-36.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install liburing-2.2 via rawhide repos</span>
+dnf install -y fedora-repos-rawhide
+dnf install -y --disablerepo<span class="o">=</span>* --enablerepo<span class="o">=</span>rawhide liburing liburing-devel --nogpgcheck
 </pre></div>
 </div>
 <p>The above will install the packages seen below via the system package-manager
 <code class="docutils literal notranslate"><span class="pre">dnf</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+autoconf
 diffutils
 findutils
 g++
 gcc
 git
 libaio-devel
+libtool
 libuuid-devel
 make
 meson
+nasm
 numactl-devel
 openssl-devel
 patch
 pkgconfig
 procps
+python3-devel
+python3-pip
 python3-pyelftools
 </pre></div>
 </div>
@@ -621,27 +786,36 @@ meson install -C builddir
 <div class="section" id="fedora-35">
 <h3>Fedora (35)<a class="headerlink" href="#fedora-35" title="Permalink to this headline">¶</a></h3>
 <p>From the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via dnf</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (dnf)</span>
 dnf install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/fedora-35.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install liburing-2.2 via rawhide repos</span>
+dnf install -y fedora-repos-rawhide
+dnf install -y --disablerepo<span class="o">=</span>* --enablerepo<span class="o">=</span>rawhide liburing liburing-devel --nogpgcheck
 </pre></div>
 </div>
 <p>The above will install the packages seen below via the system package-manager
 <code class="docutils literal notranslate"><span class="pre">dnf</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+autoconf
 diffutils
 findutils
 g++
 gcc
 git
 libaio-devel
+libtool
 libuuid-devel
 make
 meson
+nasm
 numactl-devel
 openssl-devel
 patch
 pkgconfig
 procps
+python3-devel
+python3-pip
 python3-pyelftools
 </pre></div>
 </div>
@@ -663,27 +837,36 @@ meson install -C builddir
 <div class="section" id="fedora-34">
 <h3>Fedora (34)<a class="headerlink" href="#fedora-34" title="Permalink to this headline">¶</a></h3>
 <p>From the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via dnf</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (dnf)</span>
 dnf install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/fedora-34.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Install liburing-2.2 via rawhide repos</span>
+dnf install -y fedora-repos-rawhide
+dnf install -y --disablerepo<span class="o">=</span>* --enablerepo<span class="o">=</span>rawhide liburing liburing-devel --nogpgcheck
 </pre></div>
 </div>
 <p>The above will install the packages seen below via the system package-manager
 <code class="docutils literal notranslate"><span class="pre">dnf</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>CUnit-devel
+autoconf
 diffutils
 findutils
 g++
 gcc
 git
 libaio-devel
+libtool
 libuuid-devel
 make
 meson
+nasm
 numactl-devel
 openssl-devel
 patch
 pkgconfig
 procps
+python3-devel
+python3-pip
 python3-pyelftools
 </pre></div>
 </div>
@@ -714,7 +897,7 @@ devel/py-pyelftools
 e2fsprogs-libuuid
 git
 gmake
-meson
+libtool
 nasm
 ncurses
 ninja
@@ -725,8 +908,15 @@ wget
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via pkg</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (pkg)</span>
 pkg install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/freebsd-13.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Upgrade pip</span>
+python3 -m ensurepip --upgrade
+
+<span class="c1"># Installing meson via pip as the one available &#39;pkg install&#39; currently that is 0.62.2, breaks with</span>
+<span class="c1"># a &quot;File name too long&quot;, 0.60 seems ok.</span>
+python3 -m pip install <span class="nv">meson</span><span class="o">==</span><span class="m">0</span>.60
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -749,17 +939,20 @@ meson install -C builddir
 <p>Install the following packages using <code class="docutils literal notranslate"><span class="pre">emerge</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dev-lang/nasm
 dev-libs/libaio
+dev-python/pip
 dev-python/pyelftools
 dev-util/cunit
 dev-util/meson
 dev-util/ninja
 dev-util/pkgconf
+dev-vcs/git
+sys-libs/liburing
 sys-libs/ncurses
 sys-process/numactl
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via emerge</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (emerge)</span>
 emerge <span class="k">$(</span>&lt; toolbox/pkgs/gentoo-latest.txt <span class="k">)</span>
 </pre></div>
 </div>
@@ -767,7 +960,7 @@ emerge <span class="k">$(</span>&lt; toolbox/pkgs/gentoo-latest.txt <span class=
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-ltinfo -lncurses&quot;</span>
 
 <span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
-meson setup builddir
+meson setup builddir --prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson compile -C builddir
@@ -785,10 +978,17 @@ meson install -C builddir
 <span class="pre">line</span></code>, during compilation, then add <code class="docutils literal notranslate"><span class="pre">-ltinfo</span> <span class="pre">-lnurces</span></code> to <code class="docutils literal notranslate"><span class="pre">LDFLAGS</span></code> as
 it is done in the commands above.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The build is configured to install with <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code> this is
+intentional such the the <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code> files end up in the default search
+path on the system. If you do not want this, then remove <code class="docutils literal notranslate"><span class="pre">--prefix=/usr</span></code>
+and adjust your <code class="docutils literal notranslate"><span class="pre">$PKG_CONFIG_PATH</span></code> accordingly.</p>
+</div>
 </div>
 <div class="section" id="macos">
 <h3>macOS<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h3>
-<p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">brew</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
+<p>Install the following packages using <a class="reference external" href="https://brew.sh/">Homebrew</a> (<code class="docutils literal notranslate"><span class="pre">brew</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clang-format
 git
 python3
@@ -801,30 +1001,16 @@ brew upgrade
 clang-format --version <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;Installed&quot;</span> <span class="o">||</span> brew install clang-format
 git --version <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;Installed&quot;</span> <span class="o">||</span> brew install git
 python3 --version <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;Installed&quot;</span> <span class="o">||</span> brew install python3
-
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja
+meson --version <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;Installed&quot;</span> <span class="o">||</span> brew install meson
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
-meson setup builddir
-
-<span class="c1"># build xNVMe</span>
-meson compile -C builddir
-
-<span class="c1"># install xNVMe</span>
-meson install -C builddir
-
-<span class="c1"># uninstall xNVMe</span>
-<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="opensuse-tumbleweed">
 <h3>openSUSE Tumbleweed<a class="headerlink" href="#opensuse-tumbleweed" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">zypper</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cunit-devel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+cunit-devel
 findutils
 gcc
 gcc-c++
@@ -833,11 +1019,16 @@ gzip
 libaio-devel
 libnuma-devel
 libopenssl-devel
+libtool
+liburing-devel
 libuuid-devel
 make
 meson
+nasm
 patch
+pkg-config
 python3
+python3-devel
 python3-pip
 python3-pyelftools
 tar
@@ -846,7 +1037,7 @@ tar
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zypper --non-interactive refresh
 
-<span class="c1"># Install packages via zypper</span>
+<span class="c1"># Install packages via the system package-manager (zypper)</span>
 zypper --non-interactive install -y --allow-downgrade <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/opensuse-tumbleweed-latest.txt&quot;</span><span class="k">)</span>
 </pre></div>
 </div>
@@ -868,7 +1059,8 @@ meson install -C builddir
 <div class="section" id="opensuse-leap-15-4">
 <h3>openSUSE Leap (15.4)<a class="headerlink" href="#opensuse-leap-15-4" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">zypper</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cunit-devel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+cunit-devel
 findutils
 gcc
 gcc-c++
@@ -877,11 +1069,15 @@ gzip
 libaio-devel
 libnuma-devel
 libopenssl-devel
+libtool
 libuuid-devel
 make
 meson
+nasm
 patch
+pkg-config
 python3
+python3-devel
 python3-pip
 python3-pyelftools
 tar
@@ -890,8 +1086,16 @@ tar
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zypper --non-interactive refresh
 
-<span class="c1"># Install packages via dnf</span>
+<span class="c1"># Install packages via the system package-manager (zypper)</span>
 zypper --non-interactive install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/opensuse-leap-15.4.txt&quot;</span><span class="k">)</span>
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure --libdir<span class="o">=</span>/usr/lib64 --libdevdir<span class="o">=</span>/usr/lib64
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -912,7 +1116,8 @@ meson install -C builddir
 <div class="section" id="opensuse-leap-15-3">
 <h3>openSUSE Leap (15.3)<a class="headerlink" href="#opensuse-leap-15-3" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">zypper</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cunit-devel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+cunit-devel
 findutils
 gcc
 gcc-c++
@@ -921,10 +1126,14 @@ gzip
 libaio-devel
 libnuma-devel
 libopenssl-devel
+libtool
 libuuid-devel
 make
+nasm
 patch
+pkg-config
 python3
+python3-devel
 python3-pip
 tar
 </pre></div>
@@ -932,11 +1141,19 @@ tar
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zypper --non-interactive refresh
 
-<span class="c1"># Install packages via dnf</span>
+<span class="c1"># Install packages via the system package-manager (zypper)</span>
 zypper --non-interactive install -y <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/opensuse-leap-15.3.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure --libdir<span class="o">=</span>/usr/lib64 --libdevdir<span class="o">=</span>/usr/lib64
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -954,10 +1171,11 @@ meson install -C builddir
 </pre></div>
 </div>
 </div>
-<div class="section" id="ubuntu-21-10-impish">
-<h3>Ubuntu 21.10 (Impish)<a class="headerlink" href="#ubuntu-21-10-impish" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="ubuntu-22-04-jammy">
+<h3>Ubuntu 22.04 (Jammy)<a class="headerlink" href="#ubuntu-22-04-jammy" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+build-essential
 g++
 gcc
 git
@@ -966,18 +1184,29 @@ libcunit1-dev
 libncurses5-dev
 libnuma-dev
 libssl-dev
+libtool
 nasm
+pkg-config
 python3
 python3-pip
+python3-venv
 uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
-apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/ubuntu-impish.txt&quot;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (apt-get)</span>
+apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/ubuntu-jammy.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -998,7 +1227,8 @@ meson install -C builddir
 <div class="section" id="ubuntu-20-04-focal">
 <h3>Ubuntu 20.04 (Focal)<a class="headerlink" href="#ubuntu-20-04-focal" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+build-essential
 g++
 gcc
 git
@@ -1007,18 +1237,29 @@ libcunit1-dev
 libncurses5-dev
 libnuma-dev
 libssl-dev
+libtool
 nasm
+pkg-config
 python3
 python3-pip
+python3-venv
 uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (apt-get)</span>
 apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/ubuntu-focal.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -1039,7 +1280,8 @@ meson install -C builddir
 <div class="section" id="ubuntu-18-04-bionic">
 <h3>Ubuntu 18.04 (Bionic)<a class="headerlink" href="#ubuntu-18-04-bionic" title="Permalink to this headline">¶</a></h3>
 <p>Install the following packages via <code class="docutils literal notranslate"><span class="pre">apt-get</span></code> and <code class="docutils literal notranslate"><span class="pre">pip3</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build-essential
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>autoconf
+build-essential
 g++-8
 gcc-8
 git
@@ -1048,18 +1290,40 @@ libcunit1-dev
 libncurses5-dev
 libnuma-dev
 libssl-dev
+libtool
 nasm
-python3.8
+pkg-config
 python3-pip
+python3-venv
+python3.8
 uuid-dev
 </pre></div>
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via apt-get</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install packages via the system package-manager (apt-get)</span>
 apt-get install -qy <span class="k">$(</span>cat <span class="s2">&quot;toolbox/pkgs/ubuntu-bionic.txt&quot;</span><span class="k">)</span>
 
-<span class="c1"># Install packages via PyPI</span>
-pip3 install meson ninja pyelftools
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3 -m pip install --upgrade pip
+python3 -m pip install meson ninja pyelftools
+
+<span class="c1"># Install nasm from source</span>
+git clone https://github.com/netwide-assembler/nasm.git
+<span class="nb">cd</span> nasm
+git checkout nasm-2.15
+./autogen.sh
+./configure --prefix<span class="o">=</span>/usr
+make -j <span class="k">$(</span>nproc<span class="k">)</span>
+make install
+<span class="nb">cd</span> ..
+
+<span class="c1"># Clone, build and install liburing</span>
+git clone https://github.com/axboe/liburing.git
+<span class="nb">cd</span> liburing
+git checkout liburing-2.2
+./configure
+make
+make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
@@ -1129,10 +1393,10 @@ supported/enabled backends then invoke:</p>
 </div>
 <p>It should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
-ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">3</span>, patch: <span class="m">0</span><span class="o">}</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">4</span>, patch: <span class="m">0</span><span class="o">}</span>
 xnvme_libconf:
   - <span class="s1">&#39;3p: fio;git-describe:fio-3.30&#39;</span>
-  - <span class="s1">&#39;3p: liburing;git-describe:liburing-2.1-409-gbb756586&#39;</span>
+  - <span class="s1">&#39;3p: liburing;git-describe:liburing-2.2&#39;</span>
   - <span class="s1">&#39;3p: spdk;git-describe:v21.10;+patches&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_BLOCK_ENABLED&#39;</span>
@@ -1148,12 +1412,13 @@ xnvme_libconf:
   - <span class="s1">&#39;conf: XNVME_BE_ASYNC_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_ASYNC_EMU_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_ASYNC_THRPOOL_ENABLED&#39;</span>
-  - <span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/330353-5.10.113&#39;</span>
+  - <span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/332544-5.19.0&#39;</span>
   - <span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD&#39;</span>
+  - <span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD_VEC&#39;</span>
   - <span class="s1">&#39;3p: NVME_IOCTL_ADMIN64_CMD&#39;</span>
 xnvme_be_attr_list:
-  count: <span class="m">5</span>
-  capacity: <span class="m">5</span>
+  count: <span class="m">8</span>
+  capacity: <span class="m">8</span>
   items:
   - name: <span class="s1">&#39;spdk&#39;</span>
     enabled: <span class="m">1</span>
@@ -1167,8 +1432,17 @@ xnvme_be_attr_list:
   - name: <span class="s1">&#39;posix&#39;</span>
     enabled: <span class="m">1</span>
 
+  - name: <span class="s1">&#39;macos&#39;</span>
+    enabled: <span class="m">0</span>
+
   - name: <span class="s1">&#39;windows&#39;</span>
     enabled: <span class="m">0</span>
+
+  - name: <span class="s1">&#39;ramdisk&#39;</span>
+    enabled: <span class="m">1</span>
+
+  - name: <span class="s1">&#39;vfio&#39;</span>
+    enabled: <span class="m">1</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">xnvme_3p</span></code> part of the output informs about the third-party projects
@@ -1209,10 +1483,10 @@ expected by running:</p>
     dtype: 0x2
     nsid: 0x1
     csi: 0x0
+    subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
-    async: <span class="o">{</span>id: <span class="s1">&#39;emu&#39;</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>This tells you that <strong>xNVMe</strong> can communicate with the given device identifier
@@ -1243,6 +1517,7 @@ modprobe -r null_blk
     dtype: 0x3
     nsid: 0x1
     csi: 0x1f
+    subnqn: <span class="s1">&#39;&#39;</span>
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
@@ -1303,6 +1578,7 @@ modprobe -r null_blk
     dtype: 0x3
     nsid: 0x1
     csi: 0x2
+    subnqn: <span class="s1">&#39;&#39;</span>
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;block&#39;</span><span class="o">}</span>
@@ -1353,7 +1629,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0003, mib: <span class="m">0</span>.00, mib_sec: <span class="m">12</span>.37<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0003, mib: <span class="m">0</span>.00, mib_sec: <span class="m">12</span>.26<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1386,7 +1662,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0002, mib: <span class="m">0</span>.00, mib_sec: <span class="m">15</span>.69<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0005, mib: <span class="m">0</span>.00, mib_sec: <span class="m">7</span>.61<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1437,7 +1713,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.050641<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.864026<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -1452,6 +1728,8 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 /sys/kernel/iommu_groups/5/devices/0000:00:1f.3
 /sys/kernel/iommu_groups/3/devices/0000:00:03.0
 /sys/kernel/iommu_groups/1/devices/0000:00:01.0
+/sys/kernel/iommu_groups/8/devices/0000:04:00.0
+/sys/kernel/iommu_groups/8/devices/0000:02:01.0
 /sys/kernel/iommu_groups/6/devices/0000:01:00.0
 /sys/kernel/iommu_groups/4/devices/0000:00:04.0
 /sys/kernel/iommu_groups/2/devices/0000:00:02.0
@@ -1471,6 +1749,7 @@ Kernel NVMe driver unbound, and <code class="docutils literal notranslate"><span
 </div>
 <p>The command above should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
+<span class="m">0000</span>:04:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
 <span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
 
 Current user memlock limit: <span class="m">742</span> MB
@@ -1486,6 +1765,7 @@ To change this, please adjust limits.conf memlock limit <span class="k">for</spa
 </div>
 <p>Should output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: vfio-pci -&gt; nvme
+<span class="m">0000</span>:04:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: vfio-pci -&gt; nvme
 <span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Already using the virtio-pci driver
 </pre></div>
 </div>
@@ -1501,8 +1781,9 @@ Linux devfs, that is, no longer available in <code class="docutils literal notra
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_enumeration:
-  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0<span class="o">}</span>
-  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x2, csi: 0x2<span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:04:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0, subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0, subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x2, csi: 0x2, subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Notice that multiple URIs using the same PCI id but with different <strong>xNVMe</strong>
@@ -1564,7 +1845,7 @@ required linker flags:</p>
 </div>
 <p>This will output something like the output below, it will vary depending on the
 features enabled/disabled.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-Wl,--whole-archive -Wl,--no-as-needed -lxnvme -Wl,--no-whole-archive -Wl,--as-needed -pthread -lrt -lm -lnuma -luuid -laio
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L/usr/local/lib/x86_64-linux-gnu -Wl,--whole-archive -Wl,--no-as-needed -lxnvme -Wl,--no-whole-archive -Wl,--as-needed -pthread -lrt -lm -lnuma -luuid -laio -lvfn -pthread -luring
 </pre></div>
 </div>
 <p>You can pass the arguments above to your compiler, or using pkg-config like so:</p>
@@ -1612,6 +1893,7 @@ a simpler link-target.</p>
     dtype: 0x2
     nsid: 0x1
     csi: 0x0
+    subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
   xnvme_be:
     admin: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
     sync: <span class="o">{</span>id: <span class="s1">&#39;nvme&#39;</span><span class="o">}</span>

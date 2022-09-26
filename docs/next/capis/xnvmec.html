@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvmec &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvmec &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -53,7 +53,6 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_sgl.html">xnvme_sgl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">xnvmec</a><ul>
@@ -99,6 +98,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
 </ul>
 
@@ -249,6 +249,9 @@
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">uri</span><span class="p">;</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sys_uri</span><span class="p">;</span>
 
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">subnqn</span><span class="p">;</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">hostnqn</span><span class="p">;</span>
+
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cmd_input</span><span class="p">;</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cmd_output</span><span class="p">;</span>
 
@@ -351,6 +354,13 @@
 	<span class="kt">uint32_t</span> <span class="n">oflags</span><span class="p">;</span>
 
 	<span class="kt">uint32_t</span> <span class="n">vec_cnt</span><span class="p">;</span>
+
+	<span class="kt">uint32_t</span> <span class="n">dtype</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">dspec</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">doper</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">endir</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">tgtdir</span><span class="p">;</span>
+	<span class="kt">uint32_t</span> <span class="n">nsr</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="kt">void</span>
@@ -485,7 +495,17 @@
 
 	<span class="n">XNVMEC_OPT_VEC_CNT</span> <span class="o">=</span> <span class="mi">97</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_VEC_CNT</span>
 
-	<span class="n">XNVMEC_OPT_END</span> <span class="o">=</span> <span class="mi">98</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_END</span>
+	<span class="n">XNVMEC_OPT_SUBNQN</span>  <span class="o">=</span> <span class="mi">98</span><span class="p">,</span> <span class="c1">///&lt; XNVME_OPT_SUBNQN</span>
+	<span class="n">XNVMEC_OPT_HOSTNQN</span> <span class="o">=</span> <span class="mi">99</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_HOSTNQN</span>
+
+	<span class="n">XNVMEC_OPT_DTYPE</span>  <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DTYPE</span>
+	<span class="n">XNVMEC_OPT_DSPEC</span>  <span class="o">=</span> <span class="mi">101</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DSPEC</span>
+	<span class="n">XNVMEC_OPT_DOPER</span>  <span class="o">=</span> <span class="mi">102</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_DOPER</span>
+	<span class="n">XNVMEC_OPT_ENDIR</span>  <span class="o">=</span> <span class="mi">103</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ENDIR</span>
+	<span class="n">XNVMEC_OPT_TGTDIR</span> <span class="o">=</span> <span class="mi">104</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_TGTDIR</span>
+	<span class="n">XNVMEC_OPT_NSR</span>    <span class="o">=</span> <span class="mi">105</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NSR</span>
+
+	<span class="n">XNVMEC_OPT_END</span> <span class="o">=</span> <span class="mi">106</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_END</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -637,8 +657,7 @@
 <span class="cm"> * @param cli The command-line-interface to parse arguments for</span>
 <span class="cm"> * @param opts The device-options to fill</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return On success, the 0 is returned. On error, -1 is returned and `errno` set to indicate the</span>
-<span class="cm"> * error.</span>
+<span class="cm"> * @return On success, 0 is returned.</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="nf">xnvmec_cli_to_opts</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvmec</span> <span class="o">*</span><span class="n">cli</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="o">*</span><span class="n">opts</span><span class="p">);</span>
@@ -1249,6 +1268,54 @@
 </dd></dl>
 
 <dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_SUBNQN">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a0fde7e64377a661a1259378c296366a7"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_SUBNQN</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_SUBNQN" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVME_OPT_SUBNQN. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_HOSTNQN">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115aa26db5b35fe30acb94d18fa7d6668a21"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_HOSTNQN</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_HOSTNQN" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_HOSTNQN. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_DTYPE">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115afbe4cd8a95128373450bb0b5e9becdb4"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_DTYPE</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_DTYPE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_DTYPE. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_DSPEC">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a1acea4123480b0bb92bef688aea2d23d"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_DSPEC</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_DSPEC" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_DSPEC. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_DOPER">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ab4406bc88d42506b57a88edffc6e17c0"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_DOPER</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_DOPER" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_DOPER. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_ENDIR">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115af896c0b951e3c3aeec1932e9484ab6d0"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_ENDIR</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_ENDIR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_ENDIR. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_TGTDIR">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a526c83e515033e9f5af464209543c911"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_TGTDIR</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_TGTDIR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_TGTDIR. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_NSR">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a63a2b0ea66a38a74338eb7b41514ed22"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_NSR</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_NSR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_NSR. </p>
+</dd></dl>
+
+<dl class="c enumerator">
 <dt id="c.xnvmec_opt.XNVMEC_OPT_END">
 <span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac830349031802c23206f6aed39764b85"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_END</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_END" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>XNVMEC_OPT_END. </p>
@@ -1459,6 +1526,16 @@
 <dl class="c var">
 <dt id="c.xnvmec_args.sys_uri">
 <span class="target" id="structxnvmec__args_1a0dab2aa9a7fd298d2184f7cf8e7724b3"></span><em class="property">const</em> char *<code class="sig-name descname">sys_uri</code><a class="headerlink" href="#c.xnvmec_args.sys_uri" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.subnqn">
+<span class="target" id="structxnvmec__args_1a5f76c39822a482be23c2b9cc704b8ee6"></span><em class="property">const</em> char *<code class="sig-name descname">subnqn</code><a class="headerlink" href="#c.xnvmec_args.subnqn" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.hostnqn">
+<span class="target" id="structxnvmec__args_1ad32b897bbcb0848f63c79621b21c132f"></span><em class="property">const</em> char *<code class="sig-name descname">hostnqn</code><a class="headerlink" href="#c.xnvmec_args.hostnqn" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c var">
@@ -1788,7 +1865,7 @@
 
 <dl class="c var">
 <dt id="c.xnvmec_args.css">
-<span class="target" id="structxnvmec__args_1a17b2927a4dd6fb713de96d9e000246e7"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvmec_args" title="xnvmec_args">xnvmec_args</a>.<strong>[anonymous]</strong> <code class="sig-name descname">css</code><a class="headerlink" href="#c.xnvmec_args.css" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvmec__args_1adac36553236eaf3d5928259290feb07a"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvmec_args" title="xnvmec_args">xnvmec_args</a>.<strong>[anonymous]</strong> <code class="sig-name descname">css</code><a class="headerlink" href="#c.xnvmec_args.css" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>SPDK controller-setup: do command-set-selection. </p>
 </dd></dl>
 
@@ -1860,6 +1937,36 @@
 <dl class="c var">
 <dt id="c.xnvmec_args.vec_cnt">
 <span class="target" id="structxnvmec__args_1ae2ea88efe63044d774ad62731d45c97c"></span>uint32_t <code class="sig-name descname">vec_cnt</code><a class="headerlink" href="#c.xnvmec_args.vec_cnt" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.dtype">
+<span class="target" id="structxnvmec__args_1a2a4a75a0f9af3aeb4864423eda481cd3"></span>uint32_t <code class="sig-name descname">dtype</code><a class="headerlink" href="#c.xnvmec_args.dtype" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.dspec">
+<span class="target" id="structxnvmec__args_1a00aa8aee6ecb2098200b161d983a8cfd"></span>uint32_t <code class="sig-name descname">dspec</code><a class="headerlink" href="#c.xnvmec_args.dspec" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.doper">
+<span class="target" id="structxnvmec__args_1ae1c6b6be9f1910b0f32e616c6f3e6069"></span>uint32_t <code class="sig-name descname">doper</code><a class="headerlink" href="#c.xnvmec_args.doper" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.endir">
+<span class="target" id="structxnvmec__args_1a57cf1193fb67a024882faa81a1f38889"></span>uint32_t <code class="sig-name descname">endir</code><a class="headerlink" href="#c.xnvmec_args.endir" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.tgtdir">
+<span class="target" id="structxnvmec__args_1a57dbbaf7264333528ff94d48c0ab9c3c"></span>uint32_t <code class="sig-name descname">tgtdir</code><a class="headerlink" href="#c.xnvmec_args.tgtdir" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvmec_args.nsr">
+<span class="target" id="structxnvmec__args_1af7e3c793866ecbe38f47c17a5d64cf77"></span>uint32_t <code class="sig-name descname">nsr</code><a class="headerlink" href="#c.xnvmec_args.nsr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -2104,7 +2211,7 @@
 <span class="target" id="libxnvmec_8h_1ad25ab8bac65e7f13d27c7131e48e6dcd"></span>int <code class="sig-name descname">xnvmec_cli_to_opts</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.xnvmec" title="xnvmec">xnvmec</a> *<em>cli</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts">xnvme_opts</a> *<em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvmec_cli_to_opts" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Fill the given ‘opts’ with values parsed in the given ‘cli’. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>On success, the 0 is returned. On error, -1 is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate the error. </p>
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">cli</span></code>: The command-line-interface to parse arguments for </p></li>
