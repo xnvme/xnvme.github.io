@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>fio IO Engine &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>fio IO Engine &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -74,6 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
 </ul>
 
@@ -216,6 +217,7 @@ xnvme enum
 </div>
 <p>Which should output something similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
+<span class="m">0000</span>:04:00.0 <span class="o">(</span>1b36 <span class="m">0010</span><span class="o">)</span>: nvme -&gt; vfio-pci
 <span class="m">0000</span>:00:02.0 <span class="o">(</span>1af4 <span class="m">1001</span><span class="o">)</span>: Active mountpoints on /dev/vda, so not binding
 
 Current user memlock limit: <span class="m">742</span> MB
@@ -230,8 +232,9 @@ To change this, please adjust limits.conf memlock limit <span class="k">for</spa
 
 
 xnvme_enumeration:
-  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0<span class="o">}</span>
-  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x2, csi: 0x2<span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:04:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0, subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x1, csi: 0x0, subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span><span class="o">}</span>
+  - <span class="o">{</span>uri: <span class="s1">&#39;0000:03:00.0&#39;</span>, dtype: 0x2, nsid: 0x2, csi: 0x2, subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>From the output above use the <code class="docutils literal notranslate"><span class="pre">pcie</span></code> identifier in <code class="docutils literal notranslate"><span class="pre">uri</span></code>. In the above,

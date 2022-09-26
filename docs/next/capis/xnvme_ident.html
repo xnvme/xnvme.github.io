@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_ident &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme_ident &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -68,7 +68,6 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_sgl.html">xnvme_sgl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
@@ -76,6 +75,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
 </ul>
 
@@ -142,14 +142,17 @@
 <span class="cm"> * @struct xnvme_ident</span>
 <span class="cm"> */</span>
 <span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="p">{</span>
-	<span class="kt">char</span> <span class="n">uri</span><span class="p">[</span><span class="n">XNVME_IDENT_URI_LEN</span><span class="p">];</span>
+	<span class="kt">char</span> <span class="n">subnqn</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
 
+	<span class="kt">char</span> <span class="n">uri</span><span class="p">[</span><span class="n">XNVME_IDENT_URI_LEN</span><span class="p">];</span>
 	<span class="kt">uint32_t</span> <span class="n">dtype</span><span class="p">;</span>
+
 	<span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">;</span>
 	<span class="kt">uint8_t</span> <span class="n">csi</span><span class="p">;</span>
-	<span class="kt">uint8_t</span> <span class="n">rsvd</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+
+	<span class="kt">uint8_t</span> <span class="n">rsvd</span><span class="p">[</span><span class="mi">55</span><span class="p">];</span>
 <span class="p">};</span>
-<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_ident</span><span class="p">)</span> <span class="o">==</span> <span class="mi">396</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_ident</span><span class="p">)</span> <span class="o">==</span> <span class="mi">704</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Parse the given &#39;uri&#39; into ::xnvme_ident</span>
@@ -184,6 +187,11 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="c var">
+<dt id="c.xnvme_ident.subnqn">
+<span class="target" id="structxnvme__ident_1a74b2b9d52442baf40bf321f9597102df"></span>char <code class="sig-name descname">subnqn</code>[256]<a class="headerlink" href="#c.xnvme_ident.subnqn" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
 <dt id="c.xnvme_ident.uri">
 <span class="target" id="structxnvme__ident_1a075460e0d01c56391748affb14afaca2"></span>char <code class="sig-name descname">uri</code>[<code class="sig-name descname">XNVME_IDENT_URI_LEN</code>]<a class="headerlink" href="#c.xnvme_ident.uri" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
@@ -205,7 +213,7 @@
 
 <dl class="c var">
 <dt id="c.xnvme_ident.rsvd">
-<span class="target" id="structxnvme__ident_1a2e93982c9a34738abd95dba4a571ef4b"></span>uint8_t <code class="sig-name descname">rsvd</code>[3]<a class="headerlink" href="#c.xnvme_ident.rsvd" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__ident_1a933fa65fd6837d35f423ccf7cee96789"></span>uint8_t <code class="sig-name descname">rsvd</code>[55]<a class="headerlink" href="#c.xnvme_ident.rsvd" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>

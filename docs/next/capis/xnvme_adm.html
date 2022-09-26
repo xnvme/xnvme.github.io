@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_adm &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme_adm &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,6 +54,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-adm-dir-recv">xnvme_adm_dir_recv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-adm-dir-send">xnvme_adm_dir_send</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-adm-format">xnvme_adm_format</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-adm-gfeat">xnvme_adm_gfeat</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-adm-idfy">xnvme_adm_idfy</a></li>
@@ -70,7 +72,6 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_sgl.html">xnvme_sgl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
@@ -78,6 +79,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
 </ul>
 
@@ -296,6 +298,38 @@
 <span class="nf">xnvme_nvm_sanitize</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">sanact</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">ause</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">ovrpat</span><span class="p">,</span>
 		   <span class="kt">uint8_t</span> <span class="n">owpass</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">oipbp</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">nodas</span><span class="p">);</span>
 
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of directive send command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param doper Directive operation to perform</span>
+<span class="cm"> * @param dtype Directive type</span>
+<span class="cm"> * @param dspec Directive specific</span>
+<span class="cm"> * @param val Value specific to command dword 12</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_dir_send</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">doper</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">dtype</span><span class="p">,</span>
+		   <span class="kt">uint32_t</span> <span class="n">dspec</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of directive receive command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param doper Directive operation to perform</span>
+<span class="cm"> * @param dtype Directive type</span>
+<span class="cm"> * @param val Value specific to command dword 12</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of the data-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_dir_recv</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span> <span class="o">*</span><span class="n">ctx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nsid</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">doper</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">dtype</span><span class="p">,</span>
+		   <span class="kt">uint32_t</span> <span class="n">val</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">dbuf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">dbuf_nbytes</span><span class="p">);</span>
 <span class="cp">#ifdef __cplusplus</span>
 <span class="p">}</span>
 <span class="cp">#endif</span>
@@ -312,6 +346,53 @@
 </div>
 <div class="section" id="functions">
 <span id="sec-c-api-xnvme-adm-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="xnvme-adm-dir-recv">
+<span id="sec-c-api-xnvme-adm-func-xnvme-adm-dir-recv"></span><h3>xnvme_adm_dir_recv<a class="headerlink" href="#xnvme-adm-dir-recv" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_adm_dir_recv">
+<span class="target" id="libxnvme__adm_8h_1a332eba8bff24bd6c26b8486d64be3314"></span>int <code class="sig-name descname">xnvme_adm_dir_recv</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, uint32_t <em>nsid</em>, uint8_t <em>doper</em>, uint32_t <em>dtype</em>, uint32_t <em>val</em>, void *<em>dbuf</em>, size_t <em>dbuf_nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_adm_dir_recv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Submit and wait for completion of directive receive command. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to <a class="reference internal" href="xnvme.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">doper</span></code>: Directive operation to perform </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dtype</span></code>: Directive type </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">val</span></code>: Value specific to command dword 12 </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf</span></code>: pointer to data-payload </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbuf_nbytes</span></code>: size of the data-payload in bytes</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-adm-dir-send">
+<span id="sec-c-api-xnvme-adm-func-xnvme-adm-dir-send"></span><h3>xnvme_adm_dir_send<a class="headerlink" href="#xnvme-adm-dir-send" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_adm_dir_send">
+<span class="target" id="libxnvme__adm_8h_1aee79a03147ff6bcde62d5829d0323d65"></span>int <code class="sig-name descname">xnvme_adm_dir_send</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, uint32_t <em>nsid</em>, uint8_t <em>doper</em>, uint32_t <em>dtype</em>, uint32_t <em>dspec</em>, uint32_t <em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_adm_dir_send" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Submit and wait for completion of directive send command. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to <a class="reference internal" href="xnvme.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">doper</span></code>: Directive operation to perform </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dtype</span></code>: Directive type </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dspec</span></code>: Directive specific </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">val</span></code>: Value specific to command dword 12</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
 <div class="section" id="xnvme-adm-format">
 <span id="sec-c-api-xnvme-adm-func-xnvme-adm-format"></span><h3>xnvme_adm_format<a class="headerlink" href="#xnvme-adm-format" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">

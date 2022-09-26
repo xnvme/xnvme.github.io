@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme &mdash; xNVMe 0.3.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -108,6 +108,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-from-slba-naddrs">xnvme_lba_range_from_slba_naddrs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-from-zdescr">xnvme_lba_range_from_zdescr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-pr">xnvme_lba_range_pr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-prep-nvm">xnvme_prep_nvm</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-drain">xnvme_queue_drain</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-capacity">xnvme_queue_get_capacity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-cmd-ctx">xnvme_queue_get_cmd_ctx</a></li>
@@ -140,7 +141,6 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_sgl.html">xnvme_sgl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
@@ -148,6 +148,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
 </ul>
 
@@ -252,6 +253,8 @@
 	<span class="kt">uint32_t</span> <span class="n">main_core</span><span class="p">;</span>    <span class="c1">///&lt; SPDK multi-processing: main-core</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">core_mask</span><span class="p">;</span> <span class="c1">///&lt; SPDK multi-processing: core-mask</span>
 	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">adrfam</span><span class="p">;</span>    <span class="c1">///&lt; SPDK fabrics: address-family, IPv4/IPv6</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">subnqn</span><span class="p">;</span>    <span class="c1">///&lt; SPDK fabrics: Subsystem NQN</span>
+	<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">hostnqn</span><span class="p">;</span>   <span class="c1">///&lt; SPDK fabrics: Host NQN</span>
 	<span class="kt">uint32_t</span> <span class="n">spdk_fabrics</span><span class="p">;</span> <span class="c1">///&lt; Is assigned a value by backend if SPDK uses fabrics</span>
 <span class="p">};</span>
 
@@ -920,7 +923,7 @@
 
 <dl class="c var">
 <dt id="c.xnvme_lba_range.attr">
-<span class="target" id="structxnvme__lba__range_1a979c48b50b5a318acd7a04364e7cc55d"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a>.<strong>[anonymous]</strong> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__lba__range_1a11bda3d07528d5635cdb814ad47107be"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a>.<strong>[anonymous]</strong> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -1788,6 +1791,28 @@
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">range</span></code>: Pointer to the <a class="reference internal" href="#structxnvme__lba__range"><span class="std std-ref">xnvme_lba_range</span></a> to print </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">opts</span></code>: printer options, see <a class="reference internal" href="#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xnvme-prep-nvm">
+<span id="sec-c-api-xnvme-func-xnvme-prep-nvm"></span><h3>xnvme_prep_nvm<a class="headerlink" href="#xnvme-prep-nvm" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_prep_nvm">
+<span class="target" id="libxnvme__nvm_8h_1a187c917a67639401e97aab3835c7300b"></span>void <code class="sig-name descname">xnvme_prep_nvm</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, uint8_t <em>opcode</em>, uint32_t <em>nsid</em>, uint64_t <em>slba</em>, uint16_t <em>nlb</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_prep_nvm" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of, a NVMe Write. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ctx</span></code>: Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">opcode</span></code>: Opcode for the NVMe command </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nsid</span></code>: Namespace Identifier </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slba</span></code>: The LBA to start the write at </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nlb</span></code>: Number of LBAs to be written. NOTE: nlb is a zero-based value</p></li>
 </ul>
 </dd>
 </dl>
