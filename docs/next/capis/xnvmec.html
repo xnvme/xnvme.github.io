@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvmec &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvmec &mdash; xNVMe 0.5.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.4.0
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -148,6 +148,26 @@
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_util.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_ver.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_pp.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#define XNVMEC_CORE_OPTS                                                        \</span>
+<span class="cp">	{XNVMEC_OPT_ORCH_TITLE, XNVMEC_SKIP}, {XNVMEC_OPT_SUBNQN, XNVMEC_LOPT}, \</span>
+<span class="cp">		{XNVMEC_OPT_HOSTNQN, XNVMEC_LOPT},                              \</span>
+<span class="cp">	{                                                                       \</span>
+<span class="cp">		XNVMEC_OPT_BE, XNVMEC_LOPT                                      \</span>
+<span class="cp">	}</span>
+
+<span class="cp">#define XNVMEC_ADMIN_OPTS                                                                      \</span>
+<span class="cp">	XNVMEC_CORE_OPTS, {XNVMEC_OPT_DEV_NSID, XNVMEC_LOPT}, {XNVMEC_OPT_ADMIN, XNVMEC_LOPT}, \</span>
+<span class="cp">		{XNVMEC_OPT_MEM, XNVMEC_LOPT},                                                 \</span>
+<span class="cp">	{                                                                                      \</span>
+<span class="cp">		XNVMEC_OPT_DIRECT, XNVMEC_LOPT                                                 \</span>
+<span class="cp">	}</span>
+
+<span class="cp">#define XNVMEC_SYNC_OPTS \</span>
+<span class="cp">	XNVMEC_ADMIN_OPTS, { XNVMEC_OPT_SYNC, XNVMEC_LOPT }</span>
+
+<span class="cp">#define XNVMEC_ASYNC_OPTS \</span>
+<span class="cp">	XNVMEC_SYNC_OPTS, { XNVMEC_OPT_ASYNC, XNVMEC_LOPT }</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Fills `buf` with content `nbytes` of content</span>
@@ -505,7 +525,12 @@
 	<span class="n">XNVMEC_OPT_TGTDIR</span> <span class="o">=</span> <span class="mi">104</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_TGTDIR</span>
 	<span class="n">XNVMEC_OPT_NSR</span>    <span class="o">=</span> <span class="mi">105</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NSR</span>
 
-	<span class="n">XNVMEC_OPT_END</span> <span class="o">=</span> <span class="mi">106</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_END</span>
+	<span class="n">XNVMEC_OPT_POSA_TITLE</span>     <span class="o">=</span> <span class="mi">106</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_POSA_TITLE</span>
+	<span class="n">XNVMEC_OPT_NON_POSA_TITLE</span> <span class="o">=</span> <span class="mi">107</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_NON_POSA_TITLE</span>
+
+	<span class="n">XNVMEC_OPT_ORCH_TITLE</span> <span class="o">=</span> <span class="mi">108</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_ORCH_TITLE</span>
+
+	<span class="n">XNVMEC_OPT_END</span> <span class="o">=</span> <span class="mi">109</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_OPT_END</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -513,6 +538,7 @@
 <span class="cm"> * XNVMEC_LOPT: ./cli --arg 0x0; optionally provide a value</span>
 <span class="cm"> * XNVMEC_LREQ: ./cli --arg 0x0; require providing a value</span>
 <span class="cm"> * XNVMEC_POSA: ./cli arg1 arg2; required, ordered, and provides a value</span>
+<span class="cm"> * XNVMEC_SKIP: ; This argument is used for formatting etc.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @enum xnvmec_opt_type</span>
 <span class="cm"> */</span>
@@ -521,6 +547,7 @@
 	<span class="n">XNVMEC_LFLG</span> <span class="o">=</span> <span class="mh">0x2</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_LFLG</span>
 	<span class="n">XNVMEC_LOPT</span> <span class="o">=</span> <span class="mh">0x3</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_LOPT</span>
 	<span class="n">XNVMEC_LREQ</span> <span class="o">=</span> <span class="mh">0x4</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_LREQ</span>
+	<span class="n">XNVMEC_SKIP</span> <span class="o">=</span> <span class="mh">0x5</span><span class="p">,</span> <span class="c1">///&lt; XNVMEC_SKIP</span>
 <span class="p">};</span>
 
 <span class="k">enum</span> <span class="n">xnvmec_opt_value_type</span> <span class="p">{</span>
@@ -529,6 +556,7 @@
 	<span class="n">XNVMEC_OPT_VTYPE_HEX</span>  <span class="o">=</span> <span class="mh">0x3</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_VTYPE_FILE</span> <span class="o">=</span> <span class="mh">0x4</span><span class="p">,</span>
 	<span class="n">XNVMEC_OPT_VTYPE_STR</span>  <span class="o">=</span> <span class="mh">0x5</span><span class="p">,</span>
+	<span class="n">XNVMEC_OPT_VTYPE_SKIP</span> <span class="o">=</span> <span class="mh">0x6</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="nc">xnvmec_opt_attr</span> <span class="p">{</span>
@@ -1316,6 +1344,24 @@
 </dd></dl>
 
 <dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_POSA_TITLE">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115a59e616277426a7e6da3ae53d6f520bbd"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_POSA_TITLE</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_POSA_TITLE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_POSA_TITLE. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_NON_POSA_TITLE">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ad6d87650d3e7655707ef191265058a53"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_NON_POSA_TITLE</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_NON_POSA_TITLE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_NON_POSA_TITLE. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt.XNVMEC_OPT_ORCH_TITLE">
+<span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ae1c7a5e3c99b82e110e5c743c0539c3a"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_ORCH_TITLE</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_ORCH_TITLE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_OPT_ORCH_TITLE. </p>
+</dd></dl>
+
+<dl class="c enumerator">
 <dt id="c.xnvmec_opt.XNVMEC_OPT_END">
 <span class="target" id="libxnvmec_8h_1a1a5e5d06ab61d8a4fcc5d0f577d54115ac830349031802c23206f6aed39764b85"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_END</code><a class="headerlink" href="#c.xnvmec_opt.XNVMEC_OPT_END" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>XNVMEC_OPT_END. </p>
@@ -1330,7 +1376,7 @@
 <dt id="c.xnvmec_opt_type">
 <span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007f"></span><em class="property">enum </em><code class="sig-name descname">xnvmec_opt_type</code><a class="headerlink" href="#c.xnvmec_opt_type" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>XNVMEC_LFLG: . </p>
-<p>/cli verbose; always optional XNVMEC_LOPT: ./cli arg 0x0; optionally provide a value XNVMEC_LREQ: ./cli arg 0x0; require providing a value XNVMEC_POSA: ./cli arg1 arg2; required, ordered, and provides a value </p>
+<p>/cli verbose; always optional XNVMEC_LOPT: ./cli arg 0x0; optionally provide a value XNVMEC_LREQ: ./cli arg 0x0; require providing a value XNVMEC_POSA: ./cli arg1 arg2; required, ordered, and provides a value XNVMEC_SKIP: ; This argument is used for formatting etc. </p>
 <p><em>Values:</em></p>
 <dl class="c enumerator">
 <dt id="c.xnvmec_opt_type.XNVMEC_POSA">
@@ -1354,6 +1400,12 @@
 <dt id="c.xnvmec_opt_type.XNVMEC_LREQ">
 <span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007fa6b6771dc1105b5cb53a66ca88c7d7097"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_LREQ</code><a class="headerlink" href="#c.xnvmec_opt_type.XNVMEC_LREQ" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>XNVMEC_LREQ. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt_type.XNVMEC_SKIP">
+<span class="target" id="libxnvmec_8h_1a32f5d54a961b11e5e7042eba3daa007fa27f328c8322ac80996074f9506c68162"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_SKIP</code><a class="headerlink" href="#c.xnvmec_opt_type.XNVMEC_SKIP" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVMEC_SKIP. </p>
 </dd></dl>
 
 </dd></dl>
@@ -1388,6 +1440,11 @@
 <dl class="c enumerator">
 <dt id="c.xnvmec_opt_value_type.XNVMEC_OPT_VTYPE_STR">
 <span class="target" id="libxnvmec_8h_1a9f513d3214adeb32ac16b6965d840211a53a155711fe19f917d52dec9a4da2b2a"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_VTYPE_STR</code><a class="headerlink" href="#c.xnvmec_opt_value_type.XNVMEC_OPT_VTYPE_STR" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvmec_opt_value_type.XNVMEC_OPT_VTYPE_SKIP">
+<span class="target" id="libxnvmec_8h_1a9f513d3214adeb32ac16b6965d840211af93d17331cfdd5e5b818a85da4478937"></span><em class="property">enumerator </em><code class="sig-name descname">XNVMEC_OPT_VTYPE_SKIP</code><a class="headerlink" href="#c.xnvmec_opt_value_type.XNVMEC_OPT_VTYPE_SKIP" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </dd></dl>
