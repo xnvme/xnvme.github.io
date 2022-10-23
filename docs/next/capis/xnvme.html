@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme &mdash; xNVMe 0.5.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.4.0
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -202,7 +202,6 @@
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sys/queue.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/uio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_be.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;libxnvme_dev.h&gt;</span><span class="cp"></span>
@@ -533,11 +532,9 @@
 	<span class="c1">///&lt; Field containing command-options, the field is initialized by helper-functions</span>
 	<span class="kt">uint32_t</span> <span class="n">opts</span><span class="p">;</span>
 
-	<span class="kt">uint8_t</span> <span class="n">be_rsvd</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span> <span class="c1">///&lt; Fields reserved for use by library internals</span>
-
-	<span class="c1">///&lt; Field for including the command-context in BSD-style singly-linked-lists (SLIST)</span>
-	<span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">xnvme_cmd_ctx</span><span class="p">)</span> <span class="n">link</span><span class="p">;</span>
+	<span class="kt">uint8_t</span> <span class="n">be_rsvd</span><span class="p">[</span><span class="mi">12</span><span class="p">];</span> <span class="c1">///&lt; Fields reserved for use by library internals</span>
 <span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_cmd_ctx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">128</span><span class="p">,</span> <span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Assign a callback-function and argument to be used with the given command-context</span>
@@ -809,14 +806,6 @@
 <span class="target" id="structxnvme__cmd__ctx"></span><em class="property">struct </em><code class="sig-name descname">xnvme_cmd_ctx</code><a class="headerlink" href="#c.xnvme_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The xNVMe Command Context. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="c function">
-<dt>
-<span class="target" id="structxnvme__cmd__ctx_1a302290c3044c9d2de75d70df5259558b"></span><code class="sig-name descname">SLIST_ENTRY (xnvme_cmd_ctx) link</code></dt>
-<dd></dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="c var">
 <dt id="c.xnvme_cmd_ctx.cmd">
@@ -850,9 +839,8 @@
 
 <dl class="c var">
 <dt id="c.xnvme_cmd_ctx.be_rsvd">
-<span class="target" id="structxnvme__cmd__ctx_1a86166e8eb06cc746b1a90d94a66ba429"></span>uint8_t <code class="sig-name descname">be_rsvd</code>[4]<a class="headerlink" href="#c.xnvme_cmd_ctx.be_rsvd" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__cmd__ctx_1a170fbe5ba4eedef09e94d8e0e34ab08e"></span>uint8_t <code class="sig-name descname">be_rsvd</code>[12]<a class="headerlink" href="#c.xnvme_cmd_ctx.be_rsvd" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Fields reserved for use by library internals. </p>
-<p>Field for including the command-context in BSD-style singly-linked-lists (SLIST) </p>
 </dd></dl>
 
 </div>

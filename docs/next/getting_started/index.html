@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; xNVMe 0.4.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Getting Started &mdash; xNVMe 0.5.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> xNVMe
           </a>
               <div class="version">
-                0.4.0
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -167,7 +167,7 @@ git clone https://github.com/OpenMPDK/xNVMe.git xnvme
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The xNVMe build-system uses <code class="docutils literal notranslate"><span class="pre">meson/ninja</span></code> and its
-subproject-feature with wraps, dependencies such as fio, liburing, and SPDK
+subproject-feature with wraps, dependencies such as fio, libvfn, and SPDK
 are fetched by the build-system (meson), not as previously done via
 git-submodules.</p>
 </div>
@@ -178,7 +178,7 @@ rich selection of Linux distributions, FreeBSD and Windows.</p>
 <p>With that out of the way, then go ahead:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> xnvme
 
-<span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK/NVMe)</span>
 meson setup builddir
 <span class="nb">cd</span> builddir
 
@@ -202,7 +202,7 @@ meson install
 <p>In case you ran the meson-commands before installing, then you can
 probably need to remove your <code class="docutils literal notranslate"><span class="pre">builddir</span></code> before re-running build commands.</p>
 </div>
-<p>In case you want to customize the build, e.g. install into a differnt location
+<p>In case you want to customize the build, e.g. install into a different location
 etc. then this is all handled by <a class="reference external" href="https://mesonbuild.com/Builtin-options.html">meson built-in options</a>, in addition to those, then you
 can inspect <code class="docutils literal notranslate"><span class="pre">meson_options.txt</span></code> which contains build-options specific to
 <strong>xNVMe</strong>. For examples on customizing the build then have a look in the
@@ -280,6 +280,7 @@ musl-dev
 ncurses
 ninja
 numactl-dev
+openssl-dev
 perl
 pkgconf
 py3-pip
@@ -289,7 +290,7 @@ util-linux-dev
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir -Dwith-spdk<span class="o">=</span><span class="nb">false</span>
 
 <span class="c1"># build xNVMe</span>
@@ -331,13 +332,14 @@ nasm
 ncurses
 ninja
 numactl
+openssl
 python-pip
 python-pyelftools
 python3
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir --prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
@@ -405,7 +407,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -504,6 +506,7 @@ make
 ncurses-devel
 numactl-devel
 openssl-devel
+openssl11-devel
 patch
 pkgconfig
 unzip
@@ -513,6 +516,8 @@ zlib-devel
 </div>
 <p>For example, from the root of the <strong>xNVMe</strong> source repository, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Developer Tools</span>
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum-config-manager --enable epel
 yum install -y centos-release-scl
 yum-config-manager --enable rhel-server-rhscl-7-rpms
 yum install -y devtoolset-8
@@ -590,6 +595,7 @@ libssl-dev
 libtool
 meson
 nasm
+openssl
 pkg-config
 python3
 python3-pip
@@ -612,7 +618,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -640,6 +646,7 @@ libnuma-dev
 libssl-dev
 libtool
 nasm
+openssl
 pkg-config
 python3
 python3-pip
@@ -664,7 +671,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -691,6 +698,7 @@ libnuma-dev
 libssl-dev
 libtool
 nasm
+openssl
 pkg-config
 python3
 python3-pip
@@ -718,7 +726,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -769,7 +777,7 @@ python3-pyelftools
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -820,7 +828,7 @@ python3-pyelftools
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -871,7 +879,7 @@ python3-pyelftools
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -920,7 +928,7 @@ python3 -m pip install <span class="nv">meson</span><span class="o">==</span><sp
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -939,6 +947,7 @@ meson install -C builddir
 <p>Install the following packages using <code class="docutils literal notranslate"><span class="pre">emerge</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dev-lang/nasm
 dev-libs/libaio
+dev-libs/openssl
 dev-python/pip
 dev-python/pyelftools
 dev-util/cunit
@@ -959,7 +968,7 @@ emerge <span class="k">$(</span>&lt; toolbox/pkgs/gentoo-latest.txt <span class=
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-ltinfo -lncurses&quot;</span>
 
-<span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir --prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
@@ -1042,7 +1051,7 @@ zypper --non-interactive install -y --allow-downgrade <span class="k">$(</span>c
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1099,7 +1108,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1157,7 +1166,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1210,7 +1219,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1263,7 +1272,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1327,7 +1336,7 @@ make install
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, liburing, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
 meson setup builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1393,16 +1402,18 @@ supported/enabled backends then invoke:</p>
 </div>
 <p>It should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
-ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">4</span>, patch: <span class="m">0</span><span class="o">}</span>
+ver: <span class="o">{</span>major: <span class="m">0</span>, minor: <span class="m">5</span>, patch: <span class="m">0</span><span class="o">}</span>
 xnvme_libconf:
-  - <span class="s1">&#39;3p: fio;git-describe:fio-3.30&#39;</span>
-  - <span class="s1">&#39;3p: liburing;git-describe:liburing-2.2&#39;</span>
-  - <span class="s1">&#39;3p: spdk;git-describe:v21.10;+patches&#39;</span>
+  - <span class="s1">&#39;3p: fio;git-describe:fio-3.32&#39;</span>
+  - <span class="s1">&#39;3p: libvfn;git-describe:v1.0.0-rc0&#39;</span>
+  - <span class="s1">&#39;3p: spdk;git-describe:v22.05;+patches&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_RAMDISK_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_BLOCK_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_BLOCK_ZONED_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_LIBAIO_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_LINUX_LIBURING_ENABLED&#39;</span>
+  - <span class="s1">&#39;conf: XNVME_BE_LINUX_VFIO_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_POSIX_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_SPDK_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_PCIE_ENABLED&#39;</span>
@@ -1412,7 +1423,7 @@ xnvme_libconf:
   - <span class="s1">&#39;conf: XNVME_BE_ASYNC_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_ASYNC_EMU_ENABLED&#39;</span>
   - <span class="s1">&#39;conf: XNVME_BE_ASYNC_THRPOOL_ENABLED&#39;</span>
-  - <span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/332544-5.19.0&#39;</span>
+  - <span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/332555-5.19.11&#39;</span>
   - <span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD&#39;</span>
   - <span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD_VEC&#39;</span>
   - <span class="s1">&#39;3p: NVME_IOCTL_ADMIN64_CMD&#39;</span>
@@ -1525,7 +1536,7 @@ modprobe -r null_blk
     attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
   xnvme_opts:
     be: <span class="s1">&#39;linux&#39;</span>
-    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    mem: <span class="s1">&#39;posix&#39;</span>
     dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
     admin: <span class="s1">&#39;block&#39;</span>
     sync: <span class="s1">&#39;block&#39;</span>
@@ -1586,7 +1597,7 @@ modprobe -r null_blk
     attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
   xnvme_opts:
     be: <span class="s1">&#39;linux&#39;</span>
-    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    mem: <span class="s1">&#39;posix&#39;</span>
     dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
     admin: <span class="s1">&#39;block&#39;</span>
     sync: <span class="s1">&#39;block&#39;</span>
@@ -1629,7 +1640,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0003, mib: <span class="m">0</span>.00, mib_sec: <span class="m">12</span>.26<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0002, mib: <span class="m">0</span>.00, mib_sec: <span class="m">17</span>.75<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1662,7 +1673,7 @@ xnvme_lba_range:
   naddrs: <span class="m">1</span>
   nbytes: <span class="m">4096</span>
   attr: <span class="o">{</span> is_zones: <span class="m">0</span>, is_valid: <span class="m">1</span><span class="o">}</span>
-wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0005, mib: <span class="m">0</span>.00, mib_sec: <span class="m">7</span>.61<span class="o">}</span>
+wall-clock: <span class="o">{</span>elapsed: <span class="m">0</span>.0004, mib: <span class="m">0</span>.00, mib_sec: <span class="m">10</span>.57<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -1713,7 +1724,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.864026<span class="o">]</span> DMAR: IOMMU enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>    <span class="m">0</span>.721237<span class="o">]</span> DMAR: IOMMU enabled
 </pre></div>
 </div>
 <p>And this this command:</p>
@@ -1845,7 +1856,7 @@ required linker flags:</p>
 </div>
 <p>This will output something like the output below, it will vary depending on the
 features enabled/disabled.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L/usr/local/lib/x86_64-linux-gnu -Wl,--whole-archive -Wl,--no-as-needed -lxnvme -Wl,--no-whole-archive -Wl,--as-needed -pthread -lrt -lm -lnuma -luuid -laio -lvfn -pthread -luring
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L/usr/local/lib/x86_64-linux-gnu -Wl,--whole-archive -Wl,--no-as-needed -lxnvme -Wl,--no-whole-archive -Wl,--as-needed -pthread -lrt -ldl -lm -lnuma -luuid -laio -lvfn -pthread -lssl -lcrypto -luring
 </pre></div>
 </div>
 <p>You can pass the arguments above to your compiler, or using pkg-config like so:</p>
@@ -1854,7 +1865,7 @@ features enabled/disabled.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You do not need to link with SPDK/DPDK/liburing, as these are bundled
+<p>You do not need to link with SPDK/DPDK, as these are bundled
 with <strong>xNVMe</strong>. However, do take note of the linker flags surrounding
 <code class="docutils literal notranslate"><span class="pre">-lxnvme</span></code>, these are required as SPDK makes use of
 <code class="docutils literal notranslate"><span class="pre">__attribute__((constructor))</span></code>. Without the linker flags, none of the SPDK
@@ -1901,7 +1912,7 @@ a simpler link-target.</p>
     attr: <span class="o">{</span>name: <span class="s1">&#39;linux&#39;</span><span class="o">}</span>
   xnvme_opts:
     be: <span class="s1">&#39;linux&#39;</span>
-    mem: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+    mem: <span class="s1">&#39;posix&#39;</span>
     dev: <span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
     admin: <span class="s1">&#39;nvme&#39;</span>
     sync: <span class="s1">&#39;nvme&#39;</span>
