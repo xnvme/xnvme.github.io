@@ -2279,7 +2279,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0000,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">93</span>.36<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0000,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">106</span>.40<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2312,7 +2312,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0001,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">28</span>.71<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">12</span>.55<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2363,7 +2363,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.529009<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.555807<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
 </pre></div>
 </div>
 <p>And this command:</p>
@@ -2421,7 +2421,7 @@ To<span class="w"> </span>change<span class="w"> </span>this,<span class="w"> </
 </div>
 </section>
 <section id="device-identifiers">
-<span id="sec-backends-spdk-identifiers"></span><h4>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Permalink to this headline">¶</a></h4>
+<span id="sec-device-identifiers"></span><h4>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Permalink to this headline">¶</a></h4>
 <p>Since the Kernel NVMe driver is unbound from the device, then the kernel no
 longer know that the PCIe device is an NVMe device, thus, it no longer lives in
 Linux devfs, that is, no longer available in <code class="docutils literal notranslate"><span class="pre">/dev</span></code> as e.g. <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>.</p>
@@ -2440,6 +2440,56 @@ Linux devfs, that is, no longer available in <code class="docutils literal notra
 <code class="docutils literal notranslate"><span class="pre">?opts=&lt;val&gt;</span></code>. This is provided as a means to tell <strong>xNVMe</strong> that you want to
 use the NVMe controller at <code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code> and the namespace identified by
 <code class="docutils literal notranslate"><span class="pre">nsid=1</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--dev-nsid<span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>vfio-pci<span class="w"> </span>driver
+<span class="m">0000</span>:04:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>vfio-pci<span class="w"> </span>driver
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+
+Current<span class="w"> </span>user<span class="w"> </span>memlock<span class="w"> </span>limit:<span class="w"> </span><span class="m">742</span><span class="w"> </span>MB
+
+This<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>maximum<span class="w"> </span>amount<span class="w"> </span>of<span class="w"> </span>memory<span class="w"> </span>you<span class="w"> </span>will<span class="w"> </span>be
+able<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>with<span class="w"> </span>DPDK<span class="w"> </span>and<span class="w"> </span>VFIO<span class="w"> </span><span class="k">if</span><span class="w"> </span>run<span class="w"> </span>as<span class="w"> </span>current<span class="w"> </span>user.
+To<span class="w"> </span>change<span class="w"> </span>this,<span class="w"> </span>please<span class="w"> </span>adjust<span class="w"> </span>limits.conf<span class="w"> </span>memlock<span class="w"> </span>limit<span class="w"> </span><span class="k">for</span><span class="w"> </span>current<span class="w"> </span>user.
+
+
+xnvme_dev:
+<span class="w">  </span>xnvme_ident:
+<span class="w">    </span>uri:<span class="w"> </span><span class="s1">&#39;0000:03:00.0&#39;</span>
+<span class="w">    </span>dtype:<span class="w"> </span>0x2
+<span class="w">    </span>nsid:<span class="w"> </span>0x1
+<span class="w">    </span>csi:<span class="w"> </span>0x0
+<span class="w">    </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>xnvme_be:
+<span class="w">    </span>admin:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>async:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>attr:<span class="w"> </span><span class="o">{</span>name:<span class="w"> </span><span class="s1">&#39;spdk&#39;</span><span class="o">}</span>
+<span class="w">  </span>xnvme_opts:
+<span class="w">    </span>be:<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>
+<span class="w">    </span>mem:<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>
+<span class="w">    </span>dev:<span class="w"> </span><span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+<span class="w">    </span>admin:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
+<span class="w">    </span>async:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
+<span class="w">    </span>oflags:<span class="w"> </span>0x4
+<span class="w">  </span>xnvme_geo:
+<span class="w">    </span>type:<span class="w"> </span>XNVME_GEO_CONVENTIONAL
+<span class="w">    </span>npugrp:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>npunit:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>nzone:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>nsect:<span class="w"> </span><span class="m">2097152</span>
+<span class="w">    </span>nbytes:<span class="w"> </span><span class="m">4096</span>
+<span class="w">    </span>nbytes_oob:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>tbytes:<span class="w"> </span><span class="m">8589934592</span>
+<span class="w">    </span>mdts_nbytes:<span class="w"> </span><span class="m">524288</span>
+<span class="w">    </span>lba_nbytes:<span class="w"> </span><span class="m">4096</span>
+<span class="w">    </span>lba_extended:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>ssw:<span class="w"> </span><span class="m">12</span>
+</pre></div>
+</div>
 <p>Similarly, when using the API, then you would use these URIs instead of
 filepaths:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
