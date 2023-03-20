@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fio IO Engine &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="C API" href="../../capis/index.html" />
+    <link rel="prev" title="file" href="../file/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/index.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../file/index.html">file</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fio IO Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-the-xnvme-engine">Enabling the xNVMe engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caveats">Caveats</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#threading-vs-forking">Threading vs Forking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-device-support">Multi-device support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nvme-devices-formatted-with-extended-lba">NVMe devices formatted with extended-LBA</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#history">History</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Tools</a></li>
+      <li class="breadcrumb-item active">fio IO Engine</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tools/fio/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fio-io-engine">
+<span id="sec-tools-fio"></span><h1>fio IO Engine<a class="headerlink" href="#fio-io-engine" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>xNVMe</strong> <a class="reference external" href="https://github.com/axboe/fio">fio</a> IO engine is provided with upstream <a class="reference external" href="https://github.com/axboe/fio">fio</a>. A nice
+introduction to using it is provided by <a class="reference external" href="https://github.com/vincentkfu">Vincent Fu</a> and <a class="reference external" href="https://github.com/ankit-sam">Ankit Kumar</a> here:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/vincentkfu/fio-blog/wiki/xNVMe-ioengine-Part-1">https://github.com/vincentkfu/fio-blog/wiki/xNVMe-ioengine-Part-1</a></p></li>
+<li><p><a class="reference external" href="https://github.com/vincentkfu/fio-blog/wiki/xNVMe-ioengine-Part-2">https://github.com/vincentkfu/fio-blog/wiki/xNVMe-ioengine-Part-2</a></p></li>
+</ul>
+<p>To supplement the above, then a bit of information is provided here on building
+<a class="reference external" href="https://github.com/axboe/fio">fio</a> with the <strong>xNVMe</strong> I/O engine enabled, as well as some known caveats.
+However, the introduction above is well recommended read.</p>
+<section id="enabling-the-xnvme-engine">
+<h2>Enabling the xNVMe engine<a class="headerlink" href="#enabling-the-xnvme-engine" title="Permalink to this headline">¶</a></h2>
+<p>First, consult the <a class="reference internal" href="../../getting_started/index.html#sec-getting-started"><span class="std std-ref">Getting Started</span></a> section, to build and install
+<strong>xNVMe</strong>. Then go ahead and build and install <a class="reference external" href="https://github.com/axboe/fio">fio</a> from source:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Clone, build and install fio v3.34 with the xNVMe I/O engine</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - xNVMe is installed on the system (the fio build-system picks up xNVMe)</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/fio.git
+<span class="nb">cd</span><span class="w"> </span>fio
+git<span class="w"> </span>checkout<span class="w"> </span>fio-3.34
+./configure
+make
+make<span class="w"> </span>install
+</pre></div>
+</div>
+<p>That is all there is to it. The <a class="reference external" href="https://github.com/axboe/fio">fio</a> build-system will automatically detect that
+xNVMe is installed on the system, link with it, and thereby enable the xNVMe
+I/O engine.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In case you explicitly do <strong>not</strong> want <a class="reference external" href="https://github.com/axboe/fio">fio</a> to look for <strong>xNVMe</strong>, then
+you can instruct the fio build-system with <code class="docutils literal notranslate"><span class="pre">./configure</span> <span class="pre">--disable-xnvme</span></code>.
+This might be useful when building external I/O engines, such as those
+provided by SPDK.</p>
+</div>
+</section>
+<section id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Permalink to this headline">¶</a></h2>
+<p>This section provides a couple of notes and insights to double check in case
+you are facing unexpected issues.</p>
+<section id="threading-vs-forking">
+<h3>Threading vs Forking<a class="headerlink" href="#threading-vs-forking" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Must be used with <code class="docutils literal notranslate"><span class="pre">--thread=1</span></code></p></li>
+</ul>
+<p>The above option is required as forking for parallel job execution is not
+supported; aka threading is required.</p>
+</section>
+<section id="multi-device-support">
+<h3>Multi-device support<a class="headerlink" href="#multi-device-support" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Multiple devices are supported, however, they all either have to be
+operating-system managed or all utilize a User space driver.</p></li>
+</ul>
+<p>Details follow.</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">iomem_{alloc/free}</span></code> introduces a limitation with regards to multiple
+devices. Specifically, the devices opened must use backends which share
+memory allocators. E.g. using <code class="docutils literal notranslate"><span class="pre">be:linux</span></code> + <code class="docutils literal notranslate"><span class="pre">be:posix</span></code> is fine, using
+<code class="docutils literal notranslate"><span class="pre">be:linux</span></code> + <code class="docutils literal notranslate"><span class="pre">be:spdk</span></code> is not.
+This is due to the <a class="reference external" href="https://github.com/axboe/fio">fio</a> ‘io_mem_*’ helpers are not tied to devices, as
+such, it is required that all devices opened use compatible
+buffer-allocators. Currently, the implementation does dot check for this
+unsupported use-case, and will thus lead to a runtime error.</p></li>
+<li><p>The implementation assumes that <code class="docutils literal notranslate"><span class="pre">thread_data.o.nr_files</span></code> is available and
+that instances of <code class="docutils literal notranslate"><span class="pre">fio_file.fileno</span></code> are valued <code class="docutils literal notranslate"><span class="pre">[0,</span>
+<span class="pre">thread_data.o.nr_files</span> <span class="pre">-1]</span></code>.
+This is to pre-allocate file-wrapping-structures, xnvme_fioe_fwrap, at I/O
+engine initialization time and to reference file-wrapping with constant-time
+lookup.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">_open()</span></code> and <code class="docutils literal notranslate"><span class="pre">_close()</span></code> functions do not implement the “real”
+device/file opening, this is done in <code class="docutils literal notranslate"><span class="pre">_init()</span></code> and torn down in
+<code class="docutils literal notranslate"><span class="pre">_cleanup()</span></code> as the io-engine needs device handles ready for
+<code class="docutils literal notranslate"><span class="pre">iomem_{alloc/free}</span></code>.</p></li>
+</ol>
+</section>
+<section id="nvme-devices-formatted-with-extended-lba">
+<h3>NVMe devices formatted with extended-LBA<a class="headerlink" href="#nvme-devices-formatted-with-extended-lba" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>These are currently not supported.</p></li>
+</ul>
+<p>Details follow.</p>
+<p>To support extended-lba initial work has been done in xNVMe, however, further
+work is probably need for this to trickle up to the <a class="reference external" href="https://github.com/axboe/fio">fio</a> I/O engine, also, in
+the io-engine <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span> <span class="pre">ssw</span></code> are used which does not account for extended LBA.</p>
+</section>
+</section>
+<section id="history">
+<h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
+<p>Previously, then the <strong>xNVMe</strong> IO engine was external. That meant that the
+engine was built externally from the built of <a class="reference external" href="https://github.com/axboe/fio">fio</a> itself, and the
+source-code for the engine was provided with xNVMe.</p>
+<p>From fio-v3.32, then <strong>xNVMe</strong> IO engine became available as an “internal”
+engine i upstream <a class="reference external" href="https://github.com/axboe/fio">fio</a>. That meant that the engine was built along with the
+built of <a class="reference external" href="https://github.com/axboe/fio">fio</a> itself, and the source-code of the engine is distributed with
+<a class="reference external" href="https://github.com/axboe/fio">fio</a>.</p>
+<p>From fio-v.34, then all features of the external <strong>xNVMe</strong> IO engine where
+upstreamed and removed from the <strong>xNVMe</strong> repository. <strong>xNVMe-v0.6.0</strong> was the
+last version to ship the external engine.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../file/index.html" class="btn btn-neutral float-left" title="file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../capis/index.html" class="btn btn-neutral float-right" title="C API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
