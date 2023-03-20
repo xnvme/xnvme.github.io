@@ -148,19 +148,19 @@ only available on the platform that the backend services</p></li>
 </section>
 <section id="c-api">
 <h2>C: API<a class="headerlink" href="#c-api" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The API and its backend implementations aims to be consistent with the following</p>
 <ul>
-<li><p>The API and its backend implementations aims to be consistent with the following
-- Pass pointers to “objects” e.g. <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_pass(*ctx,</span> <span class="pre">...);</span></code>
-- Pass double-pointers for “object-initialization” e.g. <code class="docutils literal notranslate"><span class="pre">xnvme_queue(...,</span> <span class="pre">**queue);</span></code>
-- On success, return 0. On error, Return negative <code class="docutils literal notranslate"><span class="pre">errno</span></code>.
-- Exceptions: API-calls mimicking legacy interfaces, such as the</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> which is operating similar to <code class="docutils literal notranslate"><span class="pre">malloc()/free()</span></code>.</p>
-</div></blockquote>
+<li><p>Pass pointers to “objects” e.g. <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_pass(*ctx,</span> <span class="pre">...);</span></code></p></li>
+<li><p>Pass double-pointers for “object-initialization” e.g. <code class="docutils literal notranslate"><span class="pre">xnvme_queue(...,</span> <span class="pre">**queue);</span></code></p></li>
+<li><p>On success, return 0. On error, Return negative <code class="docutils literal notranslate"><span class="pre">errno</span></code>.</p></li>
+<li><p>Exceptions: API-calls mimicking legacy interfaces, such as the
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> which is operating similar to <code class="docutils literal notranslate"><span class="pre">malloc()/free()</span></code>.</p></li>
+</ul>
 </li>
 <li><p>The API and its backend implementation cannot be assumed to be thread-safe</p></li>
 <li><p>Be minimal with definitions in the public API</p>
-<ul class="simple">
+<ul>
 <li><p>E.g. the ‘sys/queue.h’ was removed from the public API as it gave several
 head-aches when building xNVMe on multiple platforms. However, internally,
 specifically in backend implementations, assumptions can be made on the
@@ -168,7 +168,7 @@ availability of certain headers and their general availability</p></li>
 </ul>
 </li>
 <li><p>Each function in the API must have a command-line tool exercising it</p>
-<ul class="simple">
+<ul>
 <li><p>The source-code for the command-line tools serve as examples of utilizing
 the C API in general and the tools are used during testing</p></li>
 <li><p>The command-line utilities must use the <code class="docutils literal notranslate"><span class="pre">libxnvmec.h</span></code> as this provides a
