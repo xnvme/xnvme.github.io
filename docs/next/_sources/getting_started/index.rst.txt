@@ -11,9 +11,9 @@ here.  Needlessly, this section will have subsections that you can skip and
 revisit only in case you find **xNVMe**, or the system you are running on, to
 be misbehaving.
 
-If you have read through, and still have questions, then please raise a
-issue_, start an asynchronous discussion_, or go to Discord_ for
-synchronous interaction.
+If you have read through, and still have questions, then please raise an
+issue_, start an asynchronous discussion_, or go to Discord_ for synchronous
+interaction.
 
 The task of getting started with **xNVMe** will take you through
 :ref:`sec-building` with a companion section on :ref:`sec-building-toolchain`
@@ -31,542 +31,34 @@ Building xNVMe
 
 .. include:: clone.rst
 
-Before you invoke the compilation, then setup your toolchain, that is, ensure
-that you you have the compiler, build-tools, and auxilary packages needed. The
-:ref:`sec-building-toolchain` section describes what to install, and how, on
-rich selection of Linux distributions, FreeBSD and Windows.
+Before you invoke the compilation, then ensure that you have the compiler,
+tools, and libraries needed. The :ref:`sec-building-toolchain` section
+describes what to install, and how, on rich a selection of Linux distributions,
+FreeBSD and Windows. For example on Debian do::
 
-With that out of the way, then go ahead:
+  sudo ./xnvme/toolbox/pkgs/debian-bullseye.sh
+
+With the source available, and toolchain up and running, then go ahead:
 
 .. include:: build_meson.rst
 
 .. note:: Details on the build-errors can be seen by inspecting
    ``builddir/meson-logs/meson-log.txt``.
 
-.. note:: In case you ran the meson-commands before installing, then you can
+.. note:: In case you ran the meson-commands before installing, then you
    probably need to remove your ``builddir`` before re-running build commands.
 
 In case you want to customize the build, e.g. install into a different location
 etc. then this is all handled by `meson built-in options
 <https://mesonbuild.com/Builtin-options.html>`_, in addition to those, then you
 can inspect ``meson_options.txt`` which contains build-options specific to
-**xNVMe**. For examples on customizing the build then have a look in the 
-look at the following :ref:`sec-building-config`.
+**xNVMe**. For examples of customizing the build then have a look at the
+following :ref:`sec-building-config`.
 
 Otherwise, with a successfully built and installed **xNVMe**, then jump to
 :ref:`sec-gs-system-config` and :ref:`sec-building-example`.
 
-.. _sec-building-toolchain:
-
-Toolchain
-=========
-
-The toolchain (compiler, archiver, and linker) used for building **xNVMe**
-must support **C11**, **pthreads** and on the system the following tools must
-be available:
-
-* Python (>=3.7)
-* meson (>=0.58) and matching version of ninja
-* make (gmake)
-* gcc/mingw/clang
-
-Along with libraries:
-
-* glibc (>= 2.28, for **io_uring/liburing**)
-* libaio-dev (>=0.3, For **xNVMe** and **SPDK**)
-* libnuma-dev (>=2, For **SPDK**)
-* libssl-dev (>=1.1, For **SPDK**)
-* liburing (>=2.2, for **xNVMe**)
-* uuid-dev (>=2.3, For **SPDK**)
-
-The preferred toolchain is **gcc** and the following sections describe how to
-install it and required libraries on a set of popular Linux Distributions,
-FreeBSD, MacOS, and Windows. If you wish to use a different toolchain then see
-the :ref:`sec-building-custom-toolchain`, on how to instrument the build-system
-using a compiler other than **gcc**.
-
-In the following sections, the then the system package-manager is used whenever
-possible to install the toolchain and libraries. However, on some Linux
-distribution there are not recent enough versions. To circurvent that, then the
-packages are installed via the Python package-manager. In some cases even a
-recent enough version of Python is not available, to bootstrap it, then Python
-is built and installed from source.
-
-.. note:: When installing packages via the Python package-manager (``python3 -m
-   pip install``), then packages should be installed system-wide. This is
-   ensure that the installed packages behave as though they were installed
-   using the system package-manager.
-
-Alpine Linux
-------------
-
-From the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/alpine-latest.sh
-   :language: bash
-   :lines: 8-
-
-The commands above will install the following packages via the system
-package-manager (``apk``):
-
-.. literalinclude:: ../../toolbox/pkgs/alpine-latest.txt
-   :language: bash
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/alpine-latest-build.sh
-   :language: bash
-   :lines: 2-
-
-.. note:: There are issues with SPDK/DPDK due to incompatibilities with the
-   standard library provided by ``musl libc``. Pull-requests fixing this is
-   most welcome, until then, disable support for the SPDK NVMe driver as the
-   ``meson setup`` command above.
-
-Arch Linux
-----------
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/archlinux-latest.sh
-   :language: bash
-   :lines: 8-
-
-The commands above will install the following packages via the system
-package-manager (``pacman``):
-
-.. literalinclude:: ../../toolbox/pkgs/archlinux-latest.txt
-   :language: bash
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/archlinux-latest-build.sh
-   :language: bash
-   :lines: 2-
-
-.. note:: The build is configured to install with ``--prefix=/usr`` this is
-   intentional such the the ``pkg-config`` files end up in the default search
-   path on the system. If you do not want this, then remove ``--prefix=/usr``
-   and adjust your ``$PKG_CONFIG_PATH`` accordingly.
-
-CentOS Stream9
---------------
-
-Install the following packages via ``dnf``:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-stream9.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-stream9.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-CentOS Stream8
---------------
-
-Install the following packages via ``dnf``:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-stream8.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-stream8.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-stream8-build.sh
-   :language: bash
-   :lines: 2-
-
-.. note:: The build is configured to install with ``--prefix=/usr`` this is
-   intentional such the the ``pkg-config`` files end up in the default search
-   path on the system. If you do not want this, then remove ``--prefix=/usr``
-   and adjust your ``$PKG_CONFIG_PATH`` accordingly.
-
-
-CentOS 7
---------
-
-Install the following packages via ``yum``:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-centos7.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-centos7.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/centos-centos7-build.sh
-   :language: bash
-   :lines: 2-
-
-.. note:: The build is configured to install with ``--prefix=/usr`` this is
-   intentional such the the ``pkg-config`` files end up in the default search
-   path on the system. If you do not want this, then remove ``--prefix=/usr``
-   and adjust your ``$PKG_CONFIG_PATH`` accordingly.
-
-Debian 12 (Bookworm)
---------------------
-
-Install the following packages via ``apt-get`` and ``aptitude``:
-
-.. literalinclude:: ../../toolbox/pkgs/debian-bookworm.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/debian-bookworm.sh
-   :language: bash
-   :lines: 17-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Debian 11 (Bullseye)
---------------------
-
-Install the following packages via ``apt-get``, ``aptitude`` and ``pip3``:
-
-.. literalinclude:: ../../toolbox/pkgs/debian-bullseye.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/debian-bullseye.sh
-   :language: bash
-   :lines: 17-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Debian 10 (Buster)
-------------------
-
-Install the following packages via ``apt-get``, ``aptitude`` and ``pip3``:
-
-.. literalinclude:: ../../toolbox/pkgs/debian-buster.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/debian-buster.sh
-   :language: bash
-   :lines: 17-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Fedora (36)
------------
-
-From the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/fedora-36.sh
-   :language: bash
-   :lines: 8-
-
-The above will install the packages seen below via the system package-manager
-``dnf``:
-
-.. literalinclude:: ../../toolbox/pkgs/fedora-36.txt
-   :language: bash
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-
-Fedora (35)
------------
-
-From the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/fedora-35.sh
-   :language: bash
-   :lines: 8-
-
-The above will install the packages seen below via the system package-manager
-``dnf``:
-
-.. literalinclude:: ../../toolbox/pkgs/fedora-35.txt
-   :language: bash
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-
-Fedora (34)
------------
-
-From the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/fedora-34.sh
-   :language: bash
-   :lines: 8-
-
-The above will install the packages seen below via the system package-manager
-``dnf``:
-
-.. literalinclude:: ../../toolbox/pkgs/fedora-34.txt
-   :language: bash
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-
-Freebsd 13
-----------
-
-Ensure that you have kernel source in ``/usr/src``, then install the following
-packages via ``pkg``:
-
-.. literalinclude:: ../../toolbox/pkgs/freebsd-13.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/freebsd-13.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Gentoo
-------
-
-Install the following packages using ``emerge``:
-
-.. literalinclude:: ../../toolbox/pkgs/gentoo-latest.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/gentoo-latest.sh
-   :language: bash
-   :lines: 9-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/gentoo-latest-build.sh
-   :language: bash
-   :lines: 2-
-
-.. note:: In case you get: ``error adding symbols: DSO missing from command
-   line``, during compilation, then add ``-ltinfo -lnurces`` to ``LDFLAGS`` as
-   it is done in the commands above.
-
-.. note:: The build is configured to install with ``--prefix=/usr`` this is
-   intentional such the the ``pkg-config`` files end up in the default search
-   path on the system. If you do not want this, then remove ``--prefix=/usr``
-   and adjust your ``$PKG_CONFIG_PATH`` accordingly.
-
-macOS
------
-
-Install the following packages using Homebrew_ (``brew``):
-
-.. literalinclude:: ../../toolbox/pkgs/macos-11.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/macos-11.sh
-   :language: bash
-   :lines: 3-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/toolbox/pkgs/macos-11-build.sh
-   :language: bash
-   :lines: 2-
-
-openSUSE Tumbleweed
--------------------
-
-Install the following packages via ``zypper``:
-
-.. literalinclude:: ../../toolbox/pkgs/opensuse-tumbleweed-latest.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/opensuse-tumbleweed-latest.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-openSUSE Leap (15.4)
---------------------
-
-Install the following packages via ``zypper``:
-
-.. literalinclude:: ../../toolbox/pkgs/opensuse-leap-15.4.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/opensuse-leap-15.4.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-openSUSE Leap (15.3)
---------------------
-
-Install the following packages via ``zypper``:
-
-.. literalinclude:: ../../toolbox/pkgs/opensuse-leap-15.3.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/opensuse-leap-15.3.sh
-   :language: bash
-   :lines: 8-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Ubuntu 22.04 (Jammy)
---------------------
-
-Install the following packages via ``apt-get`` and ``pip3``:
-
-.. literalinclude:: ../../toolbox/pkgs/ubuntu-jammy.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/ubuntu-jammy.sh
-   :language: bash
-   :lines: 17-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Ubuntu 20.04 (Focal)
---------------------
-
-Install the following packages via ``apt-get`` and ``pip3``:
-
-.. literalinclude:: ../../toolbox/pkgs/ubuntu-focal.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/ubuntu-focal.sh
-   :language: bash
-   :lines: 17-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Ubuntu 18.04 (Bionic)
----------------------
-
-Install the following packages via ``apt-get`` and ``pip3``:
-
-.. literalinclude:: ../../toolbox/pkgs/ubuntu-bionic.txt
-   :language: bash
-
-For example, from the root of the **xNVMe** source repository, do:
-
-.. literalinclude:: ../../toolbox/pkgs/ubuntu-bionic.sh
-   :language: bash
-   :lines: 17-
-
-Then go ahead and configure, build and install using ``meson``:
-
-.. literalinclude:: ../../toolbox/pkgs/default-build.sh
-   :language: bash
-   :lines: 2-
-
-Windows
--------
-
-You can build **xNVMe** using the MSVC toolchain, however, some of the features
-are lost when doing so, specifcally the **xNVMe** fio io-engine. Thus, the
-instructions provided here utilizes **msys2**.
-
-The toolchain setup is a bit involved, it **bootstraps** by installing the
-Chocolatey package manager by opening an eleveted PowerShell and running::
-
-  Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-Then continues with installing a couple of tools via Chocolatey, then the
-actual compiler toolchain via the msys2. A script stays more than a thousand
-words, so please consult the ``toolbox`` scripts::
-
-  toolbox/pkgs/windows-2019.bat
-  toolbox/pkgs/windows-2022.bat
-
-For details.
-
-To utilize the scripts, then invoke the script in an elevated command-prompt
-(``cmd.exe`` as Administrator)::
-
-  cd toolbox\pkgs
-  windows-2019.bat
-
-.. note:: in case you see .dll loader-errors, then check that the environment
-   variable ``PATH`` contains the various library locations of the the
-   toolchain.
-
+.. include:: toolchain.rst
 
 .. _sec-gs-system-config:
 
@@ -575,7 +67,7 @@ Backends and System Config
 
 **xNVMe** relies on certain Operating System Kernel features and infrastructure
 that must be available and correctly configured. This subsection goes through
-what is uses on Linux and how check whether is it available.
+what is used on Linux and how check whether is it available.
 
 Backends
 --------
@@ -585,7 +77,7 @@ supporting the **xNVMe** API in a single library with **batteries included**.
 
 That is, it comes with the essential third-party libraries bundled into the
 **xNVMe** library. Thus, you get a single C API to program against and a single
-library to link with. An similarly for the command-line tools; a single binary
+library to link with. And similarly for the command-line tools; a single binary
 to communicating with devices via the I/O stacks that available on the system.
 
 To inspect the libraries which **xNVMe** is build against and the
@@ -750,11 +242,11 @@ exposes device-memory and device-interrupts to user space. Thus enabling the
 implementation of device drivers entirely in user space.
 
 Although Linux provides a capable NVMe Driver with flexible IOCTLs, then a user
-space NVMe driver serves those who seek the lowest possible command per-command
+space NVMe driver serves those who seek the lowest possible per-command
 processing overhead or wants full control over NVMe command construction,
 including command-payloads.
 
-Fortunately, you do not need to go and write a user space NVMe driver since a
+Fortunately, you do not need to go and write an user space NVMe driver since a
 highly efficient, mature and well-maintained driver already exists. Namely, the
 NVMe driver provided by the **Storage Platform Development Kit** (_`SPDK`).
 
@@ -802,7 +294,7 @@ Should output:
 .. literalinclude:: 200_dmesg.out
    :language: bash
 
-And this this command:
+And this command:
 
 .. literalinclude:: 300_find.cmd
    :language: bash
@@ -815,7 +307,7 @@ Should have output similar to:
 Unbinding and binding
 ~~~~~~~~~~~~~~~~~~~~~
 
-With the system configured then you can use the ``xnvme-driver`` script bind
+With the system configured then you can use the ``xnvme-driver`` script to bind
 and unbind devices. The ``xnvme-driver`` script is a merge of the **SPDK**
 ``setup.sh`` script and its dependencies.
 
@@ -840,7 +332,7 @@ Should output similar to:
 .. literalinclude:: 500_xnvme_driver_reset.out
    :language: bash
 
-.. _sec-backends-spdk-identifiers:
+.. _sec-device-identifiers:
 
 Device Identifiers
 ~~~~~~~~~~~~~~~~~~
@@ -972,22 +464,21 @@ Troubleshooting
 User space
 ----------
 
-In case you are having issues using running with SPDK backend / using then make
-sure you following the config section
-:ref:`sec-gs-system-config-userspace-config` and if issues persist a solution
-might be found in the following subsections.
+In case you are having issues using SPDK backend then make sure you are
+following the config section :ref:`sec-gs-system-config-userspace-config` and
+if issues persist a solution might be found in the following subsections.
 
 No devices found
 ~~~~~~~~~~~~~~~~
 
-When running ``xnvme enum`` then the output-listing is empty, there are no
-devices. When running with ``vfio-pci`` then this can occur when your devices
-are sharing iommu-group with other devices which are still bound to in-kernel
+When running ``xnvme enum`` and the output-listing is empty, then there are no
+devices. When running with ``vfio-pci``, this can occur when your devices are
+sharing iommu-group with other devices which are still bound to in-kernel
 drivers. This could be NICs, GPUs or other kinds of peripherals.
 
 The division of devices into groups is not something that can be easily
-switched, but you try to manually unbind the other devices in the iommu group
-from their kernel drivers.
+switched, but you can try to manually unbind the other devices in the iommu
+group from their kernel drivers.
 
 If that is not an option then you can try to re-organize your physical
 connectivity of deviecs, e.g. move devices around.
@@ -999,7 +490,7 @@ kernel command-line and rebooting.
 Memory Issues
 ~~~~~~~~~~~~~
 
-If you see a message similar to the below while unbind devices::
+If you see a message similar to the below while unbinding devices::
 
   Current user memlock limit: 16 MB
 
@@ -1010,8 +501,8 @@ If you see a message similar to the below while unbind devices::
   ## WARNING: memlock limit is less than 64MB
   ## DPDK with VFIO may not be able to initialize if run as current user.
 
-Then go you should do as suggested, that is, adjust ``limits.conf``, see for an
-example of doing here :ref:`sec-gs-system-config-userspace-config`.
+Then go you should do as suggested, that is, adjust ``limits.conf``, for an
+example, see :ref:`sec-gs-system-config-userspace-config`.
 
 Build Errors
 ------------
@@ -1022,7 +513,7 @@ then it is likely due to one of the following:
 * You are building in an **offline** environment and only have a shallow
   source-archive or a git-repository without subprojects.
 
-The full source-archive is made available with each release and downloadble
+The full source-archive is made available with each release and downloadable
 from the `GitHUB Release page <https://github.com/OpenMPDK/xNVMe/releases>`_
 release page. It contains the xNVMe source code along with all the third-party
 dependencies, namely: SPDK, liburing, libnvme, and fio.
@@ -1045,6 +536,11 @@ is clean from any artifacts left behind by previous build failures::
   make clobber
 
 And then go back to the :ref:`sec-building` and follow the steps there.
+
+.. note::
+   When running ``make clobber`` then everything not comitted is "lost". Thus,
+   if you are developing/modifying xNVMe, then make you commit of stash your
+   changes before running it.
 
 Known Build Issues
 ------------------
@@ -1100,25 +596,26 @@ For example, compiling **xNVMe** on a system where the default compiler is not
   make CC=gcc CXX=g++
   make install CC=gcc CXX=g++
 
-Recent versions of **icc**, **clang**, and **pgi** should at be able to satisfy
+Recent versions of **icc**, **clang**, and **pgi** should be able to satisfy
 the **C11** and **pthreads** requirements. However, it will most likely require
 a bit of fiddling.
 
 .. note:: The **icc** works well after you bought a license and installed it
-  correctly. There is a free option with Intel System Suite 2019.
+   correctly. There is a free option with Intel System Suite 2019.
+
 
 .. note:: The **pgi** compiler has some issues linking with **SPDK/DPDK** due
-  to unstable **ABI** for **RTE** it seems.
+   to unstable **ABI** for **RTE** it seems.
 
-The path of least fiddling around is to just install the toolchain and
-libraries as described in the :ref:`sec-building-toolchain` section.
+The path of least resistance is to just install the toolchain and libraries as
+described in the :ref:`sec-building-toolchain` section.
 
 .. _sec-building-config:
 
 Custom Configuration
 --------------------
 
-See the list of options in ``meson_options.txt``, this file options the
+See the list of options in ``meson_options.txt``, this file defines the
 different non-generic options that you can toggle. For traditional
 build-configuration such as ``--prefix`` then these are managed like all other
 meson-based builds::
@@ -1134,7 +631,7 @@ For details
 Cross-compiling for ARM on x86
 ------------------------------
 
-This is managed by like any other meson-based build, see:
+This is managed like any other meson-based build, see:
 
 https://mesonbuild.com/Cross-compilation.html
 

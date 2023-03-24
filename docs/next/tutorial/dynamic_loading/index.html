@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dynamically loading xNVMe &mdash; xNVMe 0.5.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>Dynamically loading xNVMe &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +19,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="NVMe-over-Fabrics" href="../fabrics/index.html" />
-    <link rel="prev" title="Tutorials" href="../index.html" /> 
+    <link rel="prev" title="Linux Dev. Environment" href="../devs/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -26,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> xNVMe
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xNVMe
           </a>
               <div class="version">
-                0.5.0
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -45,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../devs/index.html">Linux Dev. Environment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Dynamically loading xNVMe</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#in-c">In C</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#in-python">In Python</a></li>
@@ -70,9 +76,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Tutorials</a> &raquo;</li>
-      <li>Dynamically loading xNVMe</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Dynamically loading xNVMe</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/tutorial/dynamic_loading/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,7 +88,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="dynamically-loading-xnvme">
+  <section id="dynamically-loading-xnvme">
 <span id="sec-dynamic-loading"></span><h1>Dynamically loading xNVMe<a class="headerlink" href="#dynamically-loading-xnvme" title="Permalink to this headline">¶</a></h1>
 <p>In this seciton, you will find two examples of dynamically loading the
 <strong>xNVMe</strong> shared library and via it utilize the <a class="reference internal" href="../../capis/index.html#sec-c-api"><span class="std std-ref">C API</span></a> along with
@@ -91,94 +97,94 @@ notes on common pitfalls when doing so.</p>
 <a class="reference internal" href="../../capis/xnvme.html#sec-c-api-xnvme-func-xnvme-enumerate"><span class="std std-ref">xnvme_enumerate</span></a> with callback function, callback
 arguments and associated data-structures and API functions. The example will
 first be presented in C and then in Python.</p>
-<div class="section" id="in-c">
+<section id="in-c">
 <h2>In C<a class="headerlink" href="#in-c" title="Permalink to this headline">¶</a></h2>
 <p>Here <code class="docutils literal notranslate"><span class="pre">dlopen()</span></code> is used to load the library and pointers to the relevant
 functions are returned by <code class="docutils literal notranslate"><span class="pre">dlsym()</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;dlfcn.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;libxnvme.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_ident.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;libxnvme_pp.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;dlfcn.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme_ident.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme_pp.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
 
-<span class="k">struct</span> <span class="nc">lib</span> <span class="p">{</span>
-	<span class="kt">void</span> <span class="o">*</span><span class="n">handle</span><span class="p">;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">lib</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">handle</span><span class="p">;</span>
 
-	<span class="k">struct</span> <span class="nf">xnvme_opts</span> <span class="p">(</span><span class="o">*</span><span class="n">opts_default</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
-	<span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_ident</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="p">);</span>
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ident_pr</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">xnvme_ident</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-	<span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">enumerate</span><span class="p">)(</span><span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="o">*</span><span class="p">,</span> <span class="n">xnvme_enumerate_cb</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">);</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">opts_default</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_ident</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">ident_pr</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">enumerate</span><span class="p">)(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_enumerate_cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="kt">int</span>
-<span class="nf">enum_cb</span><span class="p">(</span><span class="k">struct</span> <span class="nc">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">cb_args</span><span class="p">)</span>
+<span class="nf">enum_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">)</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="nc">lib</span> <span class="o">*</span><span class="n">lib</span> <span class="o">=</span> <span class="n">cb_args</span><span class="p">;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">lib</span><span class="w"> </span><span class="o">*</span><span class="n">lib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_args</span><span class="p">;</span>
 
-	<span class="n">lib</span><span class="o">-&gt;</span><span class="n">ident_pr</span><span class="p">(</span><span class="n">lib</span><span class="o">-&gt;</span><span class="n">get_ident</span><span class="p">(</span><span class="n">dev</span><span class="p">),</span> <span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+<span class="w">	</span><span class="n">lib</span><span class="o">-&gt;</span><span class="n">ident_pr</span><span class="p">(</span><span class="n">lib</span><span class="o">-&gt;</span><span class="n">get_ident</span><span class="p">(</span><span class="n">dev</span><span class="p">),</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 
-	<span class="k">return</span> <span class="n">XNVME_ENUMERATE_DEV_CLOSE</span><span class="p">;</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">XNVME_ENUMERATE_DEV_CLOSE</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="kt">int</span>
-<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
-	<span class="k">struct</span> <span class="nc">lib</span> <span class="n">lib</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
-	<span class="k">struct</span> <span class="nc">xnvme_opts</span> <span class="n">opts</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">err</span><span class="p">;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">lib</span><span class="w"> </span><span class="n">lib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
 
-	<span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">printf</span><span class="p">(</span><span class="s">&quot;usage: %s &lt;library_path&gt; [sys_uri]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-		<span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;usage: %s &lt;library_path&gt; [sys_uri]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
-	<span class="n">lib</span><span class="p">.</span><span class="n">handle</span> <span class="o">=</span> <span class="n">dlopen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">RTLD_LAZY</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">dlerror</span><span class="p">());</span>
-		<span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlopen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">RTLD_LAZY</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dlerror</span><span class="p">());</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
-	<span class="n">lib</span><span class="p">.</span><span class="n">enumerate</span> <span class="o">=</span> <span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span> <span class="s">&quot;xnvme_enumerate&quot;</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">enumerate</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">dlerror</span><span class="p">());</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="n">lib</span><span class="p">.</span><span class="n">enumerate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xnvme_enumerate&quot;</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">enumerate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dlerror</span><span class="p">());</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
-	<span class="n">lib</span><span class="p">.</span><span class="n">opts_default</span> <span class="o">=</span> <span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span> <span class="s">&quot;xnvme_opts_default&quot;</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">opts_default</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">dlerror</span><span class="p">());</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="n">lib</span><span class="p">.</span><span class="n">opts_default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xnvme_opts_default&quot;</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">opts_default</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dlerror</span><span class="p">());</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
-	<span class="n">lib</span><span class="p">.</span><span class="n">ident_pr</span> <span class="o">=</span> <span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span> <span class="s">&quot;xnvme_ident_pr&quot;</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">ident_pr</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">dlerror</span><span class="p">());</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="n">lib</span><span class="p">.</span><span class="n">ident_pr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xnvme_ident_pr&quot;</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">ident_pr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dlerror</span><span class="p">());</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
-	<span class="n">lib</span><span class="p">.</span><span class="n">get_ident</span> <span class="o">=</span> <span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span> <span class="s">&quot;xnvme_dev_get_ident&quot;</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">get_ident</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">dlerror</span><span class="p">());</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-		<span class="k">goto</span> <span class="n">exit</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="n">lib</span><span class="p">.</span><span class="n">get_ident</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlsym</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xnvme_dev_get_ident&quot;</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">lib</span><span class="p">.</span><span class="n">get_ident</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dlerror</span><span class="p">());</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
-	<span class="n">opts</span> <span class="o">=</span> <span class="n">lib</span><span class="p">.</span><span class="n">opts_default</span><span class="p">();</span>
+<span class="w">	</span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lib</span><span class="p">.</span><span class="n">opts_default</span><span class="p">();</span>
 
-	<span class="n">err</span> <span class="o">=</span> <span class="n">lib</span><span class="p">.</span><span class="n">enumerate</span><span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">?</span> <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">:</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">opts</span><span class="p">,</span> <span class="n">enum_cb</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lib</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-		<span class="n">printf</span><span class="p">(</span><span class="s">&quot;FAILED: enumerate(), err: %d&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">);</span>
-		<span class="n">err</span> <span class="o">=</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-	<span class="p">}</span>
+<span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lib</span><span class="p">.</span><span class="n">enumerate</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="n">enum_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">lib</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;FAILED: enumerate(), err: %d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
 
 <span class="nl">exit</span><span class="p">:</span>
-	<span class="n">dlclose</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">);</span>
+<span class="w">	</span><span class="n">dlclose</span><span class="p">(</span><span class="n">lib</span><span class="p">.</span><span class="n">handle</span><span class="p">);</span>
 
-	<span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -197,51 +203,51 @@ however, it is required for a language such as C, since there are no
 exceptions being raised upon error.</p>
 </div>
 <p>Try compiling the above example, e.g. on a Linux system with <code class="docutils literal notranslate"><span class="pre">gcc</span></code> do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc ../tutorial/dynamic_loading/enumerate_example.c -ldl -o enumerate_example
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc<span class="w"> </span>../tutorial/dynamic_loading/enumerate_example.c<span class="w"> </span>-ldl<span class="w"> </span>-o<span class="w"> </span>enumerate_example
 </pre></div>
 </div>
 <p>This will produce an executable named <code class="docutils literal notranslate"><span class="pre">enumerate_example</span></code>. You can run it by
 executing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./enumerate_example <span class="k">$(</span>pkg-config xnvme --variable<span class="o">=</span>libdir<span class="k">)</span>/libxnvme-shared.so
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./enumerate_example<span class="w"> </span><span class="k">$(</span>pkg-config<span class="w"> </span>xnvme<span class="w"> </span>--variable<span class="o">=</span>libdir<span class="k">)</span>/libxnvme-shared.so
 </pre></div>
 </div>
 <p>The should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_ident:
-  uri: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/nvme0n2&#39;</span>
-  dtype: 0x2
-  nsid: 0x2
-  csi: 0x2
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme0n2&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x2
+<span class="w">  </span>csi:<span class="w"> </span>0x2
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/nvme1n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme1n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/ng0n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/ng0n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/ng0n2&#39;</span>
-  dtype: 0x2
-  nsid: 0x2
-  csi: 0x2
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/ng0n2&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x2
+<span class="w">  </span>csi:<span class="w"> </span>0x2
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/ng1n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/ng1n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -255,8 +261,8 @@ path to <code class="docutils literal notranslate"><span class="pre">libxnvme-sh
 <p>If you see no output, then try running it as super-user or via
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code></p>
 </div>
-</div>
-<div class="section" id="in-python">
+</section>
+<section id="in-python">
 <h2>In Python<a class="headerlink" href="#in-python" title="Permalink to this headline">¶</a></h2>
 <p>Here <cite>ctypes</cite> is used to load the library. Unlike C, then each function does
 not need to be be explicitly loaded, additionally some assistance is given to
@@ -268,10 +274,10 @@ locate the library.</p>
 
 
 <span class="k">def</span> <span class="nf">load_capi</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Attempt to load the library via ctypes&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Attempt to load the library via ctypes&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">search_paths</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;Generate paths to try and load&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate paths to try and load&quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">search</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xnvme-shared&quot;</span><span class="p">,</span> <span class="s2">&quot;xnvme_shared&quot;</span><span class="p">]:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_library</span><span class="p">(</span><span class="n">search</span><span class="p">)</span>
@@ -306,7 +312,7 @@ locate the library.</p>
 
 
 <span class="k">class</span> <span class="nc">Ident</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Struct containing device identifiers&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Struct containing device identifiers&quot;&quot;&quot;</span>
 
     <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s2">&quot;uri&quot;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char</span> <span class="o">*</span> <span class="mi">384</span><span class="p">),</span>
@@ -318,13 +324,13 @@ locate the library.</p>
 
 
 <span class="k">class</span> <span class="nc">Dev</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Struct representing the device&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Struct representing the device&quot;&quot;&quot;</span>
 
     <span class="n">_fields_</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 
 <span class="k">def</span> <span class="nf">enum_cb</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Callback function invoked for each device&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback function invoked for each device&quot;&quot;&quot;</span>
 
     <span class="n">get_ident</span> <span class="o">=</span> <span class="n">capi</span><span class="o">.</span><span class="n">xnvme_dev_get_ident</span>
     <span class="n">get_ident</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">Ident</span><span class="p">)</span>
@@ -334,7 +340,7 @@ locate the library.</p>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Enumerate devices on the system&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumerate devices on the system&quot;&quot;&quot;</span>
 
     <span class="n">enum_cb_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">Dev</span><span class="p">))</span>
     <span class="n">capi</span><span class="o">.</span><span class="n">xnvme_enumerate</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">enum_cb_type</span><span class="p">(</span><span class="n">enum_cb</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
@@ -358,46 +364,46 @@ library.</p>
 determines which member they are mapped to, not their name.</p>
 </div>
 <p>The example can be run like so:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 ../tutorial/dynamic_loading/enumerate_example.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>../tutorial/dynamic_loading/enumerate_example.py
 </pre></div>
 </div>
 <p>The command should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_ident:
-  uri: <span class="s1">&#39;/dev/nvme0n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/nvme0n2&#39;</span>
-  dtype: 0x2
-  nsid: 0x2
-  csi: 0x2
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme0n2&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x2
+<span class="w">  </span>csi:<span class="w"> </span>0x2
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/nvme1n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme1n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/ng0n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/ng0n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/ng0n2&#39;</span>
-  dtype: 0x2
-  nsid: 0x2
-  csi: 0x2
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/ng0n2&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x2
+<span class="w">  </span>csi:<span class="w"> </span>0x2
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span>
 xnvme_ident:
-  uri: <span class="s1">&#39;/dev/ng1n1&#39;</span>
-  dtype: 0x2
-  nsid: 0x1
-  csi: 0x0
-  subnqn: <span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
+<span class="w">  </span>uri:<span class="w"> </span><span class="s1">&#39;/dev/ng1n1&#39;</span>
+<span class="w">  </span>dtype:<span class="w"> </span>0x2
+<span class="w">  </span>nsid:<span class="w"> </span>0x1
+<span class="w">  </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -405,14 +411,14 @@ xnvme_ident:
 <p>If you see no output, then try running it as super-user or via
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code></p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../devs/index.html" class="btn btn-neutral float-left" title="Linux Dev. Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../fabrics/index.html" class="btn btn-neutral float-right" title="NVMe-over-Fabrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
