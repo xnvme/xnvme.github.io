@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backends &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.7.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Backends</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/backends/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="backends">
+<span id="sec-backends"></span><h1>Backends<a class="headerlink" href="#backends" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">xNVMe</span></code> hides the implementation of operating system interaction from the
+user. That is, the implementation of the <code class="docutils literal notranslate"><span class="pre">xnvme_*</span></code> <strong>C API</strong>, is delegated at
+runtime to a backend implementation.</p>
+<p>Devices are associated with a backend when they are “opened” via a device
+identifier on the such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span>
+<span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0ns1</span>
+<span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+\\<span class="o">.</span>\<span class="n">PhysicalDrive1</span>
+</pre></div>
+</div>
+<p>The library can inform you which backend is in affect, e.g.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>info<span class="w"> </span>/dev/nvme0n1
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+<span class="w">  </span>xnvme_ident:
+<span class="w">    </span>trgt:<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>
+<span class="w">    </span>schm:<span class="w"> </span><span class="s1">&#39;file&#39;</span>
+<span class="w">    </span>opts:<span class="w"> </span><span class="s1">&#39;&#39;</span>
+<span class="w">    </span>uri:<span class="w"> </span><span class="s1">&#39;file:/dev/nvme0n1&#39;</span>
+<span class="w">  </span>xnvme_be:
+<span class="w">    </span>async:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;thr&#39;</span>,<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme_ioctl&#39;</span>,<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
+<span class="w">    </span>attr:<span class="w"> </span><span class="o">{</span>name:<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
+<span class="w">  </span>xnvme_cmd_opts:
+<span class="w">    </span>mask:<span class="w"> </span><span class="s1">&#39;00000000000000000000000000000001&#39;</span>
+<span class="w">    </span>iomd:<span class="w"> </span><span class="s1">&#39;SYNC&#39;</span>
+<span class="w">    </span>payload_data:<span class="w"> </span><span class="s1">&#39;DRV&#39;</span>
+<span class="w">    </span>payload_meta:<span class="w"> </span><span class="s1">&#39;DRV&#39;</span>
+<span class="w">    </span>csi:<span class="w"> </span>0x0
+<span class="w">    </span>nsid:<span class="w"> </span>0x1
+<span class="w">    </span>ssw:<span class="w"> </span><span class="m">9</span>
+<span class="w">  </span>xnvme_geo:
+<span class="w">    </span>type:<span class="w"> </span>XNVME_GEO_CONVENTIONAL
+<span class="w">    </span>npugrp:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>npunit:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>nzone:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>nsect:<span class="w"> </span><span class="m">16777216</span>
+<span class="w">    </span>nbytes:<span class="w"> </span><span class="m">512</span>
+<span class="w">    </span>nbytes_oob:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>tbytes:<span class="w"> </span><span class="m">8589934592</span>
+<span class="w">    </span>mdts_nbytes:<span class="w"> </span><span class="m">65024</span>
+<span class="w">    </span>lba_nbytes:<span class="w"> </span><span class="m">512</span>
+<span class="w">    </span>lba_extended:<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<p>The valid combinations of interfaces and backends are listed below:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 11%" />
+<col style="width: 12%" />
+<col style="width: 10%" />
+<col style="width: 11%" />
+<col style="width: 14%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head" colspan="6"><p>Backends</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>Async interfaces</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">fbsd</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">linux</span></code></p></th>
+<th class="head"><p>libvfn</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">windows</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">mac</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>io_uring</p></td>
+<td><p>no</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>io_uring_cmd</p></td>
+<td><p>no</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>libaio</p></td>
+<td><p>no</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>kqueue</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>POSIX aio</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>NVMe Driver (vfio-pci)</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-odd"><td><p>NVMe Driver (uio-generic)</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>no</p></td>
+<td><p>no</p></td>
+</tr>
+<tr class="row-even"><td><p>emu</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>thrpool</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>nil</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+</tbody>
+</table>
+<section id="appendix">
+<h2>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
+<p>[1] <a class="reference external" href="http://www.cs.cmu.edu/~riedel/ftp/SIO/API/cmu-cs-96-193.pdf">http://www.cs.cmu.edu/~riedel/ftp/SIO/API/cmu-cs-96-193.pdf</a>
+[2] <a class="reference external" href="https://www.nextplatform.com/2017/09/11/whats-bad-posix-io/">https://www.nextplatform.com/2017/09/11/whats-bad-posix-io/</a>
+[3] <a class="reference external" href="https://blog.linuxplumbersconf.org/2009/slides/Anthony-Liguori-qemu-block.pdf">https://blog.linuxplumbersconf.org/2009/slides/Anthony-Liguori-qemu-block.pdf</a></p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

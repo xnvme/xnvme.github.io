@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xnvme_lba &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.7.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">xnvme_lba</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/capis/xnvme_lba.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="xnvme-lba">
+<span id="sec-c-api-xnvme-lba"></span><h1>xnvme_lba<a class="headerlink" href="#xnvme-lba" title="Permalink to this headline">¶</a></h1>
+<section id="header">
+<span id="sec-c-api-xnvme-lba-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_lba.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Representation of a range of logical-block-addresses aka LBAs</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_lba_range</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Range start-LBA; begins at and includes this address</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">elba</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Range end-LBA; ends at and includes this address</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">naddrs</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of addresses in range [slba, elba]</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of bytes covered by [slba, elba]</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">is_zoned</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range covers a zone [zslba, zslba + cap]</span>
+<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">is_valid</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range is valid</span>
+<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rsvd</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">30</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given backend attribute to the given output stream</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param stream output stream used for printing</span>
+<span class="cm"> * @param range Pointer to the ::xnvme_lba_range to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_lba_range_fpr</span><span class="p">(</span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span><span class="w"> </span><span class="o">*</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given backend attribute to stdout</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param range Pointer to the ::xnvme_lba_range to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_lba_range_pr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span><span class="w"> </span><span class="o">*</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given byte-offset and spanning nbytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param offset Offset in bytes satisfying offset &lt; capacity</span>
+<span class="cm"> * @param nbytes Number of bytes, satisfying offset + nbytes &lt; capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_offset_nbytes</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given start-lba (slba) and spanning naddrs</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param slba A valid lba on the given dev</span>
+<span class="cm"> * @param elba A valid lba on the given dev</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_slba_elba</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">elba</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given start-lba (slba) and spanning naddrs</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param slba A valid lba on the given dev</span>
+<span class="cm"> * @param naddrs A non-zero number of addresses, satisfying slba + naddrs &lt; device capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_slba_naddrs</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">naddrs</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given zone-start-LBA and spanning zone-capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param zdescr Pointer to a zone-descriptor valid on the given dev</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_zdescr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_znd_descr</span><span class="w"> </span><span class="o">*</span><span class="n">zdescr</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="enums">
+<span id="sec-c-api-xnvme-lba-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="structs">
+<span id="sec-c-api-xnvme-lba-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<section id="xnvme-lba-range">
+<span id="sec-c-api-xnvme-lba-struct-xnvme-lba-range"></span><h3>xnvme_lba_range<a class="headerlink" href="#xnvme-lba-range" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.xnvme_lba_range">
+<span class="target" id="structxnvme__lba__range"></span><em class="property">struct </em><code class="sig-name descname">xnvme_lba_range</code><a class="headerlink" href="#c.xnvme_lba_range" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause Representation of a range of logical-block-addresses aka LBAs </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt id="c.xnvme_lba_range.slba">
+<span class="target" id="structxnvme__lba__range_1a9d390c5afcd64f09290b7c5f750a2bbe"></span>uint64_t <code class="sig-name descname">slba</code><a class="headerlink" href="#c.xnvme_lba_range.slba" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Range start-LBA; begins at and includes this address. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_lba_range.elba">
+<span class="target" id="structxnvme__lba__range_1a84f2cd51e27ea1f24f0306c70782ded6"></span>uint64_t <code class="sig-name descname">elba</code><a class="headerlink" href="#c.xnvme_lba_range.elba" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Range end-LBA; ends at and includes this address. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_lba_range.naddrs">
+<span class="target" id="structxnvme__lba__range_1a89c45e97463c22c57769865c5445e722"></span>uint32_t <code class="sig-name descname">naddrs</code><a class="headerlink" href="#c.xnvme_lba_range.naddrs" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Number of addresses in range [slba, elba]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_lba_range.nbytes">
+<span class="target" id="structxnvme__lba__range_1adffbe51c8c2ed72971e598dbfd23f207"></span>uint64_t <code class="sig-name descname">nbytes</code><a class="headerlink" href="#c.xnvme_lba_range.nbytes" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Number of bytes covered by [slba, elba]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_lba_range.attr">
+<span class="target" id="structxnvme__lba__range_1ac8374bd2cfa2417e302536eb51b7fb94"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a>.<strong>[anonymous]</strong> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="functions">
+<span id="sec-c-api-xnvme-lba-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<section id="xnvme-lba-fpr">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-fpr"></span><h3>xnvme_lba_fpr<a class="headerlink" href="#xnvme-lba-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_fpr">
+<span class="target" id="libxnvme__pp_8h_1a4efba73464d5b20cf8512bec1209b8a8"></span>int <code class="sig-name descname">xnvme_lba_fpr</code><span class="sig-paren">(</span>FILE *<em>stream</em>, uint64_t <em>lba</em>, <em class="property">enum</em> <a class="reference internal" href="xnvme.html#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a> <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_fpr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given LBA to the given output stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – output stream used for printing </p></li>
+<li><p><strong>lba</strong> – the LBA to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-fprn">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-fprn"></span><h3>xnvme_lba_fprn<a class="headerlink" href="#xnvme-lba-fprn" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_fprn">
+<span class="target" id="libxnvme__pp_8h_1a0248760fdc81a1c81919e4dfa2e2df2c"></span>int <code class="sig-name descname">xnvme_lba_fprn</code><span class="sig-paren">(</span>FILE *<em>stream</em>, <em class="property">const</em> uint64_t *<em>lba</em>, uint16_t <em>nlb</em>, <em class="property">enum</em> <a class="reference internal" href="xnvme.html#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a> <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_fprn" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given list of Logical Block Addresses (LBAs)to the given output stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – output stream used for printing </p></li>
+<li><p><strong>lba</strong> – Pointer to an array of LBAs to print </p></li>
+<li><p><strong>nlb</strong> – Number of LBAs to print from the given list </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-pr">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-pr"></span><h3>xnvme_lba_pr<a class="headerlink" href="#xnvme-lba-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_pr">
+<span class="target" id="libxnvme__pp_8h_1a84b4b42c945df3709b50404f3ed273e1"></span>int <code class="sig-name descname">xnvme_lba_pr</code><span class="sig-paren">(</span>uint64_t <em>lba</em>, <em class="property">enum</em> <a class="reference internal" href="xnvme.html#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a> <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_pr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given Logical Block Addresses (LBA) to stdout. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lba</strong> – the LBA to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-prn">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-prn"></span><h3>xnvme_lba_prn<a class="headerlink" href="#xnvme-lba-prn" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_prn">
+<span class="target" id="libxnvme__pp_8h_1a413b2f1412221c5573eb7ae49d950df9"></span>int <code class="sig-name descname">xnvme_lba_prn</code><span class="sig-paren">(</span><em class="property">const</em> uint64_t *<em>lba</em>, uint16_t <em>nlb</em>, <em class="property">enum</em> <a class="reference internal" href="xnvme.html#c.xnvme_pr" title="xnvme_pr">xnvme_pr</a> <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_prn" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Print a list of Logical Block Addresses (LBAs) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lba</strong> – Pointer to an array of LBAs to print </p></li>
+<li><p><strong>nlb</strong> – Length of the array in items </p></li>
+<li><p><strong>opts</strong> – Printer options</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-fpr">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-range-fpr"></span><h3>xnvme_lba_range_fpr<a class="headerlink" href="#xnvme-lba-range-fpr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_range_fpr">
+<span class="target" id="libxnvme__lba_8h_1ae2c4e78e695dd71606c9c7c194ef42a0"></span>int <code class="sig-name descname">xnvme_lba_range_fpr</code><span class="sig-paren">(</span>FILE *<em>stream</em>, <em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a> *<em>range</em>, int <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_fpr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given backend attribute to the given output stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – output stream used for printing </p></li>
+<li><p><strong>range</strong> – Pointer to the <a class="reference internal" href="#structxnvme__lba__range"><span class="std std-ref">xnvme_lba_range</span></a> to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-offset-nbytes">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-range-from-offset-nbytes"></span><h3>xnvme_lba_range_from_offset_nbytes<a class="headerlink" href="#xnvme-lba-range-from-offset-nbytes" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_range_from_offset_nbytes">
+<span class="target" id="libxnvme__lba_8h_1a3eceda0f330124a328bb606a0396e163"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a> <code class="sig-name descname">xnvme_lba_range_from_offset_nbytes</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, uint64_t <em>offset</em>, uint64_t <em>nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_offset_nbytes" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes a range starting at the given byte-offset and spanning nbytes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><strong>offset</strong> – Offset in bytes satisfying offset &lt; capacity </p></li>
+<li><p><strong>nbytes</strong> – Number of bytes, satisfying offset + nbytes &lt; capacity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-slba-elba">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-range-from-slba-elba"></span><h3>xnvme_lba_range_from_slba_elba<a class="headerlink" href="#xnvme-lba-range-from-slba-elba" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_range_from_slba_elba">
+<span class="target" id="libxnvme__lba_8h_1a6085f6555bdd9c068d3f46a28516fbab"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a> <code class="sig-name descname">xnvme_lba_range_from_slba_elba</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, uint64_t <em>slba</em>, uint64_t <em>elba</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_slba_elba" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes a range starting at the given start-lba (slba) and spanning naddrs. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><strong>slba</strong> – A valid lba on the given dev </p></li>
+<li><p><strong>elba</strong> – A valid lba on the given dev</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-slba-naddrs">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-range-from-slba-naddrs"></span><h3>xnvme_lba_range_from_slba_naddrs<a class="headerlink" href="#xnvme-lba-range-from-slba-naddrs" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_range_from_slba_naddrs">
+<span class="target" id="libxnvme__lba_8h_1ade9982b041683555133b64cd70aa1cbc"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a> <code class="sig-name descname">xnvme_lba_range_from_slba_naddrs</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, uint64_t <em>slba</em>, uint64_t <em>naddrs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_slba_naddrs" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes a range starting at the given start-lba (slba) and spanning naddrs. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><strong>slba</strong> – A valid lba on the given dev </p></li>
+<li><p><strong>naddrs</strong> – A non-zero number of addresses, satisfying slba + naddrs &lt; device capacity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-zdescr">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-range-from-zdescr"></span><h3>xnvme_lba_range_from_zdescr<a class="headerlink" href="#xnvme-lba-range-from-zdescr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_range_from_zdescr">
+<span class="target" id="libxnvme__lba_8h_1ac5c6b3f92c00c35dee69f3d056671357"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a> <code class="sig-name descname">xnvme_lba_range_from_zdescr</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_descr" title="xnvme_spec_znd_descr">xnvme_spec_znd_descr</a> *<em>zdescr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_zdescr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes a range starting at the given zone-start-LBA and spanning zone-capacity. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><strong>zdescr</strong> – Pointer to a zone-descriptor valid on the given dev</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-pr">
+<span id="sec-c-api-xnvme-lba-func-xnvme-lba-range-pr"></span><h3>xnvme_lba_range_pr<a class="headerlink" href="#xnvme-lba-range-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_lba_range_pr">
+<span class="target" id="libxnvme__lba_8h_1aacab3f1baf6ca02e950ea7eaa9184562"></span>int <code class="sig-name descname">xnvme_lba_range_pr</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a> *<em>range</em>, int <em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_pr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the given backend attribute to stdout. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>range</strong> – Pointer to the <a class="reference internal" href="#structxnvme__lba__range"><span class="std std-ref">xnvme_lba_range</span></a> to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

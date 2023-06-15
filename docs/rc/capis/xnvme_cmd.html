@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xnvme_cmd &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.7.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">xnvme_cmd</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/capis/xnvme_cmd.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="xnvme-cmd">
+<span id="sec-c-api-xnvme-cmd"></span><h1>xnvme_cmd<a class="headerlink" href="#xnvme-cmd" title="Permalink to this headline">¶</a></h1>
+<section id="header">
+<span id="sec-c-api-xnvme-cmd-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_adm.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The xNVMe Command Context</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_cmd_ctx</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="n">cmd</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Command to be processed</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cpl</span><span class="w"> </span><span class="n">cpl</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Completion result from processing</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Device associated with the command</span>
+
+<span class="w">	</span><span class="c1">///&lt; Fields for command option: XNVME_CMD_ASYNC</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Queue used for command processing</span>
+<span class="w">		</span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span><span class="w">         </span><span class="c1">///&lt; User defined callback function</span>
+<span class="w">		</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span><span class="w">              </span><span class="c1">///&lt; User defined callback function arguments</span>
+<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">async</span><span class="p">;</span>
+
+<span class="w">	</span><span class="c1">///&lt; Field containing command-options, the field is initialized by helper-functions</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">opts</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">be_rsvd</span><span class="p">[</span><span class="mi">12</span><span class="p">];</span><span class="w"> </span><span class="c1">///&lt; Fields reserved for use by library internals</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Assign a callback-function and argument to be used with the given command-context</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to setup callback for</span>
+<span class="cm"> * @param cb The callback function to use</span>
+<span class="cm"> * @param cb_arg The callback argument to use</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span>
+<span class="n">xnvme_cmd_ctx_set_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span>
+<span class="w">	</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_arg</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve a command-context for issuing commands to the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle (::xnvme_dev) obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return A ::xnvme_cmd_ctx initialized synchronous command on the given device</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span>
+<span class="n">xnvme_cmd_ctx_from_dev</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve a command-text for issuing commands via the given queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to retrieve a command-context for</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to a ::xnvme_cmd_ctx is returned. On error, NULL is returned and</span>
+<span class="cm"> * `errno` set to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span>
+<span class="n">xnvme_cmd_ctx_from_queue</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Clears/resets the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to clear</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_cmd_ctx_clear</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Encapsulate completion-error checking here for now.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to check status on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is return. On error, a non-zero value is returned.</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">sc</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">sct</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass an NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of data-payload in bytes</span>
+<span class="cm"> * @param mbuf pointer to meta-payload</span>
+<span class="cm"> * @param mbuf_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_pass</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">,</span>
+<span class="w">	       </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dvec array of data iovecs</span>
+<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
+<span class="cm"> * @param dvec_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> * @param mvec array of metadata iovecs</span>
+<span class="cm"> * @param mvec_cnt number of elements in mvec</span>
+<span class="cm"> * @param mvec_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_passv</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">dvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_nbytes</span><span class="p">,</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">mvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a NVMe Admin Command through to the device with minimal intervention</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of data-payload in bytes</span>
+<span class="cm"> * @param mbuf pointer to meta-payload</span>
+<span class="cm"> * @param mbuf_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_pass_admin</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">,</span>
+<span class="w">		     </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="enums">
+<span id="sec-c-api-xnvme-cmd-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="structs">
+<span id="sec-c-api-xnvme-cmd-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<section id="xnvme-cmd-ctx">
+<span id="sec-c-api-xnvme-cmd-struct-xnvme-cmd-ctx"></span><h3>xnvme_cmd_ctx<a class="headerlink" href="#xnvme-cmd-ctx" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenstruct: Cannot find class “xnvme_cmd_ctx” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+</section>
+<section id="functions">
+<span id="sec-c-api-xnvme-cmd-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<section id="xnvme-cmd-ctx-clear">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-clear"></span><h3>xnvme_cmd_ctx_clear<a class="headerlink" href="#xnvme-cmd-ctx-clear" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_ctx_clear” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-ctx-cpl-status">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-cpl-status"></span><h3>xnvme_cmd_ctx_cpl_status<a class="headerlink" href="#xnvme-cmd-ctx-cpl-status" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_ctx_cpl_status” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-ctx-from-dev">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-from-dev"></span><h3>xnvme_cmd_ctx_from_dev<a class="headerlink" href="#xnvme-cmd-ctx-from-dev" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_ctx_from_dev” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-ctx-from-queue">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-from-queue"></span><h3>xnvme_cmd_ctx_from_queue<a class="headerlink" href="#xnvme-cmd-ctx-from-queue" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_ctx_from_queue” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-ctx-pr">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-pr"></span><h3>xnvme_cmd_ctx_pr<a class="headerlink" href="#xnvme-cmd-ctx-pr" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_cmd_ctx_pr">
+<span class="target" id="libxnvme__pp_8h_1a76400ae8c389ae64da29c82ec0a7bece"></span>void <code class="sig-name descname">xnvme_cmd_ctx_pr</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> xnvme_cmd_ctx *<em>ctx</em>, int <em>UNUSED_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_pr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints a humanly readable representation the given #xnvme_cmd_ctx. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to the #xnvme_cmd_ctx to print </p></li>
+<li><p><strong>UNUSED_opts</strong> – Printer options </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-cmd-ctx-set-cb">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-set-cb"></span><h3>xnvme_cmd_ctx_set_cb<a class="headerlink" href="#xnvme-cmd-ctx-set-cb" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_ctx_set_cb” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-pass">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass"></span><h3>xnvme_cmd_pass<a class="headerlink" href="#xnvme-cmd-pass" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_pass” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-pass-admin">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass-admin"></span><h3>xnvme_cmd_pass_admin<a class="headerlink" href="#xnvme-cmd-pass-admin" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_pass_admin” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+<section id="xnvme-cmd-passv">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-passv"></span><h3>xnvme_cmd_passv<a class="headerlink" href="#xnvme-cmd-passv" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenfunction: Cannot find function “xnvme_cmd_passv” in doxygen xml output for project “xNVMe” from directory: builddir/doxy/xml</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
