@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_ver &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme_ver &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="xnvmec" href="xnvmec.html" />
+    <link rel="next" title="xnvme_cli" href="xnvme_cli.html" />
     <link rel="prev" title="xnvme_libconf" href="xnvme_libconf.html" /> 
 </head>
 
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -52,11 +52,17 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">xnvme_ident</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">xnvme_opts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cmd.html">xnvme_cmd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_lba.html">xnvme_lba</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">xnvme_kvs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_buf.html">xnvme_buf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">xnvme_mem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_queue.html">xnvme_queue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">xnvme_ver</a><ul>
@@ -73,7 +79,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">xnvme_cli</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
@@ -111,9 +117,13 @@
 <span id="sec-c-api-xnvme-ver"></span><h1>xnvme_ver<a class="headerlink" href="#xnvme-ver" title="Permalink to this headline">¶</a></h1>
 <section id="header">
 <span id="sec-c-api-xnvme-ver-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef __LIBXNVME_VER_H</span>
-<span class="cp">#define __LIBXNVME_VER_H</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_ver.h</span>
+<span class="cm"> */</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Produces the &quot;major&quot; version of the library</span>
@@ -159,8 +169,6 @@
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="nf">xnvme_ver_pr</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
-
-<span class="cp">#endif</span>
 </pre></div>
 </div>
 </section>
@@ -197,7 +205,8 @@
 <dl class="c function">
 <dt id="c.xnvme_ver_major">
 <span class="target" id="libxnvme__ver_8h_1a19f67022ca05405c25ad19d648d5d439"></span>int <code class="sig-name descname">xnvme_ver_major</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_ver_major" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Produces the “major” version of the library. </p>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause Produces the “major” version of the library</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>On success, the “major” version of the library is returned </p>
@@ -261,13 +270,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="xnvme_libconf.html" class="btn btn-neutral float-left" title="xnvme_libconf" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="xnvmec.html" class="btn btn-neutral float-right" title="xnvmec" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="xnvme_cli.html" class="btn btn-neutral float-right" title="xnvme_cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

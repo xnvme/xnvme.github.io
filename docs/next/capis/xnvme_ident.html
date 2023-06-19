@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_ident &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme_ident &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -67,15 +67,21 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">xnvme_opts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cmd.html">xnvme_cmd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_lba.html">xnvme_lba</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">xnvme_kvs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_buf.html">xnvme_buf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">xnvme_mem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_queue.html">xnvme_queue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">xnvme_cli</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
@@ -114,22 +120,12 @@
 <section id="header">
 <span id="sec-c-api-xnvme-ident-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
-<span class="cm"> * Cross-platform I/O library for NVMe based devices</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
 <span class="cm"> *</span>
-<span class="cm"> * Copyright (C) Simon A. F. Lund &lt;simon.lund@samsung.com&gt;</span>
-<span class="cm"> * Copyright (C) Klaus B. A. Jensen &lt;k.jensen@samsung.com&gt;</span>
-<span class="cm"> * SPDX-License-Identifier: Apache-2.0</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
 <span class="cm"> *</span>
-<span class="cm"> * @file libxnvme_ident.h</span>
+<span class="cm"> * @headerfile libxnvme_ident.h</span>
 <span class="cm"> */</span>
-<span class="cp">#ifndef __LIBXNVME_IDENT</span>
-<span class="cp">#define __LIBXNVME_IDENT</span>
-
-<span class="cp">#ifdef __cplusplus</span>
-<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="cp">#endif</span>
-
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme_util.h&gt;</span>
 
 <span class="cp">#define XNVME_IDENT_URI_LEN 384</span>
 
@@ -169,12 +165,6 @@
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="n">xnvme_ident_from_uri</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="n">ident</span><span class="p">);</span>
-
-<span class="cp">#ifdef __cplusplus</span>
-<span class="p">}</span>
-<span class="cp">#endif</span>
-
-<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_IDENT */</span>
 </pre></div>
 </div>
 </section>
@@ -312,7 +302,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
