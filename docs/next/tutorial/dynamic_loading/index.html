@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dynamically loading xNVMe &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>Dynamically loading xNVMe &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -103,8 +103,6 @@ first be presented in C and then in Python.</p>
 functions are returned by <code class="docutils literal notranslate"><span class="pre">dlsym()</span></code>.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;dlfcn.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme_ident.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme_pp.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
 
@@ -208,7 +206,7 @@ exceptions being raised upon error.</p>
 </div>
 <p>This will produce an executable named <code class="docutils literal notranslate"><span class="pre">enumerate_example</span></code>. You can run it by
 executing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./enumerate_example<span class="w"> </span><span class="k">$(</span>pkg-config<span class="w"> </span>xnvme<span class="w"> </span>--variable<span class="o">=</span>libdir<span class="k">)</span>/libxnvme-shared.so
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./enumerate_example<span class="w"> </span><span class="k">$(</span>pkg-config<span class="w"> </span>xnvme<span class="w"> </span>--variable<span class="o">=</span>libdir<span class="k">)</span>/libxnvme.so
 </pre></div>
 </div>
 <p>The should produce output similar to:</p>
@@ -279,7 +277,7 @@ locate the library.</p>
     <span class="k">def</span> <span class="nf">search_paths</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate paths to try and load&quot;&quot;&quot;</span>
 
-        <span class="k">for</span> <span class="n">search</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xnvme-shared&quot;</span><span class="p">,</span> <span class="s2">&quot;xnvme_shared&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">search</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xnvme&quot;</span><span class="p">]:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_library</span><span class="p">(</span><span class="n">search</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">path</span>
@@ -291,9 +289,7 @@ locate the library.</p>
                 <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="n">proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="s2">&quot;libxnvme-shared.so&quot;</span>
-                <span class="p">)</span>
+                <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="s2">&quot;libxnvme.so&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -425,7 +421,7 @@ xnvme_ident:
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

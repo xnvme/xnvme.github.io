@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NVMe-over-Fabrics &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>NVMe-over-Fabrics &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -62,6 +62,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#initiator-setup">Initiator Setup</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#use-via-xnvme">Use via <strong>xNVMe</strong></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#use-via-nvme-cli">Use via <strong>nvme-cli</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solving-performance-issues">Solving performance issues</a></li>
 </ul>
 </li>
 </ul>
@@ -366,6 +367,15 @@ nvme<span class="w"> </span>disconnect<span class="w"> </span>--nqn<span class="
 <p>Or, by running the script:
 <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_nvmecli.sh</span></code></p>
 </section>
+<section id="solving-performance-issues">
+<h3>Solving performance issues<a class="headerlink" href="#solving-performance-issues" title="Permalink to this headline">¶</a></h3>
+<p>The performance of NVMe-over-Fabrics should be similar to the performance of NVMe-over-PCIe.
+If the NVMe-over-Fabrics setup is not performing as expected, there are a couple of things to try.</p>
+<p>First, if the <strong>initiator</strong> and <strong>target</strong> are the same machine, e.g., if the localhost IP is used, then it is important for performance that the <strong>initiator</strong> and <strong>target</strong> processes are on separate CPU cores. This can typically be achieved by using <code class="docutils literal notranslate"><span class="pre">taskset</span></code> or passing the commandline option <code class="docutils literal notranslate"><span class="pre">--cpumask</span></code> to fio or the SPDK nvmf_tgt app. If the processes are on same CPU core it can lead to CPU congestion.</p>
+<p>If the <strong>initiator</strong> and <strong>target</strong> are on different machines, then the bandwidth of their network interfaces can be a limiting factor. As such, it is advisable to use the fastest possible network interfaces. Additonally, if the machines are connected directly, that is, not through a switch or similar, then performance can also be improved by adjusting the MTU of the network cards to be as high as supported.
+This can be done by using this command: <code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">link</span> <span class="pre">set</span> <span class="pre">dev</span> <span class="pre">${NETWORK_INTERFACE}</span> <span class="pre">mtu</span> <span class="pre">${DESIRED_MTU}</span></code>.</p>
+<p>If it is not possible to saturate the device with the available network card, the I/O bandwidth can be increased through latency hiding by using a greater block size and/or io-depth.</p>
+</section>
 </section>
 </section>
 
@@ -380,7 +390,7 @@ nvme<span class="w"> </span>disconnect<span class="w"> </span>--nqn<span class="
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

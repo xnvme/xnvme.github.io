@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_file &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme_file &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="xnvme_nvm" href="xnvme_nvm.html" />
+    <link rel="next" title="xnvme_cmd" href="xnvme_cmd.html" />
     <link rel="prev" title="xnvme_opts" href="xnvme_opts.html" /> 
 </head>
 
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -66,15 +66,21 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cmd.html">xnvme_cmd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_lba.html">xnvme_lba</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">xnvme_kvs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_buf.html">xnvme_buf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">xnvme_mem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_queue.html">xnvme_queue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">xnvme_cli</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
@@ -112,23 +118,13 @@
 <span id="sec-c-api-xnvme-file"></span><h1>xnvme_file<a class="headerlink" href="#xnvme-file" title="Permalink to this headline">¶</a></h1>
 <section id="header">
 <span id="sec-c-api-xnvme-file-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm"> * The User space library for Non-Volatile Memory NVMe Namespaces based on xNVMe, the</span>
-<span class="cm"> * Cross-platform libraries and tools for NVMe devices</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
 <span class="cm"> *</span>
-<span class="cm"> * Copyright (C) Simon A. F. Lund &lt;simon.lund@samsung.com&gt;</span>
-<span class="cm"> * SPDX-License-Identifier: Apache-2.0</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
 <span class="cm"> *</span>
-<span class="cm"> * @headerfile libxnvme_nvm.h</span>
+<span class="cm"> * @headerfile libxnvme_file.h</span>
 <span class="cm"> */</span>
-<span class="cp">#ifndef __LIBXNVME_FILE_H</span>
-<span class="cp">#define __LIBXNVME_FILE_H</span>
-
-<span class="cp">#ifdef __cplusplus</span>
-<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="cp">#endif</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/stat.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Open the file identified by pathname for I/O operation</span>
@@ -208,12 +204,6 @@
 <span class="cm"> */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span>
 <span class="n">xnvme_file_get_cmd_ctx</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">fh</span><span class="p">);</span>
-
-<span class="cp">#ifdef __cplusplus</span>
-<span class="p">}</span>
-<span class="cp">#endif</span>
-
-<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_FILE */</span>
 </pre></div>
 </div>
 </section>
@@ -248,11 +238,11 @@
 <span id="sec-c-api-xnvme-file-func-xnvme-file-get-cmd-ctx"></span><h3>xnvme_file_get_cmd_ctx<a class="headerlink" href="#xnvme-file-get-cmd-ctx" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.xnvme_file_get_cmd_ctx">
-<span class="target" id="libxnvme__file_8h_1af880c8486bb9439c44830f7442c470c5"></span><em class="property">struct</em> <a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> <code class="sig-name descname">xnvme_file_get_cmd_ctx</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>fh</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_get_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvme__file_8h_1af880c8486bb9439c44830f7442c470c5"></span><em class="property">struct</em> <a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> <code class="sig-name descname">xnvme_file_get_cmd_ctx</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>fh</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_get_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns a synchronous command-context for the given file-handle. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For asynchronous I/O, see the xnvme_queue interface and <a class="reference internal" href="xnvme.html#libxnvme_8h_1a7bc367223347286051c81a4e4ae5a93f"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a> </p>
+<p>For asynchronous I/O, see the xnvme_queue interface and <a class="reference internal" href="xnvme_cmd.html#libxnvme__cmd_8h_1a7bc367223347286051c81a4e4ae5a93f"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a> </p>
 </div>
 </dd></dl>
 
@@ -262,7 +252,8 @@
 <dl class="c function">
 <dt id="c.xnvme_file_open">
 <span class="target" id="libxnvme__file_8h_1a8bd410131156c5faafcf527233f8d4dc"></span><em class="property">struct</em> xnvme_dev *<code class="sig-name descname">xnvme_file_open</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>pathname</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts">xnvme_opts</a> *<em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_open" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Open the file identified by pathname for I/O operation. </p>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause Open the file identified by pathname for I/O operation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -281,9 +272,9 @@
 <span id="sec-c-api-xnvme-file-func-xnvme-file-pread"></span><h3>xnvme_file_pread<a class="headerlink" href="#xnvme-file-pread" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.xnvme_file_pread">
-<span class="target" id="libxnvme__file_8h_1a95db494316cf192edc2f17df92993e06"></span>int <code class="sig-name descname">xnvme_file_pread</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, void *<em>buf</em>, size_t <em>count</em>, off_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_pread" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvme__file_8h_1a95db494316cf192edc2f17df92993e06"></span>int <code class="sig-name descname">xnvme_file_pread</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, void *<em>buf</em>, size_t <em>count</em>, off_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_pread" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Perform a stateless read to the file or device encapsulated by ‘ctx’. </p>
-<p>Retrieve a synchronous context using <a class="reference internal" href="xnvme.html#libxnvme_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev</span></a> and an asynchronous context using <a class="reference internal" href="xnvme.html#libxnvme_8h_1a7bc367223347286051c81a4e4ae5a93f"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a>.</p>
+<p>Retrieve a synchronous context using <a class="reference internal" href="xnvme_cmd.html#libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev</span></a> and an asynchronous context using <a class="reference internal" href="xnvme_cmd.html#libxnvme__cmd_8h_1a7bc367223347286051c81a4e4ae5a93f"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Unlike, the pread() syscall, then this function does not return the number of bytes written. To retrieve that information, then inspect the completion-result: ‘ctx-&gt;cpl.result’.</p>
@@ -291,7 +282,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
 <li><p><strong>buf</strong> – Pointer to data-payload </p></li>
 <li><p><strong>count</strong> – The number of bytes to read </p></li>
 <li><p><strong>offset</strong> – The offset, in bytes, to start reading from</p></li>
@@ -308,9 +299,9 @@
 <span id="sec-c-api-xnvme-file-func-xnvme-file-pwrite"></span><h3>xnvme_file_pwrite<a class="headerlink" href="#xnvme-file-pwrite" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.xnvme_file_pwrite">
-<span class="target" id="libxnvme__file_8h_1a1bcccc0432ffae7a90e74c17d2a4aa1e"></span>int <code class="sig-name descname">xnvme_file_pwrite</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="xnvme.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, void *<em>buf</em>, size_t <em>count</em>, off_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_pwrite" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvme__file_8h_1a1bcccc0432ffae7a90e74c17d2a4aa1e"></span>int <code class="sig-name descname">xnvme_file_pwrite</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, void *<em>buf</em>, size_t <em>count</em>, off_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_pwrite" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Perform a stateless write to the file or device encapsulated by ‘ctx’. </p>
-<p>Retrieve a synchronous context using <a class="reference internal" href="xnvme.html#libxnvme_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev</span></a> and an asynchronous context using <a class="reference internal" href="xnvme.html#libxnvme_8h_1a7bc367223347286051c81a4e4ae5a93f"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a></p>
+<p>Retrieve a synchronous context using <a class="reference internal" href="xnvme_cmd.html#libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev</span></a> and an asynchronous context using <a class="reference internal" href="xnvme_cmd.html#libxnvme__cmd_8h_1a7bc367223347286051c81a4e4ae5a93f"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Unlike, the pwrite() syscall, then this function does not return the number of bytes read. To retrieve that information, then inspect the completion-result: ‘ctx-&gt;cpl.result’.</p>
@@ -318,7 +309,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
 <li><p><strong>buf</strong> – Pointer to data-payload </p></li>
 <li><p><strong>count</strong> – The number of bytes to write </p></li>
 <li><p><strong>offset</strong> – The offset, in bytes, to start writing to</p></li>
@@ -359,13 +350,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="xnvme_opts.html" class="btn btn-neutral float-left" title="xnvme_opts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="xnvme_nvm.html" class="btn btn-neutral float-right" title="xnvme_nvm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="xnvme_cmd.html" class="btn btn-neutral float-right" title="xnvme_cmd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Getting Started &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -302,6 +302,11 @@ apk<span class="w"> </span>add<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-dev<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>util-linux-dev
 
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>pipx
+
 <span class="c1"># Clone, build and install liburing v2.2</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
 <span class="nb">cd</span><span class="w"> </span>liburing
@@ -309,11 +314,7 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure
 make
 make<span class="w"> </span>install
-
-<span class="c1"># Install packages via the Python package-manager (pip)</span>
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>pipx
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -323,7 +324,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe with SPDK and libvfn disabled</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dwith-spdk<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Dwith-libvfn<span class="o">=</span><span class="nb">false</span>
 
 <span class="c1"># build xNVMe</span>
@@ -373,6 +374,7 @@ pacman<span class="w"> </span>-S<span class="w"> </span>--noconfirm<span class="
 <span class="w"> </span>nasm<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>ncurses<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>numactl<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>openssl<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>patch<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pkg-config<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python-pip<span class="w"> </span><span class="se">\</span>
@@ -381,6 +383,21 @@ pacman<span class="w"> </span>-S<span class="w"> </span>--noconfirm<span class="
 <span class="w"> </span>python-setuptools<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>util-linux-libs
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -390,7 +407,7 @@ pacman<span class="w"> </span>-S<span class="w"> </span>--noconfirm<span class="
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
@@ -468,6 +485,7 @@ tar<span class="w"> </span>xzf<span class="w"> </span>Python-3.7.12.tgz
 <span class="nb">cd</span><span class="w"> </span>Python-3.7.12
 ./configure<span class="w"> </span>--enable-optimizations<span class="w"> </span>--enable-shared
 make<span class="w"> </span>altinstall<span class="w"> </span>-j<span class="w"> </span><span class="k">$(</span>nproc<span class="k">)</span>
+<span class="nb">cd</span><span class="w"> </span>..
 
 <span class="c1"># Setup handling of python3</span>
 ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/bin/python3.7<span class="w"> </span>/usr/local/bin/python3
@@ -483,6 +501,25 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 <span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pipx<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pyelftools
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+
+<span class="c1"># Source in the newer gcc-toolchain before building</span>
+<span class="nb">source</span><span class="w"> </span>/opt/rh/devtoolset-8/enable
+
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -495,7 +532,7 @@ all the software described above.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source in the newer gcc-toolchain before building</span>
 <span class="nb">source</span><span class="w"> </span>/opt/rh/devtoolset-8/enable
 
-<span class="c1"># configure xNVMe and build dependencies (fio and SPDK, disabling liburing)</span>
+<span class="c1"># configure xNVMe without liburing and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dwith-liburing<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
@@ -562,6 +599,7 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
 make
 make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 
 <span class="c1"># Install Python v3.7.12 from source</span>
 wget<span class="w"> </span>https://www.python.org/ftp/python/3.7.12/Python-3.7.12.tgz
@@ -569,6 +607,7 @@ tar<span class="w"> </span>xzf<span class="w"> </span>Python-3.7.12.tgz
 <span class="nb">cd</span><span class="w"> </span>Python-3.7.12
 ./configure<span class="w"> </span>--enable-optimizations<span class="w"> </span>--enable-shared
 make<span class="w"> </span>altinstall<span class="w"> </span>-j<span class="w"> </span><span class="k">$(</span>nproc<span class="k">)</span>
+<span class="nb">cd</span><span class="w"> </span>..
 
 <span class="c1"># Setup handling of python3</span>
 ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/bin/python3.7<span class="w"> </span>/usr/local/bin/python3
@@ -584,6 +623,21 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 <span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pipx<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pyelftools
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -593,7 +647,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
@@ -654,14 +708,6 @@ dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 <span class="w"> </span>wget<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>zlib-devel
 
-<span class="c1"># Clone, build and install liburing v2.2</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
-<span class="nb">cd</span><span class="w"> </span>liburing
-git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
-./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
-make
-make<span class="w"> </span>install
-
 <span class="c1"># Install packages via the Python package-manager (pip)</span>
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span><span class="c1"># Otherwise too old to understand new Manylinux formats</span>
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
@@ -669,6 +715,30 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 <span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pipx<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pyelftools
+
+<span class="c1"># Clone, build and install liburing v2.2</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
+<span class="nb">cd</span><span class="w"> </span>liburing
+git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
+./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
+make
+make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -678,8 +748,8 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -736,6 +806,21 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>python3-pyelftools<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>uuid-dev
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -745,7 +830,7 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -801,6 +886,13 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>uuid-dev
 
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>pipx
+
 <span class="c1"># Clone, build and install liburing v2.2</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
 <span class="nb">cd</span><span class="w"> </span>liburing
@@ -808,13 +900,22 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure
 make
 make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 
-<span class="c1"># Install packages via the Python package-manager (pip)</span>
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>pipx
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -824,7 +925,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -880,6 +981,13 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>uuid-dev
 
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>pipx
+
 <span class="c1"># Clone, build and install liburing v2.2</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
 <span class="nb">cd</span><span class="w"> </span>liburing
@@ -887,13 +995,22 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure
 make
 make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 
-<span class="c1"># Install packages via the Python package-manager (pip)</span>
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>pipx
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -903,7 +1020,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -955,6 +1072,21 @@ dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 <span class="w"> </span>python3-devel<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pyelftools
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -964,8 +1096,8 @@ dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1016,6 +1148,21 @@ dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 <span class="w"> </span>python3-devel<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pyelftools
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1025,8 +1172,8 @@ dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1076,6 +1223,21 @@ dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </s
 <span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pyelftools
 
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
+
 <span class="c1"># Clone, build and install liburing v2.2</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
 <span class="nb">cd</span><span class="w"> </span>liburing
@@ -1083,6 +1245,7 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
 make
 make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1092,8 +1255,8 @@ make<span class="w"> </span>install
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1150,6 +1313,21 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>python3-pyelftools<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>uuid-dev
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1159,7 +1337,7 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1220,6 +1398,12 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>uuid-dev
 
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>ninja
+
 <span class="c1"># Clone, build and install liburing v2.2</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
 <span class="nb">cd</span><span class="w"> </span>liburing
@@ -1227,12 +1411,22 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure
 make
 make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 
-<span class="c1"># Install packages via the Python package-manager (pip)</span>
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>ninja
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1242,7 +1436,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1303,6 +1497,12 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>uuid-dev
 
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>ninja
+
 <span class="c1"># Clone, build and install liburing v2.2</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
 <span class="nb">cd</span><span class="w"> </span>liburing
@@ -1310,12 +1510,22 @@ git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
 ./configure
 make
 make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 
-<span class="c1"># Install packages via the Python package-manager (pip)</span>
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>ninja
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1325,7 +1535,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1375,6 +1585,21 @@ emerge<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>sys-libs/ncurses<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>sys-process/numactl
 
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
+
 <span class="c1"># Install packages via the Python package-manager (pip)</span>
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--break-system-packages<span class="w"> </span>--upgrade<span class="w"> </span>pip
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--break-system-packages<span class="w"> </span><span class="se">\</span>
@@ -1390,7 +1615,7 @@ all the software described above.</p>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-ltinfo -lncurses&quot;</span>
 
-<span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
@@ -1451,9 +1676,28 @@ zypper<span class="w"> </span>--non-interactive<span class="w"> </span>install<s
 <span class="w"> </span>python3<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-devel<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>python3-pipx<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>python3-pyelftools<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>tar
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="c1"># Install packages via the Python package-manager (pip)</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>pipx
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1463,7 +1707,7 @@ zypper<span class="w"> </span>--non-interactive<span class="w"> </span>install<s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1518,14 +1762,6 @@ zypper<span class="w"> </span>--non-interactive<span class="w"> </span>install<s
 <span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>tar
 
-<span class="c1"># Clone, build and install liburing v2.2</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
-<span class="nb">cd</span><span class="w"> </span>liburing
-git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
-./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
-make
-make<span class="w"> </span>install
-
 <span class="c1"># Install packages via the Python package-manager (pip)</span>
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
@@ -1533,6 +1769,30 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 <span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pipx<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pyelftools
+
+<span class="c1"># Clone, build and install liburing v2.2</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
+<span class="nb">cd</span><span class="w"> </span>liburing
+git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
+./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
+make
+make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1542,7 +1802,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1593,14 +1853,6 @@ zypper<span class="w"> </span>--non-interactive<span class="w"> </span>install<s
 <span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>tar
 
-<span class="c1"># Clone, build and install liburing v2.2</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
-<span class="nb">cd</span><span class="w"> </span>liburing
-git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
-./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
-make
-make<span class="w"> </span>install
-
 <span class="c1"># Install packages via the Python package-manager (pip)</span>
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
@@ -1608,6 +1860,30 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 <span class="w"> </span>ninja<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pipx<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>pyelftools
+
+<span class="c1"># Clone, build and install liburing v2.2</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/axboe/liburing.git
+<span class="nb">cd</span><span class="w"> </span>liburing
+git<span class="w"> </span>checkout<span class="w"> </span>liburing-2.2
+./configure<span class="w"> </span>--libdir<span class="o">=</span>/usr/lib64<span class="w"> </span>--libdevdir<span class="o">=</span>/usr/lib64
+make
+make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="c1">#</span>
+<span class="c1"># Clone, build and install libvfn</span>
+<span class="c1">#</span>
+<span class="c1"># Assumptions:</span>
+<span class="c1">#</span>
+<span class="c1"># - These commands are executed with sufficient privileges (sudo/root)</span>
+<span class="c1">#</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/libvfn.git
+<span class="nb">cd</span><span class="w"> </span>libvfn
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.2
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--prefix<span class="o">=</span>/usr
+meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1617,7 +1893,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1677,7 +1953,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1730,7 +2006,7 @@ all the software described above.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is done to avoid appleframework deprecation warnings</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MACOSX_DEPLOYMENT_TARGET</span><span class="o">=</span><span class="m">11</span>.0
 
-<span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<span class="c1"># configure xNVMe</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1783,7 +2059,7 @@ all the software described above.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is done to avoid appleframework deprecation warnings</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">MACOSX_DEPLOYMENT_TARGET</span><span class="o">=</span><span class="m">11</span>.0
 
-<span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<span class="c1"># configure xNVMe</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1889,7 +2165,7 @@ where /q meson
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -1998,7 +2274,7 @@ where /q meson
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build dependencies (fio, libvfn, and SPDK)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
 meson<span class="w"> </span>setup<span class="w"> </span>builddir
 
 <span class="c1"># build xNVMe</span>
@@ -2040,7 +2316,7 @@ supported/enabled backends then invoke:</p>
 </div>
 <p>It should produce output similar to:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
-ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">6</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">0</span><span class="o">}</span>
+ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">0</span><span class="o">}</span>
 xnvme_libconf:
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: fio;git-describe:fio-3.32&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: libvfn;git-describe:v1.0.0-rc0&#39;</span>
@@ -2065,7 +2341,7 @@ xnvme_libconf:
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_RDMA_ENABLED&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;conf: XNVME_BE_SPDK_TRANSPORT_FC_ENABLED&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;conf: XNVME_BE_ASYNC_ENABLED&#39;</span>
-<span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/393484-6.1.12&#39;</span>
+<span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: linux;LINUX_VERSION_CODE-UAPI/393728-6.2.0&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: NVME_IOCTL_IO64_CMD_VEC&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: NVME_IOCTL_ADMIN64_CMD&#39;</span>
@@ -2279,7 +2555,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0001,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">36</span>.75<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">12</span>.02<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2312,7 +2588,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0001,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">28</span>.01<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0001,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">78</span>.04<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2363,7 +2639,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.528945<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.081312<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
 </pre></div>
 </div>
 <p>And this command:</p>
@@ -2402,7 +2678,7 @@ Kernel NVMe driver unbound, and <code class="docutils literal notranslate"><span
 <span class="m">0000</span>:04:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
 <span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
 
-Current<span class="w"> </span>user<span class="w"> </span>memlock<span class="w"> </span>limit:<span class="w"> </span><span class="m">742</span><span class="w"> </span>MB
+Current<span class="w"> </span>user<span class="w"> </span>memlock<span class="w"> </span>limit:<span class="w"> </span><span class="m">743</span><span class="w"> </span>MB
 
 This<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>maximum<span class="w"> </span>amount<span class="w"> </span>of<span class="w"> </span>memory<span class="w"> </span>you<span class="w"> </span>will<span class="w"> </span>be
 able<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>with<span class="w"> </span>DPDK<span class="w"> </span>and<span class="w"> </span>VFIO<span class="w"> </span><span class="k">if</span><span class="w"> </span>run<span class="w"> </span>as<span class="w"> </span>current<span class="w"> </span>user.
@@ -2430,7 +2706,7 @@ Linux devfs, that is, no longer available in <code class="docutils literal notra
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>enum
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvmec_enumeration:
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_cli_enumeration:
 <span class="w">  </span>-<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">&#39;0000:04:00.0&#39;</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x1,<span class="w"> </span>csi:<span class="w"> </span>0x0,<span class="w"> </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:adcdbeef&#39;</span><span class="o">}</span>
 <span class="w">  </span>-<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">&#39;0000:03:00.0&#39;</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x1,<span class="w"> </span>csi:<span class="w"> </span>0x0,<span class="w"> </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span><span class="o">}</span>
 <span class="w">  </span>-<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">&#39;0000:03:00.0&#39;</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x2,<span class="w"> </span>csi:<span class="w"> </span>0x2,<span class="w"> </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.2019-08.org.qemu:deadbeef&#39;</span><span class="o">}</span>
@@ -2448,7 +2724,7 @@ xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</s
 <span class="m">0000</span>:04:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>vfio-pci<span class="w"> </span>driver
 <span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
 
-Current<span class="w"> </span>user<span class="w"> </span>memlock<span class="w"> </span>limit:<span class="w"> </span><span class="m">742</span><span class="w"> </span>MB
+Current<span class="w"> </span>user<span class="w"> </span>memlock<span class="w"> </span>limit:<span class="w"> </span><span class="m">743</span><span class="w"> </span>MB
 
 This<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>maximum<span class="w"> </span>amount<span class="w"> </span>of<span class="w"> </span>memory<span class="w"> </span>you<span class="w"> </span>will<span class="w"> </span>be
 able<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>with<span class="w"> </span>DPDK<span class="w"> </span>and<span class="w"> </span>VFIO<span class="w"> </span><span class="k">if</span><span class="w"> </span>run<span class="w"> </span>as<span class="w"> </span>current<span class="w"> </span>user.
@@ -2514,7 +2790,6 @@ device at <code class="docutils literal notranslate"><span class="pre">/dev/nvme
 <p>To use <strong>xNVMe</strong> include the <code class="docutils literal notranslate"><span class="pre">libxnvme.h</span></code> header in your C/C++ source:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme_pp.h&gt;</span>
 
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
@@ -2545,7 +2820,7 @@ required linker flags:</p>
 </div>
 <p>This will output something like the output below, it will vary depending on the
 features enabled/disabled.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L/usr/local/lib/x86_64-linux-gnu<span class="w"> </span>-Wl,--whole-archive<span class="w"> </span>-Wl,--no-as-needed<span class="w"> </span>-lxnvme<span class="w"> </span>-Wl,--no-whole-archive<span class="w"> </span>-Wl,--as-needed<span class="w"> </span>-pthread<span class="w"> </span>-lrt<span class="w"> </span>-ldl<span class="w"> </span>-lm<span class="w"> </span>-lnuma<span class="w"> </span>-luuid<span class="w"> </span>-laio<span class="w"> </span>-lvfn<span class="w"> </span>-pthread<span class="w"> </span>-lssl<span class="w"> </span>-lcrypto<span class="w"> </span>-luring
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L/usr/local/lib/x86_64-linux-gnu<span class="w"> </span>-lxnvme
 </pre></div>
 </div>
 <p>You can pass the arguments above to your compiler, or using pkg-config like so:</p>
@@ -2796,7 +3071,7 @@ meson-based builds:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_dev &mdash; xNVMe 0.6.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>xnvme_dev &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="xnvme_geo" href="xnvme_geo.html" />
-    <link rel="prev" title="xnvme_adm" href="xnvme_adm.html" /> 
+    <link rel="prev" title="xnvme_kvs" href="xnvme_kvs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -52,9 +52,12 @@
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">xnvme_ident</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">xnvme_opts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cmd.html">xnvme_cmd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_lba.html">xnvme_lba</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">xnvme_kvs</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">xnvme_dev</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#header">Header</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
@@ -80,10 +83,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_buf.html">xnvme_buf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">xnvme_mem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_queue.html">xnvme_queue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xnvmec.html">xnvmec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">xnvme_cli</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
@@ -121,9 +127,18 @@
 <span id="sec-c-api-xnvme-dev"></span><h1>xnvme_dev<a class="headerlink" href="#xnvme-dev" title="Permalink to this headline">¶</a></h1>
 <section id="header">
 <span id="sec-c-api-xnvme-dev-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef __LIBXNVME_DEV_H</span>
-<span class="cp">#define __LIBXNVME_DEV_H</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_dev.h</span>
+<span class="cm"> */</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_enumerate_action</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_ENUMERATE_DEV_KEEP_OPEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; Keep device-handle open after callback returns</span>
+<span class="w">	</span><span class="n">XNVME_ENUMERATE_DEV_CLOSE</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w">  </span><span class="c1">///&lt; Close device-handle when callback returns</span>
+<span class="p">};</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Opaque device handle.</span>
@@ -133,6 +148,32 @@
 <span class="cm"> * @struct xnvme_dev</span>
 <span class="cm"> */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Signature of callback function used with &#39;xnvme_enumerate&#39; invoked for each discoved device</span>
+<span class="cm"> *</span>
+<span class="cm"> * The callback function signals whether the device-handle it receives should by closed, that is,</span>
+<span class="cm"> * backend with invoke &#39;xnvme_dev_close(), after the callback returns or kept open. In the latter</span>
+<span class="cm"> * case then it is up to the user to invoke &#39;xnvme_dev_close()&#39; on the device-handle.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Each signal is represented by the enum #xnvme_enumerate_action, and the values</span>
+<span class="cm"> * XNVME_ENUMERATE_DEV_KEEP_OPEN or XNVME_ENUMERATE_DEV_CLOSE.</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">xnvme_enumerate_cb</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * enumerate devices</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param sys_uri URI of the system to enumerate, when NULL, localhost/PCIe</span>
+<span class="cm"> * @param opts Options for instrumenting the runtime during enumeration</span>
+<span class="cm"> * @param cb_func Callback function to invoke for each yielded device</span>
+<span class="cm"> * @param cb_args Arguments passed to the callback function</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_enumerate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sys_uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_enumerate_cb</span><span class="w"> </span><span class="n">cb_func</span><span class="p">,</span>
+<span class="w">		</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Returns the geometry of the given device</span>
@@ -255,7 +296,25 @@
 <span class="kt">uint64_t</span>
 <span class="nf">xnvme_dev_get_ssw</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 
-<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_NVM */</span>
+<span class="cm">/**</span>
+<span class="cm"> * Creates a device handle (::xnvme_dev) based on the given device-uri</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev_uri File path &quot;/dev/nvme0n1&quot; or &quot;0000:04.01&quot;</span>
+<span class="cm"> * @param opts Options for library backend and system-interfaces</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a handle to the device. On error, NULL is returned and `errno` set to</span>
+<span class="cm"> * indicate the error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">dev_uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Destroy the given device handle (::xnvme_dev)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_dev_close</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -271,12 +330,12 @@
 <span id="sec-c-api-xnvme-dev-func-xnvme-dev-close"></span><h3>xnvme_dev_close<a class="headerlink" href="#xnvme-dev-close" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.xnvme_dev_close">
-<span class="target" id="libxnvme_8h_1a54a4f6077d8c7af52d2f3ff1bd988f4f"></span>void <code class="sig-name descname">xnvme_dev_close</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_close" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvme__dev_8h_1a54a4f6077d8c7af52d2f3ff1bd988f4f"></span>void <code class="sig-name descname">xnvme_dev_close</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_close" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Destroy the given device handle (xnvme_dev) </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
 </ul>
 </dd>
 </dl>
@@ -313,7 +372,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -332,7 +391,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -351,7 +410,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -370,7 +429,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -389,7 +448,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -408,7 +467,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> / xnvme_dev_openf()</p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> / xnvme_dev_openf()</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -427,7 +486,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -446,7 +505,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -465,7 +524,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -484,7 +543,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> / xnvme_dev_openf()</p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> / xnvme_dev_openf()</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -513,7 +572,7 @@
 <span id="sec-c-api-xnvme-dev-func-xnvme-dev-open"></span><h3>xnvme_dev_open<a class="headerlink" href="#xnvme-dev-open" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.xnvme_dev_open">
-<span class="target" id="libxnvme_8h_1abfbbe8bb204dcdf2012540a39b1e2796"></span><em class="property">struct</em> xnvme_dev *<code class="sig-name descname">xnvme_dev_open</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>dev_uri</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts">xnvme_opts</a> *<em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_open" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"></span><em class="property">struct</em> xnvme_dev *<code class="sig-name descname">xnvme_dev_open</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>dev_uri</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts">xnvme_opts</a> *<em>opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_open" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Creates a device handle (xnvme_dev) based on the given device-uri. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -556,14 +615,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="xnvme_adm.html" class="btn btn-neutral float-left" title="xnvme_adm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xnvme_kvs.html" class="btn btn-neutral float-left" title="xnvme_kvs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="xnvme_geo.html" class="btn btn-neutral float-right" title="xnvme_geo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, xNVMe.</p>
+    <p>&#169; Copyright 2023, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
