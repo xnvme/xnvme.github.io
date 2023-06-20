@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xnvme_queue &mdash; xNVMe 0.7.0 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="xnvme_spec" href="xnvme_spec.html" />
+    <link rel="prev" title="xnvme_mem" href="xnvme_mem.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.7.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">C API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme.html">xnvme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">xnvme_ident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">xnvme_opts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">xnvme_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cmd.html">xnvme_cmd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">xnvme_adm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_nvm.html">xnvme_nvm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">xnvme_znd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_lba.html">xnvme_lba</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">xnvme_kvs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">xnvme_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">xnvme_geo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_buf.html">xnvme_buf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">xnvme_mem</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">xnvme_queue</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#header">Header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-opts">xnvme_queue_opts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-drain">xnvme_queue_drain</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-capacity">xnvme_queue_get_capacity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-cmd-ctx">xnvme_queue_get_cmd_ctx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-get-outstanding">xnvme_queue_get_outstanding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-init">xnvme_queue_init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-poke">xnvme_queue_poke</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-put-cmd-ctx">xnvme_queue_put_cmd_ctx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-set-cb">xnvme_queue_set_cb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-term">xnvme_queue_term</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-queue-wait">xnvme_queue_wait</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">xnvme_spec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">xnvme_libconf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">xnvme_ver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">xnvme_cli</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">C API</a></li>
+      <li class="breadcrumb-item active">xnvme_queue</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/capis/xnvme_queue.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="xnvme-queue">
+<span id="sec-c-api-xnvme-queue"></span><h1>xnvme_queue<a class="headerlink" href="#xnvme-queue" title="Permalink to this headline">¶</a></h1>
+<section id="header">
+<span id="sec-c-api-xnvme-queue-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_adm.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Opaque Command Queue Handle to be initialized by xnvme_queue_init()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_queue_init</span>
+<span class="cm"> * @see xnvme_queue_term</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_queue</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Command Queue initialization options</span>
+<span class="cm"> *</span>
+<span class="cm"> * @enum xnvme_queue_opts</span>
+<span class="cm"> */</span>
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_queue_opts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_QUEUE_IOPOLL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span><span class="w">      </span><span class="c1">///&lt; XNVME_QUEUE_IOPOLL: queue. is polled for completions</span>
+<span class="w">	</span><span class="n">XNVME_QUEUE_SQPOLL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_QUEUE_SQPOLL: queue. is polled for submissions</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Allocate a Command Queue for asynchronous command submission and completion</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle (::xnvme_dev) obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param capacity Maximum number of outstanding commands on the initialized queue, note that it</span>
+<span class="cm"> * must be a power of 2 within the range [1,4096]</span>
+<span class="cm"> * @param opts Queue options</span>
+<span class="cm"> * @param queue Pointer-pointer to the ::xnvme_queue to initialize</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">capacity</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">**</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the capacity of the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to query for capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, capacity of given ::xnvme_queue text is returned. On error, 0 is returned</span>
+<span class="cm"> * e.g. errors are silent</span>
+<span class="cm"> */</span>
+<span class="kt">uint32_t</span>
+<span class="nf">xnvme_queue_get_capacity</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the number of outstanding commands on the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to query for outstanding commands</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of outstanding commands are returned. On error, 0 is returned e.g.</span>
+<span class="cm"> * errors are silent</span>
+<span class="cm"> */</span>
+<span class="kt">uint32_t</span>
+<span class="nf">xnvme_queue_get_outstanding</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Tear down the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to tear down</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_term</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Process completions of commands on the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * Set process &#39;max&#39; to limit number of completions, 0 means no max.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to poke for completions</span>
+<span class="cm"> * @param max The max number of completions to complete</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of completions processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_poke</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">max</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Process outstanding commands on the given ::xnvme_queue until it is empty</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_drain</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * DEPRECATED: expect that this function will be removed in an upcoming release</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_wait</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve a command-context from the given queue for async. command execution with the queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note The command-context is managed by the queue, thus, return it to the queue via</span>
+<span class="cm"> * ::xnvme_queue_put_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note This is not thread-safe</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to retrieve a command-context for</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a command-context is returned. On error, NULL is returned and `errno` is set</span>
+<span class="cm"> * to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span>
+<span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Hand back a command-context previously retrieve using ::xnvme_queue_get_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note This function is not thread-safe</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to hand back the command-context to</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Signature of function used with Command Queues for async. callback upon command-completion</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">xnvme_queue_cb</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">opaque</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Assign a callback-function and argument to be used with the ::xnvme_cmd_ctx of the queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue The ::xnvme_queue to assign default callback function for</span>
+<span class="cm"> * @param cb The callback function to use</span>
+<span class="cm"> * @param cb_arg The callback argument to use</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_set_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="enums">
+<span id="sec-c-api-xnvme-queue-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<section id="xnvme-queue-opts">
+<span id="sec-c-api-xnvme-queue-enum-xnvme-queue-opts"></span><h3>xnvme_queue_opts<a class="headerlink" href="#xnvme-queue-opts" title="Permalink to this headline">¶</a></h3>
+<dl class="c enum">
+<dt id="c.xnvme_queue_opts">
+<span class="target" id="libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6"></span><em class="property">enum </em><code class="sig-name descname">xnvme_queue_opts</code><a class="headerlink" href="#c.xnvme_queue_opts" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Command Queue initialization options. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt id="c.xnvme_queue_opts.XNVME_QUEUE_IOPOLL">
+<span class="target" id="libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6a235aa67f36d7d7a3f05f4fb77bc1e2a4"></span><em class="property">enumerator </em><code class="sig-name descname">XNVME_QUEUE_IOPOLL</code><a class="headerlink" href="#c.xnvme_queue_opts.XNVME_QUEUE_IOPOLL" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVME_QUEUE_IOPOLL: queue. is polled for completions. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt id="c.xnvme_queue_opts.XNVME_QUEUE_SQPOLL">
+<span class="target" id="libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6a5ed83061c4c0b030b9b44304917fd7ea"></span><em class="property">enumerator </em><code class="sig-name descname">XNVME_QUEUE_SQPOLL</code><a class="headerlink" href="#c.xnvme_queue_opts.XNVME_QUEUE_SQPOLL" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XNVME_QUEUE_SQPOLL: queue. is polled for submissions. </p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="structs">
+<span id="sec-c-api-xnvme-queue-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="functions">
+<span id="sec-c-api-xnvme-queue-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<section id="xnvme-queue-drain">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-drain"></span><h3>xnvme_queue_drain<a class="headerlink" href="#xnvme-queue-drain" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_drain">
+<span class="target" id="libxnvme__queue_8h_1aad1259925c536a27e69488bc439dbeb1"></span>int <code class="sig-name descname">xnvme_queue_drain</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_drain" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Process outstanding commands on the given xnvme_queue until it is empty. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to wait/process commands on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, number of commands processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-get-capacity">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-get-capacity"></span><h3>xnvme_queue_get_capacity<a class="headerlink" href="#xnvme-queue-get-capacity" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_get_capacity">
+<span class="target" id="libxnvme__queue_8h_1affe0dc6308216ef4c193a5911b7e1d22"></span>uint32_t <code class="sig-name descname">xnvme_queue_get_capacity</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_get_capacity" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the capacity of the given xnvme_queue. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to query for capacity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, capacity of given xnvme_queue text is returned. On error, 0 is returned e.g. errors are silent </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-get-cmd-ctx">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-get-cmd-ctx"></span><h3>xnvme_queue_get_cmd_ctx<a class="headerlink" href="#xnvme-queue-get-cmd-ctx" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_get_cmd_ctx">
+<span class="target" id="libxnvme__queue_8h_1ab97b95111f96550bb72f93d32a7a9448"></span><em class="property">struct</em> <a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<code class="sig-name descname">xnvme_queue_get_cmd_ctx</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_get_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve a command-context from the given queue for async. </p>
+<p>command execution with the queue</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The command-context is managed by the queue, thus, return it to the queue via <a class="reference internal" href="#libxnvme__queue_8h_1ade86028b3e7be7f5dd935f50f6a36121"><span class="std std-ref">xnvme_queue_put_cmd_ctx</span></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is not thread-safe</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to retrieve a command-context for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, a command-context is returned. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-get-outstanding">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-get-outstanding"></span><h3>xnvme_queue_get_outstanding<a class="headerlink" href="#xnvme-queue-get-outstanding" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_get_outstanding">
+<span class="target" id="libxnvme__queue_8h_1ad2cfe6191abdf8ab276c94b4eabf5547"></span>uint32_t <code class="sig-name descname">xnvme_queue_get_outstanding</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_get_outstanding" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the number of outstanding commands on the given xnvme_queue. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to query for outstanding commands</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, number of outstanding commands are returned. On error, 0 is returned e.g. errors are silent </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-init">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-init"></span><h3>xnvme_queue_init<a class="headerlink" href="#xnvme-queue-init" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_init">
+<span class="target" id="libxnvme__queue_8h_1a7dbb9f0cc2f52394b97af2f043758cb0"></span>int <code class="sig-name descname">xnvme_queue_init</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em>, uint16_t <em>capacity</em>, int <em>opts</em>, <em class="property">struct</em> xnvme_queue **<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocate a Command Queue for asynchronous command submission and completion. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a> </p></li>
+<li><p><strong>capacity</strong> – Maximum number of outstanding commands on the initialized queue, note that it must be a power of 2 within the range [1,4096] </p></li>
+<li><p><strong>opts</strong> – Queue options </p></li>
+<li><p><strong>queue</strong> – Pointer-pointer to the xnvme_queue to initialize</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-poke">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-poke"></span><h3>xnvme_queue_poke<a class="headerlink" href="#xnvme-queue-poke" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_poke">
+<span class="target" id="libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"></span>int <code class="sig-name descname">xnvme_queue_poke</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em>, uint32_t <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_poke" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Process completions of commands on the given xnvme_queue. </p>
+<p>Set process ‘max’ to limit number of completions, 0 means no max.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to poke for completions </p></li>
+<li><p><strong>max</strong> – The max number of completions to complete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, number of completions processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-put-cmd-ctx">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-put-cmd-ctx"></span><h3>xnvme_queue_put_cmd_ctx<a class="headerlink" href="#xnvme-queue-put-cmd-ctx" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_put_cmd_ctx">
+<span class="target" id="libxnvme__queue_8h_1ade86028b3e7be7f5dd935f50f6a36121"></span>int <code class="sig-name descname">xnvme_queue_put_cmd_ctx</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em>, <em class="property">struct</em> <a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_put_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Hand back a command-context previously retrieve using <a class="reference internal" href="#libxnvme__queue_8h_1ab97b95111f96550bb72f93d32a7a9448"><span class="std std-ref">xnvme_queue_get_cmd_ctx</span></a>. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function is not thread-safe</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to hand back the command-context to </p></li>
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-set-cb">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-set-cb"></span><h3>xnvme_queue_set_cb<a class="headerlink" href="#xnvme-queue-set-cb" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_set_cb">
+<span class="target" id="libxnvme__queue_8h_1a7b16efbcc5f83d914d93b9da9425b8e5"></span>int <code class="sig-name descname">xnvme_queue_set_cb</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em>, xnvme_queue_cb <em>cb</em>, void *<em>cb_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_set_cb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Assign a callback-function and argument to be used with the <a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> of the queue. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – The xnvme_queue to assign default callback function for </p></li>
+<li><p><strong>cb</strong> – The callback function to use </p></li>
+<li><p><strong>cb_arg</strong> – The callback argument to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-term">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-term"></span><h3>xnvme_queue_term<a class="headerlink" href="#xnvme-queue-term" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_term">
+<span class="target" id="libxnvme__queue_8h_1aaadd62c08f500eb40e872373e0579bbf"></span>int <code class="sig-name descname">xnvme_queue_term</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_term" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Tear down the given xnvme_queue. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to tear down</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-queue-wait">
+<span id="sec-c-api-xnvme-queue-func-xnvme-queue-wait"></span><h3>xnvme_queue_wait<a class="headerlink" href="#xnvme-queue-wait" title="Permalink to this headline">¶</a></h3>
+<dl class="c function">
+<dt id="c.xnvme_queue_wait">
+<span class="target" id="libxnvme__queue_8h_1afc7e44345e6cd351f93f1758123eca90"></span>int <code class="sig-name descname">xnvme_queue_wait</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_wait" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>DEPRECATED: expect that this function will be removed in an upcoming release. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to wait/process commands on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, number of commands processed, may be 0. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xnvme_mem.html" class="btn btn-neutral float-left" title="xnvme_mem" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xnvme_spec.html" class="btn btn-neutral float-right" title="xnvme_spec" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
