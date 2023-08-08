@@ -89,6 +89,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#device-identifiers">Device Identifiers</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#windows-kernel">Windows Kernel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">NVMe Driver and IOCTLs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nvme-driver-and-regular-file">NVMe Driver and Regular File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-i-o-via-iocp">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-i-o-via-iocp-th">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp_th</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-i-o-via-io-ring">Async I/O via <code class="docutils literal notranslate"><span class="pre">io_ring</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#building-an-xnvme-program">Building an xNVMe Program</a><ul>
@@ -98,7 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">User space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">User space</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#no-devices-found">No devices found</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#memory-issues">Memory Issues</a></li>
 </ul>
@@ -162,7 +170,7 @@ interaction.</p>
 <a class="reference internal" href="#sec-building"><span class="std std-ref">Building xNVMe</span></a> with a companion section on <a class="reference internal" href="toolchain.html#sec-building-toolchain"><span class="std std-ref">Toolchain</span></a>
 prerequisites, followed by a section describing runtime requirements in
 <a class="reference internal" href="#sec-gs-system-config"><span class="std std-ref">Backends and System Config</span></a>, ending with an example of
-<a class="reference internal" href="#sec-building-example"><span class="std std-ref">Building an xNVMe Program</span></a>.</p>
+<a class="reference internal" href="#sec-building-example"><span class="std std-ref">Windows Kernel</span></a>.</p>
 <section id="building-xnvme">
 <span id="sec-building"></span><h2>Building xNVMe<a class="headerlink" href="#building-xnvme" title="Permalink to this headline">¶</a></h2>
 <p><strong>xNVMe</strong> builds and runs on Linux, FreeBSD and Windows. First, retrieve the
@@ -218,7 +226,7 @@ can inspect <code class="docutils literal notranslate"><span class="pre">meson_o
 <strong>xNVMe</strong>. For examples of customizing the build then have a look at the
 following <a class="reference internal" href="#sec-building-config"><span class="std std-ref">Custom Configuration</span></a>.</p>
 <p>Otherwise, with a successfully built and installed <strong>xNVMe</strong>, then jump to
-<a class="reference internal" href="#sec-gs-system-config"><span class="std std-ref">Backends and System Config</span></a> and <a class="reference internal" href="#sec-building-example"><span class="std std-ref">Building an xNVMe Program</span></a>.</p>
+<a class="reference internal" href="#sec-gs-system-config"><span class="std std-ref">Backends and System Config</span></a> and <a class="reference internal" href="#sec-building-example"><span class="std std-ref">Windows Kernel</span></a>.</p>
 </section>
 <section id="toolchain">
 <span id="sec-building-toolchain"></span><h2>Toolchain<a class="headerlink" href="#toolchain" title="Permalink to this headline">¶</a></h2>
@@ -784,7 +792,7 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>autoconf<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>bash<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>build-essential<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>clang-format<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>clang-format-14<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>findutils<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>git<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>libaio-dev<span class="w"> </span><span class="se">\</span>
@@ -2079,7 +2087,9 @@ sudo<span class="w"> </span>meson<span class="w"> </span>install<span class="w">
 </section>
 <section id="windows-2022">
 <h3>Windows (2022)<a class="headerlink" href="#windows-2022" title="Permalink to this headline">¶</a></h3>
-<p>From an elevated command-prompt, then invoke the batch-script:</p>
+<p>Install the required toolchain and libraries, with sufficient system privileges
+(e.g. as eleveted command prompt), by executing the commands below. You can
+run this on administrator command prompt of the <strong>xNVMe</strong> by invoking:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2022.</span><span class="n">bat</span>
 </pre></div>
 </div>
@@ -2164,18 +2174,21 @@ where /q meson
 <span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman = OK
 </pre></div>
 </div>
-<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<p>Then go ahead and configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+<span class="w">  </span>build.bat
 
-<span class="c1"># build xNVMe</span>
-meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config
 
-<span class="c1"># install xNVMe</span>
-meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: debug only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config-debug
 
-<span class="c1"># uninstall xNVMe</span>
-<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+<span class="w">  </span><span class="c1"># install xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>install
+
+<span class="w">  </span><span class="c1"># uninstall xNVMe</span>
+<span class="w">  </span><span class="c1"># build.bat uninstall</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -2188,8 +2201,10 @@ Windows.</p>
 </section>
 <section id="windows-2019">
 <h3>Windows (2019)<a class="headerlink" href="#windows-2019" title="Permalink to this headline">¶</a></h3>
-<p>From an elevated command-prompt, then invoke the batch-script:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2019.</span><span class="n">bat</span>
+<p>Install the required toolchain and libraries, with sufficient system privileges
+(e.g. as eleveted privileges command prompt), by executing the commands below. You can
+run this on administrator command prompt of the <strong>xNVMe</strong> by invoking:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2022.</span><span class="n">bat</span>
 </pre></div>
 </div>
 <p>Or, run the commands contained within the script manually:</p>
@@ -2273,18 +2288,21 @@ where /q meson
 <span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman = OK
 </pre></div>
 </div>
-<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<p>Then go ahead and configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+<span class="w">  </span>build.bat
 
-<span class="c1"># build xNVMe</span>
-meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config
 
-<span class="c1"># install xNVMe</span>
-meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: debug only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config-debug
 
-<span class="c1"># uninstall xNVMe</span>
-<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+<span class="w">  </span><span class="c1"># install xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>install
+
+<span class="w">  </span><span class="c1"># uninstall xNVMe</span>
+<span class="w">  </span><span class="c1"># build.bat uninstall</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -2318,8 +2336,6 @@ supported/enabled backends then invoke:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># xNVMe Library Information</span>
 ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">0</span><span class="o">}</span>
 xnvme_libconf:
-<span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: fio;git-describe:fio-3.32&#39;</span>
-<span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: libvfn;git-describe:v1.0.0-rc0&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;3p: spdk;git-describe:v22.09;+patches&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;conf: XNVME_BE_CBI_ADMIN_SHIM_ENABLED&#39;</span>
 <span class="w">  </span>-<span class="w"> </span><span class="s1">&#39;conf: XNVME_BE_CBI_ASYNC_EMU_ENABLED&#39;</span>
@@ -2555,7 +2571,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">12</span>.02<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0004,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">9</span>.99<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2588,7 +2604,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0001,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">78</span>.04<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0000,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">78</span>.97<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2639,7 +2655,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.081312<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.083181<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
 </pre></div>
 </div>
 <p>And this command:</p>
@@ -2775,9 +2791,156 @@ filepaths:</p>
 </div>
 </section>
 </section>
+<section id="windows-kernel">
+<span id="sec-building-example"></span><h3>Windows Kernel<a class="headerlink" href="#windows-kernel" title="Permalink to this headline">¶</a></h3>
+<p>Windows 10 or later version is currently preferred as it has all the features
+which <strong>xNVMe</strong> utilizes. This section also gives you a brief overview of the
+different I/O paths and APIs which the <strong>xNVMe</strong> API unifies access to.</p>
+<section id="id1">
+<h4>NVMe Driver and IOCTLs<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>The default for <strong>xNVMe</strong> is to communicate with devices via the operating
+system NVMe driver IOCTLs, specifically on Windows the following are used:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IOCTL_STORAGE_QUERY_PROPERTY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IOCTL_STORAGE_SET_PROPERTY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IOCTL_STORAGE_REINITIALIZE_MEDIA</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IOCTL_SCSI_PASS_THROUGH_DIRECT</span></code></p></li>
+</ul>
+<p>You can check that this interface is behaving as expected by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme.exe<span class="w"> </span>info<span class="w"> </span><span class="se">\\</span>.<span class="se">\P</span>hysicalDrive0
+</pre></div>
+</div>
+<p>Which should yield output equivalent to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+<span class="w">  </span>xnvme_ident:
+<span class="w">    </span>uri:<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive0&#39;</span>
+<span class="w">    </span>dtype:<span class="w"> </span>0x2
+<span class="w">    </span>nsid:<span class="w"> </span>0x1
+<span class="w">    </span>csi:<span class="w"> </span>0x0
+<span class="w">    </span>subnqn:<span class="w"> </span><span class="s1">&#39;nqn.1994-11.com.samsung:nvme:980M.2:S649NL0T973010L     &#39;</span>
+<span class="w">  </span>xnvme_be:
+<span class="w">    </span>admin:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>async:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;iocp&#39;</span><span class="o">}</span>
+<span class="w">    </span>attr:<span class="w"> </span><span class="o">{</span>name:<span class="w"> </span><span class="s1">&#39;windows&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>This tells you that <strong>xNVMe</strong> can communicate with the given device identifier
+and it informs you that it utilizes <strong>nvme_ioctl</strong> for synchronous command
+execution and it uses <strong>iocp</strong> for asynchronous command execution. This method
+can be used for raw devices via <strong>.PhysicalDrive&lt;disk number&gt;</strong> device path.</p>
+</section>
+<section id="nvme-driver-and-regular-file">
+<h4>NVMe Driver and Regular File<a class="headerlink" href="#nvme-driver-and-regular-file" title="Permalink to this headline">¶</a></h4>
+<p><strong>xNVMe</strong> can communicate with File System mounted devices via the operating
+system generic APIs like <strong>ReadFile</strong> and <strong>WriteFile</strong> operations. This method
+can be used to do operation on Regular Files.</p>
+<p>You can check that this interface is behaving as expected by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme.exe<span class="w"> </span>info<span class="w"> </span>C:<span class="se">\R</span>EADME.md
+</pre></div>
+</div>
+<p>Which should yield output equivalent to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_dev:
+<span class="w">  </span>xnvme_ident:
+<span class="w">    </span>uri:<span class="w"> </span><span class="s1">&#39;C:\README.md&#39;</span>
+<span class="w">    </span>dtype:<span class="w"> </span>0x4
+<span class="w">    </span>nsid:<span class="w"> </span>0x1
+<span class="w">    </span>csi:<span class="w"> </span>0x1f
+<span class="w">    </span>subnqn:<span class="w"> </span><span class="s1">&#39;&#39;</span>
+<span class="w">  </span>xnvme_be:
+<span class="w">    </span>admin:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;file&#39;</span><span class="o">}</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;file&#39;</span><span class="o">}</span>
+<span class="w">    </span>async:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;iocp&#39;</span><span class="o">}</span>
+<span class="w">    </span>attr:<span class="w"> </span><span class="o">{</span>name:<span class="w"> </span><span class="s1">&#39;windows&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>This tells you that <strong>xNVMe</strong> can communicate with the given regular file
+and it informs you that it utilizes <strong>nvme_ioctl</strong> for synchronous command
+execution and it uses <strong>iocp</strong> for asynchronous command execution. This method
+can be used for file operations via <strong>&lt;driver name&gt;:&lt;file name&gt;</strong> path.</p>
+</section>
+<section id="async-i-o-via-iocp">
+<h4>Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp</span></code><a class="headerlink" href="#async-i-o-via-iocp" title="Permalink to this headline">¶</a></h4>
+<p>When AIO is available then the NVMe NVM Commands for <strong>read</strong> and <strong>write</strong> are
+sent over the Windows IOCP interface. Doing so improves command-throughput at
+higher queue-depths when compared to sending the command via the NVMe driver
+ioctl().</p>
+<p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">iocp</span></code> for async I/O by
+encoding it in the device identifier, like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_io_async<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="se">\\</span>.<span class="se">\P</span>hysicalDrive0<span class="w"> </span>--slba<span class="w"> </span>0x0<span class="w"> </span>--qdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>--async<span class="w"> </span>iocp
+</pre></div>
+</div>
+<p>Yielding the output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<span class="c1"># Initializing queue and setting default callback function and arguments</span>
+<span class="c1"># Read uri: &#39;\\.\PhysicalDrive0&#39;, qd: 1</span>
+xnvme_lba_range:
+<span class="w">  </span>slba:<span class="w"> </span>0x0000000000000000
+<span class="w">  </span>elba:<span class="w"> </span>0x0000000000000000
+<span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
+<span class="w">  </span>nbytes:<span class="w"> </span><span class="m">512</span>
+<span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0002,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">2</span>.08<span class="o">}</span>
+<span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
+</pre></div>
+</div>
+</section>
+<section id="async-i-o-via-iocp-th">
+<h4>Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp_th</span></code><a class="headerlink" href="#async-i-o-via-iocp-th" title="Permalink to this headline">¶</a></h4>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">iocp</span></code> interface, only difference is separate poller is used to
+fetch the completed IOs.</p>
+<p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">iocp_th</span></code> for async I/O by
+encoding it in the device identifier, like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_io_async<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="se">\\</span>.<span class="se">\P</span>hysicalDrive0<span class="w"> </span>--slba<span class="w"> </span>0x0<span class="w"> </span>--qdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>--async<span class="w"> </span>iocp_th
+</pre></div>
+</div>
+<p>Yielding the output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<span class="c1"># Initializing queue and setting default callback function and arguments</span>
+<span class="c1"># Read uri: &#39;\\.\PhysicalDrive0&#39;, qd: 1</span>
+xnvme_lba_range:
+<span class="w">  </span>slba:<span class="w"> </span>0x0000000000000000
+<span class="w">  </span>elba:<span class="w"> </span>0x0000000000000000
+<span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
+<span class="w">  </span>nbytes:<span class="w"> </span><span class="m">512</span>
+<span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0002,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">2</span>.14<span class="o">}</span>
+<span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
+</pre></div>
+</div>
+</section>
+<section id="async-i-o-via-io-ring">
+<h4>Async I/O via <code class="docutils literal notranslate"><span class="pre">io_ring</span></code><a class="headerlink" href="#async-i-o-via-io-ring" title="Permalink to this headline">¶</a></h4>
+<p><strong>xNVMe</strong> utilizes the Windows <strong>io_ring</strong> interface, its support for
+feature-probing the <strong>io_ring</strong> interface and the <strong>io_ring</strong> opcodes:</p>
+<p>When available, then <strong>xNVMe</strong> can send the <strong>io_ring</strong> specific request using
+<strong>IORING_HANDLE_REF</strong> and <strong>IORING_BUFFER_REF</strong> structure for <strong>read</strong> via the
+Windows <strong>io_ring</strong> interface. Doing so improves command-throughput at all
+io-depths when compared to sending the command via NVMe Driver IOCTLs.</p>
+<p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">io_ring</span></code> for async I/O by
+encoding it in the device identifier, like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_io_async<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="se">\\</span>.<span class="se">\P</span>hysicalDrive0<span class="w"> </span>--slba<span class="w"> </span>0x0<span class="w"> </span>--qdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>--async<span class="w"> </span>io_ring
+</pre></div>
+</div>
+<p>Yielding the output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and filling buf of nbytes: 512</span>
+<span class="c1"># Initializing queue and setting default callback function and arguments</span>
+<span class="c1"># Read uri: &#39;\\.\PhysicalDrive0&#39;, qd: 1</span>
+xnvme_lba_range:
+<span class="w">  </span>slba:<span class="w"> </span>0x0000000000000000
+<span class="w">  </span>elba:<span class="w"> </span>0x0000000000000000
+<span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
+<span class="w">  </span>nbytes:<span class="w"> </span><span class="m">512</span>
+<span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">1</span>.92<span class="o">}</span>
+<span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 <section id="building-an-xnvme-program">
-<span id="sec-building-example"></span><h2>Building an xNVMe Program<a class="headerlink" href="#building-an-xnvme-program" title="Permalink to this headline">¶</a></h2>
+<h2>Building an xNVMe Program<a class="headerlink" href="#building-an-xnvme-program" title="Permalink to this headline">¶</a></h2>
 <p>At this point you should have <strong>xNVMe</strong> built and installed on your system and
 have the system correctly configured and you should by now also be familiar
 with how to instrument <strong>xNVMe</strong> to utilize different backends and backend
@@ -2906,8 +3069,8 @@ asynchronous <a class="reference external" href="https://github.com/OpenMPDK/xNV
 </section>
 <section id="troubleshooting">
 <span id="sec-troubleshooting"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
-<section id="id1">
-<h3>User space<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<section id="id2">
+<h3>User space<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>In case you are having issues using SPDK backend then make sure you are
 following the config section <a class="reference internal" href="#sec-gs-system-config-userspace-config"><span class="std std-ref">Config</span></a> and
 if issues persist a solution might be found in the following subsections.</p>

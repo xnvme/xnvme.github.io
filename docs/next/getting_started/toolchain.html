@@ -640,7 +640,7 @@ apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"
 <span class="w"> </span>autoconf<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>bash<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>build-essential<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>clang-format<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>clang-format-14<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>findutils<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>git<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>libaio-dev<span class="w"> </span><span class="se">\</span>
@@ -1935,7 +1935,9 @@ sudo<span class="w"> </span>meson<span class="w"> </span>install<span class="w">
 </section>
 <section id="windows-2022">
 <h2>Windows (2022)<a class="headerlink" href="#windows-2022" title="Permalink to this headline">¶</a></h2>
-<p>From an elevated command-prompt, then invoke the batch-script:</p>
+<p>Install the required toolchain and libraries, with sufficient system privileges
+(e.g. as eleveted command prompt), by executing the commands below. You can
+run this on administrator command prompt of the <strong>xNVMe</strong> by invoking:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2022.</span><span class="n">bat</span>
 </pre></div>
 </div>
@@ -2020,18 +2022,21 @@ where /q meson
 <span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman = OK
 </pre></div>
 </div>
-<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<p>Then go ahead and configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+<span class="w">  </span>build.bat
 
-<span class="c1"># build xNVMe</span>
-meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config
 
-<span class="c1"># install xNVMe</span>
-meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: debug only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config-debug
 
-<span class="c1"># uninstall xNVMe</span>
-<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+<span class="w">  </span><span class="c1"># install xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>install
+
+<span class="w">  </span><span class="c1"># uninstall xNVMe</span>
+<span class="w">  </span><span class="c1"># build.bat uninstall</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -2044,8 +2049,10 @@ Windows.</p>
 </section>
 <section id="windows-2019">
 <h2>Windows (2019)<a class="headerlink" href="#windows-2019" title="Permalink to this headline">¶</a></h2>
-<p>From an elevated command-prompt, then invoke the batch-script:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2019.</span><span class="n">bat</span>
+<p>Install the required toolchain and libraries, with sufficient system privileges
+(e.g. as eleveted privileges command prompt), by executing the commands below. You can
+run this on administrator command prompt of the <strong>xNVMe</strong> by invoking:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2022.</span><span class="n">bat</span>
 </pre></div>
 </div>
 <p>Or, run the commands contained within the script manually:</p>
@@ -2129,18 +2136,21 @@ where /q meson
 <span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman = OK
 </pre></div>
 </div>
-<p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<p>Then go ahead and configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+<span class="w">  </span>build.bat
 
-<span class="c1"># build xNVMe</span>
-meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config
 
-<span class="c1"># install xNVMe</span>
-meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
+<span class="w">  </span><span class="c1"># config: debug only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config-debug
 
-<span class="c1"># uninstall xNVMe</span>
-<span class="c1"># cd builddir &amp;&amp; meson --internal uninstall</span>
+<span class="w">  </span><span class="c1"># install xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>install
+
+<span class="w">  </span><span class="c1"># uninstall xNVMe</span>
+<span class="w">  </span><span class="c1"># build.bat uninstall</span>
 </pre></div>
 </div>
 <div class="admonition note">
