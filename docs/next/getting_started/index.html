@@ -69,7 +69,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#macos-12">macOS (12)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#macos-11">macOS (11)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#windows-2022">Windows (2022)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#windows-2019">Windows (2019)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#backends-and-system-config">Backends and System Config</a><ul>
@@ -1995,187 +1994,50 @@ net session <span class="p">&gt;</span>nul: <span class="mi">2</span><span class
 
 <span class="p">:</span><span class="c1">: Use PowerShell to install Chocolatey</span>
 <span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%ALLUSERSPROFILE%</span><span class="s2">\chocolatey\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
-<span class="k">echo</span> [1/8] Install: Chocolatey Manager
+<span class="k">echo</span> [1/6] Install: Chocolatey Manager
 powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command <span class="s2">&quot;[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot;</span>
 where /q choco
 <span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [1/8] Install: Chocolatey = FAIL
+	<span class="k">echo</span> [1/6] Install: Chocolatey = FAIL
 	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
 <span class="p">)</span>
-<span class="k">echo</span> [1/8] Install: Chocolatey = PASS
+<span class="k">echo</span> [1/6] Install: Chocolatey = PASS
 
 <span class="p">:</span><span class="c1">: Use Chocolatey to install msys2</span>
-<span class="k">echo</span> [2/8] Install: MSYS2
-<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\tools\msys64;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
-choco install msys2 -y -r
+<span class="k">echo</span> [2/6] Install: MSYS2
+<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\msys64;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
+choco install msys2 -y -r --params <span class="s2">&quot;/NoUpdate /InstallDir:C:\msys64&quot;</span>
 where /q msys2
 <span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [2/8] Install: MSYS2 = FAIL
+	<span class="k">echo</span> [2/6] Install: MSYS2 = FAIL
 	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
 <span class="p">)</span>
-<span class="k">echo</span> [2/8] Install: MSYS2 = PASS
+<span class="k">echo</span> [2/6] Install: MSYS2 = PASS
 
-<span class="k">echo</span> [3/8] Install: Git
+<span class="k">echo</span> [3/6] Install: Git
 choco install git -y -r
-where /q git
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [3/8] Install: Git = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [3/8] Install: Git = PASS
+<span class="k">echo</span> [3/6] Install: Git = PASS
+
+<span class="k">echo</span> [4/6] Install: dos2unix
+choco install dos2unix
+<span class="k">echo</span> [4/6] Install: dos2unix = PASS
 
 <span class="p">:</span><span class="c1">: Use MSYS2/pacman to install gcc and clang toolchain</span>
 <span class="k">set</span> <span class="nv">MSYS2</span><span class="p">=</span>call msys2_shell -no-start -here -use-full-path -defterm
 
-<span class="k">echo</span> [4/8] Install: MinGW Toolchain via msys2/pacman
-<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\tools\msys64\mingw64\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
+<span class="k">echo</span> [5/6] Install: MinGW Toolchain via msys2/pacman
+<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\msys64\mingw64\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
 <span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy --needed base-devel mingw-w64-x86_64-toolchain&quot;</span>
 where /q gcc
 <span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [4/8] Install: MinGW Toolchain via msys2/pacman = FAIL
+	<span class="k">echo</span> [5/6] Install: MinGW Toolchain via msys2/pacman = FAIL
 	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
 <span class="p">)</span>
-<span class="k">echo</span> [4/8] Install: MinGW Toolchain via msys2/pacman = PASS
+<span class="k">echo</span> [5/6] Install: MinGW Toolchain via msys2/pacman = PASS
 
-<span class="k">echo</span> [5/8] Install: MinGW/clang via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-clang&quot;</span>
-where /q clang
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [5/8] Install: MinGW Toolchain via msys2/pacman = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [5/8] Install: MinGW Toolchain via msys2/pacman = PASS
-
-<span class="k">echo</span> [6/8] Install: MinGW/nsis via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-nsis&quot;</span>
-<span class="k">echo</span> [6/8] Install: MinGW/nsis via msys2/pacman = OK
-
-<span class="k">echo</span> [7/8] Install: MinGW/meson via msys2/pacman
+<span class="k">echo</span> [6/6] Install: MinGW/meson via msys2/pacman
 <span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-meson&quot;</span>
-where /q meson
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [7/8] Install: MinGW/meson via msys2/pacman = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [7/8] Install: MinGW/meson via msys2/pacman = OK
-
-<span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-python mingw-w64-x86_64-python-pip&quot;</span>
-<span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman = OK
-</pre></div>
-</div>
-<p>Then go ahead and configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
-<span class="w">  </span>build.bat
-
-<span class="w">  </span><span class="c1"># config: only configure xNVMe</span>
-<span class="w">  </span>build.bat<span class="w"> </span>config
-
-<span class="w">  </span><span class="c1"># config: debug only configure xNVMe</span>
-<span class="w">  </span>build.bat<span class="w"> </span>config-debug
-
-<span class="w">  </span><span class="c1"># install xNVMe</span>
-<span class="w">  </span>build.bat<span class="w"> </span>install
-
-<span class="w">  </span><span class="c1"># uninstall xNVMe</span>
-<span class="w">  </span><span class="c1"># build.bat uninstall</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In case you see <code class="docutils literal notranslate"><span class="pre">.dll</span></code> loader-errors, then check that the environment
-variable <code class="docutils literal notranslate"><span class="pre">PATH</span></code> contains the various library locations of the toolchain.
-Interfaces; libaio, liburing, libvfn, and SPDK are not supported on
-Windows.</p>
-</div>
-</section>
-<section id="windows-2019">
-<h3>Windows (2019)<a class="headerlink" href="#windows-2019" title="Permalink to this headline">¶</a></h3>
-<p>Install the required toolchain and libraries, with sufficient system privileges
-(e.g. as eleveted privileges command prompt), by executing the commands below. You can
-run this on administrator command prompt of the <strong>xNVMe</strong> by invoking:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">call</span> <span class="n">xnvme</span>\<span class="n">toolbox</span>\<span class="n">pkgs</span>\<span class="n">windows</span><span class="o">-</span><span class="mf">2022.</span><span class="n">bat</span>
-</pre></div>
-</div>
-<p>Or, run the commands contained within the script manually:</p>
-<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span><span class="p">@</span><span class="k">echo</span> off
-<span class="p">@</span><span class="k">setlocal</span> enableextensions enabledelayedexpansion
-
-net session <span class="p">&gt;</span>nul: <span class="mi">2</span><span class="p">&gt;&amp;</span><span class="mi">1</span>
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> <span class="nv">%0</span> must be run with Administrator privileges
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-
-<span class="p">:</span><span class="c1">: Use PowerShell to install Chocolatey</span>
-<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%ALLUSERSPROFILE%</span><span class="s2">\chocolatey\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
-<span class="k">echo</span> [1/8] Install: Chocolatey Manager
-powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command <span class="s2">&quot;[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot;</span>
-where /q choco
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [1/8] Install: Chocolatey = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [1/8] Install: Chocolatey = PASS
-
-<span class="p">:</span><span class="c1">: Use Chocolatey to install msys2</span>
-<span class="k">echo</span> [2/8] Install: MSYS2
-<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\tools\msys64;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
-choco install msys2 -y -r
-where /q msys2
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [2/8] Install: MSYS2 = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [2/8] Install: MSYS2 = PASS
-
-<span class="k">echo</span> [3/8] Install: Git
-choco install git -y -r
-where /q git
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [3/8] Install: Git = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [3/8] Install: Git = PASS
-
-<span class="p">:</span><span class="c1">: Use MSYS2/pacman to install gcc and clang toolchain</span>
-<span class="k">set</span> <span class="nv">MSYS2</span><span class="p">=</span>call msys2_shell -no-start -here -use-full-path -defterm
-
-<span class="k">echo</span> [4/8] Install: MinGW Toolchain via msys2/pacman
-<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\tools\msys64\mingw64\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy --needed base-devel mingw-w64-x86_64-toolchain&quot;</span>
-where /q gcc
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [4/8] Install: MinGW Toolchain via msys2/pacman = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [4/8] Install: MinGW Toolchain via msys2/pacman = PASS
-
-<span class="k">echo</span> [5/8] Install: MinGW/clang via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-clang&quot;</span>
-where /q clang
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [5/8] Install: MinGW Toolchain via msys2/pacman = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [5/8] Install: MinGW Toolchain via msys2/pacman = PASS
-
-<span class="k">echo</span> [6/8] Install: MinGW/nsis via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-nsis&quot;</span>
-<span class="k">echo</span> [6/8] Install: MinGW/nsis via msys2/pacman = OK
-
-<span class="k">echo</span> [7/8] Install: MinGW/meson via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-meson&quot;</span>
-where /q meson
-<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
-	<span class="k">echo</span> [7/8] Install: MinGW/meson via msys2/pacman = FAIL
-	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
-<span class="p">)</span>
-<span class="k">echo</span> [7/8] Install: MinGW/meson via msys2/pacman = OK
-
-<span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman
-<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-python mingw-w64-x86_64-python-pip&quot;</span>
-<span class="k">echo</span> [8/8] Install: Python3 and dependencies via msys2/pacman = OK
+<span class="k">echo</span> [6/6] Install: MinGW/meson via msys2/pacman = OK
 </pre></div>
 </div>
 <p>Then go ahead and configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p>
@@ -2461,7 +2323,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">12</span>.19<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">11</span>.85<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2494,7 +2356,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0000,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">79</span>.90<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0000,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">80</span>.62<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2545,7 +2407,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.082294<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.082392<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
 </pre></div>
 </div>
 <p>And this command:</p>
