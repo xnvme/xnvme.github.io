@@ -57,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx">xnvme_cmd_ctx</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-async">xnvme_cmd_ctx_async</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
@@ -133,23 +134,26 @@
 <span class="cm"> */</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Attributes for asynchronous command-contexts</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_cmd_ctx_async</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx_async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Queue used for command processing</span>
+<span class="w">	</span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span><span class="w">         </span><span class="c1">///&lt; User defined callback function</span>
+<span class="w">	</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span><span class="w">              </span><span class="c1">///&lt; User defined callback function arguments</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * The xNVMe Command Context</span>
 <span class="cm"> *</span>
 <span class="cm"> * @struct xnvme_cmd_ctx</span>
 <span class="cm"> */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="n">cmd</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Command to be processed</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cpl</span><span class="w"> </span><span class="n">cpl</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Completion result from processing</span>
-
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Device associated with the command</span>
-
-<span class="w">	</span><span class="c1">///&lt; Fields for command option: XNVME_CMD_ASYNC</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Queue used for command processing</span>
-<span class="w">		</span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span><span class="w">         </span><span class="c1">///&lt; User defined callback function</span>
-<span class="w">		</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span><span class="w">              </span><span class="c1">///&lt; User defined callback function arguments</span>
-<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">async</span><span class="p">;</span>
-
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="n">cmd</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Command to be processed</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cpl</span><span class="w"> </span><span class="n">cpl</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Completion result from processing</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span><span class="w">            </span><span class="c1">///&lt; Device associated with the command</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx_async</span><span class="w"> </span><span class="n">async</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Fields for command option: XNVME_CMD_ASYNC</span>
 <span class="w">	</span><span class="c1">///&lt; Field containing command-options, the field is initialized by helper-functions</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">opts</span><span class="p">;</span>
 
@@ -272,8 +276,7 @@
 <dl class="c struct">
 <dt id="c.xnvme_cmd_ctx">
 <span class="target" id="structxnvme__cmd__ctx"></span><em class="property">struct </em><code class="sig-name descname">xnvme_cmd_ctx</code><a class="headerlink" href="#c.xnvme_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
-<p>SPDX-License-Identifier: BSD-3-Clause The xNVMe Command Context </p>
+<dd><p>The xNVMe Command Context. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
@@ -292,13 +295,12 @@
 <dt id="c.xnvme_cmd_ctx.dev">
 <span class="target" id="structxnvme__cmd__ctx_1a0e4289504093bf9d6c4f6f8d659d2587"></span><em class="property">struct</em> xnvme_dev *<code class="sig-name descname">dev</code><a class="headerlink" href="#c.xnvme_cmd_ctx.dev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Device associated with the command. </p>
-<p>Fields for command option: XNVME_CMD_ASYNC </p>
 </dd></dl>
 
 <dl class="c var">
 <dt id="c.xnvme_cmd_ctx.async">
-<span class="target" id="structxnvme__cmd__ctx_1a843d93cecf1613caf3e31eda047d4a6c"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a>.<strong>[anonymous]</strong> <code class="sig-name descname">async</code><a class="headerlink" href="#c.xnvme_cmd_ctx.async" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Field containing command-options, the field is initialized by helper-functions. </p>
+<span class="target" id="structxnvme__cmd__ctx_1a31ce749d7fe6a69de69f3ea5750b22f2"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx_async" title="xnvme_cmd_ctx_async">xnvme_cmd_ctx_async</a> <code class="sig-name descname">async</code><a class="headerlink" href="#c.xnvme_cmd_ctx.async" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Fields for command option: XNVME_CMD_ASYNC Field containing command-options, the field is initialized by helper-functions. </p>
 </dd></dl>
 
 <dl class="c var">
@@ -310,6 +312,37 @@
 <dt id="c.xnvme_cmd_ctx.be_rsvd">
 <span class="target" id="structxnvme__cmd__ctx_1a170fbe5ba4eedef09e94d8e0e34ab08e"></span>uint8_t <code class="sig-name descname">be_rsvd</code>[12]<a class="headerlink" href="#c.xnvme_cmd_ctx.be_rsvd" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Fields reserved for use by library internals. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="xnvme-cmd-ctx-async">
+<span id="sec-c-api-xnvme-cmd-struct-xnvme-cmd-ctx-async"></span><h3>xnvme_cmd_ctx_async<a class="headerlink" href="#xnvme-cmd-ctx-async" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.xnvme_cmd_ctx_async">
+<span class="target" id="structxnvme__cmd__ctx__async"></span><em class="property">struct </em><code class="sig-name descname">xnvme_cmd_ctx_async</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause Attributes for asynchronous command-contexts </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt id="c.xnvme_cmd_ctx_async.queue">
+<span class="target" id="structxnvme__cmd__ctx__async_1a25824ea5c76ecf6a174e5d230393388a"></span><em class="property">struct</em> xnvme_queue *<code class="sig-name descname">queue</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async.queue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Queue used for command processing. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_cmd_ctx_async.cb">
+<span class="target" id="structxnvme__cmd__ctx__async_1a35c7d50c7cb43d5f00d975a2caf5ab42"></span>xnvme_queue_cb <code class="sig-name descname">cb</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async.cb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>User defined callback function. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_cmd_ctx_async.cb_arg">
+<span class="target" id="structxnvme__cmd__ctx__async_1ab71a05194b74b5331308c32cca93ecd1"></span>void *<code class="sig-name descname">cb_arg</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async.cb_arg" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>User defined callback function arguments. </p>
 </dd></dl>
 
 </div>

@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range">xnvme_lba_range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-lba-range-attr">xnvme_lba_range_attr</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
@@ -133,6 +134,11 @@
 <span class="cm"> * @headerfile libxnvme_lba.h</span>
 <span class="cm"> */</span>
 
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range_attr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">is_zoned</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range covers a zone [zslba, zslba + cap]</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">is_valid</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range is valid</span>
+<span class="p">};</span>
+
 <span class="cm">/**</span>
 <span class="cm"> * Representation of a range of logical-block-addresses aka LBAs</span>
 <span class="cm"> *</span>
@@ -143,12 +149,7 @@
 <span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">elba</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Range end-LBA; ends at and includes this address</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">naddrs</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of addresses in range [slba, elba]</span>
 <span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of bytes covered by [slba, elba]</span>
-
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">is_zoned</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range covers a zone [zslba, zslba + cap]</span>
-<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">is_valid</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range is valid</span>
-<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rsvd</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">30</span><span class="p">;</span>
-<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range_attr</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -237,8 +238,7 @@
 <dl class="c struct">
 <dt id="c.xnvme_lba_range">
 <span class="target" id="structxnvme__lba__range"></span><em class="property">struct </em><code class="sig-name descname">xnvme_lba_range</code><a class="headerlink" href="#c.xnvme_lba_range" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
-<p>SPDX-License-Identifier: BSD-3-Clause Representation of a range of logical-block-addresses aka LBAs </p>
+<dd><p>Representation of a range of logical-block-addresses aka LBAs. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
@@ -267,8 +267,33 @@
 
 <dl class="c var">
 <dt id="c.xnvme_lba_range.attr">
-<span class="target" id="structxnvme__lba__range_1a2144dbe944dfc796242691c3dc178c7b"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range">xnvme_lba_range</a>.<strong>[anonymous]</strong> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structxnvme__lba__range_1a4406cae74dd3cd47a67783103744fd71"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_lba_range_attr" title="xnvme_lba_range_attr">xnvme_lba_range_attr</a> <code class="sig-name descname">attr</code><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-attr">
+<span id="sec-c-api-xnvme-lba-struct-xnvme-lba-range-attr"></span><h3>xnvme_lba_range_attr<a class="headerlink" href="#xnvme-lba-range-attr" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.xnvme_lba_range_attr">
+<span class="target" id="structxnvme__lba__range__attr"></span><em class="property">struct </em><code class="sig-name descname">xnvme_lba_range_attr</code><a class="headerlink" href="#c.xnvme_lba_range_attr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt id="c.xnvme_lba_range_attr.is_zoned">
+<span class="target" id="structxnvme__lba__range__attr_1a0a225e0a3f9dc75ba5323bcaa9b5d69a"></span>bool <code class="sig-name descname">is_zoned</code><a class="headerlink" href="#c.xnvme_lba_range_attr.is_zoned" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Whether the range covers a zone [zslba, zslba + cap]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.xnvme_lba_range_attr.is_valid">
+<span class="target" id="structxnvme__lba__range__attr_1a9cccc3328dc56ccda15503385d4d4484"></span>bool <code class="sig-name descname">is_valid</code><a class="headerlink" href="#c.xnvme_lba_range_attr.is_valid" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Whether the range is valid. </p>
+</dd></dl>
 
 </div>
 </dd></dl>
