@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bench &mdash; xNVMe 0.7.1 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Verify" href="../verify/index.html" />
+    <link rel="prev" title="Build" href="../build/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.7.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">CI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#jobs">Jobs</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../build/index.html">Build</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Bench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#system-notes">System Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../verify/index.html">Verify</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">CI</a></li>
+      <li class="breadcrumb-item active">Bench</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ci/bench/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bench">
+<span id="sec-ci-bench"></span><h1>Bench<a class="headerlink" href="#bench" title="Permalink to this headline">¶</a></h1>
+<figure class="align-center" id="id1">
+<img alt="xNVMe CI Resource Overview" src="../../_images/xnvme-ci-overview.png" />
+<figcaption>
+<p><span class="caption-text">xNVMe <strong>CI</strong> environments and resources</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>This describes the setup / notes</p>
+<section id="system-notes">
+<span id="sec-ci-bench-notes"></span><h2>System Notes<a class="headerlink" href="#system-notes" title="Permalink to this headline">¶</a></h2>
+<p>Since the system utilized is a custom physical setup, then notes are provided
+here describing the hardware utilized and the configuration performed to get the
+hardware resources into their state of function.</p>
+<section id="bifrost">
+<h3>bifrost<a class="headerlink" href="#bifrost" title="Permalink to this headline">¶</a></h3>
+<p>The physical hardware resources utilized for benchmarking reside in an isolated
+network, only traffic allowed in is via a WireGuard VPN. Taking care of these
+firewall and VPN tasks is a <a class="reference external" href="https://shop.netgate.com/products/1100-pfsense">Netgate 1100</a> running <strong>pfSense+</strong>.</p>
+<p>The following is setup:</p>
+<ul class="simple">
+<li><p>Firewall rules: default to deny</p></li>
+<li><p>DHCP Server with mac-address based IP assignment</p></li>
+<li><p>WireGuard Enabled</p></li>
+</ul>
+<p>See the <a class="reference external" href="https://docs.netgate.com/pfsense/en/latest/solutions/sg-1100/">Netgate 1100 Manual</a> for details on how to configures this.</p>
+</section>
+<section id="bench-intel">
+<h3>bench-intel<a class="headerlink" href="#bench-intel" title="Permalink to this headline">¶</a></h3>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Hardware Specs. for <code class="docutils literal notranslate"><span class="pre">bench-intel</span></code></span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>CPU</p></th>
+<th class="head"><p>Memory</p></th>
+<th class="head"><p>Motherboard</p></th>
+<th class="head"><p>NVMe Devices</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Intel 12th Gen. Core i5-12600</p></td>
+<td><p>32 GB (2x Kingston 548C38-16)</p></td>
+<td><p>MSI Z690-A</p></td>
+<td><ul class="simple">
+<li><p>4x 980 PRO 2TB</p></li>
+<li><p>3x 980 PRO 1TB</p></li>
+<li><p>1x 980 PRO with Heatsink 1TB</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bench-intel-pikvm">
+<h3>bench-intel-pikvm<a class="headerlink" href="#bench-intel-pikvm" title="Permalink to this headline">¶</a></h3>
+<p>This running <a class="reference external" href="https://pikvm.org/">PiKVM</a> on a <a class="reference external" href="https://www.raspberrypi.com/products/raspberry-pi-4-model-b/">Raspberry Pi 4b</a> with the <a class="reference external" href="https://docs.pikvm.org/v3/">PiKVM V3 HAT</a>, for setup
+notes see <a class="reference external" href="https://safl.dk/notebook/pikvm/">PiKVM V3 HAT Config Notes</a>.</p>
+</section>
+<section id="bench-amd">
+<h3>bench-amd<a class="headerlink" href="#bench-amd" title="Permalink to this headline">¶</a></h3>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">Hardware Specs. for <code class="docutils literal notranslate"><span class="pre">bench-amd</span></code></span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>CPU</p></th>
+<th class="head"><p>Memory</p></th>
+<th class="head"><p>Motherboard</p></th>
+<th class="head"><p>NVMe Devices</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AMD Ryzen Threadripper 1900X 8-Core</p></td>
+<td><p>32 GB (4x CMK32GX4M4B3200C16)</p></td>
+<td><p>ASRock X399 Phantom Gaming 6</p></td>
+<td><ul class="simple">
+<li><p>8x MEMPEK1W016GA</p></li>
+<li><p>2x MEMPEK1J016GAL</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bench-amd-pikvm">
+<h3>bench-amd-pikvm<a class="headerlink" href="#bench-amd-pikvm" title="Permalink to this headline">¶</a></h3>
+<p>…</p>
+</section>
+<section id="runner-rockpi-01">
+<h3>runner-rockpi-01<a class="headerlink" href="#runner-rockpi-01" title="Permalink to this headline">¶</a></h3>
+<p>This is a <a class="reference external" href="https://rockpi.org/rockpi4">Rock PI 4b</a> with a 512GB NVMe SSD attached.
+It is running <a class="reference external" href="https://www.armbian.com/">Armbian</a> / Bookworm.</p>
+<p>Add a user for the github action runner, named <code class="docutils literal notranslate"><span class="pre">ghr</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>adduser<span class="w"> </span>ghr
+usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>ghr
+</pre></div>
+</div>
+<p>Install some tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>vim<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="nb">time</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>tree
+</pre></div>
+</div>
+<p>Configure the NVMe storage, by doing the following:</p>
+<ul class="simple">
+<li><p>Partition and ext4-format</p>
+<ul>
+<li><p>fdisk /dev/nvme0n1</p></li>
+<li><p>mkfs.ext4 /dev/nvme0n1p1</p></li>
+</ul>
+</li>
+<li><p>Get the <strong>UUID</strong></p>
+<ul>
+<li><p>Run: <code class="docutils literal notranslate"><span class="pre">blkid</span></code></p></li>
+</ul>
+</li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">/etc/fstab</span></code> using the <strong>UUID</strong> with mount-point at <code class="docutils literal notranslate"><span class="pre">/gha</span></code></p></li>
+</ul>
+<p>Then reload:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>daemon-reload
+mount<span class="w"> </span>/ghr
+chown<span class="w"> </span>-R<span class="w"> </span>ghr:ghr<span class="w"> </span>/ghr
+</pre></div>
+</div>
+<section id="install-docker">
+<h4>Install docker<a class="headerlink" href="#install-docker" title="Permalink to this headline">¶</a></h4>
+<p>Do this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://get.docker.com<span class="w"> </span>-o<span class="w"> </span>get-docker.sh
+sh<span class="w"> </span>./get-docker.sh
+</pre></div>
+</div>
+<p>Change docker to store container-images and temporary data onto the NVMe device, to avoid wear on the emmc:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup a docker config</span>
+mkdir<span class="w"> </span>/etc/systemd/system/docker.service.d
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;[Service]&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/systemd/system/docker.service.d/docker.conf
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ExecStart=&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;/etc/systemd/system/docker.service.d/docker.conf&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ExecStart=/usr/bin/dockerd --data-root /ghr/docker&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;/etc/systemd/system/docker.service.d/docker.conf&quot;</span>
+
+<span class="c1"># Reload it</span>
+systemctl<span class="w"> </span>daemon-reload
+systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+</pre></div>
+</div>
+</section>
+<section id="github-runner">
+<h4>GitHUB Runner<a class="headerlink" href="#github-runner" title="Permalink to this headline">¶</a></h4>
+<p>Switch to the <code class="docutils literal notranslate"><span class="pre">ghr</span></code> user, go into the <code class="docutils literal notranslate"><span class="pre">/ghr</span></code> mountpoint, download and
+extract the github-action-runner:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>su<span class="w"> </span>ghr
+<span class="nb">cd</span><span class="w"> </span>/ghr
+mkdir<span class="w"> </span>actions-runner<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>actions-runner
+curl<span class="w"> </span>-o<span class="w"> </span>actions-runner-linux-arm64-2.309.0.tar.gz<span class="w"> </span>-L<span class="w"> </span>https://github.com/actions/runner/releases/download/v2.309.0/actions-runner-linux-arm64-2.309.0.tar.gz
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;b172da68eef96d552534294e4fb0a3ff524e945fc5d955666bab24eccc6ed149  actions-runner-linux-arm64-2.309.0.tar.gz&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>shasum<span class="w"> </span>-a<span class="w"> </span><span class="m">256</span><span class="w"> </span>-c
+tar<span class="w"> </span>xzf<span class="w"> </span>./actions-runner-linux-arm64-2.309.0.tar.gz
+</pre></div>
+</div>
+<p>Then we create two runners, one for <code class="docutils literal notranslate"><span class="pre">bench-amd</span></code>, and one for <code class="docutils literal notranslate"><span class="pre">bench-intel</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RUNNERS</span><span class="o">=</span><span class="s2">&quot;bench-amd bench-intel&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">RUNNER_USER</span><span class="o">=</span>ghr
+<span class="nb">export</span><span class="w"> </span><span class="nv">URL</span><span class="o">=</span>https://github.com/OpenMPDK/xNVMe
+<span class="nb">export</span><span class="w"> </span><span class="nv">TOKEN</span><span class="o">={</span>SUPER_SECRET<span class="o">}</span>
+</pre></div>
+</div>
+<p>With the above defined, then you can execute these:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="nb">cd</span><span class="w"> </span>/ghr
+
+<span class="w">      </span><span class="c1"># Setup runners</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>actions-runner<span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">done</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1"># Register runners</span>
+
+<span class="w">      </span><span class="nb">cd</span><span class="w"> </span>/ghr/runner-for-bench-intel
+<span class="w">      </span>./config.sh<span class="w"> </span>--unattended<span class="w"> </span>--url<span class="w"> </span><span class="si">${</span><span class="nv">URL</span><span class="si">}</span><span class="w"> </span>--token<span class="w"> </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="w"> </span>--labels<span class="w"> </span>bench,intel<span class="w"> </span>--replace<span class="w"> </span>--name<span class="w"> </span>runner-for-bench-intel
+<span class="nb">cd</span><span class="w"> </span>..
+
+<span class="w">      </span><span class="nb">cd</span><span class="w"> </span>/ghr/runner-for-bench-amd
+<span class="w">      </span>./config.sh<span class="w"> </span>--unattended<span class="w"> </span>--url<span class="w"> </span><span class="si">${</span><span class="nv">URL</span><span class="si">}</span><span class="w"> </span>--token<span class="w"> </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="w"> </span>--labels<span class="w"> </span>bench,amd<span class="w"> </span>--replace<span class="w"> </span>--name<span class="w"> </span>runner-for-bench-amd
+<span class="nb">cd</span><span class="w"> </span>..
+</pre></div>
+</div>
+<p>Install and run them as a service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/ghr
+
+<span class="c1"># Service(s): install</span>
+<span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>sudo<span class="w"> </span>./svc.sh<span class="w"> </span>install<span class="w"> </span><span class="si">${</span><span class="nv">RUNNER_USER</span><span class="si">}</span><span class="p">;</span><span class="w"> </span>popd<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1"># Service(s): start</span>
+<span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>sudo<span class="w"> </span>./svc.sh<span class="w"> </span>start<span class="p">;</span><span class="w"> </span>popd<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1"># Service(s): status</span>
+<span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>sudo<span class="w"> </span>./svc.sh<span class="w"> </span>status<span class="p">;</span><span class="w"> </span>popd<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+</pre></div>
+</div>
+<p>And when needing to update:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Services: stop</span>
+<span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>sudo<span class="w"> </span>./svc.sh<span class="w"> </span>stop<span class="p">;</span><span class="w"> </span>popd<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1"># Services: uninstall</span>
+<span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>sudo<span class="w"> </span>./svc.sh<span class="w"> </span>uninstall<span class="p">;</span><span class="w"> </span>popd<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+
+<span class="c1"># Remove the runner</span>
+<span class="k">for</span><span class="w"> </span>RUNNER_NAME<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$RUNNERS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;runner-for-</span><span class="si">${</span><span class="nv">RUNNER_NAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>./config.sh<span class="w"> </span>remove<span class="w"> </span>--token<span class="w"> </span><span class="si">${</span><span class="nv">TOKEN</span><span class="si">}</span><span class="p">;</span><span class="w"> </span>popd<span class="p">;</span><span class="w"> </span><span class="k">done</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../build/index.html" class="btn btn-neutral float-left" title="Build" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../verify/index.html" class="btn btn-neutral float-right" title="Verify" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
