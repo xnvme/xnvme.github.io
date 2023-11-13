@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flexible Data Placement &mdash; xNVMe 0.7.2 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Linux Dev. Environment" href="../devs/index.html" />
+    <link rel="prev" title="Tutorials" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xNVMe
+          </a>
+              <div class="version">
+                0.7.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/index.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Flexible Data Placement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#concepts-and-prelude">Concepts and Prelude</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-log-page">Get log page</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-and-get-feature">Set and get-feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-o-management">I/O Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xnvme-ioengine">xnvme ioengine</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../devs/index.html">Linux Dev. Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dynamic_loading/index.html">Dynamically loading xNVMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fabrics/index.html">NVMe-over-Fabrics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xNVMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Flexible Data Placement</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorial/fdp/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="flexible-data-placement">
+<span id="sec-tutorials-fdp-intro"></span><h1>Flexible Data Placement<a class="headerlink" href="#flexible-data-placement" title="Permalink to this headline">¶</a></h1>
+<p>In this section, you will find a guide on <strong>FDP</strong> aka Flexible Data Placement
+support in xNVMe.
+This will guide you with examples of all the supported <strong>FDP</strong> log pages,
+Set/Get features, and I/O management commands. This will also cover the Write
+command with hints from the perspective of FIO’s xNVMe ioengine.</p>
+<section id="concepts-and-prelude">
+<h2>Concepts and Prelude<a class="headerlink" href="#concepts-and-prelude" title="Permalink to this headline">¶</a></h2>
+<p><strong>FDP</strong> adds an enhancement to NVM Command Set by enabling host guided data
+placement. This introduces a Reclaim Unit (<strong>RU</strong>) which is a logical
+representation of non-volatile storage within a Reclaim Group that is able to
+be physically erased by the controller without disturbing any other Reclaim
+Units.</p>
+<p>Placement Identifier is a data structure that specifies a Reclaim Group
+Identifier and a Placement Handle that references a Reclaim Unit.</p>
+<p>Placement Handle is a namespace scoped handle that maps to an Endurance group
+scoped Reclaim Unit Handle which references a Reclaim Unit in each Reclaim
+Group.</p>
+<p>Reclaim Unit Handle (<strong>RUH</strong>) is a controller resource that references a
+Reclaim Unit in each Reclaim Group.</p>
+<p>For the complete information on <strong>FDP</strong>, please see the ratified technical proposal
+TP4146 Flexible Data Placement 2022.11.30 Ratified, which can be found here
+<a class="reference external" href="https://nvmexpress.org/wp-content/uploads/NVM-Express-2.0-Ratified-TPs_20230111.zip">https://nvmexpress.org/wp-content/uploads/NVM-Express-2.0-Ratified-TPs_20230111.zip</a></p>
+</section>
+<section id="get-log-page">
+<h2>Get log page<a class="headerlink" href="#get-log-page" title="Permalink to this headline">¶</a></h2>
+<p>There are 4 new log pages associated with <strong>FDP</strong>. These are FDP Configuration,
+Reclaim Unit Handle Usage, FDP Statistics and FDP Events. All these log pages
+are Endurance Group scoped and hence you need to specify Endurance Group
+Identifier in Log Specific Identifier field.</p>
+<p>For the 4 log pages mentioned above, you can use <strong>xNVMe</strong> CLI:</p>
+<p>The Fdp configuration log page requires dynamic memory allocation, as there
+can be multiple configuration each having multiple Reclaim Unit Handles.
+You will have to specify the data size in bytes. The command can be run like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>log-fdp-config<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--data-nbytes<span class="o">=</span><span class="m">512</span><span class="w"> </span>--lsi<span class="w"> </span>0x1
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and clearing buffer...</span>
+<span class="c1"># Retrieving FDP configurations log page ...</span>
+xnvme_spec_log_fdp_conf:
+<span class="w">  </span>ncfg:<span class="w"> </span><span class="m">0</span>
+<span class="w">  </span>version:<span class="w"> </span><span class="m">0</span>
+<span class="w">  </span>size:<span class="w"> </span><span class="m">112</span>
+<span class="w">  </span>config_desc:<span class="w"> </span><span class="m">0</span>
+<span class="w">  </span>ds:<span class="w"> </span><span class="m">96</span>
+<span class="w">  </span>fdp<span class="w"> </span>attributes:<span class="w"> </span><span class="o">{</span><span class="w">    </span>rgif:<span class="w"> </span><span class="m">6</span><span class="w">    </span>fdpvwc:<span class="w"> </span><span class="m">0</span><span class="w">    </span>fdpcv:<span class="w"> </span><span class="m">1</span><span class="w">    </span>val:<span class="w"> </span>0x86<span class="w">  </span><span class="o">}</span>
+<span class="w">  </span>vss:<span class="w"> </span><span class="m">0</span>
+<span class="w">  </span>nrg:<span class="w"> </span><span class="m">32</span>
+<span class="w">  </span>nruh:<span class="w"> </span><span class="m">8</span>
+<span class="w">  </span>maxpids:<span class="w"> </span><span class="m">127</span>
+<span class="w">  </span>nns:<span class="w"> </span><span class="m">256</span>
+<span class="w">  </span>runs:<span class="w"> </span><span class="m">40960</span>
+<span class="w">  </span>erutl:<span class="w"> </span><span class="m">0</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">0</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">1</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">2</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">3</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">4</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">5</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">6</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+<span class="w">   </span>-<span class="w"> </span>ruht<span class="o">[</span><span class="m">7</span><span class="o">]</span>:<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>For Fdp Statistics log page the command can be run like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>log-fdp-stats<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--lsi<span class="w"> </span>0x1
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and clearing buffer...</span>
+<span class="c1"># Retrieving FDP statistics log page ...</span>
+xnvme_spec_log_fdp_stats:
+<span class="w">  </span>hbmw:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+<span class="w">  </span>mbmw:<span class="w"> </span><span class="o">[</span><span class="m">40960</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+<span class="w">  </span>mbe:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+</pre></div>
+</div>
+<p>Similar to the Fdp Configuration log page, you will have to specify the number
+of Recalim Unit Handle Usage descriptors to fetch. The command can be run like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>log-ruhu<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--lsi<span class="w"> </span>0x1<span class="w"> </span>--limit<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and clearing buffer...</span>
+<span class="c1"># Retrieving ruhu-log ...</span>
+<span class="c1"># 4 reclaim unit handle usage:</span>
+xnvme_spec_log_ruhu:
+<span class="w">  </span>nruh:<span class="w"> </span><span class="m">8</span>
+<span class="w">  </span>-<span class="w"> </span>ruhu_desc<span class="o">[</span><span class="m">0</span><span class="o">]</span>:<span class="w">  </span>0x1
+<span class="w">  </span>-<span class="w"> </span>ruhu_desc<span class="o">[</span><span class="m">1</span><span class="o">]</span>:<span class="w">  </span><span class="m">0</span>
+<span class="w">  </span>-<span class="w"> </span>ruhu_desc<span class="o">[</span><span class="m">2</span><span class="o">]</span>:<span class="w">  </span><span class="m">0</span>
+<span class="w">  </span>-<span class="w"> </span>ruhu_desc<span class="o">[</span><span class="m">3</span><span class="o">]</span>:<span class="w">  </span><span class="m">0</span>
+</pre></div>
+</div>
+<p>The Fdp Events log page will have multiple events. You will have to specify
+the number of events you want to fetch. You also need to specify whether you
+need host or controller events. This can be done by log specific parameter.
+The complete command can be run like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>log-fdp-events<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--nsid<span class="w"> </span>0x1<span class="w"> </span>--limit<span class="w"> </span><span class="m">2</span><span class="w"> </span>--lsi<span class="w"> </span>0x1<span class="w"> </span>--lsp<span class="w"> </span>0x1
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and clearing buffer...</span>
+<span class="c1"># Retrieving fdp-events-log ...</span>
+<span class="c1"># 2 fdp events log page entries:</span>
+xnvme_spec_log_fdp_events:
+<span class="w">  </span>nevents:<span class="w"> </span><span class="m">1</span>
+<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span>0x7,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">564649825372480</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="set-and-get-feature">
+<h2>Set and get-feature<a class="headerlink" href="#set-and-get-feature" title="Permalink to this headline">¶</a></h2>
+<p>There are 2 new Set and Get Feature commands, introduced with <strong>FDP</strong>. These
+are Flexible Data Placement which controls operation of FDP capability in the
+specified Endurance Group, and FDP Events which controls if a controller
+generates FDP Events associated with a specific Reclaim Unit Handle.</p>
+<p>xNVMe does not support Namespace Management commands. Thus we cannot enable or
+disable <strong>FDP</strong> by sending Set Feature command to the Endurance Group, as it
+requires deletion of all namespaces in that Endurance Group. However you can
+check the FDP capability by sending a Get Feature command. The command can be
+run like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>feature-get<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--fid<span class="w"> </span>0x1d<span class="w"> </span>--cdw11<span class="w"> </span>0x1
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># cmd_gfeat: {nsid: 0x1, fid: 0x1d, sel: 0x0}</span>
+feat:<span class="w"> </span><span class="o">{</span><span class="w"> </span>fdpe:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>fdpci:<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Command Dword 12 controls whether you want to enable or disable FDP Events.
+You will have to specify number of events to enable or disable and Placement
+Handle associated with it. These will be part of the Feat field. This will
+require you to specify the size in bytes of the data buffer. To enable all the
+Fdp Events you can run command like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>set-fdp-events<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--fid<span class="w"> </span>0x1e<span class="w"> </span>--feat<span class="w"> </span>0x60000<span class="w"> </span>--cdw12<span class="w"> </span>0x1
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># cmd_sfeat: {nsid: 01, fid: 0x1e, save: 0x0, feat: 0x60000, cdw12: 0x1}</span>
+</pre></div>
+</div>
+<p>You can get the status of supported FDP Events. The Command Dowrd 11 remains
+the same as the Set Feature command. You can run the command like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>feature-get<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--fid<span class="w"> </span>0x1e<span class="w"> </span>--cdw11<span class="w"> </span>0xFF0000<span class="w"> </span>--data-nbytes<span class="w"> </span><span class="m">510</span>
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># cmd_gfeat: {nsid: 0x1, fid: 0x1e, sel: 0x0}</span>
+nevents:<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="o">}</span>
+<span class="o">{</span><span class="w"> </span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>event<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">}</span>
+<span class="o">{</span><span class="w"> </span>type:<span class="w"> </span>0x1,<span class="w"> </span>event<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">}</span>
+<span class="o">{</span><span class="w"> </span>type:<span class="w"> </span>0x2,<span class="w"> </span>event<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">}</span>
+<span class="o">{</span><span class="w"> </span>type:<span class="w"> </span>0x3,<span class="w"> </span>event<span class="w"> </span>enabled:<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">}</span>
+<span class="o">{</span><span class="w"> </span>type:<span class="w"> </span>0x80,<span class="w"> </span>event<span class="w"> </span>enabled:<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">}</span>
+<span class="o">{</span><span class="w"> </span>type:<span class="w"> </span>0x81,<span class="w"> </span>event<span class="w"> </span>enabled:<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="i-o-management">
+<h2>I/O Management<a class="headerlink" href="#i-o-management" title="Permalink to this headline">¶</a></h2>
+<p>Two I/O Management commands are introduced with FDP. These are I/O Management
+Send and I/O Management Receive.</p>
+<p>I/O management Receive supports Reclaim Unit Handle Status command. You will
+have to specify the number of Recalim Unit Handle Status descriptors to fetch.
+You can run the command like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>fdp-ruhs<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--limit<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and clearing buffer...</span>
+<span class="c1"># Retrieving ruhs ...</span>
+<span class="c1"># 4 reclaim unit handle status:</span>
+xnvme_spec_ruhs:
+<span class="w">  </span>nruhsd:<span class="w"> </span><span class="m">128</span>
+<span class="w">  </span>-<span class="w"> </span>ruhs_desc<span class="o">[</span><span class="m">0</span><span class="o">]</span><span class="w"> </span>:<span class="w"> </span><span class="o">{</span><span class="w"> </span>pi:<span class="w"> </span><span class="m">0</span><span class="w"> </span>ruhi:<span class="w"> </span><span class="m">0</span><span class="w"> </span>earutr:<span class="w"> </span><span class="m">0</span><span class="w"> </span>ruamw:<span class="w"> </span><span class="m">10</span><span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span>ruhs_desc<span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="w"> </span>:<span class="w"> </span><span class="o">{</span><span class="w"> </span>pi:<span class="w"> </span><span class="m">1024</span><span class="w"> </span>ruhi:<span class="w"> </span><span class="m">0</span><span class="w"> </span>earutr:<span class="w"> </span><span class="m">0</span><span class="w"> </span>ruamw:<span class="w"> </span><span class="m">10</span><span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span>ruhs_desc<span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="w"> </span>:<span class="w"> </span><span class="o">{</span><span class="w"> </span>pi:<span class="w"> </span><span class="m">2048</span><span class="w"> </span>ruhi:<span class="w"> </span><span class="m">0</span><span class="w"> </span>earutr:<span class="w"> </span><span class="m">0</span><span class="w"> </span>ruamw:<span class="w"> </span><span class="m">10</span><span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span>ruhs_desc<span class="o">[</span><span class="m">3</span><span class="o">]</span><span class="w"> </span>:<span class="w"> </span><span class="o">{</span><span class="w"> </span>pi:<span class="w"> </span><span class="m">3072</span><span class="w"> </span>ruhi:<span class="w"> </span><span class="m">0</span><span class="w"> </span>earutr:<span class="w"> </span><span class="m">0</span><span class="w"> </span>ruamw:<span class="w"> </span><span class="m">10</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>I/O Management Send supports Reclaim Unit Handle Update command. You will have
+to specify a Placement Identifier for this. You can run the command like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>fdp-ruhu<span class="w"> </span>/dev/nvme3n1<span class="w"> </span>--pid<span class="w"> </span>0x0
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Updating ruh ...</span>
+</pre></div>
+</div>
+</section>
+<section id="xnvme-ioengine">
+<h2>xnvme ioengine<a class="headerlink" href="#xnvme-ioengine" title="Permalink to this headline">¶</a></h2>
+<p>FIO’s xNVMe ioengine provides FDP support since the 3.35 release.
+For more information on the FDP specific options you can look at:
+<a class="reference external" href="https://github.com/axboe/fio/blob/master/HOWTO.rst">https://github.com/axboe/fio/blob/master/HOWTO.rst</a></p>
+<p>Have a look at example configuration file at:
+<a class="reference external" href="https://github.com/axboe/fio/blob/master/examples/xnvme-fdp.fio">https://github.com/axboe/fio/blob/master/examples/xnvme-fdp.fio</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you see no output, then try running it as super-user or via
+<code class="docutils literal notranslate"><span class="pre">sudo</span></code></p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../devs/index.html" class="btn btn-neutral float-right" title="Linux Dev. Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, xNVMe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159785887-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159785887-1', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
