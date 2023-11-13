@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Linux Dev. Environment &mdash; xNVMe 0.7.1 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>Linux Dev. Environment &mdash; xNVMe 0.7.2 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Dynamically loading xNVMe" href="../dynamic_loading/index.html" />
-    <link rel="prev" title="Tutorials" href="../index.html" /> 
+    <link rel="prev" title="Flexible Data Placement" href="../fdp/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +34,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.7.1
+                0.7.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../capis/index.html">C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">C API: Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fdp/index.html">Flexible Data Placement</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Linux Dev. Environment</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#physical-machine">Physical Machine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#operating-system">Operating System</a></li>
@@ -78,6 +79,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI</a></li>
 </ul>
 
         </div>
@@ -183,35 +185,34 @@ throughout.</p>
 <li><p>Setup networking</p></li>
 </ul>
 <p>And make sure it is accessible from your “main” development machine:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span><span class="o">-</span><span class="n">copy</span><span class="o">-</span><span class="nb">id</span> <span class="n">odus</span><span class="nd">@box01</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-copy-id<span class="w"> </span>odus@box01
 </pre></div>
 </div>
 <p>Log into the machine:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">odus</span><span class="nd">@box01</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>odus@box01
 </pre></div>
 </div>
 <p>And then install a couple of things:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Switch to root</span>
-<span class="n">su</span> <span class="o">-</span>
-<span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qy</span> <span class="n">update</span>
-<span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qy</span> <span class="n">install</span> \
-  <span class="n">git</span> \
-  <span class="n">htop</span> \
-  <span class="n">screen</span> \
-  <span class="n">sudo</span> \
-  <span class="n">vim</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Switch to root</span>
+su<span class="w"> </span>-
+apt-get<span class="w"> </span>-qy<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>htop<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>screen<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sudo<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>vim
 
 <span class="c1"># Add odus to sudoers (required to do various things as non-root)</span>
-<span class="n">usermod</span> <span class="o">-</span><span class="n">aG</span> <span class="n">sudo</span> <span class="n">odus</span>
+usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>odus
 
 <span class="c1"># Add odus to kvm (required to run qemu as non-root)</span>
-<span class="n">usermod</span> <span class="o">-</span><span class="n">aG</span> <span class="n">kvm</span> <span class="n">odus</span>
+usermod<span class="w"> </span>-aG<span class="w"> </span>kvm<span class="w"> </span>odus
 
 <span class="c1"># switch back out of root</span>
-<span class="n">exit</span>
+<span class="nb">exit</span>
 
 <span class="c1"># log out of odus</span>
-<span class="n">exit</span>
+<span class="nb">exit</span>
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -225,8 +226,9 @@ details on this.</p>
 </section>
 <section id="homedir">
 <span id="sec-tutorials-devs-linux-homedir"></span><h2>Homedir<a class="headerlink" href="#homedir" title="Permalink to this headline">¶</a></h2>
-<p>Create a directory structure in the <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/{artifacts,git,workdirs,guests,images}
+<p>Regardless of whether you are using the <strong>box</strong> directly as <code class="docutils literal notranslate"><span class="pre">root</span></code>, or using the
+<code class="docutils literal notranslate"><span class="pre">odus</span></code> user, then setup the <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> directory like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span><span class="nv">$HOME</span>/<span class="o">{</span>artifacts,git,workdirs,guests,images<span class="o">}</span>
 </pre></div>
 </div>
 <p>The directories are used for the following:</p>
@@ -254,8 +256,8 @@ combination thereof. Then having access to misc. files, and specifically, to
 things like <strong>cijoe</strong> output / reports. Is very convenient.</p>
 <p>With minimal fuss, then this is achievable with a combinaion of <code class="docutils literal notranslate"><span class="pre">screen</span></code> and
 Python:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">workdirs</span>
-<span class="n">screen</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">m</span> <span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/workdirs
+screen<span class="w"> </span>-d<span class="w"> </span>-m<span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>http.server
 </pre></div>
 </div>
 <p>The above starts a webserver, serving the content of the <code class="docutils literal notranslate"><span class="pre">cwd</span></code> where
@@ -263,130 +265,156 @@ Python:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">screen</span> <span class="pre">-d</span> <span class="pre">-m</span></code> part, creates a screen-session and detaches from it. Thus,
 it continues executing even if you disconnect.</p>
 <p>You can see the running screen-sessions with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">screen</span> <span class="o">-</span><span class="nb">list</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>screen<span class="w"> </span>-list
 </pre></div>
 </div>
 <p>And attach to them using their <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">screen</span> <span class="o">-</span><span class="n">r</span> <span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>screen<span class="w"> </span>-r<span class="w"> </span>&lt;name&gt;
 </pre></div>
 </div>
 </section>
 <section id="cijoe">
 <span id="sec-tutorials-devs-linux-cijoe"></span><h2>CIJOE<a class="headerlink" href="#cijoe" title="Permalink to this headline">¶</a></h2>
 <p>Setup <code class="docutils literal notranslate"><span class="pre">python3</span></code> and <code class="docutils literal notranslate"><span class="pre">pipx</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qy</span> <span class="n">install</span> \
-  <span class="n">pipx</span> \
-  <span class="n">python3</span><span class="o">-</span><span class="n">pip</span> \
-  <span class="n">python3</span><span class="o">-</span><span class="n">venv</span>
-<span class="n">sudo</span> <span class="n">pipx</span> <span class="n">ensurepath</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pipx<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python3-pip<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python3-venv
+sudo<span class="w"> </span>apt-get<span class="w"> </span>remove<span class="w"> </span>-qy<span class="w"> </span>python3-pytest
+sudo<span class="w"> </span>pipx<span class="w"> </span>ensurepath
 </pre></div>
 </div>
 <p>Then install <strong>cijoe</strong> in a <code class="docutils literal notranslate"><span class="pre">pipx</span></code> virtual environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pipx</span> <span class="n">install</span> <span class="n">cijoe</span> <span class="o">--</span><span class="n">include</span><span class="o">-</span><span class="n">deps</span>
-<span class="n">pipx</span> <span class="n">inject</span> <span class="n">cijoe</span> <span class="n">cijoe</span><span class="o">-</span><span class="n">pkg</span><span class="o">-</span><span class="n">linux</span>
-<span class="n">pipx</span> <span class="n">inject</span> <span class="n">cijoe</span> <span class="n">cijoe</span><span class="o">-</span><span class="n">pkg</span><span class="o">-</span><span class="n">qemu</span>
-<span class="n">pipx</span> <span class="n">inject</span> <span class="n">cijoe</span> <span class="n">cijoe</span><span class="o">-</span><span class="n">pkg</span><span class="o">-</span><span class="n">fio</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>cijoe<span class="w"> </span>--include-deps
+pipx<span class="w"> </span>inject<span class="w"> </span>cijoe<span class="w"> </span>cijoe-pkg-linux
+pipx<span class="w"> </span>inject<span class="w"> </span>cijoe<span class="w"> </span>cijoe-pkg-qemu
+pipx<span class="w"> </span>inject<span class="w"> </span>cijoe<span class="w"> </span>cijoe-pkg-fio
 </pre></div>
 </div>
 <p>Then logout and back in to reload the environment, the addition of <code class="docutils literal notranslate"><span class="pre">pipx</span></code> and
 the <code class="docutils literal notranslate"><span class="pre">cijoe</span></code> into <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>.</p>
 <p>Do a trial-run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a workdir</span>
-<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">workdirs</span><span class="o">/</span><span class="n">cijoe</span>
-<span class="n">cd</span> <span class="o">~/</span><span class="n">workdirs</span><span class="o">/</span><span class="n">cijoe</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a workdir</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/workdirs/cijoe
+<span class="nb">cd</span><span class="w"> </span>~/workdirs/cijoe
 
 <span class="c1"># Create a default configuration and workflow</span>
-<span class="n">cijoe</span> <span class="o">--</span><span class="n">example</span> <span class="n">core</span>
+cijoe<span class="w"> </span>--example<span class="w"> </span>core
 </pre></div>
 </div>
 <p>In case everything is fine, then it will execute silently.</p>
 <p>You can increase the information-level with <code class="docutils literal notranslate"><span class="pre">-l</span></code>
 argument, the more times you provide the higher the level.
 Try running it with two, that is debug-level:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cijoe</span> <span class="o">-</span><span class="n">ll</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-ll
 </pre></div>
 </div>
 <p>In the <code class="docutils literal notranslate"><span class="pre">cwd</span></code> then a <code class="docutils literal notranslate"><span class="pre">cijoe-output</span></code> is produced, this
 directory holds all information about what was executed.
 Have a look at the generated report at
 <code class="docutils literal notranslate"><span class="pre">cijoe-output/report.html</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In case you see failures, then inspect the <code class="docutils literal notranslate"><span class="pre">RUNLOG</span></code> in the report, this
+usually tells you exactly what went wrong.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that <code class="docutils literal notranslate"><span class="pre">pytest</span></code> is not installed system-wide by running <code class="docutils literal notranslate"><span class="pre">which</span>
+<span class="pre">pytest</span></code>. In case it says <code class="docutils literal notranslate"><span class="pre">/usr/bin/pytest</span></code>, then it is not using the
+<code class="docutils literal notranslate"><span class="pre">pytest</span></code> provided with the <strong>CIJOE</strong> module. Thus, uninstall it using
+<code class="docutils literal notranslate"><span class="pre">apt-get</span> <span class="pre">remove</span> <span class="pre">python3-pytest</span></code>.</p>
+</div>
 </section>
 <section id="linux-kernel">
 <span id="sec-tutorials-devs-linux-customkernel"></span><h2>Linux Kernel<a class="headerlink" href="#linux-kernel" title="Permalink to this headline">¶</a></h2>
 <p>Install prerequisites:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qy</span> <span class="n">install</span> \
-  <span class="n">bc</span> \
-  <span class="n">bison</span> \
-  <span class="n">build</span><span class="o">-</span><span class="n">essential</span> \
-  <span class="n">debhelper</span> \
-  <span class="n">flex</span> \
-  <span class="n">git</span> \
-  <span class="n">libelf</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">libssl</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">pahole</span> \
-  <span class="n">rsync</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Essentials for building the kernel</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>bc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>bison<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>build-essential<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>debhelper<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>flex<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>git<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libelf-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libssl-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pahole<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>rsync
+
+<span class="c1"># A couple of extra libraries and tools</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libncurses-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>linux-cpupower<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python3-cpuinfo
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">libnurses-dev</span></code> is needed for <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">menuconfig</span></code>. <code class="docutils literal notranslate"><span class="pre">linux-cpupower</span></code>
+provides a cli-tool <code class="docutils literal notranslate"><span class="pre">cpupower</span></code> that let’s you control the Linux CPU
+governor, useful for performance evaluation.</p>
 </div>
 <p>Then run the <strong>cijoe</strong> workflow, compiling a custom kernel as a <code class="docutils literal notranslate"><span class="pre">.deb</span></code>
 package:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a workdir for the workflow</span>
-<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">workdirs</span><span class="o">/</span><span class="n">linux</span>
-<span class="n">cd</span> <span class="o">~/</span><span class="n">workdirs</span><span class="o">/</span><span class="n">linux</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a workdir for the workflow</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/workdirs/linux
+<span class="nb">cd</span><span class="w"> </span>~/workdirs/linux
 
 <span class="c1"># Grab the cijoe-example for linux</span>
-<span class="n">cijoe</span> <span class="o">--</span><span class="n">example</span> <span class="n">linux</span>
+cijoe<span class="w"> </span>--example<span class="w"> </span>linux
 
 <span class="c1"># Run it with logging (-l)</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">l</span>
+cijoe<span class="w"> </span>-l
 </pre></div>
 </div>
 <p>Then re-run the command above. It should now succeed, after which you can
 collect the artifacts of interest:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="n">cijoe</span><span class="o">-</span><span class="n">output</span><span class="o">/</span><span class="n">artifacts</span><span class="o">/</span><span class="n">linux</span> <span class="o">~/</span><span class="n">artifacts</span><span class="o">/</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>cijoe-output/artifacts/linux<span class="w"> </span>~/artifacts/
 </pre></div>
 </div>
 <p>You can install them by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="o">~/</span><span class="n">artifacts</span><span class="o">/</span><span class="n">linux</span><span class="o">/*.</span><span class="n">deb</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>~/artifacts/linux/*.deb
 </pre></div>
 </div>
 </section>
 <section id="qemu">
 <span id="sec-tutorials-devs-linux-qemu"></span><h2>Qemu<a class="headerlink" href="#qemu" title="Permalink to this headline">¶</a></h2>
 <p>Install prerequisites:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Packages for building qemu</span>
-<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qy</span> <span class="n">install</span> \
-  <span class="n">meson</span> \
-  <span class="n">libattr1</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">libcap</span><span class="o">-</span><span class="n">ng</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">libglib2</span><span class="mf">.0</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">libpixman</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">libslirp</span><span class="o">-</span><span class="n">dev</span> \
-  <span class="n">pkg</span><span class="o">-</span><span class="n">config</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Packages for building qemu</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>meson<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libattr1-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libcap-ng-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libglib2.0-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libpixman-1-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>libslirp-dev<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pkg-config
 
 <span class="c1"># Packages for cloud-init</span>
-<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">qy</span> <span class="n">install</span> \
-  <span class="n">cloud</span><span class="o">-</span><span class="n">image</span><span class="o">-</span><span class="n">utils</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>cloud-image-utils
 </pre></div>
 </div>
 <p>Checkout qemu:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">git</span>
-<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">OpenMPDK</span><span class="o">/</span><span class="n">qemu</span> <span class="o">--</span><span class="n">recursive</span>
-<span class="n">cd</span> <span class="n">qemu</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="k">for</span><span class="o">-</span><span class="n">xnvme</span>
-<span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span> <span class="o">--</span><span class="n">init</span> <span class="o">--</span><span class="n">recursive</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/qemu<span class="w"> </span>--recursive
+<span class="nb">cd</span><span class="w"> </span>qemu
+git<span class="w"> </span>checkout<span class="w"> </span><span class="k">for</span>-xnvme
+git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
 </pre></div>
 </div>
 <p>Create a work-directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">workdirs</span><span class="o">/</span><span class="n">qemu</span>
-<span class="n">cd</span> <span class="o">~/</span><span class="n">workdirs</span><span class="o">/</span><span class="n">qemu</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/workdirs/qemu
+<span class="nb">cd</span><span class="w"> </span>~/workdirs/qemu
 </pre></div>
 </div>
 <p>Run the <strong>cijoe</strong> qemu workflow:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grab the config and workflow example for qemu</span>
-<span class="n">cijoe</span> <span class="o">--</span><span class="n">example</span> <span class="n">qemu</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grab the config and workflow example for qemu</span>
+cijoe<span class="w"> </span>--example<span class="w"> </span>qemu
 
 <span class="c1"># Run it with log-level debug (-l)</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">l</span>
+cijoe<span class="w"> </span>-l
 </pre></div>
 </div>
 <p>With the packages installed, go back and run the <strong>cijoe</strong> workflow. Have a
@@ -409,40 +437,40 @@ at <code class="docutils literal notranslate"><span class="pre">dmesg</span></co
 <section id="clone-build-and-install">
 <h3>clone, build, and install<a class="headerlink" href="#clone-build-and-install" title="Permalink to this headline">¶</a></h3>
 <p>Clone <strong>xNVMe</strong> and checkout the <code class="docutils literal notranslate"><span class="pre">next</span></code> branch:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">git</span>
-<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">OpenMPDK</span><span class="o">/</span><span class="n">xNVMe</span><span class="o">.</span><span class="n">git</span> <span class="n">xnvme</span>
-<span class="n">cd</span> <span class="n">xnvme</span>
-<span class="n">git</span> <span class="n">checkout</span> <span class="nb">next</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/xNVMe.git<span class="w"> </span>xnvme
+<span class="nb">cd</span><span class="w"> </span>xnvme
+git<span class="w"> </span>checkout<span class="w"> </span>next
 </pre></div>
 </div>
 <p>Install prerequisites:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">toolbox</span><span class="o">/</span><span class="n">pkgs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bookworm</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./toolbox/pkgs/debian-bookworm.sh
 </pre></div>
 </div>
 <p>Build and install <strong>xNVMe</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">git</span><span class="o">/</span><span class="n">xnvme</span>
-<span class="n">make</span>
-<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git/xnvme
+make
+sudo<span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 <p>Check that it is functional:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">xnvme</span> <span class="n">enum</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>xnvme<span class="w"> </span>enum
 </pre></div>
 </div>
 <p>This should yield output similar to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme_cli_enumeration</span><span class="p">:</span>
-<span class="o">-</span> <span class="p">{</span><span class="n">uri</span><span class="p">:</span> <span class="s1">&#39;/dev/nvme0n1&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="mh">0x2</span><span class="p">,</span> <span class="n">nsid</span><span class="p">:</span> <span class="mh">0x1</span><span class="p">,</span> <span class="n">csi</span><span class="p">:</span> <span class="mh">0x0</span><span class="p">,</span> <span class="n">subnqn</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_cli_enumeration:
+-<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x1,<span class="w"> </span>csi:<span class="w"> </span>0x0,<span class="w"> </span>subnqn:<span class="w"> </span><span class="s1">&#39;&#39;</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
 <section id="artifacts">
 <h3>Artifacts<a class="headerlink" href="#artifacts" title="Permalink to this headline">¶</a></h3>
 <p>Produce a set of <strong>artifacts</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">git</span><span class="o">/</span><span class="n">xnvme</span>
-<span class="n">make</span> <span class="n">clobber</span> <span class="n">gen</span><span class="o">-</span><span class="n">artifacts</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git/xnvme
+make<span class="w"> </span>clobber<span class="w"> </span>gen-artifacts
 
 <span class="c1"># Keep them handy if need be</span>
-<span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">artifacts</span> <span class="o">~/</span><span class="n">artifacts</span><span class="o">/</span><span class="n">xnvme</span>
+cp<span class="w"> </span>-r<span class="w"> </span>/tmp/artifacts<span class="w"> </span>~/artifacts/xnvme
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -477,16 +505,16 @@ the config-files, and provide the artifacts from the GitHUB action:</p>
 <li><p>Add the SSH-key(<code class="docutils literal notranslate"><span class="pre">keys/guest_key</span></code>) to your SSH-agent.</p></li>
 </ul>
 <p>Then you should be able to run the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Provision and test on Debian Bullseye</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">provision</span><span class="o">.</span><span class="n">yaml</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">yaml</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Provision and test on Debian Bullseye</span>
+cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>workflows/provision.yaml
+cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>workflows/test-debian-bullseye.yaml
 
 <span class="c1"># Provision and test on FreeBSD 13</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">freebsd</span><span class="o">-</span><span class="mf">13.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">provision</span><span class="o">.</span><span class="n">yaml</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">freebsd</span><span class="o">-</span><span class="mf">13.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">freebsd</span><span class="o">-</span><span class="mf">13.</span><span class="n">yaml</span>
+cijoe<span class="w"> </span>-c<span class="w"> </span>configs/freebsd-13.toml<span class="w"> </span>-w<span class="w"> </span>workflows/provision.yaml
+cijoe<span class="w"> </span>-c<span class="w"> </span>configs/freebsd-13.toml<span class="w"> </span>-w<span class="w"> </span>workflows/test-freebsd-13.yaml
 
 <span class="c1"># Generate documentation (provisions qemu-guest and generates the docs)</span>
-<span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">docgen</span><span class="o">.</span><span class="n">yaml</span>
+cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>workflows/docgen.yaml
 </pre></div>
 </div>
 <p>In case you are setting up the test-target using other tools, or just want to
@@ -496,10 +524,10 @@ run pytest directly, then the following two sections describe how to do that.</p
 <h2>Running pytest from the repository<a class="headerlink" href="#running-pytest-from-the-repository" title="Permalink to this headline">¶</a></h2>
 <p>Invoke pytest providing a configuration file and an output directory for
 artifacts and captured output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> \
-  <span class="o">--</span><span class="n">config</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> \
-  <span class="o">--</span><span class="n">output</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">somewhere</span> \
- <span class="n">tests</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>/tmp/somewhere<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>tests
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">--config</span></code> is needed to inform pytest about the environment you are
@@ -509,7 +537,7 @@ configurations etc.</p>
 <section id="provision-a-qemu-guest">
 <h3>Provision a qemu-guest<a class="headerlink" href="#provision-a-qemu-guest" title="Permalink to this headline">¶</a></h3>
 <p>Setup a virtual machine with <strong>xNVMe</strong> installed, and a bunch of NVMe devices configured:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">provision</span><span class="o">.</span><span class="n">yaml</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>provision.yaml
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -526,11 +554,11 @@ pointing to <code class="docutils literal notranslate"><span class="pre">$HOME</
 <section id="create-boot-images">
 <h3>Create boot-images<a class="headerlink" href="#create-boot-images" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">debian-bullseye-amd64.qcow2</span></code> is created by:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">bootimg</span><span class="o">-</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">yaml</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>workflows/bootimg-debian-bullseye-amd64.yaml
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">freebsd-13.1-ksrc-amd64.qcow2</span></code> is created by:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">freebsd</span><span class="o">-</span><span class="mf">13.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">workflows</span><span class="o">/</span><span class="n">bootimg</span><span class="o">-</span><span class="n">freebsd</span><span class="o">-</span><span class="mi">13</span><span class="o">-</span><span class="n">amd64</span><span class="o">.</span><span class="n">yaml</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/freebsd-13.toml<span class="w"> </span>-w<span class="w"> </span>workflows/bootimg-freebsd-13-amd64.yaml
 </pre></div>
 </div>
 </section>
@@ -542,7 +570,7 @@ Chromebook/Macbook, something light-weight and great for reading mail… but
 now you want to fire up your editor and do some development.</p>
 <p>Or, your primary system is simply separate from the dev-box for a myriad of
 reasons. Then do something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">configs</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">bullseye</span><span class="o">.</span><span class="n">toml</span> <span class="n">configs</span><span class="o">/</span><span class="n">dev</span><span class="o">-</span><span class="n">metal</span><span class="o">.</span><span class="n">toml</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>configs/dev-metal.toml
 </pre></div>
 </div>
 <div class="admonition note">
@@ -552,7 +580,7 @@ reasons. Then do something like:</p>
 <p>Open up <code class="docutils literal notranslate"><span class="pre">configs/dev-metal.toml</span></code> and adjust it to your physical machine. That
 is, change the ssh-login information, change the list of devices, paths to
 binaries etc. Once you have done that, then go ahead and run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cijoe</span> <span class="o">-</span><span class="n">c</span> <span class="n">configs</span><span class="o">/</span><span class="n">dev</span><span class="o">-</span><span class="n">metal</span><span class="o">.</span><span class="n">toml</span> <span class="o">-</span><span class="n">w</span> <span class="n">dev</span><span class="o">-</span><span class="n">sync</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">build</span><span class="o">.</span><span class="n">yaml</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/dev-metal.toml<span class="w"> </span>-w<span class="w"> </span>dev-sync-and-build.yaml
 </pre></div>
 </div>
 </section>
@@ -562,7 +590,7 @@ binaries etc. Once you have done that, then go ahead and run:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../fdp/index.html" class="btn btn-neutral float-left" title="Flexible Data Placement" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../dynamic_loading/index.html" class="btn btn-neutral float-right" title="Dynamically loading xNVMe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
