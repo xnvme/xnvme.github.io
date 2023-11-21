@@ -95,6 +95,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#async-i-o-via-io-ring">Async I/O via <code class="docutils literal notranslate"><span class="pre">io_ring</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#building-spdk-backend-on-windows">Building SPDK backend on Windows</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prerequisites-to-compile-the-spdk">Prerequisite’s to compile the <code class="docutils literal notranslate"><span class="pre">SPDK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compilation-and-installation">Compilation and Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#runtime-prerequisites">Runtime Prerequisite’s</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#building-an-xnvme-program">Building an xNVMe Program</a><ul>
@@ -2338,7 +2344,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">13</span>.16<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">11</span>.29<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2371,7 +2377,7 @@ xnvme_lba_range:
 <span class="w">  </span>naddrs:<span class="w"> </span><span class="m">1</span>
 <span class="w">  </span>nbytes:<span class="w"> </span><span class="m">4096</span>
 <span class="w">  </span>attr:<span class="w"> </span><span class="o">{</span><span class="w"> </span>is_zones:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>is_valid:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">13</span>.69<span class="o">}</span>
+wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="w"> </span><span class="m">0</span>.0003,<span class="w"> </span>mib:<span class="w"> </span><span class="m">0</span>.00,<span class="w"> </span>mib_sec:<span class="w"> </span><span class="m">11</span>.24<span class="o">}</span>
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
@@ -2422,7 +2428,7 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </pre></div>
 </div>
 <p>Should output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.082141<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.082136<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
 </pre></div>
 </div>
 <p>And this command:</p>
@@ -2608,6 +2614,27 @@ system NVMe driver IOCTLs, specifically on Windows the following are used:</p>
 and it informs you that it utilizes <strong>nvme_ioctl</strong> for synchronous command
 execution and it uses <strong>iocp</strong> for asynchronous command execution. This method
 can be used for raw devices via <strong>.PhysicalDrive&lt;disk number&gt;</strong> device path.</p>
+<p>Below mentioned commands are currently supported by <strong>xNVMe</strong> using IOCTL path:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Admin</span> <span class="pre">Commands</span></code></dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">Log</span> <span class="pre">Page</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Identify</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">Feature</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Format</span> <span class="pre">NVM</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">I/O</span> <span class="pre">Commands</span></code></dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Read</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Write</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 <section id="nvme-driver-and-regular-file">
 <h4>NVMe Driver and Regular File<a class="headerlink" href="#nvme-driver-and-regular-file" title="Permalink to this headline">¶</a></h4>
@@ -2693,9 +2720,9 @@ wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="
 <p><strong>xNVMe</strong> utilizes the Windows <strong>io_ring</strong> interface, its support for
 feature-probing the <strong>io_ring</strong> interface and the <strong>io_ring</strong> opcodes:</p>
 <p>When available, then <strong>xNVMe</strong> can send the <strong>io_ring</strong> specific request using
-<strong>IORING_HANDLE_REF</strong> and <strong>IORING_BUFFER_REF</strong> structure for <strong>read</strong> via the
-Windows <strong>io_ring</strong> interface. Doing so improves command-throughput at all
-io-depths when compared to sending the command via NVMe Driver IOCTLs.</p>
+<strong>IORING_HANDLE_REF</strong> and <strong>IORING_BUFFER_REF</strong> structure for <strong>read</strong> and
+<strong>write</strong> via Windows <strong>io_ring</strong> interface. Doing so improves command-throughput
+at all io-depths when compared to sending the command via NVMe Driver IOCTLs.</p>
 <p>One can explicitly tell <strong>xNVMe</strong> to utilize <code class="docutils literal notranslate"><span class="pre">io_ring</span></code> for async I/O by
 encoding it in the device identifier, like so:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_io_async<span class="w"> </span><span class="nb">read</span><span class="w"> </span><span class="se">\\</span>.<span class="se">\P</span>hysicalDrive0<span class="w"> </span>--slba<span class="w"> </span>0x0<span class="w"> </span>--qdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>--async<span class="w"> </span>io_ring
@@ -2715,6 +2742,121 @@ wall-clock:<span class="w"> </span><span class="o">{</span>elapsed:<span class="
 <span class="c1"># cb_args: {submitted: 1, completed: 1, ecount: 0}</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="building-spdk-backend-on-windows">
+<h3>Building SPDK backend on Windows<a class="headerlink" href="#building-spdk-backend-on-windows" title="Permalink to this headline">¶</a></h3>
+<p><strong>SPDK</strong> can be used as a backend for <strong>xNVMe</strong>, to leverage this interface
+first user need to compile the <strong>SPDK</strong> as a subproject with <strong>xNVMe</strong> its
+depend on Windows Platform Development Kit (WPDK) that help to enables
+applications based on the Storage Performance Development Kit (SPDK) to
+build and run as native Windows executables.</p>
+<section id="prerequisites-to-compile-the-spdk">
+<h4>Prerequisite’s to compile the <code class="docutils literal notranslate"><span class="pre">SPDK</span></code><a class="headerlink" href="#prerequisites-to-compile-the-spdk" title="Permalink to this headline">¶</a></h4>
+<p>Refer below mentioned script and link to install the dependencies packages,</p>
+<ul>
+<li><dl>
+<dt>MinGW cross compiler and libraries</dt><dd><p>this can be installed by running below script,</p>
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span><span class="p">@</span><span class="k">echo</span> off
+<span class="p">@</span><span class="k">setlocal</span> enableextensions enabledelayedexpansion
+
+net session <span class="p">&gt;</span>nul: <span class="mi">2</span><span class="p">&gt;&amp;</span><span class="mi">1</span>
+<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
+	<span class="k">echo</span> <span class="nv">%0</span> must be run with Administrator privileges
+	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
+<span class="p">)</span>
+
+<span class="p">:</span><span class="c1">: Use PowerShell to install Chocolatey</span>
+<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%ALLUSERSPROFILE%</span><span class="s2">\chocolatey\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
+<span class="k">echo</span> [1/6] Install: Chocolatey Manager
+powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command <span class="s2">&quot;[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot;</span>
+where /q choco
+<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
+	<span class="k">echo</span> [1/6] Install: Chocolatey = FAIL
+	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
+<span class="p">)</span>
+<span class="k">echo</span> [1/6] Install: Chocolatey = PASS
+
+<span class="p">:</span><span class="c1">: Use Chocolatey to install msys2</span>
+<span class="k">echo</span> [2/6] Install: MSYS2
+<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\msys64;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
+choco install msys2 -y -r --params <span class="s2">&quot;/NoUpdate /InstallDir:C:\msys64&quot;</span>
+where /q msys2
+<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
+	<span class="k">echo</span> [2/6] Install: MSYS2 = FAIL
+	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
+<span class="p">)</span>
+<span class="k">echo</span> [2/6] Install: MSYS2 = PASS
+
+<span class="k">echo</span> [3/6] Install: Git
+choco install git -y -r
+<span class="k">echo</span> [3/6] Install: Git = PASS
+
+<span class="k">echo</span> [4/6] Install: dos2unix
+choco install dos2unix
+<span class="k">echo</span> [4/6] Install: dos2unix = PASS
+
+<span class="p">:</span><span class="c1">: Use MSYS2/pacman to install gcc and clang toolchain</span>
+<span class="k">set</span> <span class="nv">MSYS2</span><span class="p">=</span>call msys2_shell -no-start -here -use-full-path -defterm
+
+<span class="k">echo</span> [5/6] Install: MinGW Toolchain via msys2/pacman
+<span class="k">set</span> <span class="s2">&quot;PATH=</span><span class="nv">%SystemDrive%</span><span class="s2">\msys64\mingw64\bin;</span><span class="nv">%PATH%</span><span class="s2">&quot;</span>
+<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy --needed base-devel mingw-w64-x86_64-toolchain&quot;</span>
+where /q gcc
+<span class="k">if</span> <span class="k">errorlevel</span> <span class="mi">1</span> <span class="p">(</span>
+	<span class="k">echo</span> [5/6] Install: MinGW Toolchain via msys2/pacman = FAIL
+	<span class="k">goto</span> <span class="p">:</span><span class="nl">eof</span>
+<span class="p">)</span>
+<span class="k">echo</span> [5/6] Install: MinGW Toolchain via msys2/pacman = PASS
+
+<span class="k">echo</span> [6/6] Install: MinGW/meson via msys2/pacman
+<span class="nv">%MSYS2%</span> -c <span class="s2">&quot;pacman --noconfirm -Syy mingw-w64-x86_64-meson&quot;</span>
+<span class="k">echo</span> [6/6] Install: MinGW/meson via msys2/pacman = OK
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p><a href="#id3"><span class="problematic" id="id4">`Windows Subsystem of Linux (WSL)`_</span></a></p></li>
+</ul>
+</section>
+<section id="compilation-and-installation">
+<h4>Compilation and Installation<a class="headerlink" href="#compilation-and-installation" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Configure, build and install using helper batch script <code class="docutils literal notranslate"><span class="pre">build.bat</span></code>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="c1"># build: auto-configure xNVMe, build third-party libraries, and xNVMe itself</span>
+<span class="w">  </span>build.bat
+
+<span class="w">  </span><span class="c1"># config: only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config
+
+<span class="w">  </span><span class="c1"># config: debug only configure xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>config-debug
+
+<span class="w">  </span><span class="c1"># install xNVMe</span>
+<span class="w">  </span>build.bat<span class="w"> </span>install
+
+<span class="w">  </span><span class="c1"># uninstall xNVMe</span>
+<span class="w">  </span><span class="c1"># build.bat uninstall</span>
+</pre></div>
+</div>
+</section>
+<section id="runtime-prerequisites">
+<h4>Runtime Prerequisite’s<a class="headerlink" href="#runtime-prerequisites" title="Permalink to this headline">¶</a></h4>
+<p>Refer below mentioned DPDK links to resolve runtime dependencies,</p>
+<ul class="simple">
+<li><p><a href="#id5"><span class="problematic" id="id6">`Grant Lock pages in memory Privilege`_</span></a></p></li>
+</ul>
+<ul class="simple">
+<li><p><a href="#id7"><span class="problematic" id="id8">`Download DPDK kmods-driver`_</span></a></p></li>
+</ul>
+<ul class="simple">
+<li><p><a href="#id9"><span class="problematic" id="id10">`Install virt2phys`_</span></a></p></li>
+</ul>
+<ul class="simple">
+<li><p><a href="#id11"><span class="problematic" id="id12">`Install NetUIO`_</span></a></p></li>
+</ul>
 </section>
 </section>
 </section>
