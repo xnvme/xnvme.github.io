@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flexible Data Placement &mdash; xNVMe 0.7.3 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <title>Flexible Data Placement &mdash; xNVMe 0.7.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=c98573da"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -55,7 +59,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-log-page">Get log page</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#set-and-get-feature">Set and get-feature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-o-management">I/O Management</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#xnvme-ioengine">xnvme ioengine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fio-xnvme-ioengine">FIO xnvme ioengine</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../devs/index.html">Linux Dev. Environment</a></li>
@@ -65,6 +69,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compatibility/index.html">Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI</a></li>
 </ul>
 
@@ -94,14 +99,14 @@
            <div itemprop="articleBody">
              
   <section id="flexible-data-placement">
-<span id="sec-tutorials-fdp-intro"></span><h1>Flexible Data Placement<a class="headerlink" href="#flexible-data-placement" title="Permalink to this headline">¶</a></h1>
+<span id="sec-tutorials-fdp-intro"></span><h1>Flexible Data Placement<a class="headerlink" href="#flexible-data-placement" title="Link to this heading"></a></h1>
 <p>In this section, you will find a guide on <strong>FDP</strong> aka Flexible Data Placement
 support in xNVMe.
 This will guide you with examples of all the supported <strong>FDP</strong> log pages,
 Set/Get features, and I/O management commands. This will also cover the Write
 command with hints from the perspective of FIO’s xNVMe ioengine.</p>
 <section id="concepts-and-prelude">
-<h2>Concepts and Prelude<a class="headerlink" href="#concepts-and-prelude" title="Permalink to this headline">¶</a></h2>
+<h2>Concepts and Prelude<a class="headerlink" href="#concepts-and-prelude" title="Link to this heading"></a></h2>
 <p><strong>FDP</strong> adds an enhancement to NVM Command Set by enabling host guided data
 placement. This introduces a Reclaim Unit (<strong>RU</strong>) which is a logical
 representation of non-volatile storage within a Reclaim Group that is able to
@@ -119,7 +124,7 @@ TP4146 Flexible Data Placement 2022.11.30 Ratified, which can be found here
 <a class="reference external" href="https://nvmexpress.org/wp-content/uploads/NVM-Express-2.0-Ratified-TPs_20230111.zip">https://nvmexpress.org/wp-content/uploads/NVM-Express-2.0-Ratified-TPs_20230111.zip</a></p>
 </section>
 <section id="get-log-page">
-<h2>Get log page<a class="headerlink" href="#get-log-page" title="Permalink to this headline">¶</a></h2>
+<h2>Get log page<a class="headerlink" href="#get-log-page" title="Link to this heading"></a></h2>
 <p>There are 4 new log pages associated with <strong>FDP</strong>. These are FDP Configuration,
 Reclaim Unit Handle Usage, FDP Statistics and FDP Events. All these log pages
 are Endurance Group scoped and hence you need to specify Endurance Group
@@ -166,8 +171,8 @@ xnvme_spec_log_fdp_conf:
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Allocating and clearing buffer...</span>
 <span class="c1"># Retrieving FDP statistics log page ...</span>
 xnvme_spec_log_fdp_stats:
-<span class="w">  </span>hbmw:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
-<span class="w">  </span>mbmw:<span class="w"> </span><span class="o">[</span><span class="m">40960</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+<span class="w">  </span>hbmw:<span class="w"> </span><span class="o">[</span><span class="m">2097152</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
+<span class="w">  </span>mbmw:<span class="w"> </span><span class="o">[</span><span class="m">2342912</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
 <span class="w">  </span>mbe:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span><span class="o">]</span>
 </pre></div>
 </div>
@@ -201,13 +206,13 @@ The complete command can be run like:</p>
 <span class="c1"># 2 fdp events log page entries:</span>
 xnvme_spec_log_fdp_events:
 <span class="w">  </span>nevents:<span class="w"> </span><span class="m">1</span>
-<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span>0x7,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">564650606993362</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span>0x7,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">564656227833370</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
 <span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
 <section id="set-and-get-feature">
-<h2>Set and get-feature<a class="headerlink" href="#set-and-get-feature" title="Permalink to this headline">¶</a></h2>
+<h2>Set and get-feature<a class="headerlink" href="#set-and-get-feature" title="Link to this heading"></a></h2>
 <p>There are 2 new Set and Get Feature commands, introduced with <strong>FDP</strong>. These
 are Flexible Data Placement which controls operation of FDP capability in the
 specified Endurance Group, and FDP Events which controls if a controller
@@ -255,7 +260,7 @@ nevents:<span class="w"> </span><span class="m">6</span><span class="w"> </span>
 </div>
 </section>
 <section id="i-o-management">
-<h2>I/O Management<a class="headerlink" href="#i-o-management" title="Permalink to this headline">¶</a></h2>
+<h2>I/O Management<a class="headerlink" href="#i-o-management" title="Link to this heading"></a></h2>
 <p>Two I/O Management commands are introduced with FDP. These are I/O Management
 Send and I/O Management Receive.</p>
 <p>I/O management Receive supports Reclaim Unit Handle Status command. You will
@@ -286,13 +291,64 @@ to specify a Placement Identifier for this. You can run the command like:</p>
 </pre></div>
 </div>
 </section>
-<section id="xnvme-ioengine">
-<h2>xnvme ioengine<a class="headerlink" href="#xnvme-ioengine" title="Permalink to this headline">¶</a></h2>
+<section id="fio-xnvme-ioengine">
+<h2>FIO xnvme ioengine<a class="headerlink" href="#fio-xnvme-ioengine" title="Link to this heading"></a></h2>
 <p>FIO’s xNVMe ioengine provides FDP support since the 3.35 release.
-For more information on the FDP specific options you can look at:
-<a class="reference external" href="https://github.com/axboe/fio/blob/master/HOWTO.rst">https://github.com/axboe/fio/blob/master/HOWTO.rst</a></p>
+This support is only there with nvme character device i.e. <code class="docutils literal notranslate"><span class="pre">/dev/ng0n1</span></code>
+and with userspace drivers such as <code class="docutils literal notranslate"><span class="pre">spdk</span></code>.
+Since the kernel support is limited to nvme character device, you can only use
+the <strong>FDP</strong> functionality with <code class="docutils literal notranslate"><span class="pre">xnvme_sync=nvme</span></code> or
+<code class="docutils literal notranslate"><span class="pre">xnvme_async=io_uring_cmd</span></code> backends.</p>
+<p>To enable the <strong>FDP</strong> mode, you will have to specify fio option <code class="docutils literal notranslate"><span class="pre">fdp=1</span></code>.</p>
+<p>Two additional optional <strong>FDP</strong> specific fio options can be specified.
+These are:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fdp_pli=x,y,..</span></code> This can be used to specify index or comma separated
+indicies of placement identifiers. The index or indicies refer to the
+placement identifiers from reclaim unit handle status command. If you don’t
+specify this option, fio will use all the available placement identifiers
+from reclaim unit handle status command.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fdp_pli_select=str</span></code> You can specify <code class="docutils literal notranslate"><span class="pre">random</span></code> or <code class="docutils literal notranslate"><span class="pre">roundrobin</span></code> as the
+string literal. This tells fio which placement identifer to select next after
+every write operation. If you don’t specify this option, fio will round robin
+over the available placement identifers.</p>
 <p>Have a look at example configuration file at:
 <a class="reference external" href="https://github.com/axboe/fio/blob/master/examples/xnvme-fdp.fio">https://github.com/axboe/fio/blob/master/examples/xnvme-fdp.fio</a></p>
+<p>This configuration tells fio to use placement identifers present at index 4
+and 5 in reclaim unit handle usage command. By default we are using round
+robin mechanism for selecting the next placement identifier.</p>
+<p>Using the above mentioned configuration, you can run the fio command like
+this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fio<span class="w"> </span>../tutorial/fdp/examples/xnvme-fdp.fio<span class="w"> </span>--section<span class="o">=</span>default<span class="w"> </span>--ioengine<span class="o">=</span>xnvme<span class="w"> </span>--xnvme_async<span class="o">=</span>io_uring_cmd<span class="w"> </span>--filename<span class="o">=</span>/dev/ng3n1
+</pre></div>
+</div>
+<p>The command should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>default:<span class="w"> </span><span class="o">(</span><span class="nv">g</span><span class="o">=</span><span class="m">0</span><span class="o">)</span>:<span class="w"> </span><span class="nv">rw</span><span class="o">=</span>randwrite,<span class="w"> </span><span class="nv">bs</span><span class="o">=(</span>R<span class="o">)</span><span class="w"> </span>4096B-4096B,<span class="w"> </span><span class="o">(</span>W<span class="o">)</span><span class="w"> </span>4096B-4096B,<span class="w"> </span><span class="o">(</span>T<span class="o">)</span><span class="w"> </span>4096B-4096B,<span class="w"> </span><span class="nv">ioengine</span><span class="o">=</span>xnvme,<span class="w"> </span><span class="nv">iodepth</span><span class="o">=</span><span class="m">1</span>
+fio-3.36
+Starting<span class="w"> </span><span class="m">1</span><span class="w"> </span>thread
+
+default:<span class="w"> </span><span class="o">(</span><span class="nv">groupid</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">jobs</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="nv">err</span><span class="o">=</span><span class="w"> </span><span class="m">0</span>:<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">107593</span>:<span class="w"> </span>Fri<span class="w"> </span>Jan<span class="w"> </span><span class="m">26</span><span class="w"> </span><span class="m">13</span>:06:50<span class="w"> </span><span class="m">2024</span>
+<span class="w">  </span>write:<span class="w"> </span><span class="nv">IOPS</span><span class="o">=</span><span class="m">7314</span>,<span class="w"> </span><span class="nv">BW</span><span class="o">=</span><span class="m">28</span>.6MiB/s<span class="w"> </span><span class="o">(</span><span class="m">30</span>.0MB/s<span class="o">)(</span>2048KiB/70msec<span class="o">)</span><span class="p">;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>zone<span class="w"> </span>resets
+<span class="w">    </span>slat<span class="w"> </span><span class="o">(</span>nsec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">265</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">7380</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">598</span>.16,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">407</span>.17
+<span class="w">    </span>clat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">75</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">895</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">133</span>.80,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">45</span>.31
+<span class="w">     </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">75</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">896</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">134</span>.40,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">45</span>.37
+<span class="w">    </span>clat<span class="w"> </span>percentiles<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:
+<span class="w">     </span><span class="p">|</span><span class="w">  </span><span class="m">1</span>.00th<span class="o">=[</span><span class="w">   </span><span class="m">77</span><span class="o">]</span>,<span class="w">  </span><span class="m">5</span>.00th<span class="o">=[</span><span class="w">   </span><span class="m">79</span><span class="o">]</span>,<span class="w"> </span><span class="m">10</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">109</span><span class="o">]</span>,<span class="w"> </span><span class="m">20</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">112</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">30</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">116</span><span class="o">]</span>,<span class="w"> </span><span class="m">40</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">127</span><span class="o">]</span>,<span class="w"> </span><span class="m">50</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">129</span><span class="o">]</span>,<span class="w"> </span><span class="m">60</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">133</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">70</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">141</span><span class="o">]</span>,<span class="w"> </span><span class="m">80</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">149</span><span class="o">]</span>,<span class="w"> </span><span class="m">90</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">163</span><span class="o">]</span>,<span class="w"> </span><span class="m">95</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">194</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">206</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.50th<span class="o">=[</span><span class="w">  </span><span class="m">293</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.90th<span class="o">=[</span><span class="w">  </span><span class="m">898</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.95th<span class="o">=[</span><span class="w">  </span><span class="m">898</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.99th<span class="o">=[</span><span class="w">  </span><span class="m">898</span><span class="o">]</span>
+<span class="w">  </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span><span class="w">   </span>:<span class="w"> </span><span class="nv">100</span><span class="o">=</span><span class="m">6</span>.25%,<span class="w"> </span><span class="nv">250</span><span class="o">=</span><span class="m">92</span>.97%,<span class="w"> </span><span class="nv">500</span><span class="o">=</span><span class="m">0</span>.59%,<span class="w"> </span><span class="nv">1000</span><span class="o">=</span><span class="m">0</span>.20%
+<span class="w">  </span>cpu<span class="w">          </span>:<span class="w"> </span><span class="nv">usr</span><span class="o">=</span><span class="m">37</span>.68%,<span class="w"> </span><span class="nv">sys</span><span class="o">=</span><span class="m">60</span>.87%,<span class="w"> </span><span class="nv">ctx</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">majf</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">minf</span><span class="o">=</span><span class="m">0</span>
+<span class="w">  </span>IO<span class="w"> </span>depths<span class="w">    </span>:<span class="w"> </span><span class="nv">1</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">2</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
+<span class="w">     </span>submit<span class="w">    </span>:<span class="w"> </span><span class="nv">0</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
+<span class="w">     </span><span class="nb">complete</span><span class="w">  </span>:<span class="w"> </span><span class="nv">0</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
+<span class="w">     </span>issued<span class="w"> </span>rwts:<span class="w"> </span><span class="nv">total</span><span class="o">=</span><span class="m">0</span>,512,0,0<span class="w"> </span><span class="nv">short</span><span class="o">=</span><span class="m">0</span>,0,0,0<span class="w"> </span><span class="nv">dropped</span><span class="o">=</span><span class="m">0</span>,0,0,0
+<span class="w">     </span>latency<span class="w">   </span>:<span class="w"> </span><span class="nv">target</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">window</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">percentile</span><span class="o">=</span><span class="m">100</span>.00%,<span class="w"> </span><span class="nv">depth</span><span class="o">=</span><span class="m">1</span>
+
+Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">(</span>all<span class="w"> </span><span class="nb">jobs</span><span class="o">)</span>:
+<span class="w">  </span>WRITE:<span class="w"> </span><span class="nv">bw</span><span class="o">=</span><span class="m">28</span>.6MiB/s<span class="w"> </span><span class="o">(</span><span class="m">30</span>.0MB/s<span class="o">)</span>,<span class="w"> </span><span class="m">28</span>.6MiB/s-28.6MiB/s<span class="w"> </span><span class="o">(</span><span class="m">30</span>.0MB/s-30.0MB/s<span class="o">)</span>,<span class="w"> </span><span class="nv">io</span><span class="o">=</span>2048KiB<span class="w"> </span><span class="o">(</span>2097kB<span class="o">)</span>,<span class="w"> </span><span class="nv">run</span><span class="o">=</span><span class="m">70</span>-70msec
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you see no output, then try running it as super-user or via

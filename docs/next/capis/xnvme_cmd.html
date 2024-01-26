@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xnvme_cmd &mdash; xNVMe 0.7.3 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <title>xnvme_cmd &mdash; xNVMe 0.7.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=70f28cd9" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=c98573da"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -69,6 +73,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-ctx-set-cb">xnvme_cmd_ctx_set_cb</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass">xnvme_cmd_pass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass-admin">xnvme_cmd_pass_admin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-pass-iov">xnvme_cmd_pass_iov</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-cmd-passv">xnvme_cmd_passv</a></li>
 </ul>
 </li>
@@ -94,6 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compatibility/index.html">Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ci/index.html">CI</a></li>
 </ul>
 
@@ -123,9 +129,9 @@
            <div itemprop="articleBody">
              
   <section id="xnvme-cmd">
-<span id="sec-c-api-xnvme-cmd"></span><h1>xnvme_cmd<a class="headerlink" href="#xnvme-cmd" title="Permalink to this headline">¶</a></h1>
+<span id="sec-c-api-xnvme-cmd"></span><h1>xnvme_cmd<a class="headerlink" href="#xnvme-cmd" title="Link to this heading"></a></h1>
 <section id="header">
-<span id="sec-c-api-xnvme-cmd-header"></span><h2>Header<a class="headerlink" href="#header" title="Permalink to this headline">¶</a></h2>
+<span id="sec-c-api-xnvme-cmd-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading"></a></h2>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
 <span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
 <span class="cm"> *</span>
@@ -234,7 +240,10 @@
 <span class="w">	       </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
-<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given</span>
+<span class="cm">::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * NOTE: This function will be deprecated in the future - use xnvme_cmd_pass_iov() instead</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
 <span class="cm"> * @param dvec array of data iovecs</span>
@@ -249,6 +258,23 @@
 <span class="kt">int</span>
 <span class="nf">xnvme_cmd_passv</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">dvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_nbytes</span><span class="p">,</span>
 <span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">mvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given</span>
+<span class="cm"> * ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dvec array of data iovecs</span>
+<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
+<span class="cm"> * @param dvec_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> * @param mbuf pointer to meta-payload</span>
+<span class="cm"> * @param mbuf_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_pass_iov</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">dvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_cnt</span><span class="p">,</span>
+<span class="w">		   </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Pass a NVMe Admin Command through to the device with minimal intervention</span>
@@ -268,50 +294,50 @@
 </div>
 </section>
 <section id="enums">
-<span id="sec-c-api-xnvme-cmd-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<span id="sec-c-api-xnvme-cmd-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Link to this heading"></a></h2>
 </section>
 <section id="structs">
-<span id="sec-c-api-xnvme-cmd-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<span id="sec-c-api-xnvme-cmd-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Link to this heading"></a></h2>
 <section id="xnvme-cmd-ctx">
-<span id="sec-c-api-xnvme-cmd-struct-xnvme-cmd-ctx"></span><h3>xnvme_cmd_ctx<a class="headerlink" href="#xnvme-cmd-ctx" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-struct-xnvme-cmd-ctx"></span><h3>xnvme_cmd_ctx<a class="headerlink" href="#xnvme-cmd-ctx" title="Link to this heading"></a></h3>
 <dl class="c struct">
-<dt id="c.xnvme_cmd_ctx">
-<span class="target" id="structxnvme__cmd__ctx"></span><em class="property">struct </em><code class="sig-name descname">xnvme_cmd_ctx</code><a class="headerlink" href="#c.xnvme_cmd_ctx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx">
+<span class="target" id="structxnvme__cmd__ctx"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx" title="Link to this definition"></a><br /></dt>
 <dd><p>The xNVMe Command Context. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx.cmd">
-<span class="target" id="structxnvme__cmd__ctx_1aa41a4f40fc5630fa7f18f842a3b1bc2d"></span><em class="property">struct</em> <a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_cmd" title="xnvme_spec_cmd">xnvme_spec_cmd</a> <code class="sig-name descname">cmd</code><a class="headerlink" href="#c.xnvme_cmd_ctx.cmd" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx.cmd">
+<span class="target" id="structxnvme__cmd__ctx_1aa41a4f40fc5630fa7f18f842a3b1bc2d"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_cmd" title="xnvme_spec_cmd"><span class="n"><span class="pre">xnvme_spec_cmd</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmd</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.cmd" title="Link to this definition"></a><br /></dt>
 <dd><p>Command to be processed. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx.cpl">
-<span class="target" id="structxnvme__cmd__ctx_1aebf2ad82a75556ae7e5ce5df22791c21"></span><em class="property">struct</em> <a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_cpl" title="xnvme_spec_cpl">xnvme_spec_cpl</a> <code class="sig-name descname">cpl</code><a class="headerlink" href="#c.xnvme_cmd_ctx.cpl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx.cpl">
+<span class="target" id="structxnvme__cmd__ctx_1aebf2ad82a75556ae7e5ce5df22791c21"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_cpl" title="xnvme_spec_cpl"><span class="n"><span class="pre">xnvme_spec_cpl</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cpl</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.cpl" title="Link to this definition"></a><br /></dt>
 <dd><p>Completion result from processing. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx.dev">
-<span class="target" id="structxnvme__cmd__ctx_1a0e4289504093bf9d6c4f6f8d659d2587"></span><em class="property">struct</em> xnvme_dev *<code class="sig-name descname">dev</code><a class="headerlink" href="#c.xnvme_cmd_ctx.dev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx.dev">
+<span class="target" id="structxnvme__cmd__ctx_1a0e4289504093bf9d6c4f6f8d659d2587"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dev</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.dev" title="Link to this definition"></a><br /></dt>
 <dd><p>Device associated with the command. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx.async">
-<span class="target" id="structxnvme__cmd__ctx_1a31ce749d7fe6a69de69f3ea5750b22f2"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx_async" title="xnvme_cmd_ctx_async">xnvme_cmd_ctx_async</a> <code class="sig-name descname">async</code><a class="headerlink" href="#c.xnvme_cmd_ctx.async" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx.async">
+<span class="target" id="structxnvme__cmd__ctx_1a31ce749d7fe6a69de69f3ea5750b22f2"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx_async" title="xnvme_cmd_ctx_async"><span class="n"><span class="pre">xnvme_cmd_ctx_async</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">async</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.async" title="Link to this definition"></a><br /></dt>
 <dd><p>Fields for command option: XNVME_CMD_ASYNC Field containing command-options, the field is initialized by helper-functions. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx.opts">
-<span class="target" id="structxnvme__cmd__ctx_1af941b88c933a679f72bb575537e2399e"></span>uint32_t <code class="sig-name descname">opts</code><a class="headerlink" href="#c.xnvme_cmd_ctx.opts" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx.opts">
+<span class="target" id="structxnvme__cmd__ctx_1af941b88c933a679f72bb575537e2399e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">opts</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.opts" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx.be_rsvd">
-<span class="target" id="structxnvme__cmd__ctx_1a170fbe5ba4eedef09e94d8e0e34ab08e"></span>uint8_t <code class="sig-name descname">be_rsvd</code>[12]<a class="headerlink" href="#c.xnvme_cmd_ctx.be_rsvd" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx.be_rsvd">
+<span class="target" id="structxnvme__cmd__ctx_1a170fbe5ba4eedef09e94d8e0e34ab08e"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">be_rsvd</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">12</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.be_rsvd" title="Link to this definition"></a><br /></dt>
 <dd><p>Fields reserved for use by library internals. </p>
 </dd></dl>
 
@@ -320,29 +346,29 @@
 
 </section>
 <section id="xnvme-cmd-ctx-async">
-<span id="sec-c-api-xnvme-cmd-struct-xnvme-cmd-ctx-async"></span><h3>xnvme_cmd_ctx_async<a class="headerlink" href="#xnvme-cmd-ctx-async" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-struct-xnvme-cmd-ctx-async"></span><h3>xnvme_cmd_ctx_async<a class="headerlink" href="#xnvme-cmd-ctx-async" title="Link to this heading"></a></h3>
 <dl class="c struct">
-<dt id="c.xnvme_cmd_ctx_async">
-<span class="target" id="structxnvme__cmd__ctx__async"></span><em class="property">struct </em><code class="sig-name descname">xnvme_cmd_ctx_async</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_async">
+<span class="target" id="structxnvme__cmd__ctx__async"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_async</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx_async" title="Link to this definition"></a><br /></dt>
 <dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
 <p>SPDX-License-Identifier: BSD-3-Clause Attributes for asynchronous command-contexts </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx_async.queue">
-<span class="target" id="structxnvme__cmd__ctx__async_1a25824ea5c76ecf6a174e5d230393388a"></span><em class="property">struct</em> xnvme_queue *<code class="sig-name descname">queue</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async.queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_async.queue">
+<span class="target" id="structxnvme__cmd__ctx__async_1a25824ea5c76ecf6a174e5d230393388a"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">queue</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx_async.queue" title="Link to this definition"></a><br /></dt>
 <dd><p>Queue used for command processing. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx_async.cb">
-<span class="target" id="structxnvme__cmd__ctx__async_1a35c7d50c7cb43d5f00d975a2caf5ab42"></span>xnvme_queue_cb <code class="sig-name descname">cb</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async.cb" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_async.cb">
+<span class="target" id="structxnvme__cmd__ctx__async_1a35c7d50c7cb43d5f00d975a2caf5ab42"></span><span class="n"><span class="pre">xnvme_queue_cb</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cb</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx_async.cb" title="Link to this definition"></a><br /></dt>
 <dd><p>User defined callback function. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.xnvme_cmd_ctx_async.cb_arg">
-<span class="target" id="structxnvme__cmd__ctx__async_1ab71a05194b74b5331308c32cca93ecd1"></span>void *<code class="sig-name descname">cb_arg</code><a class="headerlink" href="#c.xnvme_cmd_ctx_async.cb_arg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_async.cb_arg">
+<span class="target" id="structxnvme__cmd__ctx__async_1ab71a05194b74b5331308c32cca93ecd1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cb_arg</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx_async.cb_arg" title="Link to this definition"></a><br /></dt>
 <dd><p>User defined callback function arguments. </p>
 </dd></dl>
 
@@ -352,15 +378,15 @@
 </section>
 </section>
 <section id="functions">
-<span id="sec-c-api-xnvme-cmd-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<span id="sec-c-api-xnvme-cmd-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <section id="xnvme-cmd-ctx-clear">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-clear"></span><h3>xnvme_cmd_ctx_clear<a class="headerlink" href="#xnvme-cmd-ctx-clear" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-clear"></span><h3>xnvme_cmd_ctx_clear<a class="headerlink" href="#xnvme-cmd-ctx-clear" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_ctx_clear">
-<span class="target" id="libxnvme__cmd_8h_1aad9ccd2a8eb80f845453ce7684862f42"></span>void <code class="sig-name descname">xnvme_cmd_ctx_clear</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_clear">
+<span class="target" id="libxnvme__cmd_8h_1aad9ccd2a8eb80f845453ce7684862f42"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_clear" title="Link to this definition"></a><br /></dt>
 <dd><p>Clears/resets the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to clear </p></li>
 </ul>
@@ -370,18 +396,18 @@
 
 </section>
 <section id="xnvme-cmd-ctx-cpl-status">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-cpl-status"></span><h3>xnvme_cmd_ctx_cpl_status<a class="headerlink" href="#xnvme-cmd-ctx-cpl-status" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-cpl-status"></span><h3>xnvme_cmd_ctx_cpl_status<a class="headerlink" href="#xnvme-cmd-ctx-cpl-status" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_ctx_cpl_status">
-<span class="target" id="libxnvme__cmd_8h_1ae635ec8845082dec05d8cde6c32a83e5"></span><em class="property">static</em> <em class="property">inline</em> int <code class="sig-name descname">xnvme_cmd_ctx_cpl_status</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_cpl_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_cpl_status">
+<span class="target" id="libxnvme__cmd_8h_1ae635ec8845082dec05d8cde6c32a83e5"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_cpl_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_cpl_status" title="Link to this definition"></a><br /></dt>
 <dd><p>Encapsulate completion-error checking here for now. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to check status on</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>On success, 0 is return. On error, a non-zero value is returned. </p>
 </dd>
 </dl>
@@ -389,18 +415,18 @@
 
 </section>
 <section id="xnvme-cmd-ctx-from-dev">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-from-dev"></span><h3>xnvme_cmd_ctx_from_dev<a class="headerlink" href="#xnvme-cmd-ctx-from-dev" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-from-dev"></span><h3>xnvme_cmd_ctx_from_dev<a class="headerlink" href="#xnvme-cmd-ctx-from-dev" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_ctx_from_dev">
-<span class="target" id="libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> <code class="sig-name descname">xnvme_cmd_ctx_from_dev</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_dev *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_from_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_from_dev">
+<span class="target" id="libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_from_dev</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_from_dev" title="Link to this definition"></a><br /></dt>
 <dd><p>Retrieve a command-context for issuing commands to the given device. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> initialized synchronous command on the given device </p>
 </dd>
 </dl>
@@ -408,18 +434,18 @@
 
 </section>
 <section id="xnvme-cmd-ctx-from-queue">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-from-queue"></span><h3>xnvme_cmd_ctx_from_queue<a class="headerlink" href="#xnvme-cmd-ctx-from-queue" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-from-queue"></span><h3>xnvme_cmd_ctx_from_queue<a class="headerlink" href="#xnvme-cmd-ctx-from-queue" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_ctx_from_queue">
-<span class="target" id="libxnvme__cmd_8h_1a7bc367223347286051c81a4e4ae5a93f"></span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<code class="sig-name descname">xnvme_cmd_ctx_from_queue</code><span class="sig-paren">(</span><em class="property">struct</em> xnvme_queue *<em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_from_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_from_queue">
+<span class="target" id="libxnvme__cmd_8h_1a7bc367223347286051c81a4e4ae5a93f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_from_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_from_queue" title="Link to this definition"></a><br /></dt>
 <dd><p>Retrieve a command-text for issuing commands via the given queue. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>queue</strong> – Pointer to the xnvme_queue to retrieve a command-context for</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>On success, a pointer to a <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> is returned. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate the error. </p>
 </dd>
 </dl>
@@ -427,13 +453,13 @@
 
 </section>
 <section id="xnvme-cmd-ctx-pr">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-pr"></span><h3>xnvme_cmd_ctx_pr<a class="headerlink" href="#xnvme-cmd-ctx-pr" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-pr"></span><h3>xnvme_cmd_ctx_pr<a class="headerlink" href="#xnvme-cmd-ctx-pr" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_ctx_pr">
-<span class="target" id="libxnvme__pp_8h_1a76400ae8c389ae64da29c82ec0a7bece"></span>void <code class="sig-name descname">xnvme_cmd_ctx_pr</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, int <em>UNUSED_opts</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_pr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_pr">
+<span class="target" id="libxnvme__pp_8h_1a76400ae8c389ae64da29c82ec0a7bece"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_pr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">UNUSED_opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_pr" title="Link to this definition"></a><br /></dt>
 <dd><p>Prints a humanly readable representation the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to print </p></li>
 <li><p><strong>UNUSED_opts</strong> – Printer options </p></li>
@@ -444,13 +470,13 @@
 
 </section>
 <section id="xnvme-cmd-ctx-set-cb">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-set-cb"></span><h3>xnvme_cmd_ctx_set_cb<a class="headerlink" href="#xnvme-cmd-ctx-set-cb" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-ctx-set-cb"></span><h3>xnvme_cmd_ctx_set_cb<a class="headerlink" href="#xnvme-cmd-ctx-set-cb" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_ctx_set_cb">
-<span class="target" id="libxnvme__cmd_8h_1afcb44b4b22d8e47dcbe283f256f63093"></span><em class="property">static</em> <em class="property">inline</em> void <code class="sig-name descname">xnvme_cmd_ctx_set_cb</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, xnvme_queue_cb <em>cb</em>, void *<em>cb_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_set_cb" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_ctx_set_cb">
+<span class="target" id="libxnvme__cmd_8h_1afcb44b4b22d8e47dcbe283f256f63093"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_set_cb</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">xnvme_queue_cb</span></span><span class="w"> </span><span class="n"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb_arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_set_cb" title="Link to this definition"></a><br /></dt>
 <dd><p>Assign a callback-function and argument to be used with the given command-context. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to the <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> to setup callback for </p></li>
 <li><p><strong>cb</strong> – The callback function to use </p></li>
@@ -462,13 +488,13 @@
 
 </section>
 <section id="xnvme-cmd-pass">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass"></span><h3>xnvme_cmd_pass<a class="headerlink" href="#xnvme-cmd-pass" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass"></span><h3>xnvme_cmd_pass<a class="headerlink" href="#xnvme-cmd-pass" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_pass">
-<span class="target" id="libxnvme__cmd_8h_1a42f1493ca3bce4159d34330e49e234a2"></span>int <code class="sig-name descname">xnvme_cmd_pass</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, void *<em>dbuf</em>, size_t <em>dbuf_nbytes</em>, void *<em>mbuf</em>, size_t <em>mbuf_nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_pass" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_pass">
+<span class="target" id="libxnvme__cmd_8h_1a42f1493ca3bce4159d34330e49e234a2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_pass</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dbuf_nbytes</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mbuf_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_pass" title="Link to this definition"></a><br /></dt>
 <dd><p>Pass an NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
 <li><p><strong>dbuf</strong> – pointer to data-payload </p></li>
@@ -477,7 +503,7 @@
 <li><p><strong>mbuf_nbytes</strong> – size of the meta-payload in bytes</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
@@ -485,13 +511,13 @@
 
 </section>
 <section id="xnvme-cmd-pass-admin">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass-admin"></span><h3>xnvme_cmd_pass_admin<a class="headerlink" href="#xnvme-cmd-pass-admin" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass-admin"></span><h3>xnvme_cmd_pass_admin<a class="headerlink" href="#xnvme-cmd-pass-admin" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_pass_admin">
-<span class="target" id="libxnvme__cmd_8h_1af1a420c81c2a5940576f36f4c355d0f3"></span>int <code class="sig-name descname">xnvme_cmd_pass_admin</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, void *<em>dbuf</em>, size_t <em>dbuf_nbytes</em>, void *<em>mbuf</em>, size_t <em>mbuf_nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_pass_admin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_pass_admin">
+<span class="target" id="libxnvme__cmd_8h_1af1a420c81c2a5940576f36f4c355d0f3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_pass_admin</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dbuf_nbytes</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mbuf_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_pass_admin" title="Link to this definition"></a><br /></dt>
 <dd><p>Pass a NVMe Admin Command through to the device with minimal intervention. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
 <li><p><strong>dbuf</strong> – pointer to data-payload </p></li>
@@ -500,7 +526,31 @@
 <li><p><strong>mbuf_nbytes</strong> – size of the meta-payload in bytes</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-cmd-pass-iov">
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-pass-iov"></span><h3>xnvme_cmd_pass_iov<a class="headerlink" href="#xnvme-cmd-pass-iov" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_cmd_pass_iov">
+<span class="target" id="libxnvme__cmd_8h_1a952b7cc8df68229ed943ce2e4fcb9919"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_pass_iov</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iovec</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dvec</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dvec_cnt</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dvec_nbytes</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mbuf_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_pass_iov" title="Link to this definition"></a><br /></dt>
+<dd><p>Pass a vectored NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>dvec</strong> – array of data iovecs </p></li>
+<li><p><strong>dvec_cnt</strong> – number of elements in dvec </p></li>
+<li><p><strong>dvec_nbytes</strong> – size of the meta-payload in bytes </p></li>
+<li><p><strong>mbuf</strong> – pointer to meta-payload </p></li>
+<li><p><strong>mbuf_nbytes</strong> – size of the meta-payload in bytes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
@@ -508,13 +558,14 @@
 
 </section>
 <section id="xnvme-cmd-passv">
-<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-passv"></span><h3>xnvme_cmd_passv<a class="headerlink" href="#xnvme-cmd-passv" title="Permalink to this headline">¶</a></h3>
+<span id="sec-c-api-xnvme-cmd-func-xnvme-cmd-passv"></span><h3>xnvme_cmd_passv<a class="headerlink" href="#xnvme-cmd-passv" title="Link to this heading"></a></h3>
 <dl class="c function">
-<dt id="c.xnvme_cmd_passv">
-<span class="target" id="libxnvme__cmd_8h_1a96530cf3a73c7e0b0984f626575fc2cf"></span>int <code class="sig-name descname">xnvme_cmd_passv</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx">xnvme_cmd_ctx</a> *<em>ctx</em>, <em class="property">struct</em> iovec *<em>dvec</em>, size_t <em>dvec_cnt</em>, size_t <em>dvec_nbytes</em>, <em class="property">struct</em> iovec *<em>mvec</em>, size_t <em>mvec_cnt</em>, size_t <em>mvec_nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_passv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xnvme_cmd_passv">
+<span class="target" id="libxnvme__cmd_8h_1a96530cf3a73c7e0b0984f626575fc2cf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_passv</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iovec</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dvec</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dvec_cnt</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dvec_nbytes</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iovec</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mvec</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mvec_cnt</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mvec_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_passv" title="Link to this definition"></a><br /></dt>
 <dd><p>Pass a vectored NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
+<p>NOTE: This function will be deprecated in the future - use <a class="reference internal" href="#libxnvme__cmd_8h_1a952b7cc8df68229ed943ce2e4fcb9919"><span class="std std-ref">xnvme_cmd_pass_iov()</span></a> instead</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
 <li><p><strong>dvec</strong> – array of data iovecs </p></li>
@@ -525,7 +576,7 @@
 <li><p><strong>mvec_nbytes</strong> – size of the meta-payload in bytes</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
