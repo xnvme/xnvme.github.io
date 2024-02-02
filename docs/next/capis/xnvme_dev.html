@@ -68,6 +68,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-close">xnvme_dev_close</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-derive-geo">xnvme_dev_derive_geo</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-fpr">xnvme_dev_fpr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-be-state">xnvme_dev_get_be_state</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-dev-get-csi">xnvme_dev_get_csi</a></li>
@@ -180,6 +181,21 @@
 <span class="kt">int</span>
 <span class="nf">xnvme_enumerate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sys_uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_enumerate_cb</span><span class="w"> </span><span class="n">cb_func</span><span class="p">,</span>
 <span class="w">		</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Derive the geometry of the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * This is done through a sequence of NVMe controller-register-reads,</span>
+<span class="cm"> * identify-controller/namespace commands, sysfs-probes, and ioctl()/stat()/</span>
+<span class="cm"> * fstat() system calls. The system-interface and methods utilized are</span>
+<span class="cm"> * backend-specific.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_dev_derive_geo</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Returns the geometry of the given device</span>
@@ -343,6 +359,26 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-dev-derive-geo">
+<span id="sec-c-api-xnvme-dev-func-xnvme-dev-derive-geo"></span><h3>xnvme_dev_derive_geo<a class="headerlink" href="#xnvme-dev-derive-geo" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_dev_derive_geo">
+<span class="target" id="libxnvme__dev_8h_1a712ab1108e021675f9eb25c9325e90a5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_derive_geo</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_derive_geo" title="Link to this definition"></a><br /></dt>
+<dd><p>Derive the geometry of the given device. </p>
+<p>This is done through a sequence of NVMe controller-register-reads, identify-controller/namespace commands, sysfs-probes, and ioctl()/stat()/ fstat() system calls. The system-interface and methods utilized are backend-specific.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
 </dd></dl>
