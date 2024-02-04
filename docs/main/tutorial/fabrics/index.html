@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NVMe-over-Fabrics &mdash; xNVMe 0.7.3 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <title>NVMe-over-Fabrics &mdash; xNVMe 0.7.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=020ce317"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -34,7 +38,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.7.3
+                0.7.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -72,6 +76,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compatibility/index.html">Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI</a></li>
 </ul>
 
@@ -101,7 +106,7 @@
            <div itemprop="articleBody">
              
   <section id="nvme-over-fabrics">
-<span id="sec-tutorials-fabrics"></span><h1>NVMe-over-Fabrics<a class="headerlink" href="#nvme-over-fabrics" title="Permalink to this headline">¶</a></h1>
+<span id="sec-tutorials-fabrics"></span><h1>NVMe-over-Fabrics<a class="headerlink" href="#nvme-over-fabrics" title="Link to this heading"></a></h1>
 <p>NVMe supports multiple <a class="reference external" href="https://nvmexpress.org/developers/nvme-transport-specifications/">transports</a>, <strong>PCIe</strong> for locally attached devices,
 <strong>TCP</strong> and <strong>RDMA</strong> (iWRAP, InifiniBand, RoCE) for access over a networked
 fabric. The use of NVMe over a networked fabrics is defined by the <a class="reference external" href="https://nvmexpress.org/developers/nvme-transport-specifications/">NVMe-oF</a>
@@ -115,7 +120,7 @@ is an attempt to visualize these roles.</p>
 <figure class="align-center" id="id1">
 <img alt="Roles in a NVMe-oF/NVMe-over-Fabrics/Fabrics setup" src="../../_images/fabrics.png" />
 <figcaption>
-<p><span class="caption-text">Roles in a NVMe-oF/NVMe-over-Fabrics/Fabrics setup</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Roles in a NVMe-oF/NVMe-over-Fabrics/Fabrics setup</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>This will guide you through the setup of:</p>
@@ -134,7 +139,7 @@ is an attempt to visualize these roles.</p>
 </ol>
 <p>The following section will describe the setup and define the environment.</p>
 <section id="fabrics-setup">
-<h2>Fabrics Setup<a class="headerlink" href="#fabrics-setup" title="Permalink to this headline">¶</a></h2>
+<h2>Fabrics Setup<a class="headerlink" href="#fabrics-setup" title="Link to this heading"></a></h2>
 <p>In the setup <strong>TCP</strong> will be used as the transport. It is quite convenient as
 allows you to work with fabrics using non-RDMA network devices, that is, this
 setup is possible using commodity hardware.
@@ -169,7 +174,7 @@ used in both the <strong>target</strong> and the <strong>initiator</strong>. Run
 edit and run: <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_env.sh</span></code>.</p>
 </section>
 <section id="target-setup">
-<h2>Target Setup<a class="headerlink" href="#target-setup" title="Permalink to this headline">¶</a></h2>
+<h2>Target Setup<a class="headerlink" href="#target-setup" title="Link to this heading"></a></h2>
 <p>Here two approaches to setting up a <strong>target</strong> is provided. The first approach
 shows how to setup the fabrics <strong>target</strong> using Linux Kernel via <code class="docutils literal notranslate"><span class="pre">sysfs</span></code>. The
 second approac shows how to it using <strong>SPDK</strong>. In both cases we need to load
@@ -180,7 +185,7 @@ modprobe<span class="w"> </span>nvmet_tcp
 </pre></div>
 </div>
 <section id="exporting-targets-using-the-kernel">
-<h3>Exporting Targets using the Kernel<a class="headerlink" href="#exporting-targets-using-the-kernel" title="Permalink to this headline">¶</a></h3>
+<h3>Exporting Targets using the Kernel<a class="headerlink" href="#exporting-targets-using-the-kernel" title="Link to this heading"></a></h3>
 <p>With the variables defined, then the following will export the NVMe device at
 <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code> over fabrics using TCP transport:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Ensure that the NVMe devices are associated with the Linux Kernel NVMe driver&quot;</span>
@@ -229,7 +234,7 @@ ln<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;/sys/
 <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_target_linux.sh</span></code></p>
 </section>
 <section id="exporting-targets-using-spdk">
-<h3>Exporting Targets using SPDK<a class="headerlink" href="#exporting-targets-using-spdk" title="Permalink to this headline">¶</a></h3>
+<h3>Exporting Targets using SPDK<a class="headerlink" href="#exporting-targets-using-spdk" title="Link to this heading"></a></h3>
 <p>Assuming that you have build and installed <strong>xNVMe</strong> as described in the
 <a class="reference internal" href="../../getting_started/index.html#sec-getting-started"><span class="std std-ref">Getting Started</span></a> section, then you have the <strong>xNVMe</strong> repository
 available. We will be using the <strong>SPDK</strong> subproject from it, as it is already
@@ -300,7 +305,7 @@ pointers on SPDK specifics and a nice description of the <code class="docutils l
 </section>
 </section>
 <section id="initiator-setup">
-<h2>Initiator Setup<a class="headerlink" href="#initiator-setup" title="Permalink to this headline">¶</a></h2>
+<h2>Initiator Setup<a class="headerlink" href="#initiator-setup" title="Link to this heading"></a></h2>
 <p>For the <strong>initiator</strong> setup, load the required Kernel modules by invoking the
 following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modprobe<span class="w"> </span>nvme
@@ -311,7 +316,7 @@ modprobe<span class="w"> </span>nvme_tcp
 <p>Or, by running the script:
 <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_modules.sh</span></code>.</p>
 <section id="use-via-xnvme">
-<h3>Use via <strong>xNVMe</strong><a class="headerlink" href="#use-via-xnvme" title="Permalink to this headline">¶</a></h3>
+<h3>Use via <strong>xNVMe</strong><a class="headerlink" href="#use-via-xnvme" title="Link to this heading"></a></h3>
 <p>Connect to the exported fabrics endpoint using <strong>xNVMe</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Enumerate the device&quot;</span>
 xnvme<span class="w"> </span>enum<span class="w"> </span>--uri<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -332,7 +337,7 @@ xnvme<span class="w"> </span>info<span class="w"> </span><span class="s2">&quot;
 <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_xnvme.sh</span></code>.</p>
 </section>
 <section id="use-via-nvme-cli">
-<h3>Use via <strong>nvme-cli</strong><a class="headerlink" href="#use-via-nvme-cli" title="Permalink to this headline">¶</a></h3>
+<h3>Use via <strong>nvme-cli</strong><a class="headerlink" href="#use-via-nvme-cli" title="Link to this heading"></a></h3>
 <p>Connect to the exported fabrics endpoint using <strong>nvme-cli</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>enum
 
@@ -370,7 +375,7 @@ nvme<span class="w"> </span>disconnect<span class="w"> </span>--nqn<span class="
 <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_nvmecli.sh</span></code></p>
 </section>
 <section id="solving-performance-issues">
-<h3>Solving performance issues<a class="headerlink" href="#solving-performance-issues" title="Permalink to this headline">¶</a></h3>
+<h3>Solving performance issues<a class="headerlink" href="#solving-performance-issues" title="Link to this heading"></a></h3>
 <p>The performance of NVMe-over-Fabrics should be similar to the performance of NVMe-over-PCIe.
 If the NVMe-over-Fabrics setup is not performing as expected, there are a couple of things to try.</p>
 <p>First, if the <strong>initiator</strong> and <strong>target</strong> are the same machine, e.g., if the localhost IP is used, then it is important for performance that the <strong>initiator</strong> and <strong>target</strong> processes are on separate CPU cores. This can typically be achieved by using <code class="docutils literal notranslate"><span class="pre">taskset</span></code> or passing the commandline option <code class="docutils literal notranslate"><span class="pre">--cpumask</span></code> to fio or the SPDK nvmf_tgt app. If the processes are on same CPU core it can lead to CPU congestion.</p>
@@ -392,7 +397,7 @@ This can be done by using this command: <code class="docutils literal notranslat
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, xNVMe.</p>
+    <p>&#169; Copyright 2024, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

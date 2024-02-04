@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NVMe Command Sets &mdash; xNVMe 0.7.3 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  <title>NVMe Command Sets &mdash; xNVMe 0.7.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=020ce317"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -32,7 +36,7 @@
             xNVMe
           </a>
               <div class="version">
-                0.7.3
+                0.7.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -50,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compatibility/index.html">Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ci/index.html">CI</a></li>
 </ul>
 
@@ -78,7 +83,7 @@
            <div itemprop="articleBody">
              
   <section id="nvme-command-sets">
-<span id="sec-tutorials-nvme-intro-cmd-sets"></span><h1>NVMe Command Sets<a class="headerlink" href="#nvme-command-sets" title="Permalink to this headline">¶</a></h1>
+<span id="sec-tutorials-nvme-intro-cmd-sets"></span><h1>NVMe Command Sets<a class="headerlink" href="#nvme-command-sets" title="Link to this heading"></a></h1>
 <p>The NVMe specification has since its first version defined the <strong>Admin Command
 Set</strong> providing essential administrative and management commands including:
 identify and get-log-page.
@@ -99,7 +104,7 @@ exact definitions and descriptions and use the information presented here as
 an informal introduction.</p>
 </div>
 <section id="concepts-and-prelude">
-<h2>Concepts and Prelude<a class="headerlink" href="#concepts-and-prelude" title="Permalink to this headline">¶</a></h2>
+<h2>Concepts and Prelude<a class="headerlink" href="#concepts-and-prelude" title="Link to this heading"></a></h2>
 <p>This expands on the concepts of NVMe Controllers, Controller-registers,
 Namespaces, and Commands.</p>
 <p>I/O Command Set Identifier (<strong>csi</strong>), as the name suggests, then <strong>csi</strong>
@@ -112,12 +117,8 @@ value for Zoned I/O Command Set.</p>
 <p>I/O Command Set Combination Index (iocsci)</p>
 <p>I/O Command Set Combination</p>
 <section id="abbreviations">
-<h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Permalink to this headline">¶</a></h3>
+<h3>Abbreviations<a class="headerlink" href="#abbreviations" title="Link to this heading"></a></h3>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 82%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
 <th class="head"><p>Description</p></th>
@@ -138,22 +139,18 @@ value for Zoned I/O Command Set.</p>
 </section>
 </section>
 <section id="controller-command-set-support">
-<h2>Controller Command Set Support<a class="headerlink" href="#controller-command-set-support" title="Permalink to this headline">¶</a></h2>
+<h2>Controller Command Set Support<a class="headerlink" href="#controller-command-set-support" title="Link to this heading"></a></h2>
 <p>I/O Command-set support is governed by the controller capabilities and its
 configuration. That is, which capability is enabled in the configuration.</p>
 <p>Specifically, the read-only field <strong>CAP.CSS</strong>, defines what is supported, and
 the read-write field <strong>CC.CSS</strong> defines what is enabled.</p>
 <section id="capability">
-<h3>Capability<a class="headerlink" href="#capability" title="Permalink to this headline">¶</a></h3>
+<h3>Capability<a class="headerlink" href="#capability" title="Link to this heading"></a></h3>
 <p>The <strong>CAP</strong> register, controller capabilities, has a 8bit-wide field (bits
 44-37) named <strong>CSS</strong> indicating I/O Command Set(s) that the controller
 supports</p>
 <p><strong>cap.css</strong>:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 14%" />
-<col style="width: 86%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>CAP-bits</p></th>
 <th class="head"><p>Definition</p></th>
@@ -199,7 +196,7 @@ couple of examples below.</p>
 <p>How do one check if a controller support I/O Command Set <strong>xyz</strong>?</p>
 </section>
 <section id="configuration">
-<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
 <p>The <strong>CC</strong> register, controller configuration, has a 3bit-wide field (bits 6-4)
 named <strong>CSS</strong> which shall be set prior to enabling the controller.</p>
 <p>What can you enable here? Here are a couple of examples:</p>
@@ -211,7 +208,7 @@ named <strong>CSS</strong> which shall be set prior to enabling the controller.<
 </section>
 </section>
 <section id="identify-i-o-command-set-data-structure">
-<h2>Identify: I/O Command Set data structure<a class="headerlink" href="#identify-i-o-command-set-data-structure" title="Permalink to this headline">¶</a></h2>
+<h2>Identify: I/O Command Set data structure<a class="headerlink" href="#identify-i-o-command-set-data-structure" title="Link to this heading"></a></h2>
 <p>The controller registers <strong>CAP.CSS</strong> and <strong>CC.CSS</strong> are insufficient beyond the
 NVM and Admin Command sets. For any I/O Command Set, other than NVM, then the
 NVMe commands: identify, get-feature and set-feature, shall be used, in
@@ -227,7 +224,7 @@ configuring I/O Command Sets.</p>
 </pre></div>
 </div>
 <section id="identify-related-structures">
-<h3>Identify: related structures<a class="headerlink" href="#identify-related-structures" title="Permalink to this headline">¶</a></h3>
+<h3>Identify: related structures<a class="headerlink" href="#identify-related-structures" title="Link to this heading"></a></h3>
 <p>There are an additional five <strong>IOCS</strong> related <code class="docutils literal notranslate"><span class="pre">CNS</span></code> values.</p>
 <p>Identify Namespace (I/O Command Set specific)
 cns, nsid, csi</p>
@@ -236,19 +233,19 @@ cns, csi</p>
 </section>
 </section>
 <section id="feature-i-o-command-set-profile">
-<h2>Feature: I/O Command Set Profile<a class="headerlink" href="#feature-i-o-command-set-profile" title="Permalink to this headline">¶</a></h2>
+<h2>Feature: I/O Command Set Profile<a class="headerlink" href="#feature-i-o-command-set-profile" title="Link to this heading"></a></h2>
 <p>The <strong>I/O Command Set Profile</strong> feature, identified by TBD, provides the I/O
 Command Set Combination Index (<code class="docutils literal notranslate"><span class="pre">iocsci</span></code>) of the currently selected I/O
 Command Set Combination. To change it the currently selected I/O Command Set
 Combination, then use set-feature using a valid <code class="docutils literal notranslate"><span class="pre">iocsci</span></code>.</p>
 </section>
 <section id="namespace-command-set-association">
-<h2>Namespace Command Set Association<a class="headerlink" href="#namespace-command-set-association" title="Permalink to this headline">¶</a></h2>
+<h2>Namespace Command Set Association<a class="headerlink" href="#namespace-command-set-association" title="Link to this heading"></a></h2>
 <p>A namespace is <strong>associated</strong> with exactly one I/O command set. So, how do you
 determine which one it is?</p>
 </section>
 <section id="faq">
-<h2>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h2>
+<h2>FAQ<a class="headerlink" href="#faq" title="Link to this heading"></a></h2>
 <p>Q: Where are <strong>Command Set Identifiers</strong> defined?
 A: TODO: I guess they should be defined in their respective I/O Command
 Specifications? Looks like they are not defined in the base-spec.</p>
@@ -263,7 +260,7 @@ Specifications? Looks like they are not defined in the base-spec.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, xNVMe.</p>
+    <p>&#169; Copyright 2024, xNVMe.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
