@@ -99,22 +99,22 @@
 <p>With every release of <strong>xNVMe</strong>, the following tasks must be ticked off.
 Initially, the window of features are closed, that is, all PRs intended for the
 release are integrated on <code class="docutils literal notranslate"><span class="pre">next</span></code> and all tests are passing. Then:</p>
-<ul class="simple">
-<li><p>Create a branch named <code class="docutils literal notranslate"><span class="pre">vX.Y.Z-rc1</span></code></p>
 <ul>
+<li><p>Create a branch named <code class="docutils literal notranslate"><span class="pre">vX.Y.Z-rc1</span></code></p>
+<ul class="simple">
 <li><p>This must branch off from the <code class="docutils literal notranslate"><span class="pre">next</span></code> branch</p></li>
 <li><p>Push this branch to you fork of <strong>xNVMe</strong> and setup a pull-request to
 <code class="docutils literal notranslate"><span class="pre">next</span></code></p></li>
 </ul>
 </li>
 <li><p>Bump the version-number commit with message <code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code></p>
-<ul>
+<ul class="simple">
 <li><p>See the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span></code> for previous commits bumping the version-number, to
 check that you bump everywhere needed.</p></li>
 </ul>
 </li>
 <li><p>Update man-pages and Bash completion-scripts</p>
-<ul>
+<ul class="simple">
 <li><p>Build and install the version-bumped <strong>xNVMe</strong></p></li>
 <li><p>Then run: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gen-man-pages</span> <span class="pre">gen-bash-completions</span></code></p></li>
 <li><p>Commit the man-pages with message: <code class="docutils literal notranslate"><span class="pre">docs(man):</span> <span class="pre">update</span> <span class="pre">for</span> <span class="pre">vX.Y.Z</span></code></p></li>
@@ -122,27 +122,27 @@ check that you bump everywhere needed.</p></li>
 </ul>
 </li>
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">CONTRIBUTORS.rst</span></code></p>
-<ul>
+<ul class="simple">
 <li><p>Get the list of contributors with: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span> <span class="pre">main..HEAD~1</span> <span class="pre">--pretty=format:&quot;%an</span> <span class="pre">&lt;%aE&gt;&quot;</span> <span class="pre">|</span> <span class="pre">sort</span> <span class="pre">|</span> <span class="pre">uniq</span></code></p></li>
 <li><p>Update the lists accordingly</p></li>
 <li><p>Commit changes with the message: <code class="docutils literal notranslate"><span class="pre">CONTRIBUTORS:</span> <span class="pre">update</span> <span class="pre">for</span> <span class="pre">vX.Y.Z</span></code></p></li>
 </ul>
 </li>
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code></p>
-<ul>
+<ul class="simple">
 <li><p>Go over the changes and summarized the different scopes</p></li>
 <li><p>Commit changes with the message: <code class="docutils literal notranslate"><span class="pre">CHANGELOG:</span> <span class="pre">update</span> <span class="pre">for</span> <span class="pre">vX.Y.Z</span></code></p></li>
 </ul>
 </li>
 <li><p>Integrate <code class="docutils literal notranslate"><span class="pre">vX.Y.Z-rc1</span></code> into <code class="docutils literal notranslate"><span class="pre">next</span></code></p>
-<ul>
+<ul class="simple">
 <li><p>Get review of the PR</p></li>
 <li><p>Wait for tests to finalize / pass</p></li>
 <li><p>Merge onto <code class="docutils literal notranslate"><span class="pre">next</span></code></p></li>
 </ul>
 </li>
 <li><p>Integrate <code class="docutils literal notranslate"><span class="pre">next</span></code> onto <code class="docutils literal notranslate"><span class="pre">main</span></code></p>
-<ul>
+<ul class="simple">
 <li><p>Setup a PR of <code class="docutils literal notranslate"><span class="pre">next</span></code> onto <code class="docutils literal notranslate"><span class="pre">main</span></code></p></li>
 <li><p>Review the PR</p></li>
 <li><p>Wait for tests to finalize / pass</p></li>
@@ -151,17 +151,24 @@ check that you bump everywhere needed.</p></li>
 </li>
 <li><p>Tag <code class="docutils literal notranslate"><span class="pre">main</span></code> as <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and push the tag</p></li>
 <li><p>Create a release on <strong>GitHUB</strong></p>
-<ul>
+<ul class="simple">
 <li><p>Goto the GitHUB page and create a release for the tag <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code></p></li>
 <li><p>Use a title similar to the previous releases</p></li>
 <li><p>Add the content similar to the previous releases, that is refer to the
 <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> and click the “Generate release notes” button</p></li>
 <li><p>Add the artifacts generated on the <strong>tag</strong> (src-archive,
 test-verify-results, Python sdist)</p></li>
+<li><p>Make sure that the source-archives follow this convention:</p></li>
 </ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme-0.7.4.tar.gz</span></code> - Source archive without subprojects</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme-fat-0.7.4.tar.gz</span></code> - Full source archive including SPDK sources</p></li>
+</ul>
+</div></blockquote>
 </li>
 <li><p>Publish the Python package</p>
-<ul>
+<ul class="simple">
 <li><p>We wish to publish the Python package that have been utilized for testing
 and provided as artifact for the release. Thus, download and rename it,
 then upload it.</p></li>
@@ -170,7 +177,7 @@ then upload it.</p></li>
 </ul>
 </li>
 <li><p>Publish the Rust crate</p>
-<ul>
+<ul class="simple">
 <li><p>Create an API token on <a class="reference external" href="https://crates.io">https://crates.io</a></p></li>
 <li><p>Set up credentials locally <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">login</span></code></p></li>
 <li><p>Upload: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">rust/xnvme-sys</span> <span class="pre">&amp;&amp;</span> <span class="pre">cargo</span> <span class="pre">publish</span></code></p></li>
