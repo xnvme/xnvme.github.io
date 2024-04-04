@@ -67,6 +67,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#structs">Structs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-nvm-compare">xnvme_nvm_compare</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-nvm-dsm">xnvme_nvm_dsm</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-nvm-mgmt-recv">xnvme_nvm_mgmt_recv</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-nvm-mgmt-send">xnvme_nvm_mgmt_send</a></li>
@@ -295,6 +296,23 @@
 <span class="kt">int</span>
 <span class="nf">xnvme_nvm_mgmt_send</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">mo</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">mos</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span>
 <span class="w">		    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of, a NVMe Compare</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The LBA to start the compare at</span>
+<span class="cm"> * @param nlb Number of LBAs to be compared. NOTE: nlb is a zero-based value</span>
+<span class="cm"> * @param dbuf Pointer to buffer; Payload as indicated by &#39;ctx-&gt;opts&#39;</span>
+<span class="cm"> * @param mbuf Pointer to buffer; Payload as indicated by &#39;ctx-&gt;opts&#39;</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_compare</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">,</span>
+<span class="w">		  </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">);</span>
+
 <span class="cp">#ifdef __cplusplus</span>
 <span class="p">}</span>
 <span class="cp">#endif</span>
@@ -378,6 +396,30 @@
 </section>
 <section id="functions">
 <span id="sec-c-api-xnvme-nvm-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<section id="xnvme-nvm-compare">
+<span id="sec-c-api-xnvme-nvm-func-xnvme-nvm-compare"></span><h3>xnvme_nvm_compare<a class="headerlink" href="#xnvme-nvm-compare" title="Link to this heading"></a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_compare">
+<span class="target" id="libxnvme__nvm_8h_1a4248696e224406bbcd5360c8937df8bd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_compare</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_compare" title="Link to this definition"></a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of, a NVMe Compare. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The LBA to start the compare at </p></li>
+<li><p><strong>nlb</strong> – Number of LBAs to be compared. NOTE: nlb is a zero-based value </p></li>
+<li><p><strong>dbuf</strong> – Pointer to buffer; Payload as indicated by ‘ctx-&gt;opts’ </p></li>
+<li><p><strong>mbuf</strong> – Pointer to buffer; Payload as indicated by ‘ctx-&gt;opts’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="xnvme-nvm-dsm">
 <span id="sec-c-api-xnvme-nvm-func-xnvme-nvm-dsm"></span><h3>xnvme_nvm_dsm<a class="headerlink" href="#xnvme-nvm-dsm" title="Link to this heading"></a></h3>
 <dl class="c function">
