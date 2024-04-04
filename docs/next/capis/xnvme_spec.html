@@ -153,6 +153,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-cmd">xnvme_spec_nvm_cmd</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-cmd-scopy">xnvme_spec_nvm_cmd_scopy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-cmd-scopy-fmt-srclen">xnvme_spec_nvm_cmd_scopy_fmt_srclen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-compare">xnvme_spec_nvm_compare</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-idfy">xnvme_spec_nvm_idfy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-idfy-ctrlr">xnvme_spec_nvm_idfy_ctrlr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xnvme-spec-nvm-idfy-ns">xnvme_spec_nvm_idfy_ns</a></li>
@@ -2890,6 +2891,33 @@
 <span class="p">};</span>
 <span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_kvs_cmd</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
 
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_nvm_compare</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cdw00_09</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span><span class="w"> </span><span class="c1">///&lt; Command dword 0 to 9</span>
+
+<span class="w">	</span><span class="cm">/* cdw 10-11 */</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Start LBA</span>
+
+<span class="w">	</span><span class="cm">/* cdw 12 */</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nlb</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of logical blocks, zero-based</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rsvd1</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">stc</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Storage Tag Check</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rsvd2</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">prinfo</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Protection Information</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fua</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Force Unit Access</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lr</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Limited Retry</span>
+
+<span class="w">	</span><span class="cm">/* cdw 13 */</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cdw_13</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Command dword 13</span>
+
+<span class="w">	</span><span class="cm">/* cdw 14 */</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ilbrt</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Initial Logical Block Reference Tag</span>
+
+<span class="w">	</span><span class="cm">/* cdw 15 */</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lbat</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Logical Block Application Tag</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lbatm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; logical Block Application Tag Mask</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_nvm_compare</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
 <span class="cm">/**</span>
 <span class="cm"> * NVMe Command Accessors</span>
 <span class="cm"> *</span>
@@ -2913,6 +2941,7 @@
 <span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_znd_cmd</span><span class="w"> </span><span class="n">znd</span><span class="p">;</span>
 <span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_io_mgmt_cmd</span><span class="w"> </span><span class="n">mgmt</span><span class="p">;</span>
 <span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_kvs_cmd</span><span class="w"> </span><span class="n">kvs</span><span class="p">;</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_nvm_compare</span><span class="w"> </span><span class="n">compare</span><span class="p">;</span>
 <span class="w">	</span><span class="p">};</span>
 <span class="p">};</span>
 <span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
@@ -7966,6 +7995,93 @@
 <dt class="sig sig-object c" id="c.xnvme_spec_nvm_cmd_scopy_fmt_srclen.len">
 <span class="target" id="structxnvme__spec__nvm__cmd__scopy__fmt__srclen_1a138627d01a1760cccdcf536f8703db6b"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">len</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_cmd_scopy_fmt_srclen.len" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="xnvme-spec-nvm-compare">
+<span id="sec-c-api-xnvme-spec-struct-xnvme-spec-nvm-compare"></span><h3>xnvme_spec_nvm_compare<a class="headerlink" href="#xnvme-spec-nvm-compare" title="Link to this heading"></a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare">
+<span class="target" id="structxnvme__spec__nvm__compare"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_nvm_compare</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.cdw00_09">
+<span class="target" id="structxnvme__spec__nvm__compare_1a985230f59a91f43bdca3cfd8a63c7278"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cdw00_09</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">10</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.cdw00_09" title="Link to this definition"></a><br /></dt>
+<dd><p>Command dword 0 to 9. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.slba">
+<span class="target" id="structxnvme__spec__nvm__compare_1a9c40e05e7fba40f0c5df0c7a8addcaef"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">slba</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.slba" title="Link to this definition"></a><br /></dt>
+<dd><p>Start LBA. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.nlb">
+<span class="target" id="structxnvme__spec__nvm__compare_1a700d87467ed168588582c312bde57c69"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nlb</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.nlb" title="Link to this definition"></a><br /></dt>
+<dd><p>Number of logical blocks, zero-based. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.rsvd1">
+<span class="target" id="structxnvme__spec__nvm__compare_1acb24bcd4b96bd99429105c2588f1ac92"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd1</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.rsvd1" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.stc">
+<span class="target" id="structxnvme__spec__nvm__compare_1a39e54669909d6099ebf58ff13cd83251"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stc</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.stc" title="Link to this definition"></a><br /></dt>
+<dd><p>Storage Tag Check. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.rsvd2">
+<span class="target" id="structxnvme__spec__nvm__compare_1a8d4cc73012c89d8638fc426b41a1f159"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd2</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.rsvd2" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.prinfo">
+<span class="target" id="structxnvme__spec__nvm__compare_1aa353a15ffb3dbcb855a391812829b2cd"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prinfo</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.prinfo" title="Link to this definition"></a><br /></dt>
+<dd><p>Protection Information. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.fua">
+<span class="target" id="structxnvme__spec__nvm__compare_1ab04d1e5cff91ce1c67f64ac772c944b4"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fua</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.fua" title="Link to this definition"></a><br /></dt>
+<dd><p>Force Unit Access. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.lr">
+<span class="target" id="structxnvme__spec__nvm__compare_1a0608098231ac3b2a31dde98f08b9583d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lr</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.lr" title="Link to this definition"></a><br /></dt>
+<dd><p>Limited Retry. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.cdw_13">
+<span class="target" id="structxnvme__spec__nvm__compare_1a4c927987cd0c4342bac568efa906e512"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cdw_13</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.cdw_13" title="Link to this definition"></a><br /></dt>
+<dd><p>Command dword 13. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.ilbrt">
+<span class="target" id="structxnvme__spec__nvm__compare_1a92a56894424c059586f00a39910b8282"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ilbrt</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.ilbrt" title="Link to this definition"></a><br /></dt>
+<dd><p>Initial Logical Block Reference Tag. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.lbat">
+<span class="target" id="structxnvme__spec__nvm__compare_1abb0fc0bca86cd920904a1818fe6a1463"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lbat</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.lbat" title="Link to this definition"></a><br /></dt>
+<dd><p>Logical Block Application Tag. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_nvm_compare.lbatm">
+<span class="target" id="structxnvme__spec__nvm__compare_1ae5c78e9cb2fa7c0647b9276ca3fed3b9"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lbatm</span></span></span><a class="headerlink" href="#c.xnvme_spec_nvm_compare.lbatm" title="Link to this definition"></a><br /></dt>
+<dd><p>logical Block Application Tag Mask </p>
+</dd></dl>
 
 </div>
 </dd></dl>
