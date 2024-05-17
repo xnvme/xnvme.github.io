@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libxnvme_nvm.h &#8212; xNVMe 0.7.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=020ce317"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/core/xnvme_nvm';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="libxnvme_queue.h" href="xnvme_queue.html" />
+    <link rel="prev" title="libxnvme_dev.h" href="xnvme_dev.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe 0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe 0.7.4 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/xnvme/xnvme" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/XCbBX9DmKf" title="Discord" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/xnvme/xnvme" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/XCbBX9DmKf" title="Discord" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Core</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme_adm.html">libxnvme_adm.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_buf.html">libxnvme_buf.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cmd.html">libxnvme_cmd.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">libxnvme_nvm.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_queue.html">libxnvme_queue.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../extended/index.html">Extended</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_be.html">libxnvme_be.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_cli.html">libxnvme_cli.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_file.html">libxnvme_file.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_geo.html">libxnvme_geo.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_ident.html">libxnvme_ident.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_kvs.html">libxnvme_kvs.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_lba.html">libxnvme_lba.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_libconf.html">libxnvme_libconf.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_mem.html">libxnvme_mem.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_opts.html">libxnvme_opts.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_pi.html">libxnvme_pi.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_pp.html">libxnvme_pp.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_spec.html">libxnvme_spec.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_spec_fs.html">libxnvme_spec_fs.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_spec_pp.html">libxnvme_spec_pp.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_topology.html">libxnvme_topology.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_util.html">libxnvme_util.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_ver.html">libxnvme_ver.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extended/xnvme_znd.html">libxnvme_znd.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rust/index.html">Rust</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Core</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">libxnvme_nvm.h</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="libxnvme-nvm-h">
+<span id="sec-api-c-xnvme-nvm"></span><h1>libxnvme_nvm.h<a class="headerlink" href="#libxnvme-nvm-h" title="Link to this heading">#</a></h1>
+<section id="functions">
+<span id="sec-api-c-xnvme-nvm-func"></span><span id="sec-api-c-xnvme-nvm-struct"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<section id="xnvme-nvm-compare">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-compare"></span><h3>xnvme_nvm_compare<a class="headerlink" href="#xnvme-nvm-compare" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_compare">
+<span class="target" id="libxnvme__nvm_8h_1a4248696e224406bbcd5360c8937df8bd"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_compare</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_compare" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of, a NVMe Compare. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The LBA to start the compare at </p></li>
+<li><p><strong>nlb</strong> – Number of LBAs to be compared. NOTE: nlb is a zero-based value </p></li>
+<li><p><strong>dbuf</strong> – Pointer to buffer; Payload as indicated by ‘ctx-&gt;opts’ </p></li>
+<li><p><strong>mbuf</strong> – Pointer to buffer; Payload as indicated by ‘ctx-&gt;opts’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-dsm">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-dsm"></span><h3>xnvme_nvm_dsm<a class="headerlink" href="#xnvme-nvm-dsm" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_dsm">
+<span class="target" id="libxnvme__nvm_8h_1a145dd930f21eb126bd1b2fbe890e28dc"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_dsm</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../extended/xnvme_spec.html#c.xnvme_spec_dsm_range" title="xnvme_spec_dsm_range"><span class="n"><span class="pre">xnvme_spec_dsm_range</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dsm_range</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">nr</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">ad</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">idw</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">idr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_dsm" title="Link to this definition">#</a><br /></dt>
+<dd><p>Deallocate or hint at read/write usage of a range. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>dsm_range</strong> – A buffer of ranges, each with context attributes, slba and nlb </p></li>
+<li><p><strong>nr</strong> – Number of ranges in the given ranges-buffer, zero-based value </p></li>
+<li><p><strong>ad</strong> – The NVM subsystem may deallocate all provided ranges </p></li>
+<li><p><strong>idw</strong> – The dataset should be optimized for write access as an integral unit </p></li>
+<li><p><strong>idr</strong> – The dataset should be optimized for read access as an integral unit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, -1 is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-mgmt-recv">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-mgmt-recv"></span><h3>xnvme_nvm_mgmt_recv<a class="headerlink" href="#xnvme-nvm-mgmt-recv" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_mgmt_recv">
+<span class="target" id="libxnvme__nvm_8h_1ae559c222dcc89fda942e757d3a9db58c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_mgmt_recv</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">mo</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">mos</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">dbuf_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_mgmt_recv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit, and wait for completion of a I/O management receive command. </p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>xnvme_cmd_opts</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>mo</strong> – Management operation </p></li>
+<li><p><strong>mos</strong> – Management operation specific field </p></li>
+<li><p><strong>dbuf</strong> – pointer to data-payload </p></li>
+<li><p><strong>dbuf_nbytes</strong> – size of the data-payload in bytes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-mgmt-send">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-mgmt-send"></span><h3>xnvme_nvm_mgmt_send<a class="headerlink" href="#xnvme-nvm-mgmt-send" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_mgmt_send">
+<span class="target" id="libxnvme__nvm_8h_1a115a4b99679f8292a58cc2b5fe794c3b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_mgmt_send</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">mo</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">mos</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">dbuf_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_mgmt_send" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit, and wait for completion of a I/O management send command. </p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>xnvme_cmd_opts</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>mo</strong> – Management operation </p></li>
+<li><p><strong>mos</strong> – Management operation specific field </p></li>
+<li><p><strong>dbuf</strong> – pointer to data-payload </p></li>
+<li><p><strong>dbuf_nbytes</strong> – size of the data-payload in bytes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-read">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-read"></span><h3>xnvme_nvm_read<a class="headerlink" href="#xnvme-nvm-read" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_read">
+<span class="target" id="libxnvme__nvm_8h_1a08166b81be4d0e9d5753bc708a5ef648"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_read" title="Link to this definition">#</a><br /></dt>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause Submit, and optionally wait for completion of, a NVMe Read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The LBA to start reading from </p></li>
+<li><p><strong>nlb</strong> – The number of LBAs to read. NOTE: nlb is a zero-based value </p></li>
+<li><p><strong>dbuf</strong> – Pointer to data-payload </p></li>
+<li><p><strong>mbuf</strong> – Pointer to meta-payload</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-scopy">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-scopy"></span><h3>xnvme_nvm_scopy<a class="headerlink" href="#xnvme-nvm-scopy" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_scopy">
+<span class="target" id="libxnvme__nvm_8h_1a96a7d6cf4f7eb6ca3ff38c039927276a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_scopy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">sdlba</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../extended/xnvme_spec.html#c.xnvme_spec_nvm_scopy_fmt_zero" title="xnvme_spec_nvm_scopy_fmt_zero"><span class="n"><span class="pre">xnvme_spec_nvm_scopy_fmt_zero</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ranges</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">nr</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="../extended/xnvme_spec.html#c.xnvme_nvm_scopy_fmt" title="xnvme_nvm_scopy_fmt"><span class="n"><span class="pre">xnvme_nvm_scopy_fmt</span></span></a><span class="w"> </span><span class="n"><span class="pre">copy_fmt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_scopy" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of a NVMe Simple-Copy-Command. </p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>xnvme_cmd_opts</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>sdlba</strong> – The Starting Destination LBA to start copying to </p></li>
+<li><p><strong>ranges</strong> – Pointer to ranges-buffer, see <a class="reference internal" href="../extended/xnvme_spec.html#structxnvme__spec__nvm__scopy__fmt__zero"><span class="std std-ref">xnvme_spec_nvm_scopy_fmt_zero</span></a></p></li>
+<li><p><strong>nr</strong> – Number of ranges in the given ranges-buffer, zero-based value </p></li>
+<li><p><strong>copy_fmt</strong> – For of ranges</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, -1 is returned, <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate and <code class="docutils literal notranslate"><span class="pre">ctx.cpl</span></code> filled with lower-level status codes </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-write">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-write"></span><h3>xnvme_nvm_write<a class="headerlink" href="#xnvme-nvm-write" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_write">
+<span class="target" id="libxnvme__nvm_8h_1a5d8ec2bb46fe6460b77628c03d880f33"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_write" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of, a NVMe Write. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The LBA to start the write at </p></li>
+<li><p><strong>nlb</strong> – Number of LBAs to be written. NOTE: nlb is a zero-based value </p></li>
+<li><p><strong>dbuf</strong> – Pointer to buffer; Payload as indicated by ‘ctx-&gt;opts’ </p></li>
+<li><p><strong>mbuf</strong> – Pointer to buffer; Payload as indicated by ‘ctx-&gt;opts’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-write-uncorrectable">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-write-uncorrectable"></span><h3>xnvme_nvm_write_uncorrectable<a class="headerlink" href="#xnvme-nvm-write-uncorrectable" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_write_uncorrectable">
+<span class="target" id="libxnvme__nvm_8h_1a0e81497eafbcaf8dc6ca5922a15c19da"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_write_uncorrectable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_write_uncorrectable" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit a write uncorrected command. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The Starting Destination LBA </p></li>
+<li><p><strong>nlb</strong> – Number Of Logical Blocks </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-nvm-write-zeroes">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-nvm-write-zeroes"></span><h3>xnvme_nvm_write_zeroes<a class="headerlink" href="#xnvme-nvm-write-zeroes" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_nvm_write_zeroes">
+<span class="target" id="libxnvme__nvm_8h_1a6d33bba5ee0fcbff856293f53c68456e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_write_zeroes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_write_zeroes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit a write zeroes command. </p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>xnvme_cmd_opts</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The LBA to start the write at </p></li>
+<li><p><strong>nlb</strong> – Number Of Logical Blocks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, -1 is returned, <code class="docutils literal notranslate"><span class="pre">errno</span></code> set to indicate and param ctx.cpl filled with lower-level status codes </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-prep-nvm">
+<span id="sec-api-c-xnvme-nvm-func-xnvme-prep-nvm"></span><h3>xnvme_prep_nvm<a class="headerlink" href="#xnvme-prep-nvm" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_prep_nvm">
+<span class="target" id="libxnvme__nvm_8h_1a187c917a67639401e97aab3835c7300b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_prep_nvm</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">opcode</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_prep_nvm" title="Link to this definition">#</a><br /></dt>
+<dd><p>Submit, and optionally wait for completion of, a NVMe Write. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
+<li><p><strong>opcode</strong> – Opcode for the NVMe command </p></li>
+<li><p><strong>nsid</strong> – Namespace Identifier </p></li>
+<li><p><strong>slba</strong> – The LBA to start the write at </p></li>
+<li><p><strong>nlb</strong> – Number of LBAs to be written. NOTE: nlb is a zero-based value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="header">
+<span id="sec-api-c-xnvme-nvm-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_nvm.h</span>
+<span class="cm"> */</span>
+
+<span class="cp">#ifndef __LIBXNVME_NVM_H</span>
+<span class="cp">#define __LIBXNVME_NVM_H</span>
+
+<span class="cp">#ifdef __cplusplus</span>
+<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of, a NVMe Read</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The LBA to start reading from</span>
+<span class="cm"> * @param nlb The number of LBAs to read. NOTE: nlb is a zero-based value</span>
+<span class="cm"> * @param dbuf Pointer to data-payload</span>
+<span class="cm"> * @param mbuf Pointer to meta-payload</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_read</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span>
+<span class="w">	       </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of, a NVMe Write</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The LBA to start the write at</span>
+<span class="cm"> * @param nlb Number of LBAs to be written. NOTE: nlb is a zero-based value</span>
+<span class="cm"> * @param dbuf Pointer to buffer; Payload as indicated by &#39;ctx-&gt;opts&#39;</span>
+<span class="cm"> * @param mbuf Pointer to buffer; Payload as indicated by &#39;ctx-&gt;opts&#39;</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_write</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">,</span>
+<span class="w">		</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit a write uncorrected command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The Starting Destination LBA</span>
+<span class="cm"> * @param nlb Number Of Logical Blocks</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_write_uncorrectable</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span>
+<span class="w">			      </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit a write zeroes command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_cmd_opts</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The LBA to start the write at</span>
+<span class="cm"> * @param nlb Number Of Logical Blocks</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, -1 is returned, `errno` set to</span>
+<span class="cm"> * indicate and param ctx.cpl filled with lower-level status codes</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_write_zeroes</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of, a NVMe Write</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param opcode Opcode for the NVMe command</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The LBA to start the write at</span>
+<span class="cm"> * @param nlb Number of LBAs to be written. NOTE: nlb is a zero-based value</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_prep_nvm</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span>
+<span class="w">	       </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of a NVMe Simple-Copy-Command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_cmd_opts</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param sdlba The Starting Destination LBA to start copying to</span>
+<span class="cm"> * @param ranges Pointer to ranges-buffer, see ::xnvme_spec_nvm_scopy_fmt_zero</span>
+<span class="cm"> * @param nr Number of ranges in the given ranges-buffer, zero-based value</span>
+<span class="cm"> * @param copy_fmt For of ranges</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, -1 is returned, `errno` set to</span>
+<span class="cm"> * indicate and `ctx.cpl` filled with lower-level status codes</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_scopy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">sdlba</span><span class="p">,</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_nvm_scopy_fmt_zero</span><span class="w"> </span><span class="o">*</span><span class="n">ranges</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nr</span><span class="p">,</span>
+<span class="w">		</span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_nvm_scopy_fmt</span><span class="w"> </span><span class="n">copy_fmt</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Deallocate or hint at read/write usage of a range.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param dsm_range A buffer of ranges, each with context attributes, slba and nlb</span>
+<span class="cm"> * @param nr Number of ranges in the given ranges-buffer, zero-based value</span>
+<span class="cm"> * @param ad The NVM subsystem may deallocate all provided ranges</span>
+<span class="cm"> * @param idw The dataset should be optimized for write access as an integral unit</span>
+<span class="cm"> * @param idr The dataset should be optimized for read access as an integral unit</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, -1 is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_dsm</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_dsm_range</span><span class="w"> </span><span class="o">*</span><span class="n">dsm_range</span><span class="p">,</span>
+<span class="w">	      </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nr</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">ad</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">idw</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">idr</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and wait for completion of a I/O management receive command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_cmd_opts</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param mo Management operation</span>
+<span class="cm"> * @param mos Management operation specific field</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of the data-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_mgmt_recv</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">mo</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">mos</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span>
+<span class="w">		    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and wait for completion of a I/O management send command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_cmd_opts</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param mo Management operation</span>
+<span class="cm"> * @param mos Management operation specific field</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of the data-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_mgmt_send</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">mo</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">mos</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span>
+<span class="w">		    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit, and optionally wait for completion of, a NVMe Compare</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param slba The LBA to start the compare at</span>
+<span class="cm"> * @param nlb Number of LBAs to be compared. NOTE: nlb is a zero-based value</span>
+<span class="cm"> * @param dbuf Pointer to buffer; Payload as indicated by &#39;ctx-&gt;opts&#39;</span>
+<span class="cm"> * @param mbuf Pointer to buffer; Payload as indicated by &#39;ctx-&gt;opts&#39;</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_compare</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">,</span>
+<span class="w">		  </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">);</span>
+
+<span class="cp">#ifdef __cplusplus</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_NVM */</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
