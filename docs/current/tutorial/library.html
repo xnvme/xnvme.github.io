@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Library Usage Notes &#8212; xNVMe 0.7.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=020ce317"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/library';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'current';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe 0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe 0.7.4 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Library Usage Notes</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="library-usage-notes">
+<span id="sec-tutorials-library"></span><h1>Library Usage Notes<a class="headerlink" href="#library-usage-notes" title="Link to this heading">#</a></h1>
+<p>The essence of xNVMe is an interface that enables you to command a device to do
+something. This is a achieved via a command-interface with asynchronous as well
+as synchronous semantics. In pseudo-code, you get a device-handle by opening
+it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s2">&quot;/dev/nvme0n1&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To send a command, you need a command context, for synchronous execution, then
+you retrieve a command-context from the device:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a synchronous command context</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_cmd_ctx_from_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="c1"># Submit and wait for completion</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">xnvme_cmd_pass</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>For asynchronous execution, then you get the command context from a queue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get an asynchronous command context</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">xnvme_cmd_ctx_from_queue</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="c1"># Submit the command</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">xnvme_cmd_pass</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="o">...</span><span class="p">);</span>
+
+<span class="c1"># Process at least &#39;n&#39; commands, n can be 0</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">xnvme_queue_poke</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+
+<span class="c1"># Wait for all</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">xnvme_queue_drain</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>There are more details to the use of the library. E.g. what is a command, how
+do you construct and how do you allocate and provide data for the command to
+work with? And how do you setup queues, provide callback-functions, and
+callback-function arguments?</p>
+<p>However, that is just boiler-plate code and designed to make it look and feel
+familiar.</p>
+<p>When synchronous, then there is less things to do since <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_pass</span></code> is
+blocking until the command has completed or if it failed submitting.</p>
+<p>When using asynchronous semantics, then there is more things to do, you have to
+setup a queue, and poll/wait and implement a call-back function if you want to
+do something specific to the command that completed. This is because the
+submission and completion has been split up.</p>
+<p>However, the pseuod-code above is the gist of the library, open a device, get a
+command context and send a command.</p>
+<section id="backends">
+<h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">#</a></h2>
+<p>…</p>
+</section>
+<section id="command-interfaces">
+<h2>Command Interfaces<a class="headerlink" href="#command-interfaces" title="Link to this heading">#</a></h2>
+<p>…</p>
+</section>
+<section id="return-values-and-status-codes">
+<h2>Return Values and Status Codes<a class="headerlink" href="#return-values-and-status-codes" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions signal errors using the standard <code class="docutils literal notranslate"><span class="pre">errno</span></code>
+thread-local variable and a return value of <code class="docutils literal notranslate"><span class="pre">-1</span></code>. To gain more insights into
+what went wrong in a command, use the optional <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code> parameter that all
+<code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> functions take.  When supplied, the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code> will contain
+the NVMe status code in the <code class="docutils literal notranslate"><span class="pre">status</span></code> field.</p>
+<p><strong>Note</strong> that while the <a class="reference internal" href="../backends/xnvme_be_spdk/index.html#sec-backends-spdk"><span class="std std-ref">spdk</span></a> backend has a
+one-to-one correspondence between what is in the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code> and what is
+reported by the device, the <a class="reference internal" href="../backends/xnvme_be_linux.html#sec-backends-linux"><span class="std std-ref">Linux</span></a>, backend will
+transform certain errors from the kernel into their NVMe equivalents.</p>
+<p>This is because certain <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls may return <code class="docutils literal notranslate"><span class="pre">-1</span></code> and <code class="docutils literal notranslate"><span class="pre">Invalid</span>
+<span class="pre">Argument</span></code> without actually sending a command to the device. To align the
+backends with each other, such an error will be transformed into the NVMe
+equivalent, if possible. For example, <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Argument</span></code> will be transformed
+into the NVMe status code <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">Field</span> <span class="pre">in</span> <span class="pre">Command</span></code> and set that in the
+given <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code>.</p>
+<p>TODO: add references to the C API</p>
+</section>
+<section id="memory-management">
+<h2>Memory Management<a class="headerlink" href="#memory-management" title="Link to this heading">#</a></h2>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> option <code class="docutils literal notranslate"><span class="pre">XNVME_CMD_SGL</span></code>, then use these functions
+to manage the Scather / Gather Lists.</p>
+</section>
+<section id="asynchronous-interface">
+<h2>Asynchronous Interface<a class="headerlink" href="#asynchronous-interface" title="Link to this heading">#</a></h2>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">xnvme_cmd</span></code> option <code class="docutils literal notranslate"><span class="pre">XNVME_CMD_ASYNC</span></code>, then use these
+functions to steer the asynchronous mechanics.</p>
+</section>
+<section id="pretty-printing">
+<h2>Pretty-Printing<a class="headerlink" href="#pretty-printing" title="Link to this heading">#</a></h2>
+<p>Every structure has a pretty-printer function. Even the opaque ones, e.g.
+<code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">xnvme_dev</span></code> has the printer function <a class="reference internal" href="../api/extended/xnvme_pp.html#c.xnvme_dev_pr" title="xnvme_dev_pr"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_pr()</span></code></a>.  By
+convention they are named the same as the structure plus a <cite>_pr</cite> postfix.</p>
+<p>The printers all take an <cite>opts</cite> parameter which controls how the structure
+should be printed, the current default is <a class="reference external" href="https://yaml.org/">YAML</a> representation.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
