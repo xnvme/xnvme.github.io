@@ -1,0 +1,785 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>NVMe-over-Fabrics &#8212; xNVMe 0.7.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=020ce317"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/fabrics/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'current';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Material" href="../../material/index.html" />
+    <link rel="prev" title="Dynamically loading xNVMe" href="../dynamic_loading/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe 0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe 0.7.4 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../fdp/index.html">Flexible Data Placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devs/index.html">Linux Dev. Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dynamic_loading/index.html">Dynamically loading xNVMe</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">NVMe-over-Fabrics</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">NVMe-over-Fabrics</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="nvme-over-fabrics">
+<span id="sec-tutorials-fabrics"></span><h1>NVMe-over-Fabrics<a class="headerlink" href="#nvme-over-fabrics" title="Link to this heading">#</a></h1>
+<p>NVMe supports multiple memory and message-based transports. <strong>PCIe</strong> for
+locally attached devices, <strong>TCP</strong> and <strong>RDMA</strong> (iWRAP, InifiniBand, RoCE) for
+access over a networked fabric. The use of NVMe over a networked fabrics is
+defined by the <a class="reference external" href="https://nvmexpress.org/specifications/">NVMe specifications</a> and often referred to a
+NVMe-over-Fabrics or just <strong>fabrics</strong>.</p>
+<p>In a fabrics setup, one machine typically has a bunch of NVMe devices attached
+via PCIe, these are then <strong>exported</strong> aka made accessible over a networked
+fabric, we refer to the system/machine with this role as the fabrics
+<strong>target</strong>. The systems/machines consuming the exported devices over the
+networked fabric are referred to as the fabric <strong>initiator</strong>. The figure below
+is an attempt to visualize these roles.</p>
+<figure class="align-center" id="id1">
+<img alt="Roles in a NVMe-oF/NVMe-over-Fabrics/Fabrics setup" src="../../_images/fabrics.png" />
+<figcaption>
+<p><span class="caption-text">Roles in a NVMe-oF/NVMe-over-Fabrics/Fabrics setup</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>This will guide you through the setup of:</p>
+<ol class="arabic simple">
+<li><p>A machine to act as the Fabrics <strong>target</strong></p>
+<ul class="simple">
+<li><p>Example showing how to export using the Linux kernel</p></li>
+<li><p>Example showing how to export using SPDK</p></li>
+</ul>
+</li>
+<li><p>A machine to act as a Fabrics <strong>initiator</strong></p>
+<ul class="simple">
+<li><p>Example showing how to Utilize the exported endpoints using <strong>xNVMe</strong></p></li>
+</ul>
+</li>
+</ol>
+<p>The following section will describe the setup and define the environment.</p>
+<section id="fabrics-setup">
+<h2>Fabrics Setup<a class="headerlink" href="#fabrics-setup" title="Link to this heading">#</a></h2>
+<p>In the setup <strong>TCP</strong> will be used as the transport. It is quite convenient as
+allows you to work with fabrics using non-RDMA network devices, that is, this
+setup is possible using commodity hardware.
+Additonally a locally attached NVMe PCIe SSD is exported on the <strong>target</strong>. It
+is available on the system in <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code> and it has PCIe identifier
+<code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code>.</p>
+<p>It is assumed that both the <strong>initiator</strong>, as well as the <strong>target</strong>, are
+running Debian Linux / Bullseye and that <strong>xNVMe</strong> is installed according to
+the <a class="reference internal" href="../../getting_started/index.html#sec-getting-started"><span class="std std-ref">Getting Started</span></a> section. Additonally, the <strong>xNVMe</strong> source repos
+is available at <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}</span></code>.</p>
+<p>When running the commands/scripts in the following sections, then it is assumed
+that you are running <code class="docutils literal notranslate"><span class="pre">root</span></code>. Needless to say, then this is a guide is not
+focused on security/access-control.</p>
+<p>Start by defining your fabrics setup using the following environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">NVMET_SUBSYS_NQN</span><span class="o">=</span><span class="s2">&quot;nqn.2022-05.io.xnvme:ctrlnode1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NVMET_SUBSYS_NSID</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">NVMET_TRADDR</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NVMET_TRTYPE</span><span class="o">=</span><span class="s2">&quot;tcp&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NVMET_TRSVCID</span><span class="o">=</span><span class="s2">&quot;4420&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NVMET_ADRFAM</span><span class="o">=</span><span class="s2">&quot;ipv4&quot;</span>
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">EXPORT_DEV_PATH</span><span class="o">=</span><span class="s2">&quot;/dev/nvme0n1&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EXPORT_DEV_PCIE</span><span class="o">=</span><span class="s2">&quot;0000:03:00.0&quot;</span>
+
+<span class="c1"># Absolute path to the xNVMe repository</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">XNVME_REPOS</span><span class="o">=</span><span class="s2">&quot;/root/git/xnvme&quot;</span>
+</pre></div>
+</div>
+<p>Adjust the definitions above to match your setup, the various entities will be
+used in both the <strong>target</strong> and the <strong>initiator</strong>. Run the above commands or
+edit and run: <code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_env.sh</span></code>.</p>
+</section>
+<section id="target-setup">
+<h2>Target Setup<a class="headerlink" href="#target-setup" title="Link to this heading">#</a></h2>
+<p>Here two approaches to setting up a <strong>target</strong> is provided. The first approach
+shows how to setup the fabrics <strong>target</strong> using Linux Kernel via <code class="docutils literal notranslate"><span class="pre">sysfs</span></code>. The
+second approac shows how to it using <strong>SPDK</strong>. In both cases we need to load
+the following Kernel modules:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modprobe<span class="w"> </span>nvme
+modprobe<span class="w"> </span>nvmet
+modprobe<span class="w"> </span>nvmet_tcp
+</pre></div>
+</div>
+<section id="exporting-targets-using-the-kernel">
+<h3>Exporting Targets using the Kernel<a class="headerlink" href="#exporting-targets-using-the-kernel" title="Link to this heading">#</a></h3>
+<p>With the variables defined, then the following will export the NVMe device at
+<code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code> over fabrics using TCP transport:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Ensure that the NVMe devices are associated with the Linux Kernel NVMe driver&quot;</span>
+xnvme-driver<span class="w"> </span>reset
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Mounting configfs&quot;</span>
+/bin/mount<span class="w"> </span>-t<span class="w"> </span>configfs<span class="w"> </span>none<span class="w"> </span>/sys/kernel/config/
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Create an NVMe Target Subsystem&quot;</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Set subsystem access to &#39;attr_allow_any_host&#39;&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">/attr_allow_any_host&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Create a NVMe Namespace within the Target Subsystem&quot;</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">/namespaces/1&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Export (</span><span class="si">${</span><span class="nv">EXPORT_DEV_PATH</span><span class="si">}</span><span class="s2">) -- add device to kernel subsystem&quot;</span>
+<span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">EXPORT_DEV_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">/namespaces/1/device_path&quot;</span>
+
+<span class="c1"># Enable the NVMe Target Namespace</span>
+<span class="nb">echo</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">/namespaces/1/enable&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Setup NVMe-oF connection-listener&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Create a &#39;port&#39;&quot;</span>
+mkdir<span class="w"> </span>/sys/kernel/config/nvmet/ports/1
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Set the transport addr (traddr)&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/ports/1/addr_traddr&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Set the transport type&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/ports/1/addr_trtype&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Set the transport service-id&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/ports/1/addr_trsvcid&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Set the address-family&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_ADRFAM</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/ports/1/addr_adrfam&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Link with the subsystem with the port, thereby enabling it&quot;</span>
+ln<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;/sys/kernel/config/nvmet/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;/sys/kernel/config/nvmet/ports/1/subsystems/</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Or, by running the script:
+<code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_target_linux.sh</span></code></p>
+</section>
+<section id="exporting-targets-using-spdk">
+<h3>Exporting Targets using SPDK<a class="headerlink" href="#exporting-targets-using-spdk" title="Link to this heading">#</a></h3>
+<p>Assuming that you have build and installed <strong>xNVMe</strong> as described in the
+<a class="reference internal" href="../../getting_started/index.html#sec-getting-started"><span class="std std-ref">Getting Started</span></a> section, then you have the <strong>xNVMe</strong> repository
+available. We will be using the <strong>SPDK</strong> subproject from it, as it is already
+build and available for use.</p>
+<p>Then run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;### NVMe-oF Fabrics target setup using SPDK&quot;</span>
+xnvme-driver
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Build the SPDK NVMe-oF target-app (nvmf_tgt)&quot;</span>
+<span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/app/nvmf_tgt&quot;</span>
+make
+<span class="nb">popd</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Start &#39;nvmf_tgt&#39; and give it two seconds to settle&quot;</span>
+pkill<span class="w"> </span>-f<span class="w"> </span>nvmf_tgt<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Failed killing &#39;nvmf_tgt&#39;; OK, continuing.&quot;</span>
+<span class="nb">pushd</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/build/bin&quot;</span>
+./nvmf_tgt<span class="w"> </span><span class="p">&amp;</span>
+<span class="nb">popd</span>
+sleep<span class="w"> </span><span class="m">2</span>
+<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>pidof<span class="w"> </span>nvmf_tgt<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Failed starting &#39;nvmf_tgt&#39;&quot;</span>
+<span class="w">  </span><span class="nb">exit</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Attach local PCIe controllers (</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/scripts/rpc.py&quot;</span><span class="w"> </span>bdev_nvme_attach_controller<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-b<span class="w"> </span>Nvme0<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-t<span class="w"> </span>PCIe<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-a<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">EXPORT_DEV_PCIE</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="c1"># The above command will output e.g. &#39;Nvme0n1&#39;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Create NVMe-oF transport (</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/scripts/rpc.py&quot;</span><span class="w"> </span>nvmf_create_transport<span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-t<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-u<span class="w"> </span><span class="m">16384</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-m<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-c<span class="w"> </span><span class="m">8192</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Create a NVMe-oF subsystem/controller&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/scripts/rpc.py&quot;</span><span class="w"> </span>nvmf_create_subsystem<span class="w"> </span><span class="se">\</span>
+<span class="w">	</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-a<span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-s<span class="w"> </span>SPDK00000000000001<span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-d<span class="w"> </span>Controller1
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Export (</span><span class="si">${</span><span class="nv">EXPORT_DEV_PCIE</span><span class="si">}</span><span class="s2">) -- add device to SPDK subsystem/controller&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/scripts/rpc.py&quot;</span><span class="w"> </span>nvmf_subsystem_add_ns<span class="w"> </span><span class="se">\</span>
+<span class="w">	</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>Nvme0n1
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;## Setup NVMe-oF connection-listener&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/spdk/scripts/rpc.py&quot;</span><span class="w"> </span>nvmf_subsystem_add_listener<span class="w"> </span><span class="se">\</span>
+<span class="w">	</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-t<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-a<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-s<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_PORT</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">	</span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_ADRFAM</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Or, by running the script:
+<code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_target_spdk.sh</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For additional documentation on the setup of fabrics using SPDK, then
+consult the SPDK documentation on <a class="reference external" href="https://spdk.io/doc/nvmf.html">SPDK-NVMe-oF</a>, it has
+more details and pointers on SPDK specifics and a nice description of the
+<code class="docutils literal notranslate"><span class="pre">NQN</span></code> definition.</p>
+</div>
+</section>
+</section>
+<section id="initiator-setup">
+<h2>Initiator Setup<a class="headerlink" href="#initiator-setup" title="Link to this heading">#</a></h2>
+<p>For the <strong>initiator</strong> setup, load the required Kernel modules by invoking the
+following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>modprobe<span class="w"> </span>nvme
+modprobe<span class="w"> </span>nvme_fabrics
+modprobe<span class="w"> </span>nvme_tcp
+</pre></div>
+</div>
+<p>Or, by running the script:
+<code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_modules.sh</span></code>.</p>
+<section id="use-via-xnvme">
+<h3>Use via <strong>xNVMe</strong><a class="headerlink" href="#use-via-xnvme" title="Link to this heading">#</a></h3>
+<p>Connect to the exported fabrics endpoint using <strong>xNVMe</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Enumerate the device&quot;</span>
+xnvme<span class="w"> </span>enum<span class="w"> </span>--uri<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Inspect the device&quot;</span>
+xnvme<span class="w"> </span>info<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--dev-nsid<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NSID</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Run fio&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/fio/fio&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/usr/local/share/xnvme/xnvme-compare.fio<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--section<span class="o">=</span>default<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ioengine<span class="o">=</span><span class="s2">&quot;external:</span><span class="k">$(</span>pkg-config<span class="w"> </span>xnvme<span class="w"> </span>--variable<span class="o">=</span>libdir<span class="k">)</span><span class="s2">/libxnvme-fio-engine.so&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filename<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">\\:</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--xnvme_dev_nsid<span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<p>Or, by running the script:
+<code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_xnvme.sh</span></code>.</p>
+</section>
+<section id="use-via-nvme-cli">
+<h3>Use via <strong>nvme-cli</strong><a class="headerlink" href="#use-via-nvme-cli" title="Link to this heading">#</a></h3>
+<p>Connect to the exported fabrics endpoint using <strong>nvme-cli</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>enum
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Discover fabrics target&quot;</span>
+nvme<span class="w"> </span>discover<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--transport<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--traddr<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--trsvcid<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Connect, mount the namespace as block device&quot;</span>
+nvme<span class="w"> </span>connect<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--transport<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRTYPE</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--traddr<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRADDR</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--trsvcid<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_TRSVCID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nqn<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Show devices after connecting/mounting&quot;</span>
+xnvme<span class="w"> </span>enum
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Inspect it, using xNVMe&quot;</span>
+xnvme<span class="w"> </span>info<span class="w"> </span>/dev/nvme1n1
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Run fio&quot;</span>
+<span class="s2">&quot;</span><span class="si">${</span><span class="nv">XNVME_REPOS</span><span class="si">}</span><span class="s2">/subprojects/fio/fio&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/usr/local/share/xnvme/xnvme-compare.fio<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--section<span class="o">=</span>default<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ioengine<span class="o">=</span><span class="s2">&quot;io_uring&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--filename<span class="o">=</span><span class="s2">&quot;/dev/nvme1n1&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Disconnect, unmount the block-device&quot;</span>
+nvme<span class="w"> </span>disconnect<span class="w"> </span>--nqn<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NVMET_SUBSYS_NQN</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Or, by running the script:
+<code class="docutils literal notranslate"><span class="pre">${XNVME_REPOS}/docs/tutorial/fabrics/fabrics_initiator_nvmecli.sh</span></code></p>
+</section>
+<section id="solving-performance-issues">
+<h3>Solving performance issues<a class="headerlink" href="#solving-performance-issues" title="Link to this heading">#</a></h3>
+<p>The performance of NVMe-over-Fabrics should be similar to the performance of NVMe-over-PCIe.
+If the NVMe-over-Fabrics setup is not performing as expected, there are a couple of things to try.</p>
+<p>First, if the <strong>initiator</strong> and <strong>target</strong> are the same machine, e.g., if the localhost IP is used, then it is important for performance that the <strong>initiator</strong> and <strong>target</strong> processes are on separate CPU cores. This can typically be achieved by using <code class="docutils literal notranslate"><span class="pre">taskset</span></code> or passing the commandline option <code class="docutils literal notranslate"><span class="pre">--cpumask</span></code> to fio or the SPDK nvmf_tgt app. If the processes are on same CPU core it can lead to CPU congestion.</p>
+<p>If the <strong>initiator</strong> and <strong>target</strong> are on different machines, then the bandwidth of their network interfaces can be a limiting factor. As such, it is advisable to use the fastest possible network interfaces. Additonally, if the machines are connected directly, that is, not through a switch or similar, then performance can also be improved by adjusting the MTU of the network cards to be as high as supported.
+This can be done by using this command: <code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">link</span> <span class="pre">set</span> <span class="pre">dev</span> <span class="pre">${NETWORK_INTERFACE}</span> <span class="pre">mtu</span> <span class="pre">${DESIRED_MTU}</span></code>.</p>
+<p>If it is not possible to saturate the device with the available network card, the I/O bandwidth can be increased through latency hiding by using a greater block size and/or io-depth.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
