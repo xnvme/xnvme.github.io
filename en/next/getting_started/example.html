@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building an xNVMe Program &#8212; xNVMe next documentation</title>
+    <title>Building an xNVMe Program &#8212; xNVMe v0.7.4 documentation</title>
   
   
   
@@ -38,14 +38,14 @@
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../_static/documentation_options.js?v=ea06e17b"></script>
+    <script src="../_static/documentation_options.js?v=f9b80c38"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/example';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'next';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.4';
         DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
         </script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -126,8 +126,8 @@
     
     
     
-    <img src="../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe next documentation - Home"/>
-    <script>document.write(`<img src="../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe next documentation - Home"/>`);</script>
+    <img src="../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.4 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -478,7 +478,7 @@ required linker flags:</p>
 </div>
 <p>This will output something like the output below, it will vary depending on the
 features enabled/disabled.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-Wl,--whole-archive<span class="w"> </span>-Wl,--no-as-needed<span class="w"> </span>-lxnvme<span class="w"> </span>-Wl,--no-whole-archive<span class="w"> </span>-Wl,--as-needed<span class="w"> </span>-pthread<span class="w"> </span>-lrt<span class="w"> </span>-lm<span class="w"> </span>-lnuma<span class="w"> </span>-luuid<span class="w"> </span>-laio
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L/usr/local/lib/x86_64-linux-gnu<span class="w"> </span>-lxnvme
 </pre></div>
 </div>
 <p>You can pass the arguments above to your compiler, or using pkg-config like so:</p>
@@ -522,6 +522,7 @@ a simpler link-target.</p>
 <span class="w">    </span>dtype:<span class="w"> </span>0x2
 <span class="w">    </span>nsid:<span class="w"> </span>0x1
 <span class="w">    </span>csi:<span class="w"> </span>0x0
+<span class="w">    </span>subnqn:<span class="w"> </span><span class="s1">&#39;&#39;</span>
 <span class="w">  </span>xnvme_be:
 <span class="w">    </span>admin:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
 <span class="w">    </span>sync:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
@@ -529,25 +530,27 @@ a simpler link-target.</p>
 <span class="w">    </span>attr:<span class="w"> </span><span class="o">{</span>name:<span class="w"> </span><span class="s1">&#39;linux&#39;</span><span class="o">}</span>
 <span class="w">  </span>xnvme_opts:
 <span class="w">    </span>be:<span class="w"> </span><span class="s1">&#39;linux&#39;</span>
-<span class="w">    </span>mem:<span class="w"> </span><span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+<span class="w">    </span>mem:<span class="w"> </span><span class="s1">&#39;posix&#39;</span>
 <span class="w">    </span>dev:<span class="w"> </span><span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
 <span class="w">    </span>admin:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
 <span class="w">    </span>sync:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
 <span class="w">    </span>async:<span class="w"> </span><span class="s1">&#39;emu&#39;</span>
-<span class="w">    </span>oflags:<span class="w"> </span>0x4
 <span class="w">  </span>xnvme_geo:
-<span class="w">    </span>type:<span class="w"> </span>XNVME_GEO_CONVENTIONAL
-<span class="w">    </span>npugrp:<span class="w"> </span><span class="m">1</span>
-<span class="w">    </span>npunit:<span class="w"> </span><span class="m">1</span>
-<span class="w">    </span>nzone:<span class="w"> </span><span class="m">1</span>
-<span class="w">    </span>nsect:<span class="w"> </span><span class="m">2097152</span>
-<span class="w">    </span>nbytes:<span class="w"> </span><span class="m">4096</span>
+<span class="w">    </span>type:<span class="w"> </span>XNVME_GEO_UNKNOWN
+<span class="w">    </span>npugrp:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>npunit:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>nzone:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>nsect:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>nbytes:<span class="w"> </span><span class="m">0</span>
 <span class="w">    </span>nbytes_oob:<span class="w"> </span><span class="m">0</span>
-<span class="w">    </span>tbytes:<span class="w"> </span><span class="m">8589934592</span>
-<span class="w">    </span>mdts_nbytes:<span class="w"> </span><span class="m">520192</span>
-<span class="w">    </span>lba_nbytes:<span class="w"> </span><span class="m">4096</span>
+<span class="w">    </span>tbytes:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>mdts_nbytes:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>lba_nbytes:<span class="w"> </span><span class="m">0</span>
 <span class="w">    </span>lba_extended:<span class="w"> </span><span class="m">0</span>
-<span class="w">    </span>ssw:<span class="w"> </span><span class="m">12</span>
+<span class="w">    </span>ssw:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>pi_type:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>pi_loc:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>pi_format:<span class="w"> </span><span class="m">0</span>
 </pre></div>
 </div>
 <p>This should conclude the getting started guide of <strong>xNVMe</strong>, go ahead and
