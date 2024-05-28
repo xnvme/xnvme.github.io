@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libxnvme_lba.h &#8212; xNVMe v0.7.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=f9b80c38"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/extended/xnvme_lba';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="libxnvme_libconf.h" href="xnvme_libconf.html" />
+    <link rel="prev" title="libxnvme_kvs.h" href="xnvme_kvs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.4 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/index.html">Core</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_adm.html">libxnvme_adm.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_buf.html">libxnvme_buf.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_cmd.html">libxnvme_cmd.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_nvm.html">libxnvme_nvm.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_queue.html">libxnvme_queue.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Extended</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme_be.html">libxnvme_be.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">libxnvme_cli.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">libxnvme_file.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">libxnvme_geo.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">libxnvme_ident.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">libxnvme_kvs.h</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">libxnvme_lba.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">libxnvme_libconf.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">libxnvme_mem.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">libxnvme_opts.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_pi.html">libxnvme_pi.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_pp.html">libxnvme_pp.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">libxnvme_spec.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec_fs.html">libxnvme_spec_fs.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec_pp.html">libxnvme_spec_pp.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_topology.html">libxnvme_topology.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_util.html">libxnvme_util.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">libxnvme_ver.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">libxnvme_znd.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rust/index.html">Rust</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Extended</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">libxnvme_lba.h</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="libxnvme-lba-h">
+<span id="sec-api-c-xnvme-lba"></span><h1>libxnvme_lba.h<a class="headerlink" href="#libxnvme-lba-h" title="Link to this heading">#</a></h1>
+<section id="structs">
+<span id="sec-api-c-xnvme-lba-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Link to this heading">#</a></h2>
+<section id="xnvme-lba-range">
+<span id="sec-api-c-xnvme-lba-struct-xnvme-lba-range"></span><h3>xnvme_lba_range<a class="headerlink" href="#xnvme-lba-range" title="Link to this heading">#</a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_lba_range">
+<span class="target" id="structxnvme__lba__range"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range</span></span></span><a class="headerlink" href="#c.xnvme_lba_range" title="Link to this definition">#</a><br /></dt>
+<dd><p>Representation of a range of logical-block-addresses aka LBAs. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range.slba">
+<span class="target" id="structxnvme__lba__range_1a9d390c5afcd64f09290b7c5f750a2bbe"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">slba</span></span></span><a class="headerlink" href="#c.xnvme_lba_range.slba" title="Link to this definition">#</a><br /></dt>
+<dd><p>Range start-LBA; begins at and includes this address. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range.elba">
+<span class="target" id="structxnvme__lba__range_1a84f2cd51e27ea1f24f0306c70782ded6"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">elba</span></span></span><a class="headerlink" href="#c.xnvme_lba_range.elba" title="Link to this definition">#</a><br /></dt>
+<dd><p>Range end-LBA; ends at and includes this address. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range.naddrs">
+<span class="target" id="structxnvme__lba__range_1a89c45e97463c22c57769865c5445e722"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">naddrs</span></span></span><a class="headerlink" href="#c.xnvme_lba_range.naddrs" title="Link to this definition">#</a><br /></dt>
+<dd><p>Number of addresses in range [slba, elba]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range.nbytes">
+<span class="target" id="structxnvme__lba__range_1adffbe51c8c2ed72971e598dbfd23f207"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nbytes</span></span></span><a class="headerlink" href="#c.xnvme_lba_range.nbytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Number of bytes covered by [slba, elba]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range.attr">
+<span class="target" id="structxnvme__lba__range_1a4406cae74dd3cd47a67783103744fd71"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range_attr" title="xnvme_lba_range_attr"><span class="n"><span class="pre">xnvme_lba_range_attr</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">attr</span></span></span><a class="headerlink" href="#c.xnvme_lba_range.attr" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-attr">
+<span id="sec-api-c-xnvme-lba-struct-xnvme-lba-range-attr"></span><h3>xnvme_lba_range_attr<a class="headerlink" href="#xnvme-lba-range-attr" title="Link to this heading">#</a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_attr">
+<span class="target" id="structxnvme__lba__range__attr"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_attr</span></span></span><a class="headerlink" href="#c.xnvme_lba_range_attr" title="Link to this definition">#</a><br /></dt>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_attr.is_zoned">
+<span class="target" id="structxnvme__lba__range__attr_1a0a225e0a3f9dc75ba5323bcaa9b5d69a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_zoned</span></span></span><a class="headerlink" href="#c.xnvme_lba_range_attr.is_zoned" title="Link to this definition">#</a><br /></dt>
+<dd><p>Whether the range covers a zone [zslba, zslba + cap]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_attr.is_valid">
+<span class="target" id="structxnvme__lba__range__attr_1a9cccc3328dc56ccda15503385d4d4484"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_valid</span></span></span><a class="headerlink" href="#c.xnvme_lba_range_attr.is_valid" title="Link to this definition">#</a><br /></dt>
+<dd><p>Whether the range is valid. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="functions">
+<span id="sec-api-c-xnvme-lba-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<section id="xnvme-lba-range-fpr">
+<span id="sec-api-c-xnvme-lba-func-xnvme-lba-range-fpr"></span><h3>xnvme_lba_range_fpr<a class="headerlink" href="#xnvme-lba-range-fpr" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_fpr">
+<span class="target" id="libxnvme__lba_8h_1ae2c4e78e695dd71606c9c7c194ef42a0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_fpr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">FILE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">stream</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range"><span class="n"><span class="pre">xnvme_lba_range</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">range</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_fpr" title="Link to this definition">#</a><br /></dt>
+<dd><p>Prints the given backend attribute to the given output stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> – output stream used for printing </p></li>
+<li><p><strong>range</strong> – Pointer to the <a class="reference internal" href="#structxnvme__lba__range"><span class="std std-ref">xnvme_lba_range</span></a> to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme_pp.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-offset-nbytes">
+<span id="sec-api-c-xnvme-lba-func-xnvme-lba-range-from-offset-nbytes"></span><h3>xnvme_lba_range_from_offset_nbytes<a class="headerlink" href="#xnvme-lba-range-from-offset-nbytes" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_from_offset_nbytes">
+<span class="target" id="libxnvme__lba_8h_1a3eceda0f330124a328bb606a0396e163"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range"><span class="n"><span class="pre">xnvme_lba_range</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_from_offset_nbytes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_offset_nbytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes a range starting at the given byte-offset and spanning nbytes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="../core/xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>offset</strong> – Offset in bytes satisfying offset &lt; capacity </p></li>
+<li><p><strong>nbytes</strong> – Number of bytes, satisfying offset + nbytes &lt; capacity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-slba-elba">
+<span id="sec-api-c-xnvme-lba-func-xnvme-lba-range-from-slba-elba"></span><h3>xnvme_lba_range_from_slba_elba<a class="headerlink" href="#xnvme-lba-range-from-slba-elba" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_from_slba_elba">
+<span class="target" id="libxnvme__lba_8h_1a6085f6555bdd9c068d3f46a28516fbab"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range"><span class="n"><span class="pre">xnvme_lba_range</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_from_slba_elba</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">elba</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_slba_elba" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes a range starting at the given start-lba (slba) and spanning naddrs. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="../core/xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>slba</strong> – A valid lba on the given dev </p></li>
+<li><p><strong>elba</strong> – A valid lba on the given dev</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-slba-naddrs">
+<span id="sec-api-c-xnvme-lba-func-xnvme-lba-range-from-slba-naddrs"></span><h3>xnvme_lba_range_from_slba_naddrs<a class="headerlink" href="#xnvme-lba-range-from-slba-naddrs" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_from_slba_naddrs">
+<span class="target" id="libxnvme__lba_8h_1ade9982b041683555133b64cd70aa1cbc"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range"><span class="n"><span class="pre">xnvme_lba_range</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_from_slba_naddrs</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">naddrs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_slba_naddrs" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes a range starting at the given start-lba (slba) and spanning naddrs. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="../core/xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>slba</strong> – A valid lba on the given dev </p></li>
+<li><p><strong>naddrs</strong> – A non-zero number of addresses, satisfying slba + naddrs &lt; device capacity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-from-zdescr">
+<span id="sec-api-c-xnvme-lba-func-xnvme-lba-range-from-zdescr"></span><h3>xnvme_lba_range_from_zdescr<a class="headerlink" href="#xnvme-lba-range-from-zdescr" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_from_zdescr">
+<span class="target" id="libxnvme__lba_8h_1ac5c6b3f92c00c35dee69f3d056671357"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range"><span class="n"><span class="pre">xnvme_lba_range</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_from_zdescr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_descr" title="xnvme_spec_znd_descr"><span class="n"><span class="pre">xnvme_spec_znd_descr</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">zdescr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_from_zdescr" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes a range starting at the given zone-start-LBA and spanning zone-capacity. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="../core/xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>zdescr</strong> – Pointer to a zone-descriptor valid on the given dev</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, an initialized range is returned by value with attr.is_valid = 1. On error, a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-lba-range-pr">
+<span id="sec-api-c-xnvme-lba-func-xnvme-lba-range-pr"></span><h3>xnvme_lba_range_pr<a class="headerlink" href="#xnvme-lba-range-pr" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_lba_range_pr">
+<span class="target" id="libxnvme__lba_8h_1aacab3f1baf6ca02e950ea7eaa9184562"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_lba_range_pr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_lba_range" title="xnvme_lba_range"><span class="n"><span class="pre">xnvme_lba_range</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">range</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_lba_range_pr" title="Link to this definition">#</a><br /></dt>
+<dd><p>Prints the given backend attribute to stdout. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>range</strong> – Pointer to the <a class="reference internal" href="#structxnvme__lba__range"><span class="std std-ref">xnvme_lba_range</span></a> to print </p></li>
+<li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="xnvme_pp.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, the number of characters printed is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="header">
+<span id="sec-api-c-xnvme-lba-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_lba.h</span>
+<span class="cm"> */</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range_attr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">is_zoned</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range covers a zone [zslba, zslba + cap]</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">is_valid</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Whether the range is valid</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Representation of a range of logical-block-addresses aka LBAs</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_lba_range</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Range start-LBA; begins at and includes this address</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">elba</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Range end-LBA; ends at and includes this address</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">naddrs</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of addresses in range [slba, elba]</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Number of bytes covered by [slba, elba]</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range_attr</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given backend attribute to the given output stream</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param stream output stream used for printing</span>
+<span class="cm"> * @param range Pointer to the ::xnvme_lba_range to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_lba_range_fpr</span><span class="p">(</span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span><span class="w"> </span><span class="o">*</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given backend attribute to stdout</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param range Pointer to the ::xnvme_lba_range to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_lba_range_pr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span><span class="w"> </span><span class="o">*</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given byte-offset and spanning nbytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param offset Offset in bytes satisfying offset &lt; capacity</span>
+<span class="cm"> * @param nbytes Number of bytes, satisfying offset + nbytes &lt; capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_offset_nbytes</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given start-lba (slba) and spanning naddrs</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param slba A valid lba on the given dev</span>
+<span class="cm"> * @param elba A valid lba on the given dev</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_slba_elba</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">elba</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given start-lba (slba) and spanning naddrs</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param slba A valid lba on the given dev</span>
+<span class="cm"> * @param naddrs A non-zero number of addresses, satisfying slba + naddrs &lt; device capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_slba_naddrs</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">naddrs</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initializes a range starting at the given zone-start-LBA and spanning zone-capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param zdescr Pointer to a zone-descriptor valid on the given dev</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an initialized range is returned by value with attr.is_valid = 1. On error,</span>
+<span class="cm"> * a potential non, or partially, initialized struct is returned by value with attr.is_valid = 0.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_lba_range</span>
+<span class="n">xnvme_lba_range_from_zdescr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_znd_descr</span><span class="w"> </span><span class="o">*</span><span class="n">zdescr</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
