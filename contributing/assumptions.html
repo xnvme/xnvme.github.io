@@ -1,0 +1,608 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Code Assumptions &#8212; xNVMe v0.7.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=f9b80c38"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing/assumptions';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Release Checklist" href="release-checklist.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.4 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="contributing-process.html">Contribution Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing-toolbox.html">Toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing-branches.html">Branches</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ci/index.html">CI</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="ci/bench/index.html">Bench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ci/verify/index.html">Verify</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="packaging/index.html">Packaging</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="packaging/aur/index.html">Arch Linux (AUR - <code class="docutils literal notranslate"><span class="pre">pacman</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging/brew/index.html">macOS (<code class="docutils literal notranslate"><span class="pre">brew</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging/windows/index.html">Windows (<code class="docutils literal notranslate"><span class="pre">choco</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release-checklist.html">Release Checklist</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Code Assumptions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Contributing</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Code Assumptions</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="code-assumptions">
+<span id="sec-contributing-assumptions"></span><h1>Code Assumptions<a class="headerlink" href="#code-assumptions" title="Link to this heading">#</a></h1>
+<p>These are notes on contracts and assumptions in the <strong>xNVMe</strong> codebase. These
+are written down separate from the code for more convenient reading. Thus,
+whenever code-changes are made that alter assumptions and contracts described
+herein, then this document must be updated as well as part of the change-set.</p>
+<section id="the-device-handle-contract">
+<h2>The device handle contract<a class="headerlink" href="#the-device-handle-contract" title="Link to this heading">#</a></h2>
+<p>Device handles are opaque pointers of type <code class="xref c c-struct docutils literal notranslate"><span class="pre">xnvme_dev</span></code>.
+Device handles are obtained via the public <strong>xNVMe</strong> API
+call <a class="reference internal" href="../api/core/xnvme_dev.html#c.xnvme_dev_open" title="xnvme_dev_open"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code></a>, and released via a call
+to <a class="reference internal" href="../api/core/xnvme_dev.html#c.xnvme_dev_close" title="xnvme_dev_close"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_close()</span></code></a>.</p>
+<p>The entities involved in the implementation of this and their individual
+responsibility in setting up the data-structure is described in this section
+here.</p>
+<p>These functions are implemented in the library-private <strong>device module</strong>
+(<code class="docutils literal notranslate"><span class="pre">xnvme_dev.c</span></code>). The <strong>device module</strong> is responsible for allocating
+and initializing the data-structure associated with and encapsulating the
+device handle upon <a class="reference internal" href="../api/core/xnvme_dev.html#c.xnvme_dev_open" title="xnvme_dev_open"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code></a> and freeing these resources
+upon <a class="reference internal" href="../api/core/xnvme_dev.html#c.xnvme_dev_close" title="xnvme_dev_close"><code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_dev_close()</span></code></a>.</p>
+<p>Device handles are system interface specific; file-descriptors on UNIX-like
+systems, opaque pointers on Windows, typed pointers in user-space drivers
+such as SPDK, etc. Thus, the <strong>device module</strong> is only responsible for generic
+initialization, it delagates these system specifics to the <strong>backend module</strong>
+(<code class="docutils literal notranslate"><span class="pre">xnvme_be.c</span></code>).</p>
+<p>The library-private <strong>backend module</strong> in turn, defines a <strong>backend
+interface</strong> (<code class="docutils literal notranslate"><span class="pre">xnvme_be.h</span></code>) and implements a <strong>backend factory</strong>
+(<code class="xref c c-func docutils literal notranslate"><span class="pre">xnvme_be_factory()</span></code>). The <strong>backend factory</strong> knows of all
+<strong>backends</strong> implementing the <strong>backend interface</strong>.</p>
+<p>Thus, to obtain a system specific handle it delegates to each <strong>backend</strong>,
+in turn, the implementation of obtaining a system interface specific device
+handle, for a given <strong>device identifier</strong>, is handled by the first <strong>backend
+implementation</strong> (<code class="docutils literal notranslate"><span class="pre">xnvme_be_*_dev.c</span></code>) capable of producing a handle.</p>
+<p>In other words, the <strong>backend factory</strong> chooses the first <strong>backend</strong> capable
+of returning a system interface specific device handle and the system interface
+specific handle produced by the <strong>backend</strong>.</p>
+<p>The entities described above are those involved in the setup of a xNVMe
+device handle. The xNVMe device handle is opaque, that is the details of its
+representation is hidden from the user. Thus, functions are provided to retrieve
+data about a given device handle.</p>
+<p>However, described here are the details on how the representation is
+constructed by the library-private: <strong>device module</strong>, <strong>backend module</strong>,
+and instances of the <strong>backend interface</strong> implementation aka <strong>backends</strong>
+(<code class="docutils literal notranslate"><span class="pre">xnvme_be_{spdk,vfio,linux,fbsd,windows}_*.c`</span></code>).</p>
+<section id="identification-and-geometry">
+<h3>Identification and Geometry<a class="headerlink" href="#identification-and-geometry" title="Link to this heading">#</a></h3>
+<p>The structure encapsulating the <strong>device handle</strong> is library-private, however,
+for contributions to <strong>backends</strong>, <strong>device module</strong>, and related, then a bit of
+info on how it is setup is useful, it is provided below.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assigned by xnvme_be_factory()</span>
+dev.be
+
+<span class="c1"># The backend-factory copies the opts and adjusts them to the options</span>
+<span class="c1"># describing the backend, thus showing which &quot;configuration&quot; it ended up with</span>
+dev.opts
+
+<span class="c1"># Initialized by xnvme_dev_open() using helper xnvme_ident_from_uri(), then</span>
+<span class="c1"># backends further manipulate the structure</span>
+dev.ident
+
+<span class="c1"># These are setup by the backend as it is &quot;opening&quot; the device, here it might</span>
+<span class="c1"># do simple things such as fstat() on Linux to determine whether the device</span>
+<span class="c1"># handle is a block-device or a char-device to indicate the ident.dtype</span>
+dev.ident.dtype
+
+<span class="c1"># The device module assigns this in the identification-helper _dev_idfy()</span>
+dev.ident.subnqn
+
+<span class="c1"># Each backend-implementation sets these up after they have created a</span>
+<span class="c1"># system-interface-specific device handle</span>
+dev.ident.dtype
+dev.ident.nsid
+dev.ident.csi
+
+dev.is_derived<span class="w"> </span><span class="c1"># setup by xnvme_dev_get_*() access after calling xnvme_dev_derive_geometry()</span>
+
+<span class="c1"># These are assigned by the device module at &quot;identification-time&quot;</span>
+dev.id.ctrlr
+dev.id.ns
+dev.idcss.ctrlr
+dev.idcss.ns
+dev.attempted_dev_idfy
+
+<span class="c1"># Populated by the device module using the helper xnvme_dev_derive_geometry()</span>
+dev.geo
+
+<span class="c1"># Set by xnvme_dev_derive_geometry()</span>
+dev.attempted_derive_geo
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

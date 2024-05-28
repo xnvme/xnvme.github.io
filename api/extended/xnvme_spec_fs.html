@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libxnvme_spec_fs.h &#8212; xNVMe v0.7.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=f9b80c38"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/extended/xnvme_spec_fs';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="libxnvme_spec_pp.h" href="xnvme_spec_pp.html" />
+    <link rel="prev" title="libxnvme_spec.h" href="xnvme_spec.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.4 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.4 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../getting_started/index.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../backends/index.html">
+                        Backends
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tools/index.html">
+                        Tools
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        API
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorial/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../material/index.html">
+                        Material
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../core/index.html">Core</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_adm.html">libxnvme_adm.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_buf.html">libxnvme_buf.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_cmd.html">libxnvme_cmd.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_nvm.html">libxnvme_nvm.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/xnvme_queue.html">libxnvme_queue.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Extended</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="xnvme_be.html">libxnvme_be.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_cli.html">libxnvme_cli.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_file.html">libxnvme_file.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_geo.html">libxnvme_geo.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ident.html">libxnvme_ident.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_kvs.html">libxnvme_kvs.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_lba.html">libxnvme_lba.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_libconf.html">libxnvme_libconf.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_mem.html">libxnvme_mem.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_opts.html">libxnvme_opts.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_pi.html">libxnvme_pi.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_pp.html">libxnvme_pp.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec.html">libxnvme_spec.h</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">libxnvme_spec_fs.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_spec_pp.html">libxnvme_spec_pp.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_topology.html">libxnvme_topology.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_util.html">libxnvme_util.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_ver.html">libxnvme_ver.h</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xnvme_znd.html">libxnvme_znd.h</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">C API Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rust/index.html">Rust</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">API</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Extended</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">libxnvme_spec_fs.h</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="libxnvme-spec-fs-h">
+<span id="sec-api-c-xnvme-spec-fs"></span><h1>libxnvme_spec_fs.h<a class="headerlink" href="#libxnvme-spec-fs-h" title="Link to this heading">#</a></h1>
+<section id="enums">
+<span id="sec-api-c-xnvme-spec-fs-enum"></span><h2>Enums<a class="headerlink" href="#enums" title="Link to this heading">#</a></h2>
+<section id="xnvme-spec-fs-opcs">
+<span id="sec-api-c-xnvme-spec-fs-enum-xnvme-spec-fs-opcs"></span><h3>xnvme_spec_fs_opcs<a class="headerlink" href="#xnvme-spec-fs-opcs" title="Link to this heading">#</a></h3>
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs">
+<span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_fs_opcs</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_FLUSH">
+<span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945a2e1c01b5dabdfb15666e32d0e571d2ff"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_FS_OPC_FLUSH</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_FLUSH" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_WRITE">
+<span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945a913c04df445c5c9d3f8b92bb68a873c8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_FS_OPC_WRITE</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_WRITE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_READ">
+<span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945afaa453907841dfa2829b6bff6e4aa499"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_FS_OPC_READ</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_READ" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="structs">
+<span id="sec-api-c-xnvme-spec-fs-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Link to this heading">#</a></h2>
+<section id="xnvme-spec-fs-idfy-ctrlr">
+<span id="sec-api-c-xnvme-spec-fs-struct-xnvme-spec-fs-idfy-ctrlr"></span><h3>xnvme_spec_fs_idfy_ctrlr<a class="headerlink" href="#xnvme-spec-fs-idfy-ctrlr" title="Link to this heading">#</a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_fs_idfy_ctrlr</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr" title="Link to this definition">#</a><br /></dt>
+<dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
+<p>SPDX-License-Identifier: BSD-3-Clause Encapsulate file-system properties as Identify Controller </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.byte0_519">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1abbed5219ed21740ad19f270f9258a50a"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">byte0_519</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">520</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.byte0_519" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.caps">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1aa0faa84d5dae823b9895bfb1e6edd05f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_fs_idfy_ctrlr" title="xnvme_spec_fs_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_fs_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">caps</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.caps" title="Link to this definition">#</a><br /></dt>
+<dd><p>File System Capabilities. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.limits">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1a4cf3d3d263cff6e29f43b603e9694271"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_fs_idfy_ctrlr" title="xnvme_spec_fs_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_fs_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">limits</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.limits" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.properties">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1ac6c638d2b468c2c47f50c51827758b11"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_fs_idfy_ctrlr" title="xnvme_spec_fs_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_fs_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">properties</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.properties" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.iosizes">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1af41cdcca4c38ebb63977824e700efaa6"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_spec_fs_idfy_ctrlr" title="xnvme_spec_fs_idfy_ctrlr"><span class="n"><span class="pre">xnvme_spec_fs_idfy_ctrlr</span></span></a><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iosizes</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.iosizes" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.rsvd">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1af78a74928aabc465ab2c07f9456132d6"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3509</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.rsvd" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.ac">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1a1e70437e4dedf930b29be4c812803276"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ac</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.ac" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ctrlr.dc">
+<span class="target" id="structxnvme__spec__fs__idfy__ctrlr_1aca653e13177a3984b202330c9e794677"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dc</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ctrlr.dc" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="xnvme-spec-fs-idfy-ns">
+<span id="sec-api-c-xnvme-spec-fs-struct-xnvme-spec-fs-idfy-ns"></span><h3>xnvme_spec_fs_idfy_ns<a class="headerlink" href="#xnvme-spec-fs-idfy-ns" title="Link to this heading">#</a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns">
+<span class="target" id="structxnvme__spec__fs__idfy__ns"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_fs_idfy_ns</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns" title="Link to this definition">#</a><br /></dt>
+<dd><p>Encapsulate file properties as Identify Namespace. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.nsze">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1a93b2b062c5886d54c4203e321cc454b4"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nsze</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.nsze" title="Link to this definition">#</a><br /></dt>
+<dd><p>Total size of the underlying file-system, in bytes. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.ncap">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1ab00f0faa8802123461993776298dab23"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ncap</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.ncap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Total size that can be allocated to a file, in bytes. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.nuse">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1a8c3589b78e7802b0002aee6ae917fb16"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nuse</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.nuse" title="Link to this definition">#</a><br /></dt>
+<dd><p>The current size of file, in bytes. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.rsvd">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1aeb4abd18f73cca9fad30caecf03e32cb"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rsvd</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3816</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.rsvd" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.vendor_specific">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1a6766f4efc0564a4886187ce2e582272d"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vendor_specific</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">254</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.vendor_specific" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.ac">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1a8949c883afdc567e3a26158cd1094bcc"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ac</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.ac" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_spec_fs_idfy_ns.dc">
+<span class="target" id="structxnvme__spec__fs__idfy__ns_1ad91b8b2b7b416e7699be5f0ee6de7b88"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dc</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_idfy_ns.dc" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="header">
+<span id="sec-api-c-xnvme-spec-fs-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_spec_fs.h</span>
+<span class="cm"> */</span>
+
+<span class="cp">#ifndef __LIBXNVME_SPEC_FS_H</span>
+<span class="cp">#define __LIBXNVME_SPEC_FS_H</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Encapsulate file-system properties as Identify Controller</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_fs_idfy_ctrlr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">byte0_519</span><span class="p">[</span><span class="mi">520</span><span class="p">];</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">direct</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Direct I/O possible, e.g. by-passing OS caching</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">rsvd</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="mi">63</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">caps</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; File System Capabilities</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">file_data_size</span><span class="p">;</span><span class="w">  </span><span class="c1">///&lt; Maximum size of file content, in bytes</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">file_name_len</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Maximum length of file-names, in bytes</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">path_name_len</span><span class="p">;</span><span class="w">   </span><span class="c1">///&lt; Maximum length of file-paths, in bytes</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">number_of_files</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Maximum number of files</span>
+<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">limits</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">permissions_posix</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Supports POSIX permissions</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">permissions_acl</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Supports Access-control-lists</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">stamp_creation</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">stamp_access</span><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">stamp_change</span><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">stamp_archive</span><span class="w">     </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">hardlinks</span><span class="w">         </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">symlinks</span><span class="w">          </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">case_sensitive</span><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">case_preserving</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">journaling_block</span><span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">journaling_meta</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">snapshotting</span><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">compressed</span><span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">encrypted</span><span class="w">         </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">		</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">rsvd</span><span class="w">              </span><span class="o">:</span><span class="w"> </span><span class="mi">48</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">properties</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">min</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">max</span><span class="p">;</span>
+<span class="w">		</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">opt</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="n">iosizes</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">rsvd</span><span class="p">[</span><span class="mi">3509</span><span class="p">];</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ac</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">dc</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_fs_idfy_ctrlr</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Encapsulate file properties as Identify Namespace</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_fs_idfy_ns</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nsze</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Total size of the underlying file-system, in bytes</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">ncap</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Total size that can be allocated to a file, in bytes</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">nuse</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; The current size of file, in bytes</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">rsvd</span><span class="p">[</span><span class="mi">3816</span><span class="p">];</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">vendor_specific</span><span class="p">[</span><span class="mi">254</span><span class="p">];</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ac</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">dc</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_fs_idfy_ns</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_spec_fs_opcs</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_FLUSH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAD</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_WRITE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAC</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_READ</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0xDC</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="cp">#define XNVME_SPEC_CSI_FS 0x1F</span>
+
+<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_SPEC_FS_H */</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
