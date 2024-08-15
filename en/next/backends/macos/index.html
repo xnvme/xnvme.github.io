@@ -492,18 +492,58 @@ document.write(`
                   
   <section id="macos">
 <span id="sec-backends-macos"></span><h1>macOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h1>
-<p>…</p>
-<section id="device-identifiers">
-<span id="sec-backends-macos-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
-<p>…</p>
-</section>
 <section id="system-configuration">
-<span id="sec-backends-macos-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
-<p>…</p>
+<span id="sec-backends-macos-configuration"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+<p>To use the macOS backend you need to be running macOS. xNVMe is likely to
+work on multiple different versions of macOS, however to ensure compatibility
+we recommend choosing among the versions listed in the <a class="reference internal" href="../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a>
+section.</p>
+</section>
+<section id="device-identifiers">
+<span id="sec-backends-macos-identification"></span><h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
+<p>macOS exposes NVMe devices as files using the following naming schemes:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/disk{ctrlr_id}</span></code></dt><dd><p><strong>NVMe</strong> Controller device node</p>
+</dd>
+</dl>
 </section>
 <section id="instrumentation">
 <span id="sec-backends-macos-instrumentation"></span><h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
-<p>…</p>
+<p>The backend identifier for the macOS backend is: <code class="docutils literal notranslate"><span class="pre">macos</span></code>. The macOS backend
+encapsulates the interfaces below. Some of these are <strong>mix-ins</strong> from the
+<strong>Common-Backend Implementations</strong>. For these, links point to descriptions in
+the CBI section. For the macOS-specific interfaces, descriptions are available in the
+corresponding subsections.</p>
+<ul class="simple">
+<li><p>Memory Allocators</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">posix`</span></code>, Use <strong>libc</strong> <code class="docutils literal notranslate"><span class="pre">malloc()/free()</span></code> with <code class="docutils literal notranslate"><span class="pre">sysconf()</span></code> for
+alignment, add link to CBI</p></li>
+</ul>
+</li>
+<li><p>Asynchronous Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">emu</span></code>, add link to CBI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">posix</span></code>, add link to CBI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code>, add link to CBI</p></li>
+</ul>
+</li>
+<li><p>Synchronous Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">macos</span></code>, Use pread()/write() for synchronous I/O</p></li>
+</ul>
+</li>
+<li><p>Admin Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">macos</span></code>, Use macOS NVMe SMART Interface admin commands</p></li>
+</ul>
+</li>
+<li><p>Device Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">macos</span></code>, Use macOS file/dev handles and enumerate NVMe devices</p></li>
+</ul>
+</li>
+</ul>
 </section>
 </section>
 
@@ -529,8 +569,8 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a></li>
 </ul>
   </nav></div>

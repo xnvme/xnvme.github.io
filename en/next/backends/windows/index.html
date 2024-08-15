@@ -495,19 +495,63 @@ document.write(`
 <p>The Windows backend communicates with the Windows NVMe driver StorNVMe.sys via
 IOCTLs. The backend relies on the NVMe pass-through through IOCTLs to submit
 admin, IO and arbitrary user-defined commands.</p>
-<section id="device-identifiers">
-<h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
-<p>…</p>
-</section>
 <section id="system-configuration">
 <h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
-<p>Windows 10 or later version is currently preferred as it has all the features
-which <strong>xNVMe</strong> utilizes. This section also gives you a brief overview of the
-different I/O paths and APIs which the <strong>xNVMe</strong> API unifies access to.</p>
+<p>To use the Windows backend you need to be running Windows. xNVMe is likely
+to work on multiple different versions of Windows, however Windows 10, or
+later, is recommended as it has all the features which <strong>xNVMe</strong> utilizes.
+Alternatively, to ensure compatibility, you can use the version listed in
+the <a class="reference internal" href="../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a> section.</p>
+</section>
+<section id="device-identifiers">
+<h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
+<p>Windows exposes NVMe devices as files using the following naming schemes:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">\\.\PhysicalDrive{ctrlr_id}</span></code></dt><dd><p><strong>NVMe</strong> Controller device node</p>
+</dd>
+</dl>
 </section>
 <section id="instrumentation">
 <h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
-<p>…</p>
+<p>The backend identifier for the Windows backend is: <code class="docutils literal notranslate"><span class="pre">windows</span></code>. The Windows backend
+encapsulates the interfaces below. Some of these are <strong>mix-ins</strong> from the
+<strong>Common-Backend Implementations</strong>. For these, links point to descriptions in
+the CBI section. For the Windows-specific interfaces, descriptions are available in the
+corresponding subsections.</p>
+<ul class="simple">
+<li><p>Memory Allocators</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">windows`</span></code>, Use Windows memory allocator</p></li>
+</ul>
+</li>
+<li><p>Asynchronous Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">iocp</span></code>, Use Windows readfile/writefile with overlapped(iocp) for Asynchronous I/O</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iocp_th</span></code>, Use Windows readfile/writefile with thread based overlapped(iocp) for Asynchronous I/O</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">io_ring</span></code>, Use Windows io_ring for Asynchronous I/O</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">emu</span></code>, add link to CBI</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code>, add link to CBI</p></li>
+</ul>
+</li>
+<li><p>Synchronous Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">nvme</span></code>, Use Windows NVMe Driver ioctl() for synchronous I/O</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>, Use Windows File System APIs and readfile()/writefile() for I/O</p></li>
+</ul>
+</li>
+<li><p>Admin Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">nvme</span></code>, Use Windows NVMe Driver ioctl() for admin commands</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">block</span></code>, Use Windows NVMe Driver ioctl() for admin commands</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>, Use Windows File System APIs for admin commands</p></li>
+</ul>
+</li>
+<li><p>Device Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">windows</span></code>, Use Windows file/dev handles and enumerate NVMe devices</p></li>
+</ul>
+</li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -535,8 +579,8 @@ different I/O paths and APIs which the <strong>xNVMe</strong> API unifies access
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a></li>
 </ul>
   </nav></div>
