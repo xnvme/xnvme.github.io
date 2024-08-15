@@ -492,34 +492,44 @@ document.write(`
                   
   <section id="linux">
 <span id="sec-backends-linux"></span><h1>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h1>
-<p>…</p>
-<section id="device-identifiers">
-<h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
-<p>Linux exposes storage devices as device files using the following naming schemes.</p>
+<section id="system-configuration">
+<span id="sec-backends-linux-configuration"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+<p>To use the Linux backend you need to be running a Linux distribution. xNVMe
+is likely to work on most Linux distributions, however to ensure compatibility
+we recommend using one of the distributions listed in the <a class="reference internal" href="../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a>
+section.</p>
+<p>To use the async. interfaces <code class="docutils literal notranslate"><span class="pre">libaio</span></code>, <code class="docutils literal notranslate"><span class="pre">io_uring</span></code>, and <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code>
+they need to be enabled in the Linux Kernel. You can check for support by
+running the command <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">/boot/config-$(uname</span> <span class="pre">-r)</span></code>. If the output includes
+<code class="docutils literal notranslate"><span class="pre">CONFIG_AIO=y</span></code> and <code class="docutils literal notranslate"><span class="pre">CONFIG_IO_URING=y</span></code>, then there is support for <code class="docutils literal notranslate"><span class="pre">libaio</span></code>
+and <code class="docutils literal notranslate"><span class="pre">io_uring</span></code>, respectively. Note, it is slightly more complicated to
+check whether <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code> is supported. In general, you can assume it is
+supported if your kernel version is 5.19 or newer and <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> is supported.</p>
+</section>
+<section id="device-identification">
+<span id="sec-backends-linux-identification"></span><h2>Device Identification<a class="headerlink" href="#device-identification" title="Link to this heading">#</a></h2>
+<p>Linux exposes storage devices as files using the following naming schemes:</p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_num}</span></code></dt><dd><p><strong>NVMe</strong> Controllers as character device</p>
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_num}</span></code></dt><dd><p><strong>NVMe</strong> Controller as character device</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_num}n{namespace_num}</span></code></dt><dd><p><strong>NVMe</strong> Namespace as block device (Command-Sets: NVM, ZNS)</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">/dev/ng{ctrlr_num}n{namespace_num}</span></code></dt><dd><p><strong>NVMe</strong> Namespace as characater device (Command-sets: Key-Value, ZNS-nonpo2, etc.)</p>
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/ng{ctrlr_num}n{namespace_num}</span></code></dt><dd><p><strong>NVMe</strong> Namespace as character device (Command-sets: Key-Value, ZNS-nonpo2, etc.)</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">/dev/sd{a-z}</span></code></dt><dd><p>Block device representing multiple devivces: <strong>SCSI</strong>, <strong>SATA</strong>,
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/sd{a-z}</span></code></dt><dd><p>Block device representing multiple devices: <strong>SCSI</strong>, <strong>SATA</strong>,
 <strong>USB</strong>-Sticks, etc.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">/dev/hd{a-z}</span></code></dt><dd><p><strong>IDE</strong> Drives (Harddisk, CD/DVD Drives)</p>
 </dd>
 </dl>
 </section>
-<section id="system-configuration">
-<h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
-<p>… notes on io_uring support kernel versions on mainline kernel.</p>
-</section>
-<section id="instrumentation">
-<h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
+<section id="backend-instrumentation">
+<span id="sec-backends-linux-instrumentation"></span><h2>Backend Instrumentation<a class="headerlink" href="#backend-instrumentation" title="Link to this heading">#</a></h2>
 <p>The backend identifier for the Linux backend is: <code class="docutils literal notranslate"><span class="pre">linux</span></code>. The Linux backend
-encapsulate the interfaces below, some of these are <strong>mix-ins</strong> from the
-<strong>Common-Backend Implementations</strong> for these, links point to descriptions in the
-CBI section. For the Linux-specific, descriptions are available in subsection.</p>
+encapsulates the interfaces below. Some of these are <strong>mix-ins</strong> from the
+<strong>Common-Backend Implementations</strong>. For these, links point to descriptions in
+the CBI section. For the Linux-specific interfaces, descriptions are available
+in the corresponding subsection.</p>
 <ul class="simple">
 <li><p>Memory Allocators</p>
 <ul>
@@ -530,9 +540,9 @@ alignment, add link to CBI</p></li>
 </li>
 <li><p>Asynchronous Interfaces</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">libaio</span></code>, Linux Asynchronous IO.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">io_uring</span></code>, the efficient Linux IO interface, io_uring.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code>, the efficient Linux IO interface, io_uring.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libaio</span></code>, Use Linux aio for Asynchronous I/O</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">io_uring</span></code>, Use Linux io_uring for Asynchronous I/O</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code>, Use Linux io_uring passthru command for Asynchronous I/O</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">emu</span></code>, add link to CBI</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">posix</span></code>, add link to CBI</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code>, add link to CBI</p></li>
@@ -548,6 +558,7 @@ alignment, add link to CBI</p></li>
 </li>
 <li><p>Admin Interfaces</p>
 <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">nvme</span></code>, Use Linux NVMe Driver ioctl() for admin commands</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">block</span></code>, Use Linux Block Layer ioctl() and sysfs for admin commands</p></li>
 </ul>
 </li>
@@ -634,9 +645,9 @@ xnvme_dev:
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identification">Device Identification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-instrumentation">Backend Instrumentation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
 </li>

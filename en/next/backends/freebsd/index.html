@@ -492,32 +492,35 @@ document.write(`
                   
   <section id="freebsd">
 <span id="sec-backends-freebsd"></span><h1>FreeBSD<a class="headerlink" href="#freebsd" title="Link to this heading">#</a></h1>
-<section id="device-identifiers">
-<span id="sec-backends-freebsd-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
-<p>FreeBSD expose NVMe devices via the following device-files:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_id}</span></code>, NVMe Controller device node</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_id}ns{ns_id}</span></code>, NVMe Namespace as device node</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/dev/nda{num}</span></code>, NVMe Namespace as storage device node</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/dev/nvd{num}</span></code>, NVMe Namespace as disk drive</p></li>
-</ul>
-<p>For details see the following man-pages:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvme</span><span class="p">,</span> <span class="n">nda</span><span class="p">,</span> <span class="n">nvd</span><span class="p">,</span> <span class="n">pci</span><span class="p">,</span> <span class="n">disk</span><span class="p">,</span> <span class="ow">and</span> <span class="n">nvmecontrol</span>
-</pre></div>
-</div>
-<p>The FreeBSD backend uses synchronous <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> calls to have the kernel perform
-NVMe commands.</p>
-</section>
 <section id="system-configuration">
 <span id="sec-backends-freebsd-configuration"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
-<p>… notes on io_uring support kernel versions on mainline kernel.</p>
+<p>To use the FreeBSD backend you need to be running FreeBSD. xNVMe is likely to
+work on multiple different versions of FreeBSD, however to ensure compatibility
+we recommend using a version listed in the <a class="reference internal" href="../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a> section.</p>
 </section>
-<section id="instrumentation">
-<span id="sec-backends-freebsd-instrumentation"></span><h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
-<p>The backend identifier for the Linux backend is: <code class="docutils literal notranslate"><span class="pre">linux</span></code>. The Linux backend
-encapsulate the interfaces below, some of these are <strong>mix-ins</strong> from the
-<strong>Common-Backend Implementations</strong> for these, links point to descriptions in the
-CBI section. For the Linux-specific, descriptions are available in subsection.</p>
+<section id="device-identification">
+<span id="sec-backends-freebsd-identification"></span><h2>Device Identification<a class="headerlink" href="#device-identification" title="Link to this heading">#</a></h2>
+<p>FreeBSD exposes NVMe devices as files using the following naming schemes:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_id}</span></code></dt><dd><p><strong>NVMe</strong> Controller device node</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_id}ns{ns_id}</span></code></dt><dd><p><strong>NVMe</strong> Namespace as device node</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/nda{num}</span></code></dt><dd><p><strong>NVMe</strong> Namespace as storage device node</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">/dev/nvd{num}</span></code></dt><dd><p><strong>NVMe</strong> Namespace as disk drive</p>
+</dd>
+</dl>
+<p>For details see the man-pages for <code class="docutils literal notranslate"><span class="pre">nvme</span></code>, <code class="docutils literal notranslate"><span class="pre">nda</span></code>, <code class="docutils literal notranslate"><span class="pre">nvd</span></code>, <code class="docutils literal notranslate"><span class="pre">pci</span></code>, <code class="docutils literal notranslate"><span class="pre">disk</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">nvmecontrol</span></code>.</p>
+</section>
+<section id="backend-instrumentation">
+<span id="sec-backends-freebsd-instrumentation"></span><h2>Backend Instrumentation<a class="headerlink" href="#backend-instrumentation" title="Link to this heading">#</a></h2>
+<p>The backend identifier for the FreeBSD backend is: <code class="docutils literal notranslate"><span class="pre">fbsd</span></code>. The FreeBSD backend
+encapsulates the interfaces below. Some of these are <strong>mix-ins</strong> from the
+<strong>Common-Backend Implementations</strong>. For these, links point to descriptions in
+the CBI section. For the FreeBSD-specific interfaces, descriptions are available in the
+corresponding subsections.</p>
 <ul class="simple">
 <li><p>Memory Allocators</p>
 <ul>
@@ -527,7 +530,7 @@ alignment, add link to CBI</p></li>
 </li>
 <li><p>Asynchronous Interfaces</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">kqueue</span></code>, add link to section here</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kqueue</span></code>, Use kqueue based aio for Asynchronous I/O</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">posix</span></code>, add link to CBI</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">emu</span></code>, add link to CBI</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code>, add link to CBI</p></li>
@@ -540,16 +543,17 @@ alignment, add link to CBI</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">psync</span></code>, Use pread()/write() for synchronous I/O</p></li>
 </ul>
 </li>
+<li><p>Admin Interfaces</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">nvme</span></code>, Use FreeBSD NVMe Driver ioctl() for admin commands</p></li>
+</ul>
+</li>
 <li><p>Device Interfaces</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">linux</span></code>, Use Linux file/dev handles and enumerate NVMe devices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fbsd</span></code>, Use FreeBSD file/dev handles and enumerate NVMe devices</p></li>
 </ul>
 </li>
 </ul>
-<p>By default the Linux backend will use <code class="docutils literal notranslate"><span class="pre">emu</span></code> for async. emulation wrapping
-around the synchronous Linux <code class="docutils literal notranslate"><span class="pre">nvme</span></code> driver ioctl-interface. This is done as
-it has the broadest command-support. For effiency, one can tap into using the
-<code class="docutils literal notranslate"><span class="pre">io_uring</span></code> and <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code>.</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -577,9 +581,9 @@ it has the broadest command-support. For effiency, one can tap into using the
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identification">Device Identification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-instrumentation">Backend Instrumentation</a></li>
 </ul>
   </nav></div>
 
