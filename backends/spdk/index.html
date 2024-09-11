@@ -1,0 +1,946 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SPDK &#8212; xNVMe v0.7.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'backends/spdk/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="libvfn" href="../libvfn/index.html" />
+    <link rel="prev" title="Async I/O via io_ring" href="../windows/io_ring.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Backends
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Backends
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux/index.html">Linux</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux/ioctl.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">nvme</span></code> ioctl()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux/block.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">block</span></code> ioctl()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux/libaio.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux/io_uring.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux/io_uring_cmd.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../freebsd/index.html">FreeBSD</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../freebsd/ioctl.html">NVMe Driver IOCTL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos/index.html">macOS</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../windows/index.html">Windows</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../windows/files.html">NVMe Driver and Regular File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../windows/ioctl.html">NVMe Driver and IOCTLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../windows/iocp.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../windows/iocp_th.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp_th</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../windows/io_ring.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">io_ring</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">SPDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libvfn/index.html">libvfn</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../common/index.html">Common Backend Impl (CBI)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../common/psync.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">psync</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/aio.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">posix</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/emu.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">emu</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/thrpool.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">thrpool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/nil.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">nil</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/ramdisk.html">Ramdisk</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/interface/index.html">Backend Interface</a></li>
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Backends</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">SPDK</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="spdk">
+<span id="sec-backends-spdk"></span><h1>SPDK<a class="headerlink" href="#spdk" title="Link to this heading">#</a></h1>
+<p><strong>xNVMe</strong> provides a kernel-bypassing backend implemented
+using <a class="reference external" href="https://spdk.io/">SPDK</a>. <strong>SPDK</strong> has a lot to offer, however, <strong>xNVMe</strong>
+only makes use of the <a class="reference external" href="https://spdk.io/">SPDK</a> user-space NVMe driver. That is, the
+reactor, threading-model, and application-framework of <strong>SPDK</strong> is not used
+by <strong>xNVMe</strong>.</p>
+<section id="device-identifiers">
+<span id="sec-backends-spdk-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
+<p>When using user-space NVMe-drivers, such as the SPDK NVMe PMD
+(poll-mode-driver), then the operating-system kernel NVMe driver is “detached”
+and the device bound to <code class="docutils literal notranslate"><span class="pre">vfio-pci`</span></code> or <code class="docutils literal notranslate"><span class="pre">uio-generic`</span></code>. Thus, the
+device-files in <code class="docutils literal notranslate"><span class="pre">/</span> <span class="pre">dev/</span></code>, such as <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code> are not available. Devices
+are instead identified by their PCI id (<code class="docutils literal notranslate"><span class="pre">0000:03:00.0`</span></code>), and namespace
+identifier.</p>
+<p>This information is retrievable via <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">enum</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>enum
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_enumeration:
+<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">&#39;0000:03:00.0&#39;</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x1,<span class="w"> </span>csi:<span class="w"> </span>0x0<span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">&#39;0000:03:00.0&#39;</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x2,<span class="w"> </span>csi:<span class="w"> </span>0x2<span class="o">}</span>
+</pre></div>
+</div>
+<p>This information is usable via the the cli, such as here:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+xnvme<span class="w"> </span>info<span class="w"> </span>pci:0000:03:00.0?nsid<span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<p>And using the API it would be similar to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">struct</span> <span class="n">xnvme_dev</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s2">&quot;0000:03:00.0&quot;</span><span class="p">,</span> <span class="n">opts</span><span class="p">);</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Notice that multiple URIs using the same PCI id but with different <strong>xNVMe</strong>
+<code class="docutils literal notranslate"><span class="pre">?opts=&lt;val&gt;</span></code>. This is provided as a means to tell <strong>xNVMe</strong> that you want to
+use the NVMe controller at <code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code> and the namespace identified by
+<code class="docutils literal notranslate"><span class="pre">nsid=1</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--dev-nsid<span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>vfio-pci<span class="w"> </span>driver
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+
+
+xnvme_dev:
+<span class="w">  </span>xnvme_ident:
+<span class="w">    </span>uri:<span class="w"> </span><span class="s1">&#39;0000:03:00.0&#39;</span>
+<span class="w">    </span>dtype:<span class="w"> </span>0x2
+<span class="w">    </span>nsid:<span class="w"> </span>0x1
+<span class="w">    </span>csi:<span class="w"> </span>0x0
+<span class="w">  </span>xnvme_be:
+<span class="w">    </span>admin:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>async:<span class="w"> </span><span class="o">{</span>id:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span><span class="o">}</span>
+<span class="w">    </span>attr:<span class="w"> </span><span class="o">{</span>name:<span class="w"> </span><span class="s1">&#39;spdk&#39;</span><span class="o">}</span>
+<span class="w">  </span>xnvme_opts:
+<span class="w">    </span>be:<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>
+<span class="w">    </span>mem:<span class="w"> </span><span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+<span class="w">    </span>dev:<span class="w"> </span><span class="s1">&#39;FIX-ID-VS-MIXIN-NAME&#39;</span>
+<span class="w">    </span>admin:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
+<span class="w">    </span>sync:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
+<span class="w">    </span>async:<span class="w"> </span><span class="s1">&#39;nvme&#39;</span>
+<span class="w">    </span>oflags:<span class="w"> </span>0x4
+<span class="w">  </span>xnvme_geo:
+<span class="w">    </span>type:<span class="w"> </span>XNVME_GEO_CONVENTIONAL
+<span class="w">    </span>npugrp:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>npunit:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>nzone:<span class="w"> </span><span class="m">1</span>
+<span class="w">    </span>nsect:<span class="w"> </span><span class="m">2097152</span>
+<span class="w">    </span>nbytes:<span class="w"> </span><span class="m">4096</span>
+<span class="w">    </span>nbytes_oob:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>tbytes:<span class="w"> </span><span class="m">8589934592</span>
+<span class="w">    </span>mdts_nbytes:<span class="w"> </span><span class="m">524288</span>
+<span class="w">    </span>lba_nbytes:<span class="w"> </span><span class="m">4096</span>
+<span class="w">    </span>lba_extended:<span class="w"> </span><span class="m">0</span>
+<span class="w">    </span>ssw:<span class="w"> </span><span class="m">12</span>
+</pre></div>
+</div>
+</section>
+<section id="instrumentation">
+<span id="sec-backends-spdk-instrumentation"></span><h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
+<p>…</p>
+</section>
+<section id="system-configuration">
+<span id="sec-backends-spdk-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+<p>…</p>
+<section id="driver-attachment-and-memory">
+<h3>Driver Attachment and memory<a class="headerlink" href="#driver-attachment-and-memory" title="Link to this heading">#</a></h3>
+<p>By default, then it is the operating system responsibility to provide device
+drivers, thus by default, then the operating system has bound its NVMe driver
+to the NVMe devices attached to your system. For a user-space driver to operate,
+then the operating system driver must be detached and bound to a driver such as
+<code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> or <code class="docutils literal notranslate"><span class="pre">uio-generic-pci</span></code>, such that the NVMe driver can operate in
+user-space.</p>
+<p>By running the command below <strong>8GB</strong> of hugepages will be configured and the
+device detached from the Kernel NVMe driver:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>xnvme-driver
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script is a merge of the <strong>SPDK</strong> <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script and
+its dependencies.</p>
+<p>The command above should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+</pre></div>
+</div>
+<p>If anything else that the above is output from <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code>, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="p">(</span><span class="mi">1</span><span class="n">d1d</span> <span class="mi">2807</span><span class="p">):</span> <span class="n">nvme</span> <span class="o">-&gt;</span> <span class="n">uio_generic</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Current</span> <span class="n">user</span> <span class="n">memlock</span> <span class="n">limit</span><span class="p">:</span> <span class="mi">16</span> <span class="n">MB</span>
+
+<span class="n">This</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">amount</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span>
+<span class="n">able</span> <span class="n">to</span> <span class="n">use</span> <span class="k">with</span> <span class="n">DPDK</span> <span class="ow">and</span> <span class="n">VFIO</span> <span class="k">if</span> <span class="n">run</span> <span class="k">as</span> <span class="n">current</span> <span class="n">user</span><span class="o">.</span>
+<span class="n">To</span> <span class="n">change</span> <span class="n">this</span><span class="p">,</span> <span class="n">please</span> <span class="n">adjust</span> <span class="n">limits</span><span class="o">.</span><span class="n">conf</span> <span class="n">memlock</span> <span class="n">limit</span> <span class="k">for</span> <span class="n">current</span> <span class="n">user</span><span class="o">.</span>
+
+<span class="c1">## WARNING: memlock limit is less than 64MB</span>
+<span class="c1">## DPDK with VFIO may not be able to initialize if run as current user.</span>
+</pre></div>
+</div>
+<p>Then consult the section <a class="reference internal" href="#sec-backends-spdk-vfio"><span class="std std-ref">Enabling VFIO without limits</span></a>.</p>
+</section>
+<section id="memory-issues">
+<h3>Memory Issues<a class="headerlink" href="#memory-issues" title="Link to this heading">#</a></h3>
+<p>If you see a message similar to the below while unbinding devices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Current</span> <span class="n">user</span> <span class="n">memlock</span> <span class="n">limit</span><span class="p">:</span> <span class="mi">16</span> <span class="n">MB</span>
+
+<span class="n">This</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">amount</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">you</span> <span class="n">will</span> <span class="n">be</span>
+<span class="n">able</span> <span class="n">to</span> <span class="n">use</span> <span class="k">with</span> <span class="n">DPDK</span> <span class="ow">and</span> <span class="n">VFIO</span> <span class="k">if</span> <span class="n">run</span> <span class="k">as</span> <span class="n">current</span> <span class="n">user</span><span class="o">.</span>
+<span class="n">To</span> <span class="n">change</span> <span class="n">this</span><span class="p">,</span> <span class="n">please</span> <span class="n">adjust</span> <span class="n">limits</span><span class="o">.</span><span class="n">conf</span> <span class="n">memlock</span> <span class="n">limit</span> <span class="k">for</span> <span class="n">current</span> <span class="n">user</span><span class="o">.</span>
+
+<span class="c1">## WARNING: memlock limit is less than 64MB</span>
+<span class="c1">## DPDK with VFIO may not be able to initialize if run as current user.</span>
+</pre></div>
+</div>
+<p>Then go you should do as suggested, that is, adjust <code class="docutils literal notranslate"><span class="pre">limits.conf</span></code>, for an
+example, see <a class="reference internal" href="#sec-backends-spdk-config"><span class="std std-ref">System Configuration</span></a>.</p>
+</section>
+<section id="re-binding-devices">
+<h3>Re-binding devices<a class="headerlink" href="#re-binding-devices" title="Link to this heading">#</a></h3>
+<p>Run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver<span class="w"> </span>reset
+</pre></div>
+</div>
+<p>Should output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>vfio-pci<span class="w"> </span>-&gt;<span class="w"> </span>nvme
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>virtio-pci<span class="w"> </span>driver
+</pre></div>
+</div>
+</section>
+<section id="enabling-vfio-without-limits">
+<span id="sec-backends-spdk-vfio"></span><h3>Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits<a class="headerlink" href="#enabling-vfio-without-limits" title="Link to this heading">#</a></h3>
+<p>If <code class="docutils literal notranslate"><span class="pre">nvme</span></code> is rebound to <code class="docutils literal notranslate"><span class="pre">uio_generic</span></code>, and not <code class="docutils literal notranslate"><span class="pre">vfio</span></code>, then VT-d is
+probably not supported or disabled. In either case try these two steps:</p>
+<ol class="arabic simple">
+<li><p>Verify that your CPU supports VT-d and that it is enabled in BIOS.</p></li>
+<li><p>Enable your kernel by providing the kernel option <cite>intel_iommu=on</cite>.  If you
+have a non-Intel CPU then consult documentation on enabling VT-d / IOMMU for
+your CPU.</p></li>
+<li><p>Increase limits, open <code class="docutils literal notranslate"><span class="pre">/etc/security/limits.conf</span></code> and add:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span>    <span class="n">soft</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="o">*</span>    <span class="n">hard</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="n">root</span> <span class="n">soft</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="n">root</span> <span class="n">hard</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+</pre></div>
+</div>
+<p>Once you have gone through these steps, then this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;DMAR: IOMMU&quot;</span>
+</pre></div>
+</div>
+<p>Should output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.021117<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+</pre></div>
+</div>
+<p>And this this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>/sys/kernel/iommu_groups/<span class="w"> </span>-type<span class="w"> </span>l
+</pre></div>
+</div>
+<p>Should have output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/sys/kernel/iommu_groups/7/devices/0000:01:00.0
+/sys/kernel/iommu_groups/5/devices/0000:00:05.0
+/sys/kernel/iommu_groups/3/devices/0000:00:03.0
+/sys/kernel/iommu_groups/1/devices/0000:00:01.0
+/sys/kernel/iommu_groups/8/devices/0000:03:00.0
+/sys/kernel/iommu_groups/8/devices/0000:02:00.0
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.2
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.0
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.3
+/sys/kernel/iommu_groups/4/devices/0000:00:04.0
+/sys/kernel/iommu_groups/2/devices/0000:00:02.0
+/sys/kernel/iommu_groups/0/devices/0000:00:00.0
+</pre></div>
+</div>
+<p>And user-space driver setup:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>xnvme-driver
+</pre></div>
+</div>
+<p>Should rebind the device to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, eg.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+</pre></div>
+</div>
+</section>
+<section id="inspecting-and-manually-changing-memory-available-to-spdk-aka-hugepages">
+<h3>Inspecting and manually changing memory available to <code class="docutils literal notranslate"><span class="pre">SPDK</span></code> aka <code class="docutils literal notranslate"><span class="pre">HUGEPAGES</span></code><a class="headerlink" href="#inspecting-and-manually-changing-memory-available-to-spdk-aka-hugepages" title="Link to this heading">#</a></h3>
+<p>The <cite>SPDK</cite> setup script provides <cite>HUGEMEM</cite> and <cite>NRHUGE</cite> environment variables
+to control the amount of memory available via <cite>HUGEPAGES</cite>. However, if you want
+to manually change or just inspect the <cite>HUGEPAGE</cite> config the have a look below.</p>
+<p>Inspect the system configuration by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">grep</span> <span class="o">.</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/*</span>
+</pre></div>
+</div>
+<p>If you have not yet run the setup script, then it will most likely output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">free_hugepages</span><span class="p">:</span><span class="mi">0</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">nr_hugepages</span><span class="p">:</span><span class="mi">0</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">surplus_hugepages</span><span class="p">:</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>And after running the setup script it should output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">free_hugepages</span><span class="p">:</span><span class="mi">1024</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">nr_hugepages</span><span class="p">:</span><span class="mi">1024</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">surplus_hugepages</span><span class="p">:</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>This tells that <cite>1024</cite> hugepages, each of size <cite>2048kB</cite> are available, that is,
+a total of two gigabytes can be used.</p>
+<p>One way of increasing memory available to <cite>SPDK</cite> is by increasing the number of
+<cite>2048Kb</cite> hugepages. E.g. increase from two to eight gigabytes by increasing
+<cite>nr_hugespages</cite> to <cite>4096</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;4096&quot;</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">nr_hugepages</span>
+</pre></div>
+</div>
+<p>After doing this, then inspecting the configuration should output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">free_hugepages</span><span class="p">:</span><span class="mi">4096</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">nr_hugepages</span><span class="p">:</span><span class="mi">4096</span>
+<span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">node</span><span class="o">/</span><span class="n">node0</span><span class="o">/</span><span class="n">hugepages</span><span class="o">/</span><span class="n">hugepages</span><span class="o">-</span><span class="mi">2048</span><span class="n">kB</span><span class="o">/</span><span class="n">surplus_hugepages</span><span class="p">:</span><span class="mi">0</span>
+</pre></div>
+</div>
+</section>
+<section id="no-devices-found">
+<h3>No devices found<a class="headerlink" href="#no-devices-found" title="Link to this heading">#</a></h3>
+<p>When running <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">enum</span></code> and the output-listing is empty, then there are no
+devices. When running with <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, this can occur when your devices are
+sharing iommu-group with other devices which are still bound to in-kernel
+drivers. This could be NICs, GPUs or other kinds of peripherals.</p>
+<p>The division of devices into groups is not something that can be easily
+switched, but you can try to manually unbind the other devices in the iommu
+group from their kernel drivers.</p>
+<p>If that is not an option then you can try to re-organize your physical
+connectivity of deviecs, e.g. move devices around.</p>
+<p>Lastly you can try using <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> instead, this can most easily be
+done by disabling iommu by adding the kernel option: <code class="docutils literal notranslate"><span class="pre">iommu=off</span></code> to the
+kernel command-line and rebooting.</p>
+</section>
+<section id="user-space">
+<span id="sec-backends-spdk-config-userspace"></span><h3>User Space<a class="headerlink" href="#user-space" title="Link to this heading">#</a></h3>
+<p>Linux provides the <strong>Userspace I/O</strong> ( <a class="reference external" href="https://www.kernel.org/doc/html/v4.14/driver-api/uio-howto.html">uio</a> ) and
+<strong>Virtual Function I/O</strong> <a class="reference external" href="https://www.kernel.org/doc/Documentation/vfio.txt">vfio</a> frameworks to write user
+space I/ O drivers. Both interfaces work by binding a given device to an
+in-kernel stub-driver. The stub-driver in turn exposes device-memory and
+device-interrupts to user space. Thus enabling the implementation of device
+drivers entirely in user space.</p>
+<p>Although Linux provides a capable NVMe Driver with flexible IOCTLs, then a user
+space NVMe driver serves those who seek the lowest possible per-command
+processing overhead or wants full control over NVMe command construction,
+including command-payloads.</p>
+<p>Fortunately, you do not need to go and write an user space NVMe driver
+since a highly efficient, mature and well-maintained driver already exists.
+Namely, the NVMe driver provided by the <strong>Storage Platform Development Kit</strong>
+(<a class="reference external" href="https://spdk.io/">SPDK</a>).</p>
+<p>Another great fortune is that <strong>xNVMe</strong> bundles the SPDK NVMe Driver with the
+<strong>xNVMe</strong> library. So, if you have built and installed <strong>xNVMe</strong> then the
+<strong>SPDK</strong> NVMe Driver is readily available to <strong>xNVMe</strong>.</p>
+<p>The following subsections goes through a configuration checklist, then shows
+how to bind and unbind drivers, and lastly how to utilize non-devfs device
+identifiers by enumerating the system and inspecting a device.</p>
+</section>
+<section id="config">
+<span id="sec-backends-spdk-config-userspace-config"></span><h3>Config<a class="headerlink" href="#config" title="Link to this heading">#</a></h3>
+<p>What remains is checking your system configuration, enabling IOMMU for use by
+the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> driver, and possibly falling back to the <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
+driver in case <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> is not working out.  <code class="docutils literal notranslate"><span class="pre">vfio</span></code> is preferred as
+hardware support for IOMMU allows for isolation between devices.</p>
+<ol class="arabic simple">
+<li><p>Verify that your CPU supports virtualization / VT-d and that it is enabled
+in your board BIOS.</p></li>
+<li><p>Enable your kernel for an intel CPU then provide the kernel option
+<code class="docutils literal notranslate"><span class="pre">intel_iommu=on</span></code>.  If you have a non-Intel CPU then consult documentation
+on enabling VT-d / IOMMU for your CPU.</p></li>
+<li><p>Increase limits, open <code class="docutils literal notranslate"><span class="pre">/etc/security/limits.conf</span></code> and add:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span>    <span class="n">soft</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="o">*</span>    <span class="n">hard</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="n">root</span> <span class="n">soft</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+<span class="n">root</span> <span class="n">hard</span> <span class="n">memlock</span> <span class="n">unlimited</span>
+</pre></div>
+</div>
+<p>Once you have gone through these steps, and rebooted, then this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;DMAR: IOMMU&quot;</span>
+</pre></div>
+</div>
+<p>Should output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="w">    </span><span class="m">0</span>.021117<span class="o">]</span><span class="w"> </span>DMAR:<span class="w"> </span>IOMMU<span class="w"> </span>enabled
+</pre></div>
+</div>
+<p>And this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>/sys/kernel/iommu_groups/<span class="w"> </span>-type<span class="w"> </span>l
+</pre></div>
+</div>
+<p>Should have output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/sys/kernel/iommu_groups/7/devices/0000:01:00.0
+/sys/kernel/iommu_groups/5/devices/0000:00:05.0
+/sys/kernel/iommu_groups/3/devices/0000:00:03.0
+/sys/kernel/iommu_groups/1/devices/0000:00:01.0
+/sys/kernel/iommu_groups/8/devices/0000:03:00.0
+/sys/kernel/iommu_groups/8/devices/0000:02:00.0
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.2
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.0
+/sys/kernel/iommu_groups/6/devices/0000:00:1f.3
+/sys/kernel/iommu_groups/4/devices/0000:00:04.0
+/sys/kernel/iommu_groups/2/devices/0000:00:02.0
+/sys/kernel/iommu_groups/0/devices/0000:00:00.0
+</pre></div>
+</div>
+</section>
+<section id="unbinding-and-binding">
+<h3>Unbinding and binding<a class="headerlink" href="#unbinding-and-binding" title="Link to this heading">#</a></h3>
+<p>With the system configured then you can use the <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script to bind
+and unbind devices. The <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script is a merge of the <strong>SPDK</strong>
+<code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script and its dependencies.</p>
+<p>By running the command below <strong>8GB</strong> of hugepages will be configured, the
+Kernel NVMe driver unbound, and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> bound to the device:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>xnvme-driver
+</pre></div>
+</div>
+<p>The command above should produce output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+</pre></div>
+</div>
+<p>To unbind from <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> and back to the Kernel NVMe driver, then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver<span class="w"> </span>reset
+</pre></div>
+</div>
+<p>Should output similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>vfio-pci<span class="w"> </span>-&gt;<span class="w"> </span>nvme
+<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>virtio-pci<span class="w"> </span>driver
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-attachment-and-memory">Driver Attachment and memory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-issues">Memory Issues</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#re-binding-devices">Re-binding devices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enabling-vfio-without-limits">Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-and-manually-changing-memory-available-to-spdk-aka-hugepages">Inspecting and manually changing memory available to <code class="docutils literal notranslate"><span class="pre">SPDK</span></code> aka <code class="docutils literal notranslate"><span class="pre">HUGEPAGES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-devices-found">No devices found</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-space">User Space</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#config">Config</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unbinding-and-binding">Unbinding and binding</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
