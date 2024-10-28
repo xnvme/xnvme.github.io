@@ -521,9 +521,9 @@ document.write(`
 <span class="target" id="structxnvme__znd__report"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_znd_report</span></span></span><a class="headerlink" href="#c.xnvme_znd_report" title="Link to this definition">#</a><br /></dt>
 <dd><p>Encapsulation of Zone Descriptors and Zone Descriptor Extensions. </p>
 <p>This is not the structure from the Specification, rather, this encapsulates it and provides MACRO-accessors and helper-functions to retrieve zone-descriptors and when supported, extensions.</p>
-<p>For simplicity then only use the macros below when accessing the report entries:</p>
-<p>ZND_REPORT_DESCR(rprt, nth) - Access the ‘nth’ descriptor (zero-based) ZND_REPORT_DEXT(rprt, nth) - Access the ‘nth’ descr. extension (zero-based)</p>
-<p>However, when zdes_bytes is 0, then <code class="docutils literal notranslate"><span class="pre">descr</span></code> is accessible as a regular array When zdes &gt; 0, then the ZND_REPORT_DESCR should be used to access Zone Descriptors and ZND_REPORT_DEXT should be used to access Zone Descriptor extension </p>
+<p>For simplicity then only use getter function when accessing the report entries:</p>
+<p>xnvme_znd_report_get_descr(report, index, **descr, **ext)</p>
+<p>However, when zdes_bytes is 0, then <code class="docutils literal notranslate"><span class="pre">descr</span></code> is accessible as a regular array When zdes &gt; 0. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
@@ -862,7 +862,7 @@ document.write(`
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>stream</strong> – output stream used for printing </p></li>
 <li><p><strong>report</strong> – pointer to the the <a class="reference internal" href="#structxnvme__znd__report"><span class="std std-ref">xnvme_znd_report</span></a> to print </p></li>
-<li><p><strong>flags</strong></p></li>
+<li><p><strong>flags</strong> – printer options, see <a class="reference internal" href="../util/xnvme_pp.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -893,6 +893,30 @@ document.write(`
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>On success, pointer to zoned report. On error, NULL is returned and <code class="docutils literal notranslate"><span class="pre">errno</span></code> is set to indicate the error </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-znd-report-get-descr">
+<span id="sec-api-c-xnvme-znd-func-xnvme-znd-report-get-descr"></span><h3>xnvme_znd_report_get_descr<a class="headerlink" href="#xnvme-znd-report-get-descr" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_znd_report_get_descr">
+<span class="target" id="libxnvme__znd_8h_1adf56e6329f2728fc787f3d34b1addee5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_znd_report_get_descr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_znd_report" title="xnvme_znd_report"><span class="n"><span class="pre">xnvme_znd_report</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">report</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">index</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_spec.html#c.xnvme_spec_znd_descr" title="xnvme_spec_znd_descr"><span class="n"><span class="pre">xnvme_spec_znd_descr</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">descr</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ext</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_znd_report_get_descr" title="Link to this definition">#</a><br /></dt>
+<dd><p>Access Zone Descriptors, by entry index, in the given znd_report. </p>
+<p>
+NOTE: the MACRO is kept for backwards compatibility with the upstream fio io-engine. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> – Index, 0-based, of the entry in the report </p></li>
+<li><p><strong>report</strong> – Pointer to the the <a class="reference internal" href="#structxnvme__znd__report"><span class="std std-ref">xnvme_znd_report</span></a> to get descriptor from </p></li>
+<li><p><strong>descr</strong> – Pointer the descriptor will be assigned to </p></li>
+<li><p><strong>ext</strong> – Pointer the extended descriptor will be assigned to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1002,6 +1026,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-report-find-arbitrary">xnvme_znd_report_find_arbitrary</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-report-fpr">xnvme_znd_report_fpr</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-report-from-dev">xnvme_znd_report_from_dev</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-report-get-descr">xnvme_znd_report_get_descr</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-report-pr">xnvme_znd_report_pr</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-stat">xnvme_znd_stat</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-znd-zrwa-flush">xnvme_znd_zrwa_flush</a></li>
