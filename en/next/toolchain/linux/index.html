@@ -1561,62 +1561,6 @@ have sufficient system privileges when doing so (e.g., run as <code class="docut
 </pre></div>
 </div>
 <p>Or, run the commands contained within the script manually:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unattended update, upgrade, and install</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive
-<span class="nb">export</span><span class="w"> </span><span class="nv">DEBIAN_PRIORITY</span><span class="o">=</span>critical
-apt-get<span class="w"> </span>-qy<span class="w"> </span>update
-apt-get<span class="w"> </span>-qy<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span><span class="s2">&quot;Dpkg::Options::=--force-confdef&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="w"> </span><span class="s2">&quot;Dpkg::Options::=--force-confold&quot;</span><span class="w"> </span>upgrade
-apt-get<span class="w"> </span>-qy<span class="w"> </span>--no-install-recommends<span class="w"> </span>install<span class="w"> </span>apt-utils
-apt-get<span class="w"> </span>-qy<span class="w"> </span>autoclean
-apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>autoconf<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>bash<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>build-essential<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>clang-format<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>findutils<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>git<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libaio-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libarchive-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libcunit1-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libisal-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libncurses5-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libnuma-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libssl-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>libtool<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>liburing-dev<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>make<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>meson<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>nasm<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>openssl<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>patch<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>pipx<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>pkg-config<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>python3<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>python3-pip<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>python3-pyelftools<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>python3-venv<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>uuid-dev
-
-<span class="c1">#</span>
-<span class="c1"># Clone, build and install libvfn</span>
-<span class="c1">#</span>
-<span class="c1"># Assumptions:</span>
-<span class="c1">#</span>
-<span class="c1"># - Dependencies for building libvfn are met (system packages etc.)</span>
-<span class="c1"># - Commands are executed with sufficient privileges (sudo/root)</span>
-<span class="c1">#</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SamsungDS/libvfn.git<span class="w"> </span>toolbox/third-party/libvfn/repository
-
-<span class="nb">pushd</span><span class="w"> </span>toolbox/third-party/libvfn/repository
-git<span class="w"> </span>checkout<span class="w"> </span>v5.0.0
-meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dlibnvme<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>-Ddocs<span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="w"> </span>--buildtype<span class="o">=</span>release<span class="w"> </span>--prefix<span class="o">=</span>/usr
-meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
-meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> </span>builddir
-<span class="nb">popd</span>
-</pre></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A Docker-image is provided via <code class="docutils literal notranslate"><span class="pre">ghcr.io</span></code>, specifically
