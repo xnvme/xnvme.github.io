@@ -683,10 +683,12 @@ Linux, qemu, and fio. After installation, then a configuation file is added at
 <code class="docutils literal notranslate"><span class="pre">~/.config/cijoe/cijoe-config.toml</span></code>. You need to adjust this to match your
 system, look specifically for these entries:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>qemu<span class="o">]</span>
-<span class="c1"># system_bin = &quot;{{ local.env.HOME }}/opt/qemu/bin/qemu-system-aarch64&quot;</span>
-<span class="nv">system_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/opt/qemu/bin/qemu-system-aarch64&quot;</span>
 <span class="nv">img_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;qemu-img&quot;</span>
 <span class="nv">default_guest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bookworm_arm64&quot;</span>
+
+<span class="o">[</span>qemu.systems.aarch64<span class="o">]</span>
+<span class="c1"># bin = &quot;{{ local.env.HOME }}/opt/qemu/bin/qemu-system-aarch64&quot;</span>
+<span class="nv">bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/opt/qemu/bin/qemu-system-aarch64&quot;</span>
 
 <span class="o">[</span>xnvme.repository<span class="o">]</span>
 <span class="nv">upstream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/OpenMPDK/xNVMe.git&quot;</span>
@@ -971,7 +973,7 @@ configurations etc.</p>
 <h3>Provision a qemu-guest<a class="headerlink" href="#provision-a-qemu-guest" title="Link to this heading">#</a></h3>
 <p>Setup a virtual machine with <strong>xNVMe</strong> installed, and a bunch of NVMe devices
 configured:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>provision.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>provision.yaml
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -988,11 +990,11 @@ pointing to <code class="docutils literal notranslate"><span class="pre">$HOME</
 <section id="create-boot-images">
 <h3>Create boot-images<a class="headerlink" href="#create-boot-images" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">debian-bullseye-amd64.qcow2</span></code> is created by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>-w<span class="w"> </span>workflows/bootimg-debian-bullseye-amd64.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>workflows/bootimg-debian-bullseye-amd64.yaml
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">freebsd-13.1-ksrc-amd64.qcow2</span></code> is created by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/freebsd-13.toml<span class="w"> </span>-w<span class="w"> </span>workflows/bootimg-freebsd-13-amd64.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/freebsd-13.toml<span class="w"> </span>workflows/bootimg-freebsd-13-amd64.yaml
 </pre></div>
 </div>
 </section>
