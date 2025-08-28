@@ -1,0 +1,719 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>On Hetzner &#8212; xNVMe v0.7.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing/ci/runners/hetzner-setup/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        </script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Bench" href="../../bench/index.html" />
+    <link rel="prev" title="Self-hosted Runners" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../backends/index.html">
+    Backends
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../backends/index.html">
+    Backends
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-process.html">Contribution Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-toolbox.html">Toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-branches.html">Branches</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">CI</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html">Self-hosted Runners</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">On Hetzner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bench/index.html">Bench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../verify/index.html">Verify</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../packaging/index.html">Packaging</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../packaging/aur/index.html">Arch Linux (AUR - <code class="docutils literal notranslate"><span class="pre">pacman</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../packaging/brew/index.html">macOS (<code class="docutils literal notranslate"><span class="pre">brew</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../packaging/windows/index.html">Windows (<code class="docutils literal notranslate"><span class="pre">choco</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-checklist.html">Release Checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Code Assumptions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">CI</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">On Hetzner</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="on-hetzner">
+<span id="sec-ci-runners-hetzner"></span><h1>On Hetzner<a class="headerlink" href="#on-hetzner" title="Link to this heading">#</a></h1>
+<p>Qemu guests on MaaS from Hetzner <strong>AX42</strong>, using vfio-passthru for one of the
+two NVMe SSDs on the host. Simultaneous Multithreading (SMT) disabled and six
+cores pinned for the guest machine, two left for Linux and the GitHub runner.</p>
+<p>Hostname naming convention for the guest:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme-ci-hetzner-bookworm-amd64-XX</span></code></p></li>
+</ul>
+<p>Runner naming convention:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme-ci-hetzner-bookworm-amd64-XX-runner-YY</span></code></p></li>
+</ul>
+<p>Installation of the bare-metal instances are done via the rescue system, which
+you enable with the Hetzner Robot Console. To assist with the setup, scripts are
+provided making this less of an effort.</p>
+<section id="system-properties">
+<h2>System Properties<a class="headerlink" href="#system-properties" title="Link to this heading">#</a></h2>
+<p>With the following hardware properties:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-text">Hardware Specs. for Hetzner <strong>AX42</strong> MaaS.</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>CPU</p></th>
+<th class="head"><p>Memory</p></th>
+<th class="head"><p>Motherboard</p></th>
+<th class="head"><p>NVMe Devices</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AMD Ryzen 7 PRO 8700GE</p></td>
+<td><p>2x 32GB M324R4GA3BB0-CQKOD</p></td>
+<td><p>AsRockRack B665D4U-1L</p></td>
+<td><ul class="simple">
+<li><p>2x Samsung 980 PRO 512MB</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>And the following system software setup and configuration:</p>
+<ul class="simple">
+<li><p>One NVMe SSD has Debian Bookworm installed</p>
+<ul>
+<li><p>System packages needed for CI, qemu, etc.</p></li>
+<li><p>Docker Community Edition installed</p></li>
+<li><p>GitHub Runner <strong>unpacked</strong>, but not <strong>not</strong> registered</p></li>
+<li><p>BDF: <code class="docutils literal notranslate"><span class="pre">0000:01:00.0</span></code></p></li>
+</ul>
+</li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> Kernel module is loaded at boot</p></li>
+<li><p>Second NVMe SSD is bound to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> at boot using <code class="docutils literal notranslate"><span class="pre">devbind</span></code> script</p>
+<ul>
+<li><p>BDF: <code class="docutils literal notranslate"><span class="pre">0000:02:00.0</span></code></p></li>
+</ul>
+</li>
+<li><p>Members of the <code class="docutils literal notranslate"><span class="pre">kvm</span></code> group can use <code class="docutils literal notranslate"><span class="pre">vfio</span></code></p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">ghr</span></code> user is available for the GitHub Runner to execute as</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghr</span></code> is a member of <code class="docutils literal notranslate"><span class="pre">kvm</span></code>, thus, can run qemu with <code class="docutils literal notranslate"><span class="pre">kvm</span></code> and
+vfio-passthru</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghr</span></code> has <code class="docutils literal notranslate"><span class="pre">memlock</span> <span class="pre">unlimited</span></code> and can thus launch qemu guest with a lot
+of memory</p></li>
+</ul>
+</li>
+</ul>
+<p>To install a system have a look at the following section and for details, then
+look at the scripts and config files referred to there.</p>
+</section>
+<section id="system-bootstrap">
+<h2>System bootstrap<a class="headerlink" href="#system-bootstrap" title="Link to this heading">#</a></h2>
+<p>Via the Hetzner Robot console:</p>
+<ul class="simple">
+<li><p>Make sure you have a sensible firewall-template applied</p></li>
+<li><p>Activate the rescue system</p></li>
+<li><p>Power reset the system</p></li>
+</ul>
+<p>Once it is booted, log into the rescue system for the bare-metal machine, and
+run the following to fetch the scripts and config files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grab the scripts and files</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">xnvme</span><span class="o">/</span><span class="n">xnvme</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="nb">next</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> \
+        <span class="o">|</span> <span class="n">tar</span> <span class="o">--</span><span class="n">strip</span><span class="o">-</span><span class="n">components</span><span class="o">=</span><span class="mi">5</span> <span class="o">-</span><span class="n">xz</span> <span class="n">xnvme</span><span class="o">-</span><span class="nb">next</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">contributing</span><span class="o">/</span><span class="n">ci</span><span class="o">/</span><span class="n">runners</span>
+
+<span class="c1"># Run the install-script (replace XX with the id of the system e.g. 01)</span>
+<span class="n">cd</span> <span class="n">hetzner</span><span class="o">-</span><span class="n">setup</span>
+<span class="o">./</span><span class="n">hetzner_setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">XX</span>
+<span class="n">reboot</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">XX</span></code> with the numerically unique identifier of the system. This
+will be utilized to construct the hostname using the naming convention
+described above.</p>
+</div>
+<p>The system will reboot after the above commands execute without error. The
+contents of the <code class="docutils literal notranslate"><span class="pre">hetzner-setup</span></code> folder are copied into the system and will be
+available after reboot. Once the system is up, SSH into it as root and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">hetzner</span><span class="o">-</span><span class="n">setup</span>
+<span class="o">./</span><span class="n">postinstall</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">reboot</span>
+</pre></div>
+</div>
+<p>Once this has finished, then you can start using the system.</p>
+</section>
+<section id="runner-registration">
+<h2>Runner Registration<a class="headerlink" href="#runner-registration" title="Link to this heading">#</a></h2>
+<p>Switch to the <code class="docutils literal notranslate"><span class="pre">ghr</span></code> user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">su</span> <span class="o">-</span> <span class="n">ghr</span>
+<span class="n">cd</span> <span class="n">actions</span><span class="o">-</span><span class="n">runner</span>
+</pre></div>
+</div>
+<p>Setup env. vars. for config:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">RUNNER_USER</span><span class="o">=</span><span class="n">ghr</span>
+<span class="n">export</span> <span class="n">URL</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">xnvme</span><span class="o">/</span><span class="n">xnvme</span>
+<span class="n">export</span> <span class="n">TOKEN</span><span class="o">=</span><span class="p">{</span><span class="n">SUPER_SECRET</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You find the <strong>TOKEN</strong> in the GitHub web interface when adding a new runner
+under <code class="docutils literal notranslate"><span class="pre">Settings</span> <span class="pre">/</span> <span class="pre">Runners</span> <span class="pre">/</span> <span class="pre">New</span> <span class="pre">self-hosted</span> <span class="pre">runner</span></code>.</p>
+</div>
+<p>Then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>./config.sh --unattended \
+        --url ${URL} \
+        --token ${TOKEN} \
+        --no-default-labels \
+        --labels self-hosted,linux,amd64,maas \
+        --replace \
+        --name ${HOSTNAME}-runner-01
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, there is a <code class="docutils literal notranslate"><span class="pre">1:1:1</span></code> relationship between <code class="docutils literal notranslate"><span class="pre">Host:Runner:Guest</span></code>.
+If this changes, adjust the runner name accordingly in the command above.</p>
+</div>
+<p>Now install the service, making it available upon reboot etc.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">install</span> <span class="n">ghr</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">start</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
+</pre></div>
+</div>
+<p>It should now be ready to process jobs.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-properties">System Properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-bootstrap">System bootstrap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runner-registration">Runner Registration</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
