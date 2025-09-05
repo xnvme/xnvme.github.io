@@ -1,0 +1,871 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Virtual Machines with Windows &#8212; xNVMe v0.7.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing/ci/runners/windows-vm/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        </script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Bench" href="../../bench/index.html" />
+    <link rel="prev" title="On Hetzner" href="../hetzner-setup/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
+    <script>document.write(`<img src="../../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../backends/index.html">
+    Backends
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../backends/index.html">
+    Backends
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-process.html">Contribution Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-toolbox.html">Toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing-branches.html">Branches</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">CI</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html">Self-hosted Runners</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../hetzner-setup/index.html">On Hetzner</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Virtual Machines with Windows</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bench/index.html">Bench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../verify/index.html">Verify</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../packaging/index.html">Packaging</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../packaging/aur/index.html">Arch Linux (AUR - <code class="docutils literal notranslate"><span class="pre">pacman</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../packaging/brew/index.html">macOS (<code class="docutils literal notranslate"><span class="pre">brew</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../packaging/windows/index.html">Windows (<code class="docutils literal notranslate"><span class="pre">choco</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-checklist.html">Release Checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../assumptions.html">Code Assumptions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../hetzner-setup/index.html" class="nav-link">On Hetzner</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Virtual...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="virtual-machines-with-windows">
+<span id="sec-ci-runners-hetzner-windowsvm"></span><h1>Virtual Machines with Windows<a class="headerlink" href="#virtual-machines-with-windows" title="Link to this heading">#</a></h1>
+<p>Windows are not provided as a downloadable image, and we must build and provide our own
+<code class="docutils literal notranslate"><span class="pre">qcow2</span></code> images for running virtual machines with Windows in qemu.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<p>On the host machine, install the necessary packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>netcat-openbsd<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>qemu-system<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>qemu-utils<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>libvirt-daemon-system<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>libvirt-clients<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>virtinst<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>bridge-utils<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>ovmf<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>libguestfs-tools<span class="w">  </span><span class="se">\</span>
+<span class="w">  </span>dnsmasq-base<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>swtpm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>swtpm-tools
+</pre></div>
+</div>
+<p>And download a <a class="reference external" href="https://www.microsoft.com/en-us/software-download/windows11">Windows 11 Disk Image</a> to the <code class="docutils literal notranslate"><span class="pre">/var/lib/libvirt/images</span></code> directory.</p>
+<p>On your development machine, install <a class="reference external" href="https://virt-manager.org/">virt-manager</a> and create a connection to the
+host machine through the interface.</p>
+</section>
+<section id="creating-a-qcow2-image">
+<h2>Creating a <code class="docutils literal notranslate"><span class="pre">qcow2</span></code> Image<a class="headerlink" href="#creating-a-qcow2-image" title="Link to this heading">#</a></h2>
+<section id="install-the-virtual-machine">
+<h3>Install the Virtual Machine<a class="headerlink" href="#install-the-virtual-machine" title="Link to this heading">#</a></h3>
+<p>Create a new virtual machine on the host:</p>
+<ul class="simple">
+<li><p>Select the host and click the “New VM” button. On Mac, you might want to resize the
+popup that appears to properly see the options.</p></li>
+<li><p>Select “Local install media (ISO image or CDROM)” and click forward.</p></li>
+<li><p>Click “Browse” and fine the Windows 11 iso, you have downloaded. Select “Windows 11”
+as operating system and click forward.</p></li>
+<li><p>Don’t touch the memory and CPU settings, but set the disk image to be of size 64 GiB to
+ensure the image doesn’t get unnecessarily large.</p></li>
+<li><p>On the final page, click “Customize configuration before install” and click finish.</p></li>
+<li><p>For Mac, you want to remove spice-stuff:</p>
+<ul>
+<li><p>Remove “spice”-related hardware: USB drivers and “spice drive”.</p></li>
+<li><p>Change the display to VNC instead of spice.</p></li>
+</ul>
+</li>
+<li><p>Start installation in top left corner.</p></li>
+</ul>
+<p>Go through the Windows installation screen:</p>
+<ul class="simple">
+<li><p>Just select English US.</p></li>
+<li><p>Accept that you want to install and delete everything.</p></li>
+<li><p>There is no product key.</p></li>
+<li><p>Choose Windows 11 Pro.</p></li>
+<li><p>Go next until installation starts and wait for it to be done.</p></li>
+</ul>
+<p>Windows configuration:</p>
+<ul class="simple">
+<li><p>Keyboard: USA and US layout, but add your preferred keyboard layout as secondary.</p></li>
+<li><p>Skip naming device.</p></li>
+<li><p>Select “Setup for work and school”.</p></li>
+<li><p>When prompted to login, click “Sign in options” and select “Domain join instead”.</p>
+<ul>
+<li><p>Just select <code class="docutils literal notranslate"><span class="pre">root</span></code> for username, password, answers to all security questions.</p></li>
+</ul>
+</li>
+<li><p>Turn off all the experiences.</p></li>
+<li><p>Wait for download and install (takes a while).</p></li>
+</ul>
+</section>
+<section id="provisioning-of-the-virtual-machine">
+<h3>Provisioning of the Virtual Machine<a class="headerlink" href="#provisioning-of-the-virtual-machine" title="Link to this heading">#</a></h3>
+<p>Look and feel (optional):</p>
+<ul class="simple">
+<li><p>Uninstall everything unnecessary (OneDrive, Outlook, Paint, Teams etc.).</p></li>
+<li><p>I usually also personalise it by changing the layout of the progress bar and start menu.</p></li>
+</ul>
+<p>xNVMe provisioning:</p>
+<ul class="simple">
+<li><p>Download <a class="reference external" href="https://github.com/xnvme/xnvme/blob/next/toolbox/pkgs/windows-2022.ps1">windows-2022.ps1</a> from xNVMe GitHub repository.</p></li>
+<li><p>Open a Terminal as Administrator.</p></li>
+<li><p>Run:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">powershell.exe -ExecutionPolicy Bypass -File C:\Users\root\Downloads\windows-2022.ps1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This might fail because of <code class="docutils literal notranslate"><span class="pre">PATH</span></code> not being updates, so open a new tab in Terminal
+and run again.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">C:\Users\root\Downloads\windows-2022.ps1</span>
+</pre></div>
+</div>
+<p>OpenSSH:</p>
+<ul class="simple">
+<li><p>Open a Terminal as Administrator and check whether OpenSSH Server is available.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Get-WindowsCapability -Online | Where-Object Name -like &#39;OpenSSH*&#39;</span>
+
+<span class="gp"># </span>Expected<span class="w"> </span>output:
+<span class="go">Name  : OpenSSH.Server~~~~0.0.1.0</span>
+<span class="go">State : NotPresent</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If the output is empty, you need to install the capability first:</p>
+<ul>
+<li><p>Download <a class="reference external" href="https://github.com/PowerShell/Win32-OpenSSH/releases">OpenSSH-Win64.zip</a>.</p></li>
+<li><p>Unzip the contents to <code class="docutils literal notranslate"><span class="pre">C:/Program</span> <span class="pre">Files/OpenSSH</span></code>.</p></li>
+<li><p>Open a Terminal as Administrator and run the following commands (takes a while).</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd &quot;C:\Program Files\OpenSSH&quot;</span>
+<span class="go">powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Add the OpenSSH Server capability and start it as a service.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Add-WindowsCapability -Online -Name OpenSSH.Server</span>
+<span class="go">Set-Service -Name sshd -StartupType Automatic</span>
+<span class="go">Start-Service sshd</span>
+<span class="go">New-NetFirewallRule -Name sshd -DisplayName &#39;OpenSSH Server (sshd)&#39; `</span>
+<span class="go">    -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Set the default shell to msys2:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">New-ItemProperty -Path &quot;HKLM:\SOFTWARE\OpenSSH&quot; -Name DefaultShell `</span>
+<span class="go">-Value &quot;C:\tools\msys64\usr\bin\bash.exe&quot; -PropertyType String -Force</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Change the SSH config (<code class="docutils literal notranslate"><span class="pre">C:\ProgramData\ssh\sshd_config</span></code>) to with the following keys.
+You might need to save to documents folder, remove file ending and then replace the
+original file.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">PermitRootLogin yes</span>
+<span class="go">PasswordAuthentication yes</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Restart the sshd service.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Restart-Service sshd</span>
+</pre></div>
+</div>
+<p>VirtIO drivers:</p>
+<ul class="simple">
+<li><p>Find the latest stable <a class="reference external" href="https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/">VirtIO</a> driver as a disk image, probably called something
+like <code class="docutils literal notranslate"><span class="pre">virtio-win.iso</span></code>.</p></li>
+<li><p>Open the downloaded ISO, and run the <code class="docutils literal notranslate"><span class="pre">virtio-win-guest-tools.exe</span></code> installer.</p></li>
+<li><p>Click next through it all to install it.</p></li>
+</ul>
+<p>Enable WMIC:</p>
+<ul class="simple">
+<li><p>Open a Terminal as Administrator and run the following command (takes a while).</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Add-WindowsCapability -Online -Name WMIC</span>
+</pre></div>
+</div>
+</section>
+<section id="check">
+<h3>Check<a class="headerlink" href="#check" title="Link to this heading">#</a></h3>
+<p>Test whether the SSH server has been configured correctly:</p>
+<ul class="simple">
+<li><p>Inside the Windows VM, run <code class="docutils literal notranslate"><span class="pre">ipconfig</span></code> to find the IPv4 Address.</p></li>
+<li><p>On the host machine, run <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">root&#64;&lt;ipv4&gt;</span></code> with password <code class="docutils literal notranslate"><span class="pre">root</span></code> to see that you can
+ssh into the machine and it starts a msys2 shell.</p></li>
+<li><p>Close down the VM through the GUI and close virt-manager.</p></li>
+</ul>
+<p>You can also follow the guide below to test that you can start a QEMU guest manually with the qcow2 image.</p>
+<p>Upload the qcow image to the Hetzner storage box.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp<span class="w"> </span>/var/lib/libvirt/images/&lt;qcow<span class="w"> </span>image&gt;<span class="w"> </span>&lt;storage-box<span class="w"> </span>url&gt;:~/win11.qcow2
+</pre></div>
+</div>
+</section>
+</section>
+<section id="starting-qemu-with-qcow2-image">
+<h2>Starting QEMU with qcow2 image<a class="headerlink" href="#starting-qemu-with-qcow2-image" title="Link to this heading">#</a></h2>
+<p>Assuming you want to run qemu as user <code class="docutils literal notranslate"><span class="pre">ghr</span></code> with home directory <code class="docutils literal notranslate"><span class="pre">/home/ghr</span></code>. This
+might be necessary to setup as <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
+<section id="setup-home-directory">
+<h3>Setup home directory<a class="headerlink" href="#setup-home-directory" title="Link to this heading">#</a></h3>
+<p>Create subdirectories:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/ghr/system_imaging
+<span class="nb">cd</span><span class="w"> </span>/home/ghr/system_imaging
+mkdir<span class="w"> </span>-p<span class="w"> </span>disk<span class="w"> </span>fd<span class="w"> </span>iso
+</pre></div>
+</div>
+<p>Get the qcow2 image:</p>
+<ul class="simple">
+<li><p>If created on this machine, copy from <cite>libvirt</cite> directory:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>/var/lib/libvirt/images/&lt;qcow<span class="w"> </span>image&gt;<span class="w"> </span>/home/ghr/system_imaging/disk
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If not, copy from Hetzner storage box:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp<span class="w"> </span>&lt;storage-box<span class="w"> </span>url&gt;:~/win11.qcow2<span class="w"> </span>/home/ghr/system_imaging/disk
+</pre></div>
+</div>
+<p>Get drivers:</p>
+<ul class="simple">
+<li><p>Copy the Windows BIOS drivers to the <cite>fd</cite> directory</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>/usr/share/OVMF/OVMF_CODE_4M.ms.fd<span class="w"> </span>/home/ghr/system_imaging/fd/win11_VARS.fd
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Download the VirtIO driver to the <cite>iso</cite> directory</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/home/ghr/system_imaging/iso<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>wget<span class="w"> </span>https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.271-1/virtio-win.iso
+</pre></div>
+</div>
+<p>Change ownership:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chown<span class="w"> </span>-R<span class="w"> </span>ghr:ghr<span class="w"> </span>/home/ghr/system_imaging
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Check<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Login as user <code class="docutils literal notranslate"><span class="pre">ghr</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>su<span class="w"> </span>-<span class="w"> </span>ghr
+</pre></div>
+</div>
+<p>Test with QEMU:</p>
+<ul class="simple">
+<li><p>Copy the original image to somewhere safe.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/ghr/guests/tmp
+rm<span class="w"> </span>-rf<span class="w"> </span>/home/ghr/guests/tmp/*
+cp<span class="w"> </span>/var/lib/libvirt/images/&lt;qcow2<span class="w"> </span>image&gt;<span class="w"> </span>/home/ghr/guests/tmp/boot.img
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start a swtpm socket</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>swtpm<span class="w"> </span>socket<span class="w"> </span>--tpm2<span class="w"> </span>--ctrl<span class="w"> </span><span class="nv">type</span><span class="o">=</span>unixio,path<span class="o">=</span>/home/ghr/guests/tmp/swtpm.sock<span class="w"> </span>--tpmstate<span class="w"> </span><span class="nv">dir</span><span class="o">=</span>/home/ghr/guests/tmp<span class="w"> </span>--flags<span class="w"> </span>not-need-init<span class="w"> </span>--daemon
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Start the qemu guest:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/opt/qemu/bin/qemu-system-x86_64<span class="w"> </span><span class="se">\</span>
+-cpu<span class="w"> </span>host<span class="w"> </span><span class="se">\</span>
+-smp<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="se">\</span>
+-m<span class="w"> </span>32G<span class="w"> </span><span class="se">\</span>
+-accel<span class="w"> </span>kvm<span class="w"> </span><span class="se">\</span>
+-pidfile<span class="w"> </span>/home/ghr/guests/tmp/guest.pid<span class="w"> </span><span class="se">\</span>
+-monitor<span class="w"> </span>unix:/home/ghr/guests/tmp/monitor.sock,server,nowait<span class="w"> </span><span class="se">\</span>
+-display<span class="w"> </span>none<span class="w"> </span><span class="se">\</span>
+-serial<span class="w"> </span>file:/home/ghr/guests/tmp/serial.output<span class="w"> </span><span class="se">\</span>
+-daemonize<span class="w"> </span><span class="se">\</span>
+-netdev<span class="w"> </span>user,id<span class="o">=</span>n1,ipv6<span class="o">=</span>off,hostfwd<span class="o">=</span>tcp:127.0.0.1:4200-:22<span class="w"> </span><span class="se">\</span>
+-device<span class="w"> </span>virtio-net-pci,netdev<span class="o">=</span>n1<span class="w"> </span><span class="se">\</span>
+-drive<span class="w"> </span><span class="k">if</span><span class="o">=</span>pflash,format<span class="o">=</span>raw,readonly<span class="o">=</span>on,file<span class="o">=</span>/usr/share/OVMF/OVMF_CODE_4M.ms.fd<span class="w"> </span><span class="se">\</span>
+-drive<span class="w"> </span><span class="k">if</span><span class="o">=</span>pflash,format<span class="o">=</span>raw,file<span class="o">=</span>/home/ghr/system_imaging/fd/win11_VARS.fd<span class="w"> </span><span class="se">\</span>
+-blockdev<span class="w"> </span><span class="nv">driver</span><span class="o">=</span>qcow2,node-name<span class="o">=</span>boot,file.driver<span class="o">=</span>file,file.filename<span class="o">=</span>/home/ghr/guests/tmp/boot.img<span class="w"> </span><span class="se">\</span>
+-device<span class="w"> </span>ide-hd,drive<span class="o">=</span>boot<span class="w"> </span><span class="se">\</span>
+-drive<span class="w"> </span><span class="nv">file</span><span class="o">=</span>/home/ghr/system_imaging/iso/virtio-win.iso,media<span class="o">=</span>cdrom<span class="w"> </span><span class="se">\</span>
+-M<span class="w"> </span>q35,kernel_irqchip<span class="o">=</span>split<span class="w"> </span><span class="se">\</span>
+-chardev<span class="w"> </span>socket,id<span class="o">=</span>chrtpm,path<span class="o">=</span>/home/ghr/guests/tmp/swtpm.sock<span class="w"> </span><span class="se">\</span>
+-tpmdev<span class="w"> </span>emulator,id<span class="o">=</span>tpm0,chardev<span class="o">=</span>chrtpm<span class="w"> </span><span class="se">\</span>
+-device<span class="w"> </span>tpm-tis,tpmdev<span class="o">=</span>tpm0<span class="w"> </span><span class="se">\</span>
+-device<span class="w"> </span>pcie-root-port,id<span class="o">=</span>rp_nvme,chassis<span class="o">=</span><span class="m">2</span>,slot<span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+-device<span class="w"> </span>vfio-pci,host<span class="o">=</span><span class="m">0000</span>:02:00.0,bus<span class="o">=</span>rp_nvme
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Wait for it to start, and maybe give it 10 seconds to boot all the way</p></li>
+<li><p>Then try to login</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-p<span class="w"> </span><span class="m">4200</span><span class="w"> </span>root@localhost
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Hopefully it works!</p></li>
+<li><p>Remember to close down the qemu guest.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span>-9<span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span>/home/ghr/guests/tmp/guest.pid<span class="k">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-qcow2-image">Creating a <code class="docutils literal notranslate"><span class="pre">qcow2</span></code> Image</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-the-virtual-machine">Install the Virtual Machine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#provisioning-of-the-virtual-machine">Provisioning of the Virtual Machine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check">Check</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-qemu-with-qcow2-image">Starting QEMU with qcow2 image</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-home-directory">Setup home directory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Check</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
