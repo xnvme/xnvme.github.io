@@ -577,11 +577,23 @@ run the following to fetch the scripts and config files:</p>
 will be utilized to construct the hostname using the naming convention
 described above.</p>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The ssh-key utilized via the rescue system is added to <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code>.
+Since it is not possible to <strong>SSH</strong> into the box as <code class="docutils literal notranslate"><span class="pre">root</span></code> with
+login/password, then only the owner of the key will be able to login.</p>
+</div>
 <p>The system will reboot after the above commands execute without error. The
 contents of the <code class="docutils literal notranslate"><span class="pre">hetzner-setup</span></code> folder are copied into the system and will be
 available after reboot. Once the system is up, SSH into it as root and run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">hetzner</span><span class="o">-</span><span class="n">setup</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run post-install tasks (user-configuration, system setup etc.)</span>
+<span class="n">cd</span> <span class="n">hetzner</span><span class="o">-</span><span class="n">setup</span>
 <span class="o">./</span><span class="n">postinstall</span><span class="o">.</span><span class="n">sh</span>
+
+<span class="c1"># Set password for the ghr user</span>
+<span class="n">passwd</span> <span class="n">ghr</span>
+
+<span class="c1"># Then reboot</span>
 <span class="n">reboot</span>
 </pre></div>
 </div>
@@ -593,9 +605,19 @@ available after reboot. Once the system is up, SSH into it as root and run:</p>
 you must manually retrieve it from the private Hetzner Storage Box. The
 <code class="docutils literal notranslate"><span class="pre">postinstall.sh</span></code> script has already prepared everything needed to launch
 a Windows guest, including UEFI, OVMF, and TPM support.</p>
-<p>Download the image using the command below, replacing <code class="docutils literal notranslate"><span class="pre">&lt;username&gt;</span></code> with your
-Storage Box username:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="o">&lt;</span><span class="n">username</span><span class="o">&gt;@&lt;</span><span class="n">username</span><span class="o">&gt;.</span><span class="n">your</span><span class="o">-</span><span class="n">storagebox</span><span class="o">.</span><span class="n">de</span><span class="p">:</span><span class="o">/</span><span class="n">win11</span><span class="o">.</span><span class="n">qcow2</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ghr</span><span class="o">/</span><span class="n">system_imaging</span><span class="o">/</span><span class="n">disk</span><span class="o">/</span>
+<p>Download the image using the command below, replacing your username with your
+Storage Box <code class="docutils literal notranslate"><span class="pre">&lt;USERNAME&gt;</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export HSB_USERNAME=&lt;USERNAME&gt;
+
+# Download the Windows image from Hetzner Storage Box
+wget \
+  --http-user ${HSB_USERNAME} \
+  --ask-password \
+  --directory-prefix /home/ghr/system_imaging/disk/ \
+  https://${HSB_USERNAME}.your-storagebox.de/win11.qcow2
+
+# Ensure access
+chown -R ghr:ghr /home/ghr/system_imaging/disk/
 </pre></div>
 </div>
 <p>Once the image is in place, the system is ready to receive jobs from GitHub.
@@ -603,7 +625,7 @@ The next section explains how to install the runner.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The Windows guest image is 64 GB in size. Downloading it takes approximately
-20 minutes.</p>
+10 minutes.</p>
 </div>
 </section>
 <section id="runner-registration">
@@ -642,6 +664,14 @@ If this changes, adjust the runner name accordingly in the command above.</p>
 <p>Now install the service, making it available upon reboot etc.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">install</span> <span class="n">ghr</span>
 <span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">start</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
+</pre></div>
+</div>
+<p>Then, fix permissions needed to run qemu with <code class="docutils literal notranslate"><span class="pre">vfio-pci`</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">stop</span>
+<span class="n">sudo</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;/^\[Service\]/a LimitMEMLOCK=infinity&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">actions</span><span class="o">.</span><span class="n">runner</span><span class="o">.*.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
 <span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">start</span>
 <span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
 </pre></div>
