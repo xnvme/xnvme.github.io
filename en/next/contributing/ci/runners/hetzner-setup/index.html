@@ -585,16 +585,26 @@ login/password, then only the owner of the key will be able to login.</p>
 </div>
 <p>The system will reboot after the above commands execute without error. The
 contents of the <code class="docutils literal notranslate"><span class="pre">hetzner-setup</span></code> folder are copied into the system and will be
-available after reboot. Once the system is up, SSH into it as root and run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run post-install tasks (user-configuration, system setup etc.)</span>
+available after reboot.</p>
+</section>
+<section id="post-install">
+<h2>Post-Install<a class="headerlink" href="#post-install" title="Link to this heading">#</a></h2>
+<p>Once the system is up, <strong>SSH</strong> into it as <code class="docutils literal notranslate"><span class="pre">root</span></code> and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run post-install tasks (user configuration, system setup, etc.)</span>
 <span class="n">cd</span> <span class="n">hetzner</span><span class="o">-</span><span class="n">setup</span>
 <span class="o">./</span><span class="n">postinstall</span><span class="o">.</span><span class="n">sh</span>
 
-<span class="c1"># Set password for the ghr user</span>
+<span class="c1"># Set password for the &#39;ghr&#39; user</span>
 <span class="n">passwd</span> <span class="n">ghr</span>
 </pre></div>
 </div>
-<p>Once this has finished, then you can start using the system.</p>
+<p>After this, complete the following tasks:</p>
+<ul class="simple">
+<li><p>Retrieve the Windows guest image</p></li>
+<li><p>Set up the GitHub Runner</p></li>
+<li><p>Reboot the system</p></li>
+</ul>
+<p>Details are provided in the following sections.</p>
 </section>
 <section id="windows-guest-image">
 <h2>Windows Guest Image<a class="headerlink" href="#windows-guest-image" title="Link to this heading">#</a></h2>
@@ -629,7 +639,6 @@ The next section explains how to install the runner.</p>
 <h2>Runner Registration<a class="headerlink" href="#runner-registration" title="Link to this heading">#</a></h2>
 <p>Switch to the <code class="docutils literal notranslate"><span class="pre">ghr</span></code> user:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">su</span> <span class="o">-</span> <span class="n">ghr</span>
-<span class="n">cd</span> <span class="n">actions</span><span class="o">-</span><span class="n">runner</span>
 </pre></div>
 </div>
 <p>Setup env. vars. for config:</p>
@@ -644,7 +653,8 @@ The next section explains how to install the runner.</p>
 under <code class="docutils literal notranslate"><span class="pre">Settings</span> <span class="pre">/</span> <span class="pre">Runners</span> <span class="pre">/</span> <span class="pre">New</span> <span class="pre">self-hosted</span> <span class="pre">runner</span></code>.</p>
 </div>
 <p>Then run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>./config.sh --unattended \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd actions-runner
+./config.sh --unattended \
         --url ${URL} \
         --token ${TOKEN} \
         --no-default-labels \
@@ -695,6 +705,7 @@ If this changes, adjust the runner name accordingly in the command above.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-properties">System Properties</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-bootstrap">System bootstrap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-install">Post-Install</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#windows-guest-image">Windows Guest Image</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runner-registration">Runner Registration</a></li>
 </ul>
