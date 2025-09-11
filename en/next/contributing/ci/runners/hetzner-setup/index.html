@@ -592,9 +592,6 @@ available after reboot. Once the system is up, SSH into it as root and run:</p>
 
 <span class="c1"># Set password for the ghr user</span>
 <span class="n">passwd</span> <span class="n">ghr</span>
-
-<span class="c1"># Then reboot</span>
-<span class="n">reboot</span>
 </pre></div>
 </div>
 <p>Once this has finished, then you can start using the system.</p>
@@ -661,22 +658,16 @@ under <code class="docutils literal notranslate"><span class="pre">Settings</spa
 <p>Currently, there is a <code class="docutils literal notranslate"><span class="pre">1:1:1</span></code> relationship between <code class="docutils literal notranslate"><span class="pre">Host:Runner:Guest</span></code>.
 If this changes, adjust the runner name accordingly in the command above.</p>
 </div>
-<p>Now install the service, making it available upon reboot etc.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">install</span> <span class="n">ghr</span>
-<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
-<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">start</span>
-<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
-</pre></div>
-</div>
-<p>Then, fix permissions needed to run qemu with <code class="docutils literal notranslate"><span class="pre">vfio-pci`</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">stop</span>
+<p>Install the runner with permission to use <code class="docutils literal notranslate"><span class="pre">vfio-pci`</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install the service</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">install</span> <span class="n">ghr</span>
 <span class="n">sudo</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;/^\[Service\]/a LimitMEMLOCK=infinity&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">actions</span><span class="o">.</span><span class="n">runner</span><span class="o">.*.</span><span class="n">service</span>
 <span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
-<span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">start</span>
 <span class="n">sudo</span> <span class="o">./</span><span class="n">svc</span><span class="o">.</span><span class="n">sh</span> <span class="n">status</span>
 </pre></div>
 </div>
-<p>It should now be ready to process jobs.</p>
+<p>Do not start the service at this point, to avoid it getting a CI job. Instead,
+<code class="docutils literal notranslate"><span class="pre">reboot</span></code> the system to ensure that it boots and services start as expected.</p>
 </section>
 </section>
 
