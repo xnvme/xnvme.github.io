@@ -109,9 +109,6 @@ available after reboot. Once the system is up, SSH into it as root and run::
 	# Set password for the ghr user
 	passwd ghr
 
-	# Then reboot
-	reboot
-
 Once this has finished, then you can start using the system.
 
 Windows Guest Image
@@ -180,19 +177,13 @@ Then run::
    Currently, there is a ``1:1:1`` relationship between ``Host:Runner:Guest``.
    If this changes, adjust the runner name accordingly in the command above.
 
-Now install the service, making it available upon reboot etc.::
+Install the runner with permission to use ``vfio-pci```::
 
+	# Install the service
 	sudo ./svc.sh install ghr
-	sudo ./svc.sh status
-	sudo ./svc.sh start
-	sudo ./svc.sh status
-
-Then, fix permissions needed to run qemu with ``vfio-pci```::
-
-	sudo ./svc.sh stop
 	sudo sed -i '/^\[Service\]/a LimitMEMLOCK=infinity' /etc/systemd/system/actions.runner.*.service
 	sudo systemctl daemon-reload
-	sudo ./svc.sh start
 	sudo ./svc.sh status
 
-It should now be ready to process jobs.
+Do not start the service at this point, to avoid it getting a CI job. Instead,
+``reboot`` the system to ensure that it boots and services start as expected.
