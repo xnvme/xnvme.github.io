@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/fdp/index';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="Tutorials" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -410,9 +388,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -430,8 +413,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -443,7 +424,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Flexible...</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Flexible Data Placement</span></li>
   </ul>
 </nav>
 </div>
@@ -568,7 +549,7 @@ The complete command can be run like:</p>
 <span class="c1"># 2 fdp events log page entries:</span>
 xnvme_spec_log_fdp_events:
 <span class="w">  </span>nevents:<span class="w"> </span><span class="m">1</span>
-<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span>0x7,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">564719635512375</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
+<span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span>0x7,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">564719735382898</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
 <span class="w">  </span>-<span class="w"> </span><span class="o">{</span>type:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>fdpef:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>pid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>timestamp:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>nsid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>rgid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>ruhid:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="o">}</span>
 </pre></div>
 </div>
@@ -680,7 +661,7 @@ and 5 in reclaim unit handle usage command. By default we are using round
 robin mechanism for selecting the next placement identifier.</p>
 <p>Using the above mentioned configuration, you can run the fio command like
 this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fio<span class="w"> </span>../tutorial/fdp/examples/xnvme-fdp.fio<span class="w"> </span>--section<span class="o">=</span>default<span class="w"> </span>--ioengine<span class="o">=</span>xnvme<span class="w"> </span>--xnvme_async<span class="o">=</span>io_uring_cmd<span class="w"> </span>--filename<span class="o">=</span>/dev/ng3n1
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fio<span class="w"> </span>tutorial/fdp/examples/xnvme-fdp.fio<span class="w"> </span>--section<span class="o">=</span>default<span class="w"> </span>--ioengine<span class="o">=</span>xnvme<span class="w"> </span>--xnvme_async<span class="o">=</span>io_uring_cmd<span class="w"> </span>--filename<span class="o">=</span>/dev/ng3n1
 </pre></div>
 </div>
 <p>The command should produce output similar to:</p>
@@ -688,19 +669,19 @@ this:</p>
 fio-3.38
 Starting<span class="w"> </span><span class="m">1</span><span class="w"> </span>thread
 
-default:<span class="w"> </span><span class="o">(</span><span class="nv">groupid</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">jobs</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="nv">err</span><span class="o">=</span><span class="w"> </span><span class="m">0</span>:<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">119785</span>:<span class="w"> </span>Thu<span class="w"> </span>Jan<span class="w"> </span><span class="m">29</span><span class="w"> </span><span class="m">10</span>:21:29<span class="w"> </span><span class="m">2026</span>
-<span class="w">  </span>write:<span class="w"> </span><span class="nv">IOPS</span><span class="o">=</span><span class="m">8258</span>,<span class="w"> </span><span class="nv">BW</span><span class="o">=</span><span class="m">32</span>.3MiB/s<span class="w"> </span><span class="o">(</span><span class="m">33</span>.8MB/s<span class="o">)(</span>2048KiB/62msec<span class="o">)</span><span class="p">;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>zone<span class="w"> </span>resets
-<span class="w">    </span>slat<span class="w"> </span><span class="o">(</span>nsec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">360</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">2956</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">557</span>.03,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">143</span>.68
-<span class="w">    </span>clat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">92</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">217</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">118</span>.99,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">16</span>.82
-<span class="w">     </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">92</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">220</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">119</span>.55,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">16</span>.90
+default:<span class="w"> </span><span class="o">(</span><span class="nv">groupid</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">jobs</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>:<span class="w"> </span><span class="nv">err</span><span class="o">=</span><span class="w"> </span><span class="m">0</span>:<span class="w"> </span><span class="nv">pid</span><span class="o">=</span><span class="m">98189</span>:<span class="w"> </span>Fri<span class="w"> </span>Jan<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="m">14</span>:06:00<span class="w"> </span><span class="m">2026</span>
+<span class="w">  </span>write:<span class="w"> </span><span class="nv">IOPS</span><span class="o">=</span><span class="m">8677</span>,<span class="w"> </span><span class="nv">BW</span><span class="o">=</span><span class="m">33</span>.9MiB/s<span class="w"> </span><span class="o">(</span><span class="m">35</span>.5MB/s<span class="o">)(</span>2048KiB/59msec<span class="o">)</span><span class="p">;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span>zone<span class="w"> </span>resets
+<span class="w">    </span>slat<span class="w"> </span><span class="o">(</span>nsec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">160</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">2575</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">455</span>.34,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">160</span>.98
+<span class="w">    </span>clat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">81</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">208</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">112</span>.82,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">13</span>.55
+<span class="w">     </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:<span class="w"> </span><span class="nv">min</span><span class="o">=</span><span class="m">82</span>,<span class="w"> </span><span class="nv">max</span><span class="o">=</span><span class="m">209</span>,<span class="w"> </span><span class="nv">avg</span><span class="o">=</span><span class="m">113</span>.28,<span class="w"> </span><span class="nv">stdev</span><span class="o">=</span><span class="m">13</span>.61
 <span class="w">    </span>clat<span class="w"> </span>percentiles<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span>:
-<span class="w">     </span><span class="p">|</span><span class="w">  </span><span class="m">1</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">101</span><span class="o">]</span>,<span class="w">  </span><span class="m">5</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">103</span><span class="o">]</span>,<span class="w"> </span><span class="m">10</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">104</span><span class="o">]</span>,<span class="w"> </span><span class="m">20</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">105</span><span class="o">]</span>,
-<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">30</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">110</span><span class="o">]</span>,<span class="w"> </span><span class="m">40</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">112</span><span class="o">]</span>,<span class="w"> </span><span class="m">50</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">114</span><span class="o">]</span>,<span class="w"> </span><span class="m">60</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">120</span><span class="o">]</span>,
-<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">70</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">125</span><span class="o">]</span>,<span class="w"> </span><span class="m">80</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">131</span><span class="o">]</span>,<span class="w"> </span><span class="m">90</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">137</span><span class="o">]</span>,<span class="w"> </span><span class="m">95</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">149</span><span class="o">]</span>,
-<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">182</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.50th<span class="o">=[</span><span class="w">  </span><span class="m">200</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.90th<span class="o">=[</span><span class="w">  </span><span class="m">219</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.95th<span class="o">=[</span><span class="w">  </span><span class="m">219</span><span class="o">]</span>,
-<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.99th<span class="o">=[</span><span class="w">  </span><span class="m">219</span><span class="o">]</span>
-<span class="w">  </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span><span class="w">   </span>:<span class="w"> </span><span class="nv">100</span><span class="o">=</span><span class="m">0</span>.59%,<span class="w"> </span><span class="nv">250</span><span class="o">=</span><span class="m">99</span>.41%
-<span class="w">  </span>cpu<span class="w">          </span>:<span class="w"> </span><span class="nv">usr</span><span class="o">=</span><span class="m">29</span>.51%,<span class="w"> </span><span class="nv">sys</span><span class="o">=</span><span class="m">68</span>.85%,<span class="w"> </span><span class="nv">ctx</span><span class="o">=</span><span class="m">1</span>,<span class="w"> </span><span class="nv">majf</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">minf</span><span class="o">=</span><span class="m">0</span>
+<span class="w">     </span><span class="p">|</span><span class="w">  </span><span class="m">1</span>.00th<span class="o">=[</span><span class="w">   </span><span class="m">92</span><span class="o">]</span>,<span class="w">  </span><span class="m">5</span>.00th<span class="o">=[</span><span class="w">   </span><span class="m">96</span><span class="o">]</span>,<span class="w"> </span><span class="m">10</span>.00th<span class="o">=[</span><span class="w">   </span><span class="m">99</span><span class="o">]</span>,<span class="w"> </span><span class="m">20</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">103</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">30</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">106</span><span class="o">]</span>,<span class="w"> </span><span class="m">40</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">109</span><span class="o">]</span>,<span class="w"> </span><span class="m">50</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">111</span><span class="o">]</span>,<span class="w"> </span><span class="m">60</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">115</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">70</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">118</span><span class="o">]</span>,<span class="w"> </span><span class="m">80</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">121</span><span class="o">]</span>,<span class="w"> </span><span class="m">90</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">129</span><span class="o">]</span>,<span class="w"> </span><span class="m">95</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">137</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.00th<span class="o">=[</span><span class="w">  </span><span class="m">165</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.50th<span class="o">=[</span><span class="w">  </span><span class="m">176</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.90th<span class="o">=[</span><span class="w">  </span><span class="m">208</span><span class="o">]</span>,<span class="w"> </span><span class="m">99</span>.95th<span class="o">=[</span><span class="w">  </span><span class="m">208</span><span class="o">]</span>,
+<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">99</span>.99th<span class="o">=[</span><span class="w">  </span><span class="m">208</span><span class="o">]</span>
+<span class="w">  </span>lat<span class="w"> </span><span class="o">(</span>usec<span class="o">)</span><span class="w">   </span>:<span class="w"> </span><span class="nv">100</span><span class="o">=</span><span class="m">12</span>.11%,<span class="w"> </span><span class="nv">250</span><span class="o">=</span><span class="m">87</span>.89%
+<span class="w">  </span>cpu<span class="w">          </span>:<span class="w"> </span><span class="nv">usr</span><span class="o">=</span><span class="m">37</span>.93%,<span class="w"> </span><span class="nv">sys</span><span class="o">=</span><span class="m">58</span>.62%,<span class="w"> </span><span class="nv">ctx</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">majf</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">minf</span><span class="o">=</span><span class="m">0</span>
 <span class="w">  </span>IO<span class="w"> </span>depths<span class="w">    </span>:<span class="w"> </span><span class="nv">1</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">2</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
 <span class="w">     </span>submit<span class="w">    </span>:<span class="w"> </span><span class="nv">0</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
 <span class="w">     </span><span class="nb">complete</span><span class="w">  </span>:<span class="w"> </span><span class="nv">0</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">4</span><span class="o">=</span><span class="m">100</span>.0%,<span class="w"> </span><span class="nv">8</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">16</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">32</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%,<span class="w"> </span>&gt;<span class="o">=</span><span class="nv">64</span><span class="o">=</span><span class="m">0</span>.0%
@@ -708,7 +689,7 @@ default:<span class="w"> </span><span class="o">(</span><span class="nv">groupid
 <span class="w">     </span>latency<span class="w">   </span>:<span class="w"> </span><span class="nv">target</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">window</span><span class="o">=</span><span class="m">0</span>,<span class="w"> </span><span class="nv">percentile</span><span class="o">=</span><span class="m">100</span>.00%,<span class="w"> </span><span class="nv">depth</span><span class="o">=</span><span class="m">1</span>
 
 Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">(</span>all<span class="w"> </span><span class="nb">jobs</span><span class="o">)</span>:
-<span class="w">  </span>WRITE:<span class="w"> </span><span class="nv">bw</span><span class="o">=</span><span class="m">32</span>.3MiB/s<span class="w"> </span><span class="o">(</span><span class="m">33</span>.8MB/s<span class="o">)</span>,<span class="w"> </span><span class="m">32</span>.3MiB/s-32.3MiB/s<span class="w"> </span><span class="o">(</span><span class="m">33</span>.8MB/s-33.8MB/s<span class="o">)</span>,<span class="w"> </span><span class="nv">io</span><span class="o">=</span>2048KiB<span class="w"> </span><span class="o">(</span>2097kB<span class="o">)</span>,<span class="w"> </span><span class="nv">run</span><span class="o">=</span><span class="m">62</span>-62msec
+<span class="w">  </span>WRITE:<span class="w"> </span><span class="nv">bw</span><span class="o">=</span><span class="m">33</span>.9MiB/s<span class="w"> </span><span class="o">(</span><span class="m">35</span>.5MB/s<span class="o">)</span>,<span class="w"> </span><span class="m">33</span>.9MiB/s-33.9MiB/s<span class="w"> </span><span class="o">(</span><span class="m">35</span>.5MB/s-35.5MB/s<span class="o">)</span>,<span class="w"> </span><span class="nv">io</span><span class="o">=</span>2048KiB<span class="w"> </span><span class="o">(</span>2097kB<span class="o">)</span>,<span class="w"> </span><span class="nv">run</span><span class="o">=</span><span class="m">59</span>-59msec
 </pre></div>
 </div>
 <div class="admonition note">
@@ -730,7 +711,8 @@ Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> <
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -762,8 +744,8 @@ Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> <
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -783,7 +765,7 @@ Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> <
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -796,7 +778,8 @@ Run<span class="w"> </span>status<span class="w"> </span>group<span class="w"> <
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

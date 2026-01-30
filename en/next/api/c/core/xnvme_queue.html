@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/c/core/xnvme_queue';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="libxnvme_opts.h" href="xnvme_opts.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -451,9 +429,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -471,10 +454,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -487,12 +466,12 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API</a></li>
     
     
-    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">C</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Core</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">libxnvme_queue.h</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libxnvme_queue.h</span></li>
   </ul>
 </nav>
 </div>
@@ -580,7 +559,7 @@ document.write(`
 <span id="sec-api-c-xnvme-queue-func-xnvme-queue-get-cmd-ctx"></span><h3>xnvme_queue_get_cmd_ctx<a class="headerlink" href="#xnvme-queue-get-cmd-ctx" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_queue_get_cmd_ctx">
-<span class="target" id="libxnvme__queue_8h_1ab97b95111f96550bb72f93d32a7a9448"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_get_cmd_ctx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_get_cmd_ctx" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__queue_8h_1a8a94129b14520613784136499c6dfa88"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_get_cmd_ctx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_get_cmd_ctx" title="Link to this definition">#</a><br /></dt>
 <dd><p>Retrieve a command-context from the given queue for async. </p>
 <p>command execution with the queue</p>
 <div class="admonition note">
@@ -651,7 +630,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 <li><p><strong>capacity</strong> – Maximum number of outstanding commands on the initialized queue, note that it must be a power of 2 within the range [1,4096] </p></li>
 <li><p><strong>opts</strong> – Queue options </p></li>
 <li><p><strong>queue</strong> – Pointer-pointer to the xnvme_queue to initialize</p></li>
@@ -690,7 +669,7 @@ document.write(`
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_queue_put_cmd_ctx">
 <span class="target" id="libxnvme__queue_8h_1ade86028b3e7be7f5dd935f50f6a36121"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_put_cmd_ctx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_put_cmd_ctx" title="Link to this definition">#</a><br /></dt>
-<dd><p>Hand back a command-context previously retrieve using <a class="reference internal" href="#libxnvme__queue_8h_1ab97b95111f96550bb72f93d32a7a9448"><span class="std std-ref">xnvme_queue_get_cmd_ctx</span></a>. </p>
+<dd><p>Hand back a command-context previously retrieve using <a class="reference internal" href="#libxnvme__queue_8h_1a8a94129b14520613784136499c6dfa88"><span class="std std-ref">xnvme_queue_get_cmd_ctx</span></a>. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function is not thread-safe</p>
@@ -769,6 +748,177 @@ document.write(`
 
 </section>
 </section>
+<section id="header">
+<span id="sec-api-c-xnvme-queue-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_adm.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Opaque Command Queue Handle to be initialized by xnvme_queue_init()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @see xnvme_queue_init</span>
+<span class="cm"> * @see xnvme_queue_term</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_queue</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Command Queue initialization options</span>
+<span class="cm"> *</span>
+<span class="cm"> * @enum xnvme_queue_opts</span>
+<span class="cm"> */</span>
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_queue_opts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_QUEUE_IOPOLL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span><span class="w">      </span><span class="c1">///&lt; XNVME_QUEUE_IOPOLL: queue. is polled for completions</span>
+<span class="w">	</span><span class="n">XNVME_QUEUE_SQPOLL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_QUEUE_SQPOLL: queue. is polled for submissions</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Allocate a Command Queue for asynchronous command submission and completion</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle (::xnvme_dev) obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param capacity Maximum number of outstanding commands on the initialized queue, note that it</span>
+<span class="cm"> * must be a power of 2 within the range [1,4096]</span>
+<span class="cm"> * @param opts Queue options</span>
+<span class="cm"> * @param queue Pointer-pointer to the ::xnvme_queue to initialize</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">capacity</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">**</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the capacity of the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to query for capacity</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, capacity of given ::xnvme_queue text is returned. On error, 0 is returned</span>
+<span class="cm"> * e.g. errors are silent</span>
+<span class="cm"> */</span>
+<span class="kt">uint32_t</span>
+<span class="nf">xnvme_queue_get_capacity</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the number of outstanding commands on the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to query for outstanding commands</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of outstanding commands are returned. On error, 0 is returned e.g.</span>
+<span class="cm"> * errors are silent</span>
+<span class="cm"> */</span>
+<span class="kt">uint32_t</span>
+<span class="nf">xnvme_queue_get_outstanding</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Tear down the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to tear down</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_term</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Process completions of commands on the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * Set process &#39;max&#39; to limit number of completions, 0 means no max.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to poke for completions</span>
+<span class="cm"> * @param max The max number of completions to complete</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of completions processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_poke</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">max</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Process outstanding commands on the given ::xnvme_queue until it is empty</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_drain</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * DEPRECATED: expect that this function will be removed in an upcoming release</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
+<span class="cm"> * returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_wait</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve a command-context from the given queue for async. command execution with the queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note The command-context is managed by the queue, thus, return it to the queue via</span>
+<span class="cm"> * ::xnvme_queue_put_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note This is not thread-safe</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to retrieve a command-context for</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a command-context is returned. On error, NULL is returned and `errno` is set</span>
+<span class="cm"> * to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span>
+<span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Hand back a command-context previously retrieve using ::xnvme_queue_get_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note This function is not thread-safe</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to hand back the command-context to</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Signature of function used with Command Queues for async. callback upon command-completion</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">xnvme_queue_cb</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">opaque</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Assign a callback-function and argument to be used with the ::xnvme_cmd_ctx of the queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue The ::xnvme_queue to assign default callback function for</span>
+<span class="cm"> * @param cb The callback function to use</span>
+<span class="cm"> * @param cb_arg The callback argument to use</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_set_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Get the completion event fd on the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to query for outstanding commands</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, an eventfd() file descriptor is returned. On error, negative `errno`</span>
+<span class="cm"> * is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_get_completion_fd</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -782,7 +932,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -851,6 +1002,7 @@ document.write(`
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#header">Header</a></li>
 </ul>
   </nav></div>
 
@@ -867,8 +1019,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -888,7 +1040,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -901,7 +1053,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>
