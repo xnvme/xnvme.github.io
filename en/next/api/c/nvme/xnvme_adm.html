@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/c/nvme/xnvme_adm';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="NVMe" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -451,9 +429,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -471,10 +454,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -487,12 +466,12 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API</a></li>
     
     
-    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">C</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">NVMe</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">libxnvme_adm.h</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libxnvme_adm.h</span></li>
   </ul>
 </nav>
 </div>
@@ -670,7 +649,7 @@ document.write(`
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to <a class="reference internal" href="../core/xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a></p></li>
 <li><p><strong>csi</strong> – Command Set Identifier </p></li>
-<li><p><strong>dbuf</strong> – Buffer allocated by <a class="reference internal" href="../core/xnvme_buf.html#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
+<li><p><strong>dbuf</strong> – Buffer allocated by <a class="reference internal" href="../core/xnvme_buf.html#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -692,7 +671,7 @@ document.write(`
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ctx</strong> – Pointer to <a class="reference internal" href="../core/xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a></p></li>
 <li><p><strong>nsid</strong> – Namespace identifier </p></li>
-<li><p><strong>dbuf</strong> – Buffer allocated by <a class="reference internal" href="../core/xnvme_buf.html#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
+<li><p><strong>dbuf</strong> – Buffer allocated by <a class="reference internal" href="../core/xnvme_buf.html#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -715,7 +694,7 @@ document.write(`
 <li><p><strong>ctx</strong> – Pointer to <a class="reference internal" href="../core/xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a></p></li>
 <li><p><strong>nsid</strong> – Namespace identifier </p></li>
 <li><p><strong>csi</strong> – Command Set Identifier </p></li>
-<li><p><strong>dbuf</strong> – Buffer allocated by <a class="reference internal" href="../core/xnvme_buf.html#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
+<li><p><strong>dbuf</strong> – Buffer allocated by <a class="reference internal" href="../core/xnvme_buf.html#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -874,6 +853,268 @@ document.write(`
 
 </section>
 </section>
+<section id="header">
+<span id="sec-api-c-xnvme-adm-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_adm.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param cns the ::xnvme_spec_idfy_cns to retrieve</span>
+<span class="cm"> * @param cntid Controller Identifier</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param nvmsetid NVM set Identifier</span>
+<span class="cm"> * @param uuid UUID index</span>
+<span class="cm"> * @param dbuf ponter to data-payload</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_idfy</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">cns</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">cntid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span>
+<span class="w">	       </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nvmsetid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_idfy</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify command for the controller associated with</span>
+<span class="cm"> * the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_idfy_ctrlr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_idfy</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify Controller command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param csi Command Set Identifier</span>
+<span class="cm"> * @param dbuf Buffer allocated by xnvme_buf_alloc()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_idfy_ctrlr_csi</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">csi</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_idfy</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify command for the given nsid</span>
+<span class="cm"> *</span>
+<span class="cm"> * Execute an NVMe identify namespace command for the namespace associated with</span>
+<span class="cm"> * the given &#39;dev&#39; when &#39;nsid&#39;=0, execute for the given &#39;nsid&#39; when it is &gt; 0,</span>
+<span class="cm"> * when the given &#39;nsid&#39; == 0, then the command is executed for the namespace</span>
+<span class="cm"> * associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param dbuf Buffer allocated by xnvme_buf_alloc()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_idfy_ns</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_idfy</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Identify command for the given nsid</span>
+<span class="cm"> *</span>
+<span class="cm"> * Execute an I/O Command Set specific NVMe identify namespace command for the</span>
+<span class="cm"> * given &#39;nsid&#39;. When the given &#39;nsid&#39; == 0, then the command is executed for</span>
+<span class="cm"> * the namespace associated with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param csi Command Set Identifier</span>
+<span class="cm"> * @param dbuf Buffer allocated by xnvme_buf_alloc()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_idfy_ns_csi</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">csi</span><span class="p">,</span>
+<span class="w">		      </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_idfy</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prepare NVMe Get Log Page command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param lid Log Page Identifier for the log to retrieve entries for</span>
+<span class="cm"> * @param lsp Log Specific Field for the log to retrieve entries for</span>
+<span class="cm"> * @param lpo_nbytes Log page Offset in BYTES</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param rae Retain Asynchronous Event, 0=Clear, 1=Retain</span>
+<span class="cm"> * @param dbuf_nbytes Number of BYTES to write from log-page to buf</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_prep_adm_log</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">lid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">lsp</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">lpo_nbytes</span><span class="p">,</span>
+<span class="w">		   </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">rae</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Get Log Page command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param lid Log Page Identifier for the log to retrieve entries for</span>
+<span class="cm"> * @param lsp Log Specific Field for the log to retrieve entries for</span>
+<span class="cm"> * @param lpo_nbytes Log page Offset in BYTES</span>
+<span class="cm"> * @param nsid Namespace Identifier</span>
+<span class="cm"> * @param rae Retain Asynchronous Event, 0=Clear, 1=Retain</span>
+<span class="cm"> * @param dbuf Buffer allocated with `xnvme_buf_alloc`</span>
+<span class="cm"> * @param dbuf_nbytes Number of BYTES to write from log-page to buf</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_log</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">lid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">lsp</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">lpo_nbytes</span><span class="p">,</span>
+<span class="w">	      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">rae</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prepare NVMe Get Features (gfeat) command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param fid Feature identifier</span>
+<span class="cm"> * @param sel Select which value of the feature to select, that is, one of</span>
+<span class="cm"> * current/default/saved/supported</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_prep_adm_gfeat</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">fid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">sel</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prepare NVMe Set Feature (sfeat) command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param fid Feature identifier (see NVMe 1.3; Figure 84)</span>
+<span class="cm"> * @param feat Structure defining feature attributes</span>
+<span class="cm"> * @param save Specify that controller shall save the attribute</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_prep_adm_sfeat</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">fid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">feat</span><span class="p">,</span>
+<span class="w">		     </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">save</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Get Features (gfeat) command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param fid Feature identifier</span>
+<span class="cm"> * @param sel Select which value of the feature to select, that is, one of</span>
+<span class="cm"> * current/default/saved/supported</span>
+<span class="cm"> * @param dbuf pointer to data-payload, use if required for the given `fid`</span>
+<span class="cm"> * @param dbuf_nbytes size of data-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_gfeat</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">fid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">sel</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span>
+<span class="w">		</span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Set Feature (sfeat) command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param fid Feature identifier (see NVMe 1.3; Figure 84)</span>
+<span class="cm"> * @param feat Structure defining feature attributes</span>
+<span class="cm"> * @param save</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of the data-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_sfeat</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">fid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">feat</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">save</span><span class="p">,</span>
+<span class="w">		</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an NVMe Format NVM command</span>
+<span class="cm"> *</span>
+<span class="cm"> * TODO: consider timeout, reset, and need for library/dev re-initialization</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param lbaf The LBA format to format the Namespace with</span>
+<span class="cm"> * @param zf Zone Format</span>
+<span class="cm"> * @param mset Metadata Settings</span>
+<span class="cm"> * @param ses Secure erase settings; 0x0: No Secure Erase, 0x1: User Data erase,</span>
+<span class="cm"> * 0x2: Cryptographic Erase</span>
+<span class="cm"> * @param pil Protection information location; 0x0: last eight bytes of</span>
+<span class="cm"> * metadata, 0x1: first eight bytes of metadata</span>
+<span class="cm"> * @param pi Protection information; 0x0: Disabled, 0x1: Enabled(Type1), 0x2:</span>
+<span class="cm"> * Enabled(Type2), 0x3: Enabled(Type3)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_format</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">lbaf</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">zf</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">mset</span><span class="p">,</span>
+<span class="w">		 </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ses</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">pi</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">pil</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of an Sanitize command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @todo consider timeout, reset, and need for library/dev re-initialization</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Success of this function only means that the sanitize *command*</span>
+<span class="cm"> * succeeded and that the sanitize *operation* has started.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param sanact Sanitize action; 0x1: Exit failure mode, 0x2: Block Erase, 0x3</span>
+<span class="cm"> * Overwrite, 0x4 Crypto Erase</span>
+<span class="cm"> * @param ause: Allow Unrestricted Sanitize Exit; 0x0: Restricted Mode, 0x1:</span>
+<span class="cm"> * Unrestricted Mode</span>
+<span class="cm"> * @param ovrpat Overwrite Pattern; 32-bit pattern used by the Overwrite action</span>
+<span class="cm"> * @param owpass Overwrite pass Count, how many times the media is to be</span>
+<span class="cm"> * overwritten; 0x0: 15 overwrite passes</span>
+<span class="cm"> * @param oipbp Overwrite invert pattern between passes; 0x0: Disabled, 0x1:</span>
+<span class="cm"> * Enabled</span>
+<span class="cm"> * @param nodas No Deallocate After Sanitize; 0x0: Attempt to deallocate; 0x1 Do</span>
+<span class="cm"> * not attempt to deallocate</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_nvm_sanitize</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">sanact</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">ause</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ovrpat</span><span class="p">,</span>
+<span class="w">		   </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">owpass</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">oipbp</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">nodas</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of directive send command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param doper Directive operation to perform</span>
+<span class="cm"> * @param dtype Directive type</span>
+<span class="cm"> * @param dspec Directive specific</span>
+<span class="cm"> * @param val Value specific to command dword 12</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_dir_send</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">doper</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dtype</span><span class="p">,</span>
+<span class="w">		   </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dspec</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">val</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Submit and wait for completion of directive receive command</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsid Namespace identifier</span>
+<span class="cm"> * @param doper Directive operation to perform</span>
+<span class="cm"> * @param dtype Directive type</span>
+<span class="cm"> * @param val Value specific to command dword 12</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of the data-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_dir_recv</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">doper</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dtype</span><span class="p">,</span>
+<span class="w">		   </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -887,7 +1128,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -961,6 +1203,7 @@ document.write(`
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#header">Header</a></li>
 </ul>
   </nav></div>
 
@@ -977,8 +1220,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -998,7 +1241,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -1011,7 +1254,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

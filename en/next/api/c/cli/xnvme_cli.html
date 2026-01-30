@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/c/cli/xnvme_cli';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="Command-line Interface (CLI)" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -451,9 +429,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -471,10 +454,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -487,12 +466,12 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API</a></li>
     
     
-    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">C</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Command-line Interface (CLI)</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">libxnvme_cli.h</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libxnvme_cli.h</span></li>
   </ul>
 </nav>
 </div>
@@ -2231,7 +2210,7 @@ document.write(`
 <span id="sec-api-c-xnvme-cli-func-xnvme-cli-get-opt-attr"></span><h3>xnvme_cli_get_opt_attr<a class="headerlink" href="#xnvme-cli-get-opt-attr" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_cli_get_opt_attr">
-<span class="target" id="libxnvme__cli_8h_1ad829b2589445327927ce22857dc38eb5"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cli_opt_attr" title="xnvme_cli_opt_attr"><span class="n"><span class="pre">xnvme_cli_opt_attr</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cli_get_opt_attr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cli_opt" title="xnvme_cli_opt"><span class="n"><span class="pre">xnvme_cli_opt</span></span></a><span class="w"> </span><span class="n"><span class="pre">opt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cli_get_opt_attr" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__cli_8h_1a489e3bdf4c335032cb11bd97f3137b40"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cli_opt_attr" title="xnvme_cli_opt_attr"><span class="n"><span class="pre">xnvme_cli_opt_attr</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cli_get_opt_attr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cli_opt" title="xnvme_cli_opt"><span class="n"><span class="pre">xnvme_cli_opt</span></span></a><span class="w"> </span><span class="n"><span class="pre">opt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cli_get_opt_attr" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </section>
@@ -2304,6 +2283,524 @@ document.write(`
 
 </section>
 </section>
+<section id="header">
+<span id="sec-api-c-xnvme-cli-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_cli.h</span>
+<span class="cm"> */</span>
+
+<span class="cp">#define XNVME_CLI_CORE_OPTS                                                                 \</span>
+<span class="cp">	{XNVME_CLI_OPT_ORCH_TITLE, XNVME_CLI_SKIP}, {XNVME_CLI_OPT_SUBNQN, XNVME_CLI_LOPT}, \</span>
+<span class="cp">		{XNVME_CLI_OPT_HOSTNQN, XNVME_CLI_LOPT},                                    \</span>
+<span class="cp">	{                                                                                   \</span>
+<span class="cp">		XNVME_CLI_OPT_BE, XNVME_CLI_LOPT                                            \</span>
+<span class="cp">	}</span>
+
+<span class="cp">#define XNVME_CLI_ADMIN_OPTS                                                                \</span>
+<span class="cp">	XNVME_CLI_CORE_OPTS, {XNVME_CLI_OPT_DEV_NSID, XNVME_CLI_LOPT},                      \</span>
+<span class="cp">		{XNVME_CLI_OPT_ADMIN, XNVME_CLI_LOPT}, {XNVME_CLI_OPT_MEM, XNVME_CLI_LOPT}, \</span>
+<span class="cp">	{                                                                                   \</span>
+<span class="cp">		XNVME_CLI_OPT_DIRECT, XNVME_CLI_LOPT                                        \</span>
+<span class="cp">	}</span>
+
+<span class="cp">#define XNVME_CLI_SYNC_OPTS \</span>
+<span class="cp">	XNVME_CLI_ADMIN_OPTS, { XNVME_CLI_OPT_SYNC, XNVME_CLI_LOPT }</span>
+
+<span class="cp">#define XNVME_CLI_ASYNC_OPTS \</span>
+<span class="cp">	XNVME_CLI_SYNC_OPTS, { XNVME_CLI_OPT_ASYNC, XNVME_CLI_LOPT }</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Options are stored in an instance of this structure</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_cli_args</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_args</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Created</span>
+
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sys_uri</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">subnqn</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">hostnqn</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">cmd_input</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">cmd_output</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">size_t</span><span class="w"> </span><span class="n">data_nbytes</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">data_input</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">data_output</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">size_t</span><span class="w"> </span><span class="n">meta_nbytes</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">meta_input</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">meta_output</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cdw</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">lbafl</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">lba</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">llb</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nlb</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">slba</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">elba</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">uuid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dev_nsid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cns</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">csi</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">index</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">setid</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">cntid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lsp</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">lpo_nbytes</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rae</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">clear</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lbafu</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ses</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">sel</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">mset</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">ause</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ovrpat</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">owpass</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">oipbp</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">nodas</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">sanact</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">zsa</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pi</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pil</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">feat</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">seed</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">iosize</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">qdepth</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">direct</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">limit</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">opcode</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">all</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">save</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reset</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">verbose</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">help</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">be</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">mem</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sync</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">async</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">admin</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">shm_id</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">main_core</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">core_mask</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts_css</span><span class="w"> </span><span class="n">css</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; SPDK controller-setup: do command-set-selection</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">use_cmb_sqs</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">adrfam</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">poll_io</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">poll_sq</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">register_files</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">register_buffers</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">truncate</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rdonly</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">wronly</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rdwr</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">create</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">create_mode</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nr</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">ad</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">idw</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">idr</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">vec_cnt</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dtype</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dspec</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">doper</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">endir</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">tgtdir</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsr</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lsi</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pid</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">kv_key</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">kv_val</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">kv_store_add</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">kv_store_update</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">kv_store_compress</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">bool</span><span class="w"> </span><span class="n">pract</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">prchk</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">apptag</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">apptag_mask</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">sdlba</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span>
+<span class="nf">xnvme_cli_args_pr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_args</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Command-Line Options, each command-line option can be one of ::xnvme_cli_opt_type</span>
+<span class="cm"> *</span>
+<span class="cm"> * @enum xnvme_cli_opt</span>
+<span class="cm"> */</span>
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_NONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_NONE</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW00</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW00</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW01</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW01</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW02</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW02</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW03</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW03</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW04</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW04</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW05</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW05</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW06</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW06</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW07</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW07</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW08</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW08</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW09</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW09</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW10</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW10</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW11</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW11</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW12</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW13</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW13</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW14</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW14</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CDW15</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CDW15</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CMD_INPUT</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CMD_INPUT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CMD_OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CMD_OUTPUT</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DATA_NBYTES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DATA_NBYTES</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DATA_INPUT</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DATA_INPUT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DATA_OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DATA_OUTPUT</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_META_NBYTES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_META_NBYTES</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_META_INPUT</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_META_INPUT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_META_OUTPUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_META_OUTPUT</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LBAFL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LBAFL</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SLBA</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">26</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SLBA</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ELBA</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ELBA</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LBA</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">28</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LBA</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_NLB</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">29</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_NLB</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_URI</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_URI</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SYS_URI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SYS_URI</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_UUID</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_UUID</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_NSID</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">33</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_NSID</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CNS</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CNS</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CSI</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CSI</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_INDEX</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">36</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_INDEX</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SETID</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">37</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SETID</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CNTID</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">38</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CNTID</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LID</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">39</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LID</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LSP</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LSP</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LPO_NBYTES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">41</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LPO_NBYTES</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_RAE</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_RAE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CLEAR</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">43</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CLEAR</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LBAFU</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LBAFU</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SES</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SES</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SEL</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">46</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SEL</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_MSET</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_MSET</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_AUSE</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_AUSE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_OVRPAT</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">49</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_OVRPAT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_OWPASS</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_OWPASS</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_OIPBP</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">51</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_OIPBP</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_NODAS</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">52</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_NODAS</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SANACT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">53</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SANACT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ZSA</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">54</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ZSA</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_PI</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">55</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_PI</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_PIL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">56</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_PIL</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_FID</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">57</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_FID</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_FEAT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_FEAT</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SEED</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">59</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SEED</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LIMIT</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LIMIT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_IOSIZE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">61</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_IOSIZE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_QDEPTH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">62</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_QDEPTH</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DIRECT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">63</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DIRECT</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_STATUS</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_STATUS</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SAVE</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">65</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SAVE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_RESET</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">66</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_RESET</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VERBOSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">67</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_VERBOSE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_HELP</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">68</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_HELP</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_COUNT</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">69</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_COUNT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_OFFSET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_OFFSET</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_OPCODE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">71</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_OPCODE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_FLAGS</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">72</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_FLAGS</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ALL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">73</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ALL</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_BE</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">74</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_BE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_MEM</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_MEM</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SYNC</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">76</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SYNC</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ASYNC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">77</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ASYNC</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ADMIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">78</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ADMIN</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SHM_ID</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">79</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_SHM_ID</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_MAIN_CORE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_MAIN_CORE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CORE_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">81</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CORE_MASK</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_USE_CMB_SQS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">82</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_USE_CMB_SQS</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CSS</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mi">83</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CSS</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_POLL_IO</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mi">84</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_POLL_IO</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_POLL_SQ</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mi">85</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_POLL_SQ</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_REGISTER_FILES</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">86</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_REGISTER_FILES</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_REGISTER_BUFFERS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">87</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_REGISTER_BUFFERS</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_TRUNCATE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">88</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_TRUNCATE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_RDONLY</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">89</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_RDONLY</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_WRONLY</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_WRONLY</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_RDWR</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">91</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_RDWR</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CREATE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">92</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CREATE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CREATE_MODE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">93</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CREATE_MODE</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ADRFAM</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">95</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ADRFAM</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DEV_NSID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">96</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DEV_NSID</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VEC_CNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">97</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_VEC_CNT</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SUBNQN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_OPT_SUBNQN</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_HOSTNQN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">99</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_HOSTNQN</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DTYPE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DTYPE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DSPEC</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DSPEC</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_DOPER</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_DOPER</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ENDIR</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ENDIR</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_TGTDIR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">104</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_TGTDIR</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_NSR</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">105</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_NSR</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_POSA_TITLE</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">106</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_POSA_TITLE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_NON_POSA_TITLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">107</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_NON_POSA_TITLE</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_ORCH_TITLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">108</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_ORCH_TITLE</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_AD</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">109</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_AD</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_IDW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">110</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_IDW</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_IDR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">111</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_IDR</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LLB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">112</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LLB</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_LSI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">113</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_LSI</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_PID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">114</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_PID</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_KV_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">115</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_KV_KEY</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_KV_VAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">116</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_KV_VAL</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_KV_STORE_UPDATE</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">117</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_KV_STORE_UPDATE</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_KV_STORE_ADD</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">118</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_KV_STORE_ADD</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_KV_STORE_COMPRESS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">119</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_KV_STORE_COMPRESS</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_PRACT</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_PRACT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_PRCHK</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">121</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_PRCHK</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_APPTAG</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">122</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_APPTAG</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_APPTAG_MASK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_APPTAG_MASK</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_SDLBA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">124</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_END</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">125</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_END</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * XNVME_CLI_LFLG: ./cli --verbose; always optional</span>
+<span class="cm"> * XNVME_CLI_LOPT: ./cli --arg 0x0; optionally provide a value</span>
+<span class="cm"> * XNVME_CLI_LREQ: ./cli --arg 0x0; require providing a value</span>
+<span class="cm"> * XNVME_CLI_POSA: ./cli arg1 arg2; required, ordered, and provides a value</span>
+<span class="cm"> * XNVME_CLI_SKIP: ; This argument is used for formatting etc.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @enum xnvme_cli_opt_type</span>
+<span class="cm"> */</span>
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt_type</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_CLI_POSA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_POSA</span>
+<span class="w">	</span><span class="n">XNVME_CLI_LFLG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x2</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_LFLG</span>
+<span class="w">	</span><span class="n">XNVME_CLI_LOPT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x3</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_LOPT</span>
+<span class="w">	</span><span class="n">XNVME_CLI_LREQ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x4</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_LREQ</span>
+<span class="w">	</span><span class="n">XNVME_CLI_SKIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x5</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_SKIP</span>
+<span class="p">};</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt_value_type</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VTYPE_URI</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VTYPE_NUM</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x2</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VTYPE_HEX</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x3</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VTYPE_FILE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x4</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VTYPE_STR</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x5</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_VTYPE_SKIP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x6</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_opt_attr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt</span><span class="w"> </span><span class="n">opt</span><span class="p">;</span>
+<span class="w">	</span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt_value_type</span><span class="w"> </span><span class="n">vtype</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">descr</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">getoptval</span><span class="p">;</span><span class="w"> </span><span class="c1">// character returned by getopt_log() when found</span>
+<span class="p">};</span>
+
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_opt_attr</span><span class="w"> </span><span class="o">*</span>
+<span class="n">xnvme_cli_get_opt_attr</span><span class="p">(</span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt</span><span class="w"> </span><span class="n">opt</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @struct xnvme_cli_sub_opt</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_sub_opt</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt</span><span class="w"> </span><span class="n">opt</span><span class="p">;</span>
+<span class="w">	</span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opt_type</span><span class="w"> </span><span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Forward declaration</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="p">;</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">xnvme_cli_subfunc</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+
+<span class="cp">#define XNVME_CLI_SUB_OPTS_LEN 200</span>
+
+<span class="cp">#define XNVME_CLI_SUB_NAME_LEN_MAX 30</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Filled by the user of libxnvmc, usually statically right above main</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_sub</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Short name of the sub-command</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">descr_short</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Short sub-command description</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">descr_long</span><span class="p">;</span><span class="w">  </span><span class="c1">///&lt; Long sub-command description</span>
+
+<span class="w">	</span><span class="n">xnvme_cli_subfunc</span><span class="w"> </span><span class="n">command</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Function to execute</span>
+
+<span class="w">	</span><span class="c1">///&lt; Options to parse into args and pass onto func</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_sub_opt</span><span class="w"> </span><span class="n">opts</span><span class="p">[</span><span class="n">XNVME_CLI_SUB_OPTS_LEN</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">title</span><span class="p">;</span><span class="w">       </span><span class="c1">///&lt; Setup by user</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">descr_short</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Setup by user</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">descr_long</span><span class="p">;</span><span class="w">  </span><span class="c1">///&lt; Setup by user</span>
+
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">nsubs</span><span class="p">;</span><span class="w">                  </span><span class="c1">///&lt; Setup by user</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_sub</span><span class="w"> </span><span class="o">*</span><span class="n">subs</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Setup by user</span>
+
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">ver_pr</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span><span class="w"> </span><span class="c1">///&lt; Setup by library if unset</span>
+
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">;</span><span class="w">                   </span><span class="c1">///&lt; Setup by library</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">;</span><span class="w">                </span><span class="c1">///&lt; Setup by library</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_args</span><span class="w"> </span><span class="n">args</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Setup by library</span>
+
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">given</span><span class="p">[</span><span class="n">XNVME_CLI_OPT_END</span><span class="p">];</span><span class="w"> </span><span class="c1">///&lt; Setup by library</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_sub</span><span class="w"> </span><span class="o">*</span><span class="n">sub</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Setup by library</span>
+
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_timer</span><span class="w"> </span><span class="n">timer</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Used by xnvme_cli_timer_*</span>
+<span class="p">};</span>
+
+<span class="k">enum</span><span class="w"> </span><span class="n">xnvme_cli_opts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_CLI_INIT_NONE</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_CLI_INIT_DEV_OPEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * List of devices found on the system usable with xNVMe</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_cli_enumeration</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w">            </span><span class="c1">///&lt; Remaining unused entries</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nentries</span><span class="p">;</span><span class="w">            </span><span class="c1">///&lt; Used entries</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="n">entries</span><span class="p">[];</span><span class="w"> </span><span class="c1">///&lt; Device entries</span>
+<span class="p">};</span>
+
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_enumeration_alloc</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">**</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">capacity</span><span class="p">);</span>
+
+<span class="kt">void</span>
+<span class="nf">xnvme_cli_enumeration_free</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">);</span>
+
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_enumeration_append</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="n">entry</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given ::xnvme_cli_enumeration to the given output stream</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param stream output stream used for printing</span>
+<span class="cm"> * @param list pointer to structure to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_enumeration_fpr</span><span class="p">(</span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_enumeration_fpp</span><span class="p">(</span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_enumeration_pp</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the given ::xnvme_cli_enumeration to stdout</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param list pointer to structure to print</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, the number of characters printed is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_enumeration_pr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_enumeration</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="kt">uint64_t</span>
+<span class="nf">xnvme_cli_timer_start</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">);</span>
+
+<span class="kt">uint64_t</span>
+<span class="nf">xnvme_cli_timer_stop</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">);</span>
+
+<span class="kt">void</span>
+<span class="nf">xnvme_cli_timer_bw_pr</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="kt">void</span>
+<span class="nf">xnvme_cli_pinf</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+
+<span class="kt">void</span>
+<span class="nf">xnvme_cli_perr</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_run</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Fill the given &#39;opts&#39; with values parsed in the given &#39;cli&#39;</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param cli The command-line-interface to parse arguments for</span>
+<span class="cm"> * @param opts The device-options to fill</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cli_to_opts</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -2317,7 +2814,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -2733,6 +3231,7 @@ document.write(`
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#header">Header</a></li>
 </ul>
   </nav></div>
 
@@ -2749,8 +3248,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2770,7 +3269,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -2783,7 +3282,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

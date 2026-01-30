@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'toolchain/linux/index';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="Toolchain" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -409,9 +387,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -429,8 +412,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -442,7 +423,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Toolchain</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Linux</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Linux</span></li>
   </ul>
 </nav>
 </div>
@@ -464,7 +445,7 @@ document.write(`
 <section id="alpine-linux-latest">
 <h2>Alpine Linux (latest)<a class="headerlink" href="#alpine-linux-latest" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/alpine-latest.sh
@@ -532,8 +513,8 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe with SPDK and libvfn disabled</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>-Dwith-spdk<span class="o">=</span>disabled
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -559,7 +540,7 @@ libvfn and spdk on Alpine.</p>
 <section id="arch-linux-latest">
 <h2>Arch Linux (latest)<a class="headerlink" href="#arch-linux-latest" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/archlinux-latest.sh
@@ -637,7 +618,7 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -660,7 +641,7 @@ and adjust your <code class="docutils literal notranslate"><span class="pre">$PK
 <section id="oracle-linux-10-10">
 <h2>Oracle Linux 10 (10)<a class="headerlink" href="#oracle-linux-10-10" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/oraclelinux-10.sh
@@ -751,7 +732,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -767,7 +750,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="oracle-linux-9-9">
 <h2>Oracle Linux 9 (9)<a class="headerlink" href="#oracle-linux-9-9" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/oraclelinux-9.sh
@@ -858,7 +841,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -874,7 +859,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="rocky-linux-9-9-7">
 <h2>Rocky Linux 9 (9.7)<a class="headerlink" href="#rocky-linux-9-9-7" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/rockylinux-9.7.sh
@@ -965,7 +950,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -981,7 +968,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="rocky-linux-10-10-1">
 <h2>Rocky Linux 10 (10.1)<a class="headerlink" href="#rocky-linux-10-10-1" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/rockylinux-10.1.sh
@@ -1072,7 +1059,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1088,7 +1077,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="centos-stream-10-stream10">
 <h2>CentOS Stream 10 (stream10)<a class="headerlink" href="#centos-stream-10-stream10" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/centos-stream10.sh
@@ -1178,7 +1167,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1194,7 +1185,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="centos-stream-9-stream9">
 <h2>CentOS Stream 9 (stream9)<a class="headerlink" href="#centos-stream-9-stream9" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/centos-stream9.sh
@@ -1284,7 +1275,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1300,7 +1293,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="debian-stable-trixie">
 <h2>Debian Stable (trixie)<a class="headerlink" href="#debian-stable-trixie" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/debian-trixie.sh
@@ -1387,7 +1380,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="debian-oldstable-bookworm">
 <h2>Debian Oldstable (bookworm)<a class="headerlink" href="#debian-oldstable-bookworm" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/debian-bookworm.sh
@@ -1474,7 +1467,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="debian-oldoldstable-bullseye">
 <h2>Debian Oldoldstable (bullseye)<a class="headerlink" href="#debian-oldoldstable-bullseye" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/debian-bullseye.sh
@@ -1581,7 +1574,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="debian-testing-forky">
 <h2>Debian Testing (forky)<a class="headerlink" href="#debian-testing-forky" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/debian-forky.sh
@@ -1668,7 +1661,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="fedora-43">
 <h2>Fedora (43)<a class="headerlink" href="#fedora-43" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/fedora-43.sh
@@ -1734,7 +1727,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1750,7 +1745,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="fedora-42">
 <h2>Fedora (42)<a class="headerlink" href="#fedora-42" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/fedora-42.sh
@@ -1816,7 +1811,9 @@ all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<span class="c1"># --prefix=/usr to install directly into the system paths, avoiding the need</span>
+<span class="c1"># to reconfigure the dynamic linker for /usr/local</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -1832,7 +1829,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="ubuntu-latest-questing">
 <h2>Ubuntu Latest (questing)<a class="headerlink" href="#ubuntu-latest-questing" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/ubuntu-questing.sh
@@ -1923,7 +1920,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="ubuntu-lts-noble">
 <h2>Ubuntu LTS (noble)<a class="headerlink" href="#ubuntu-lts-noble" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/ubuntu-noble.sh
@@ -2014,7 +2011,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="ubuntu-lts-old-jammy">
 <h2>Ubuntu LTS (Old) (jammy)<a class="headerlink" href="#ubuntu-lts-old-jammy" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/ubuntu-jammy.sh
@@ -2125,7 +2122,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
 <section id="gentoo-latest">
 <h2>Gentoo (latest)<a class="headerlink" href="#gentoo-latest" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/gentoo-latest.sh
@@ -2186,8 +2183,10 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 all the software described above.</p>
 </div>
 <p>Then go ahead and configure, build and install using <code class="docutils literal notranslate"><span class="pre">meson</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
-meson<span class="w"> </span>setup<span class="w"> </span>builddir
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LDFLAGS</span><span class="o">=</span><span class="s2">&quot;-ltinfo -lncurses&quot;</span>
+
+<span class="c1"># configure xNVMe and build meson subprojects(SPDK)</span>
+meson<span class="w"> </span>setup<span class="w"> </span>builddir<span class="w"> </span>--prefix<span class="o">=</span>/usr
 
 <span class="c1"># build xNVMe</span>
 meson<span class="w"> </span>compile<span class="w"> </span>-C<span class="w"> </span>builddir
@@ -2213,7 +2212,7 @@ and adjust your <code class="docutils literal notranslate"><span class="pre">$PK
 <section id="opensuse-tumbleweed-latest">
 <h2>openSUSE (tumbleweed-latest)<a class="headerlink" href="#opensuse-tumbleweed-latest" title="Link to this heading">#</a></h2>
 <p>Install the required toolchain and libraries by running the package installation
-script  provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
+script provided with the <strong>xNVMe</strong> repository, as shown below. Ensure that you
 have sufficient system privileges when doing so (e.g., run as <code class="docutils literal notranslate"><span class="pre">root</span></code> or with
 <code class="docutils literal notranslate"><span class="pre">sudo</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./xnvme/toolbox/pkgs/opensuse-tumbleweed-latest.sh
@@ -2328,7 +2327,8 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -2374,8 +2374,8 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2395,7 +2395,7 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -2408,7 +2408,8 @@ meson<span class="w"> </span>install<span class="w"> </span>-C<span class="w"> <
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

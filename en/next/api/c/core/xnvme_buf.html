@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/c/core/xnvme_buf';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="Core" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -451,9 +429,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -471,10 +454,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -487,12 +466,12 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API</a></li>
     
     
-    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">C</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Core</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">libxnvme_buf.h</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libxnvme_buf.h</span></li>
   </ul>
 </nav>
 </div>
@@ -517,7 +496,7 @@ document.write(`
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-alloc"></span><h3>xnvme_buf_alloc<a class="headerlink" href="#xnvme-buf-alloc" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_alloc">
-<span class="target" id="libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_alloc" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_alloc" title="Link to this definition">#</a><br /></dt>
 <dd><p>SPDX-FileCopyrightText: Samsung Electronics Co., Ltd. </p>
 <p>SPDX-License-Identifier: BSD-3-Clause Allocate a buffer for IO with the given device</p>
 <p>The buffer will be aligned to device geometry and DMA allocated if required by the backend for command payloads</p>
@@ -532,7 +511,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 <li><p><strong>nbytes</strong> – The size of the allocated buffer in bytes</p></li>
 </ul>
 </dd>
@@ -547,7 +526,7 @@ document.write(`
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-clear"></span><h3>xnvme_buf_clear<a class="headerlink" href="#xnvme-buf-clear" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_clear">
-<span class="target" id="libxnvme__buf_8h_1a1f3ab3260a69bd23824f542dcba714d0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_clear</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_clear" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1a6a24fa4902e0dc7c37c797b0ef4fbb48"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_clear</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_clear" title="Link to this definition">#</a><br /></dt>
 <dd><p>Write zeroes to the first ‘nbytes’ of ‘buf’. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -629,12 +608,12 @@ document.write(`
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_free">
 <span class="target" id="libxnvme__buf_8h_1ab93616483922d16f4d21369c9f610d8c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_free" title="Link to this definition">#</a><br /></dt>
-<dd><p>Free the given IO buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a></p>
+<dd><p>Free the given IO buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
-<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -666,7 +645,7 @@ document.write(`
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-phys-alloc"></span><h3>xnvme_buf_phys_alloc<a class="headerlink" href="#xnvme-buf-phys-alloc" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_phys_alloc">
-<span class="target" id="libxnvme__buf_8h_1a3f2c34a92403148311b095de890cf306"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_phys_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">phys</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_phys_alloc" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1aed01b101f7dd93ecadd256d31f314650"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_phys_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">phys</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_phys_alloc" title="Link to this definition">#</a><br /></dt>
 <dd><p>Allocate a buffer of physical memory, aligned for IO with the given device. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -679,7 +658,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 <li><p><strong>nbytes</strong> – The size of the allocated buffer in bytes </p></li>
 <li><p><strong>phys</strong> – A pointer to the variable to hold the physical address of the allocated buffer. If NULL, the physical address is not returned.</p></li>
 </ul>
@@ -696,12 +675,12 @@ document.write(`
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_phys_free">
 <span class="target" id="libxnvme__buf_8h_1a07e82db665e2e6eadcd72c7c9d9d0026"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_phys_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_phys_free" title="Link to this definition">#</a><br /></dt>
-<dd><p>Free the given buffer of physical memory allocated with <a class="reference internal" href="#libxnvme__buf_8h_1a3f2c34a92403148311b095de890cf306"><span class="std std-ref">xnvme_buf_phys_alloc()</span></a></p>
+<dd><p>Free the given buffer of physical memory allocated with <a class="reference internal" href="#libxnvme__buf_8h_1aed01b101f7dd93ecadd256d31f314650"><span class="std std-ref">xnvme_buf_phys_alloc()</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
-<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1a3f2c34a92403148311b095de890cf306"><span class="std std-ref">xnvme_buf_phys_alloc()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1aed01b101f7dd93ecadd256d31f314650"><span class="std std-ref">xnvme_buf_phys_alloc()</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -712,7 +691,7 @@ document.write(`
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-phys-realloc"></span><h3>xnvme_buf_phys_realloc<a class="headerlink" href="#xnvme-buf-phys-realloc" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_phys_realloc">
-<span class="target" id="libxnvme__buf_8h_1a7fb530c2005131604d40dd9e5a80bc96"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_phys_realloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">phys</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_phys_realloc" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1a86cbd751a805e3e9384dce7efea3d90f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_phys_realloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">phys</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_phys_realloc" title="Link to this definition">#</a><br /></dt>
 <dd><p>Re-allocate a buffer of physical memory, aligned for IO with the given device. </p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -725,7 +704,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 <li><p><strong>buf</strong> – The buffer to reallocate </p></li>
 <li><p><strong>nbytes</strong> – The size of the allocated buffer in bytes </p></li>
 <li><p><strong>phys</strong> – A pointer to the variable to hold the physical address of the allocated buffer. If NULL, the physical address is not returned.</p></li>
@@ -742,7 +721,7 @@ document.write(`
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-realloc"></span><h3>xnvme_buf_realloc<a class="headerlink" href="#xnvme-buf-realloc" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_realloc">
-<span class="target" id="libxnvme__buf_8h_1a293130c0335f28d3c2d3ebedde981594"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_realloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_realloc" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1ac525acb0191282a83680d8856a68a86c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_realloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_realloc" title="Link to this definition">#</a><br /></dt>
 <dd><p>Reallocate a buffer for IO with the given device. </p>
 <p>The buffer will be aligned to device geometry and DMA allocated if required by the backend for IO</p>
 <div class="admonition note">
@@ -756,7 +735,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 <li><p><strong>buf</strong> – The buffer to reallocate </p></li>
 <li><p><strong>nbytes</strong> – The size of the allocated buffer in bytes</p></li>
 </ul>
@@ -799,7 +778,7 @@ document.write(`
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-virt-alloc"></span><h3>xnvme_buf_virt_alloc<a class="headerlink" href="#xnvme-buf-virt-alloc" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_virt_alloc">
-<span class="target" id="libxnvme__buf_8h_1a2ee3b44e77fbc0c3fbc62686f80d330f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_virt_alloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_virt_alloc" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1a144be13e1264a72aa74dd0e8037208f4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_virt_alloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_virt_alloc" title="Link to this definition">#</a><br /></dt>
 <dd><p>Allocate a buffer of virtual memory of the given <code class="docutils literal notranslate"><span class="pre">alignment</span></code> and <code class="docutils literal notranslate"><span class="pre">nbytes</span></code></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -828,7 +807,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1a2ee3b44e77fbc0c3fbc62686f80d330f"><span class="std std-ref">xnvme_buf_virt_alloc()</span></a></p></li>
+<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1a144be13e1264a72aa74dd0e8037208f4"><span class="std std-ref">xnvme_buf_virt_alloc()</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -841,12 +820,12 @@ document.write(`
 <dt class="sig sig-object c" id="c.xnvme_buf_vtophys">
 <span class="target" id="libxnvme__buf_8h_1a09bbd3e980bb0a71192a11a3e21e351d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_vtophys</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">phys</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_vtophys" title="Link to this definition">#</a><br /></dt>
 <dd><p>Retrieve the physical address of the given buffer. </p>
-<p>The intended use for this function is to provide the physical-address of a buffer-allocation allocated with <a class="reference internal" href="#libxnvme__buf_8h_1a3f2c34a92403148311b095de890cf306"><span class="std std-ref">xnvme_buf_phys_alloc()</span></a> or <a class="reference internal" href="#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a>, where the ‘phys’ argument was either not provided.</p>
+<p>The intended use for this function is to provide the physical-address of a buffer-allocation allocated with <a class="reference internal" href="#libxnvme__buf_8h_1aed01b101f7dd93ecadd256d31f314650"><span class="std std-ref">xnvme_buf_phys_alloc()</span></a> or <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a>, where the ‘phys’ argument was either not provided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
-<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1aa61c331982922d038a6af22fbe4e1a1a"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>buf</strong> – Pointer to a buffer allocated with <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a></p></li>
 <li><p><strong>phys</strong> – A pointer to the variable to hold the physical address of the given buffer.</p></li>
 </ul>
 </dd>
@@ -857,6 +836,220 @@ document.write(`
 </dd></dl>
 
 </section>
+</section>
+<section id="header">
+<span id="sec-api-c-xnvme-buf-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_buf.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Allocate a buffer for IO with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * The buffer will be aligned to device geometry and DMA allocated if required by the backend for</span>
+<span class="cm"> * command payloads</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note nbytes must be greater than zero and a multiple of minimal granularity</span>
+<span class="cm"> * @note De-allocate the buffer using xnvme_buf_free()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param nbytes The size of the allocated buffer in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to the allocated memory is returned. On error, NULL is returned</span>
+<span class="cm"> * and `errno` set to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">xnvme_buf_alloc</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Reallocate a buffer for IO with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * The buffer will be aligned to device geometry and DMA allocated if required by the backend for</span>
+<span class="cm"> * IO</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note nbytes must be greater than zero and a multiple of minimal granularity</span>
+<span class="cm"> * @note De-allocate the buffer using xnvme_buf_free()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param buf The buffer to reallocate</span>
+<span class="cm"> * @param nbytes The size of the allocated buffer in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to the allocated memory is returned. On error, NULL is returned</span>
+<span class="cm"> * and `errno` set to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">xnvme_buf_realloc</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Free the given IO buffer allocated with xnvme_buf_alloc()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param buf Pointer to a buffer allocated with xnvme_buf_alloc()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_buf_free</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Allocate a buffer of physical memory, aligned for IO with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note nbytes must be greater than zero and a multiple of minimal granularity</span>
+<span class="cm"> * @note De-allocate the buffer using xnvme_buf_phys_free()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param nbytes The size of the allocated buffer in bytes</span>
+<span class="cm"> * @param phys A pointer to the variable to hold the physical address of the allocated buffer. If</span>
+<span class="cm"> * NULL, the physical address is not returned.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to the allocated memory is returned. On error, NULL is returned</span>
+<span class="cm"> * and `errno` set to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">xnvme_buf_phys_alloc</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="o">*</span><span class="n">phys</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Free the given buffer of physical memory allocated with xnvme_buf_phys_alloc()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param buf Pointer to a buffer allocated with xnvme_buf_phys_alloc()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_buf_phys_free</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Re-allocate a buffer of physical memory, aligned for IO with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note nbytes must be greater than zero and a multiple of minimal granularity</span>
+<span class="cm"> * @note De-allocate the buffer using xnvme_buf_phys_free()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param buf The buffer to reallocate</span>
+<span class="cm"> * @param nbytes The size of the allocated buffer in bytes</span>
+<span class="cm"> * @param phys A pointer to the variable to hold the physical address of the allocated buffer. If</span>
+<span class="cm"> * NULL, the physical address is not returned.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to the allocated memory is returned. On error, NULL is returned</span>
+<span class="cm"> * and `errno` set to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">xnvme_buf_phys_realloc</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="o">*</span><span class="n">phys</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve the physical address of the given buffer</span>
+<span class="cm"> *</span>
+<span class="cm"> * The intended use for this function is to provide the physical-address of a buffer-allocation</span>
+<span class="cm"> * allocated with xnvme_buf_phys_alloc() or xnvme_buf_alloc(), where the &#39;phys&#39; argument was either</span>
+<span class="cm"> * not provided.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param buf Pointer to a buffer allocated with xnvme_buf_alloc()</span>
+<span class="cm"> * @param phys A pointer to the variable to hold the physical address of the given buffer.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_vtophys</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="o">*</span><span class="n">phys</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Allocate a buffer of virtual memory of the given `alignment` and `nbytes`</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note You must use xnvme_buf_virt_free() to de-allocate the buffer</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param alignment The alignment in bytes</span>
+<span class="cm"> * @param nbytes The size of the buffer in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to the allocated memory is return. On error, NULL is returned and</span>
+<span class="cm"> * `errno` set to indicate the error</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">xnvme_buf_virt_alloc</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">alignment</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Free the given virtual memory buffer</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param buf Pointer to a buffer allocated with xnvme_buf_virt_alloc()</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_buf_virt_free</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Fills `buf` with content `nbytes` of content</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param buf Pointer to the buffer to fill</span>
+<span class="cm"> * @param content Name of a file, or special &quot;zero&quot;, &quot;anum&quot;, &quot;rand-k&quot;, &quot;rand-t&quot;</span>
+<span class="cm"> * @param nbytes Amount of bytes to fill in buf</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_fill</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">content</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Write zeroes to the first &#39;nbytes&#39; of &#39;buf&#39;</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param buf Pointer to the buffer to fill with zeroes</span>
+<span class="cm"> * @param nbytes Amount of bytes to fill with zeroes in buf</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return Returns the first argument.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">xnvme_buf_clear</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Returns the number of bytes where expected is different from actual</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param expected Pointer to buffer of &quot;expected&quot; content</span>
+<span class="cm"> * @param actual Pointer to buffer to compare to &quot;expected&quot;</span>
+<span class="cm"> * @param nbytes Amount of bytes to compare</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, returns number of bytes that differ</span>
+<span class="cm"> */</span>
+<span class="kt">size_t</span>
+<span class="nf">xnvme_buf_diff</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints the number and value of bytes where expected is different from actual</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param expected Pointer to buffer of &quot;expected&quot; content</span>
+<span class="cm"> * @param actual Pointer to buffer to compare to &quot;expected&quot;</span>
+<span class="cm"> * @param nbytes Amount of bytes to compare</span>
+<span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_buf_diff_pr</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Write content of buffer into file</span>
+<span class="cm"> *</span>
+<span class="cm"> * - If file exists, then it is truncated / overwritten</span>
+<span class="cm"> * - If file does NOT exist, then it is created</span>
+<span class="cm"> * - When file is created, permissions are set to user WRITE + READ</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param buf Pointer to the buffer</span>
+<span class="cm"> * @param nbytes Size of buf</span>
+<span class="cm"> * @param path Destination where buffer will be dumped to</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_to_file</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">path</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Read content of file into buffer</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param buf Pointer to the buffer</span>
+<span class="cm"> * @param nbytes Size of buf</span>
+<span class="cm"> * @param path Source to read from</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_from_file</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">path</span><span class="p">);</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -871,7 +1064,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -945,6 +1139,7 @@ document.write(`
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#header">Header</a></li>
 </ul>
   </nav></div>
 
@@ -961,8 +1156,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -982,7 +1177,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -995,7 +1190,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

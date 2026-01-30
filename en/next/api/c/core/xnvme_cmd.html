@@ -16,40 +16,44 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=70f28cd9" />
   
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../../_static/documentation_options.js?v=5dc08821"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/c/core/xnvme_cmd';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = true;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
         </script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -57,6 +61,7 @@
     <link rel="prev" title="libxnvme_buf.h" href="xnvme_buf.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
   </head>
   
   
@@ -72,19 +77,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -92,7 +86,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -100,8 +93,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -133,7 +126,7 @@
     
     
     <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <script>document.write(`<img src="../../../_static/xnvme.svg" class="logo__image only-dark" alt="xNVMe v0.7.5 documentation - Home"/>`);</script>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
   
   
 </a></div>
@@ -214,41 +207,33 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -257,15 +242,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -284,7 +265,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -365,28 +347,24 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -451,9 +429,14 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -471,10 +454,6 @@ document.write(`
       
         <div class="header-article-item">
 
-
-
-
-
 <nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
@@ -487,12 +466,12 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API</a></li>
     
     
-    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">C</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Core</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">libxnvme_cmd.h</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libxnvme_cmd.h</span></li>
   </ul>
 </nav>
 </div>
@@ -638,7 +617,7 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1abfbbe8bb204dcdf2012540a39b1e2796"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -652,7 +631,7 @@ document.write(`
 <span id="sec-api-c-xnvme-cmd-func-xnvme-cmd-ctx-from-queue"></span><h3>xnvme_cmd_ctx_from_queue<a class="headerlink" href="#xnvme-cmd-ctx-from-queue" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_cmd_ctx_from_queue">
-<span class="target" id="libxnvme__cmd_8h_1a7bc367223347286051c81a4e4ae5a93f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_from_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_from_queue" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__cmd_8h_1a8b4750cb2c68f0cdedfc0bdf5c943638"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_ctx_from_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_ctx_from_queue" title="Link to this definition">#</a><br /></dt>
 <dd><p>Retrieve a command-text for issuing commands via the given queue. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -799,6 +778,178 @@ document.write(`
 
 </section>
 </section>
+<section id="header">
+<span id="sec-api-c-xnvme-cmd-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="cm"> *</span>
+<span class="cm"> * SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="cm"> *</span>
+<span class="cm"> * @headerfile libxnvme_cmd.h</span>
+<span class="cm"> */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Attributes for asynchronous command-contexts</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_cmd_ctx_async</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx_async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Queue used for command processing</span>
+<span class="w">	</span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span><span class="w">         </span><span class="c1">///&lt; User defined callback function</span>
+<span class="w">	</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span><span class="w">              </span><span class="c1">///&lt; User defined callback function arguments</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * The xNVMe Command Context</span>
+<span class="cm"> *</span>
+<span class="cm"> * @struct xnvme_cmd_ctx</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="n">cmd</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Command to be processed</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cpl</span><span class="w"> </span><span class="n">cpl</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Completion result from processing</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span><span class="w">            </span><span class="c1">///&lt; Device associated with the command</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx_async</span><span class="w"> </span><span class="n">async</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Fields for command option: XNVME_CMD_ASYNC</span>
+<span class="w">	</span><span class="c1">///&lt; Field containing command-options, the field is initialized by helper-functions</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">opts</span><span class="p">;</span>
+
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">be_rsvd</span><span class="p">[</span><span class="mi">12</span><span class="p">];</span><span class="w"> </span><span class="c1">///&lt; Fields reserved for use by library internals</span>
+<span class="p">};</span>
+<span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Incorrect size&quot;</span><span class="p">)</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Prints a humanly readable representation the given #xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the #xnvme_cmd_ctx to print</span>
+<span class="cm"> * @param UNUSED_opts Printer options</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="n">xnvme_cmd_ctx_pr</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Assign a callback-function and argument to be used with the given command-context</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to setup callback for</span>
+<span class="cm"> * @param cb The callback function to use</span>
+<span class="cm"> * @param cb_arg The callback argument to use</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span>
+<span class="nf">xnvme_cmd_ctx_set_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span>
+<span class="w">	</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">.</span><span class="n">cb_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_arg</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve a command-context for issuing commands to the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle (::xnvme_dev) obtained with xnvme_dev_open()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return A ::xnvme_cmd_ctx initialized synchronous command on the given device</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span>
+<span class="n">xnvme_cmd_ctx_from_dev</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve a command-text for issuing commands via the given queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to retrieve a command-context for</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, a pointer to a ::xnvme_cmd_ctx is returned. On error, NULL is returned and</span>
+<span class="cm"> * `errno` set to indicate the error.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span>
+<span class="n">xnvme_cmd_ctx_from_queue</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Clears/resets the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to clear</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">xnvme_cmd_ctx_clear</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Encapsulate completion-error checking here for now.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to the ::xnvme_cmd_ctx to check status on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is return. On error, a non-zero value is returned.</span>
+<span class="cm"> */</span>
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">sc</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">sct</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass an NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of data-payload in bytes</span>
+<span class="cm"> * @param mbuf pointer to meta-payload</span>
+<span class="cm"> * @param mbuf_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_pass</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">,</span>
+<span class="w">	       </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given</span>
+<span class="cm">::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * NOTE: This function will be deprecated in the future - use xnvme_cmd_pass_iov() instead</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dvec array of data iovecs</span>
+<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
+<span class="cm"> * @param dvec_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> * @param mvec array of metadata iovecs</span>
+<span class="cm"> * @param mvec_cnt number of elements in mvec</span>
+<span class="cm"> * @param mvec_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_passv</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">dvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_nbytes</span><span class="p">,</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">mvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given</span>
+<span class="cm"> * ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dvec array of data iovecs</span>
+<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
+<span class="cm"> * @param dvec_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> * @param mbuf pointer to meta-payload</span>
+<span class="cm"> * @param mbuf_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_pass_iov</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">dvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_cnt</span><span class="p">,</span>
+<span class="w">		   </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Pass a NVMe Admin Command through to the device with minimal intervention</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
+<span class="cm"> * @param dbuf pointer to data-payload</span>
+<span class="cm"> * @param dbuf_nbytes size of data-payload in bytes</span>
+<span class="cm"> * @param mbuf pointer to meta-payload</span>
+<span class="cm"> * @param mbuf_nbytes size of the meta-payload in bytes</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cmd_pass_admin</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dbuf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">mbuf</span><span class="p">,</span>
+<span class="w">		     </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mbuf_nbytes</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -812,7 +963,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -890,6 +1042,7 @@ document.write(`
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#header">Header</a></li>
 </ul>
   </nav></div>
 
@@ -906,8 +1059,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -927,7 +1080,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -940,7 +1093,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>
