@@ -859,8 +859,8 @@ helper-targets to do this. That is, spinning up the guest, synchronizing your
 running tests.</p>
 <section id="test-linux">
 <h3>Test Linux<a class="headerlink" href="#test-linux" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a cijoe-config for a qemu-guest with Debian Bullseye</span>
-cp<span class="w"> </span>cijoe/configs/debian-bullseye.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a cijoe-config for a qemu-guest with Debian Trixie</span>
+cp<span class="w"> </span>cijoe/configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
 
 <span class="c1"># Provision the machine</span>
 make<span class="w"> </span>cijoe-guest-setup-xnvme-using-git
@@ -881,7 +881,7 @@ documentation.</p>
 <section id="test-freebsd">
 <h3>Test FreeBSD<a class="headerlink" href="#test-freebsd" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a cijoe-config for a qemu-guest with FreeBSD</span>
-cp<span class="w"> </span>cijoe/configs/debian-bullseye.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
+cp<span class="w"> </span>cijoe/configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
 
 <span class="c1"># Provision the machine</span>
 make<span class="w"> </span>cijoe-guest-setup-xnvme-using-git
@@ -905,8 +905,8 @@ the config-files, and provide the artifacts from the GitHUB action:</p>
 <section id="id1">
 <h3>Test Linux<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>Then you should be able to run the following to test <strong>Linux</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Provision and test on Debian Bullseye</span>
-cp<span class="w"> </span>cijoe/configs/debian-bullseye.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Provision and test on Debian Trixie</span>
+cp<span class="w"> </span>cijoe/configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
 <span class="c1"># Edit the cijoe-config, then run</span>
 
 make<span class="w"> </span>cijoe-guest-setup-using-tgz
@@ -941,7 +941,7 @@ run pytest directly, then the following two sections describe how to do that.</p
 <p>Invoke pytest providing a configuration file and an output directory for
 artifacts and captured output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--config<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--output<span class="w"> </span>/tmp/somewhere<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>tests
 </pre></div>
@@ -954,7 +954,7 @@ configurations etc.</p>
 <h3>Provision a qemu-guest<a class="headerlink" href="#provision-a-qemu-guest" title="Link to this heading">#</a></h3>
 <p>Setup a virtual machine with <strong>xNVMe</strong> installed, and a bunch of NVMe devices
 configured:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>provision.yaml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span>provision.yaml
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -964,14 +964,14 @@ configured:</p>
 </pre></div>
 </div>
 <p>This is because the default configuration is for running on Github. Thus,
-adjust the file <code class="docutils literal notranslate"><span class="pre">configs/debian-bullseye.toml</span></code> such that qemu is
+adjust the file <code class="docutils literal notranslate"><span class="pre">configs/debian-trixie.toml</span></code> such that qemu is
 pointing to <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>.</p>
 </div>
 </section>
 <section id="create-boot-images">
 <h3>Create boot-images<a class="headerlink" href="#create-boot-images" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">debian-bullseye-amd64.qcow2</span></code> is created by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>workflows/bootimg-debian-bullseye-amd64.yaml
+<p>The <code class="docutils literal notranslate"><span class="pre">debian-trixie-amd64.qcow2</span></code> is created by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span>workflows/bootimg-debian-trixie-amd64.yaml
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">freebsd-13.1-ksrc-amd64.qcow2</span></code> is created by:</p>
@@ -990,7 +990,7 @@ reasons. Then, have a look at the existing <strong>cijoe</strong> configuration 
 <code class="docutils literal notranslate"><span class="pre">cijoe/configs/*.toml</span></code>, copy one that mathes your intended system, e.g.
 use the configuration file for the qemu-guest as a starting point for a
 configuration file for another physical machine:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>configs/debian-bullseye.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
 </pre></div>
 </div>
 <p>Open up <code class="docutils literal notranslate"><span class="pre">~/.config/cijoe/cijoe-config.toml</span></code> and adjust it to your physical
