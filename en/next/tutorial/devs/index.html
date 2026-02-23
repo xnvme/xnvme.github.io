@@ -872,11 +872,9 @@ make<span class="w"> </span>cijoe-do-test-linux
 </section>
 <section id="generate-documentation-in-linux">
 <h3>Generate documentation in Linux<a class="headerlink" href="#generate-documentation-in-linux" title="Link to this heading">#</a></h3>
-<p>You can reuse qemu-guest created in the previous section to generate the
-documentation.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>cijoe-do-docgen
-</pre></div>
-</div>
+<p>You can reuse the qemu-guest created in the previous section to generate the
+documentation. See the <a class="reference internal" href="#sec-tutorials-devs-linux-reproduce-ci"><span class="std std-ref">Reproduce GitHUB Actions locally</span></a> section for
+using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docgen-guest</span></code> inside the Docker container.</p>
 </section>
 <section id="test-freebsd">
 <h3>Test FreeBSD<a class="headerlink" href="#test-freebsd" title="Link to this heading">#</a></h3>
@@ -893,48 +891,39 @@ make<span class="w"> </span>cijoe-do-test-freebsd
 </section>
 </section>
 <section id="reproduce-github-actions-locally">
-<h2>Reproduce GitHUB Actions locally<a class="headerlink" href="#reproduce-github-actions-locally" title="Link to this heading">#</a></h2>
-<p>The <strong>cijoe</strong> workflows and configurations in this directory are used in the
-xNVMe GitHUB actions. You can reproduce what is running on GitHUB by adjusting
-the config-files, and provide the artifacts from the GitHUB action:</p>
-<ul class="simple">
-<li><p>xnvme-py-sdist.tar.gz</p></li>
-<li><p>xnvme-src.tar.gz</p></li>
-</ul>
-<p>Then, place the artifacts in <code class="docutils literal notranslate"><span class="pre">/tmp/artifacts</span></code>.</p>
-<section id="id1">
-<h3>Test Linux<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
-<p>Then you should be able to run the following to test <strong>Linux</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Provision and test on Debian Trixie</span>
-cp<span class="w"> </span>cijoe/configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
-<span class="c1"># Edit the cijoe-config, then run</span>
-
-make<span class="w"> </span>cijoe-guest-setup-using-tgz
-make<span class="w"> </span>cijoe-do-test-linux
+<span id="sec-tutorials-devs-linux-reproduce-ci"></span><h2>Reproduce GitHUB Actions locally<a class="headerlink" href="#reproduce-github-actions-locally" title="Link to this heading">#</a></h2>
+<p>The CI test suite can be reproduced locally using Docker. The
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docker</span></code> target provides a privileged container with a custom QEMU
+build that includes NVMe device emulation.</p>
+<ol class="arabic simple">
+<li><p>Build the source artifacts on your host:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>gen-artifacts<span class="w"> </span><span class="nv">ALLOW_DIRTY</span><span class="o">=</span><span class="m">1</span>
 </pre></div>
 </div>
-</section>
-<section id="id2">
-<h3>Test FreeBSD<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
-<p>Then you should be able to run the following to test xNVMe on <strong>FreeBSD</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Provision and test on FreeBSD 13</span>
-cp<span class="w"> </span>cijoe/configs/freebsd-13.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
-
-make<span class="w"> </span>cijoe-guest-setup-using-tgz
-make<span class="w"> </span>cijoe-do-test-freebsd
+<ol class="arabic simple" start="2">
+<li><p>Drop into the Docker container:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>docker
 </pre></div>
 </div>
-</section>
-<section id="generate-docs">
-<h3>Generate docs<a class="headerlink" href="#generate-docs" title="Link to this heading">#</a></h3>
-<p>And generate documentation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate documentation (provisions qemu-guest and generates the docs)</span>
-make<span class="w"> </span>cijoe-do-docgen
+<p>The container bind-mounts the repository at <code class="docutils literal notranslate"><span class="pre">/tmp/xnvme</span></code> and
+<code class="docutils literal notranslate"><span class="pre">/tmp/artifacts</span></code>, so the artifacts from step 1 are available inside.</p>
+<ol class="arabic simple" start="3">
+<li><p>Inside the container, set up CIJOE and run the desired target:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install CIJOE</span>
+make<span class="w"> </span>cijoe
+
+<span class="c1"># Test on Debian Trixie</span>
+make<span class="w"> </span>verify-guest<span class="w"> </span><span class="nv">GUEST</span><span class="o">=</span>debian-trixie
+
+<span class="c1"># Or generate documentation</span>
+make<span class="w"> </span>docgen-guest<span class="w"> </span><span class="nv">GUEST</span><span class="o">=</span>debian-trixie
 </pre></div>
 </div>
 <p>In case you are setting up the test-target using other tools, or just want to
 run pytest directly, then the following two sections describe how to do that.</p>
-</section>
 </section>
 <section id="running-pytest-from-the-repository">
 <h2>Running pytest from the repository<a class="headerlink" href="#running-pytest-from-the-repository" title="Link to this heading">#</a></h2>
@@ -1047,12 +1036,7 @@ make<span class="w"> </span>cijoe-setup-xnvme-using-git
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-freebsd">Test FreeBSD</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproduce-github-actions-locally">Reproduce GitHUB Actions locally</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Test Linux</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Test FreeBSD</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-docs">Generate docs</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproduce-github-actions-locally">Reproduce GitHUB Actions locally</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-pytest-from-the-repository">Running pytest from the repository</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#provision-a-qemu-guest">Provision a qemu-guest</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-boot-images">Create boot-images</a></li>
