@@ -1,0 +1,2665 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>xNVMe Backend Architecture Refactor &#8212; xNVMe v0.7.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'background/architecture/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tools" href="../../tools/index.html" />
+    <link rel="prev" title="Backend Interface" href="../backends/common/interface/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
+    <img src="../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../platforms/index.html">Platforms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../platforms/linux/index.html">Linux</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/linux/ioctl.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">nvme</span></code> ioctl()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/linux/block.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">block</span></code> ioctl()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/linux/libaio.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/linux/io_uring.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/linux/io_uring_cmd.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../platforms/freebsd/index.html">FreeBSD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/freebsd/ioctl.html">NVMe Driver IOCTL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../platforms/macos/index.html">macOS</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../platforms/windows/index.html">Windows</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/windows/files.html">NVMe Driver and Regular File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/windows/ioctl.html">NVMe Driver and IOCTLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/windows/iocp.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/windows/iocp_th.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp_th</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/windows/io_ring.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">io_ring</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../backends/index.html">Backend Configs</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../backends/spdk/index.html">SPDK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backends/libvfn/index.html">libvfn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backends/xnvme_be_macos.html">macOS</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../backends/common/index.html">Common Backend Impl (CBI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../backends/common/psync.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">psync</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/common/aio.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">posix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/common/emu.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">emu</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/common/thrpool.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">thrpool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/common/nil.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">nil</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/common/ramdisk.html">Ramdisk</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../backends/common/interface/index.html">Backend Interface</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">xNVMe Backend Architecture Refactor</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Background</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">xNVMe Backend Architecture Refactor</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="xnvme-backend-architecture-refactor">
+<h1>xNVMe Backend Architecture Refactor<a class="headerlink" href="#xnvme-backend-architecture-refactor" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>This refactor separates concerns into:</p>
+<ul class="simple">
+<li><p><strong>Platform</strong>: OS-specific device discovery and lifecycle (one per build, compile-time selected)</p></li>
+<li><p><strong>Backend configs</strong>: Complete I/O path configurations (<code class="docutils literal notranslate"><span class="pre">xnvme_be_config</span></code>), selected at runtime
+via <code class="docutils literal notranslate"><span class="pre">opts.be</span></code> matching <code class="docutils literal notranslate"><span class="pre">xnvme_be_config.attr.name</span></code>, or automatically via URI classification</p></li>
+<li><p><strong>cref</strong>: Centralized controller reference counting</p></li>
+</ul>
+</section>
+<section id="terminology">
+<h2>Terminology<a class="headerlink" href="#terminology" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Term</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>io-path</strong></p></td>
+<td><p>How I/O is submitted (io_uring_cmd, io_uring, libaio, spdk, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>backend config</strong></p></td>
+<td><p>A <code class="docutils literal notranslate"><span class="pre">xnvme_be_config</span></code> – complete recipe of async+sync+admin+dev+mem</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>OS-managed</strong></p></td>
+<td><p>Device owned by kernel driver, <strong>xNVMe</strong> selects io-path</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Userspace-managed</strong></p></td>
+<td><p>Device owned by userspace driver, io-path bundled</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>multipath</strong></p></td>
+<td><p>Multiple io-paths active concurrently (future)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>kernel_driver</strong></p></td>
+<td><p>Kernel module the device is bound to (nvme, vfio-pci, uio_pci_generic)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>caps</strong></p></td>
+<td><p>Capability bitmask on each config, matched against URI classification</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="kernel-driver-vs-opts-be">
+<h3>kernel_driver vs opts.be<a class="headerlink" href="#kernel-driver-vs-opts-be" title="Link to this heading">#</a></h3>
+<p>Two related but distinct concepts:</p>
+<ul>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">xnvme_ident.kernel_driver</span></code></strong> - Kernel module the device is currently bound to.
+Populated by scan for PCIe devices, reflects current system state.
+Empty for fabrics (transport is encoded in URI).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Values</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Linux</p></td>
+<td><p>nvme, vfio-pci, uio_pci_generic</p></td>
+<td><p>Well-defined, visible in sysfs</p></td>
+</tr>
+<tr class="row-odd"><td><p>FreeBSD</p></td>
+<td><p>nvme</p></td>
+<td><p>Userspace binding TBD</p></td>
+</tr>
+<tr class="row-even"><td><p>Windows</p></td>
+<td><p>(empty)</p></td>
+<td><p>No userspace binding mechanism</p></td>
+</tr>
+<tr class="row-odd"><td><p>macOS</p></td>
+<td><p>(TBD)</p></td>
+<td><p>DriverKit visibility needs investigation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">xnvme_opts.be</span></code></strong> - Which backend config to use for I/O.
+Matches on <code class="docutils literal notranslate"><span class="pre">xnvme_be_config.attr.name</span></code>. When set, only configs with a
+matching name are considered.
+Examples: “io_uring”, “io_uring_cmd”, “libaio”, “thrpool”, “emu”,
+“io_uring_bdev”, “spdk”, “vfio”, “ramdisk”, “driverkit”</p></li>
+</ul>
+<p>The kernel_driver informs backend config compatibility:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel_driver=nvme</span></code> → can use linux configs (io_uring, libaio, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel_driver=vfio-pci</span></code> → must use vfio config</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel_driver=uio_pci_generic</span></code> → must use uio config</p></li>
+</ul>
+</section>
+</section>
+<section id="current-problems">
+<h2>Current Problems<a class="headerlink" href="#current-problems" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Multiple backends compete with duplicated logic (SPDK and libvfn both do refcounting)</p></li>
+<li><p>No conflict detection between user-space drivers on the same device</p></li>
+<li><p>Mixins allow invalid combinations (e.g., <code class="docutils literal notranslate"><span class="pre">async=spdk,</span> <span class="pre">sync=io_uring</span></code>)</p></li>
+<li><p>Semantic mismatches when mixing NVMe admin with block I/O (“shim problem”)</p></li>
+<li><p>Confusing errors from probing: when multiple backends are tried, the returned error
+is from the last attempt, not the most relevant failure</p></li>
+<li><p>Debug noise: each probed backend emits debug output, obscuring what actually happened</p></li>
+</ol>
+</section>
+<section id="future-ipc-and-shared-access">
+<h2>Future: IPC and Shared Access<a class="headerlink" href="#future-ipc-and-shared-access" title="Link to this heading">#</a></h2>
+<p>This refactor also prepares for inter-process communication (IPC). The goal is to
+enable sharing of device/controller handles and I/O queues between processes:</p>
+<ul class="simple">
+<li><p>A daemon process initializes a userspace driver and opens a controller</p></li>
+<li><p>Other processes connect to the daemon and obtain their own I/O queue pairs</p></li>
+<li><p>Each process works directly with its queue, bypassing the daemon for I/O</p></li>
+<li><p>The daemon manages controller lifecycle; clients manage their queues</p></li>
+</ul>
+<p>Centralized reference counting (cref) and clean config separation are prerequisites
+for this model - the daemon must own the controller while clients hold queue references.</p>
+<section id="spdk-multi-process-mode-compatibility">
+<h3>SPDK Multi-Process Mode Compatibility<a class="headerlink" href="#spdk-multi-process-mode-compatibility" title="Link to this heading">#</a></h3>
+<p>SPDK already supports multi-process sharing. <strong>xNVMe</strong>’s IPC model should align with it:</p>
+<p><strong>SPDK’s model:</strong></p>
+<ul class="simple">
+<li><p>Primary process: initializes SPDK env, attaches controllers, creates shared memory</p></li>
+<li><p>Secondary processes: connect to primary’s shared memory, allocate their own queue pairs</p></li>
+<li><p>Shared memory contains: controller handles, namespace data, memory pools</p></li>
+<li><p>Each process has exclusive access to its queue pairs</p></li>
+</ul>
+<p><strong>xNVMe alignment:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Concept</p></th>
+<th class="head"><p>SPDK</p></th>
+<th class="head"><p><strong>xNVMe</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Process role</p></td>
+<td><p>Primary/Secondary</p></td>
+<td><p>Daemon/Client</p></td>
+</tr>
+<tr class="row-odd"><td><p>Controller ownership</p></td>
+<td><p>Primary</p></td>
+<td><p>Daemon (via cref)</p></td>
+</tr>
+<tr class="row-even"><td><p>Queue ownership</p></td>
+<td><p>Per-process</p></td>
+<td><p>Per-process</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shared state</p></td>
+<td><p>SPDK shared memory</p></td>
+<td><p>Driver-specific</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Approach:</strong> Follow SPDK’s explicit model - no automatic detection.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Primary (daemon) - initializes controller, creates shared memory</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">shm_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="c1">// Explicit shared memory ID</span>
+<span class="p">});</span>
+
+<span class="c1">// Secondary (client) - connects to existing primary</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">shm_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">secondary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p><strong>Why explicit over automatic:</strong></p>
+<ul class="simple">
+<li><p>No race conditions (role is known upfront)</p></li>
+<li><p>Clear ownership semantics</p></li>
+<li><p>No stale shared memory issues</p></li>
+<li><p>Predictable behavior</p></li>
+<li><p>Familiar to SPDK users (same model)</p></li>
+</ul>
+</section>
+<section id="queue-management-for-ipc">
+<h3>Queue Management for IPC<a class="headerlink" href="#queue-management-for-ipc" title="Link to this heading">#</a></h3>
+<p>Each process owns its queues exclusively. Queues are not shared between processes.</p>
+<p><strong>Ownership model:</strong></p>
+<ul class="simple">
+<li><p>Controller: owned by primary, shared via cref</p></li>
+<li><p>Queues: owned by allocating process, not shared</p></li>
+</ul>
+<p><strong>Queue lifecycle:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Primary (daemon)</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(...);</span><span class="w">  </span><span class="c1">// Owns controller</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Daemon&#39;s queue</span>
+
+<span class="c1">// Secondary (client)</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(...);</span><span class="w">  </span><span class="c1">// Connects to controller</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Client&#39;s own queue</span>
+<span class="c1">// q2 is independent of q1, allocated from shared memory pool</span>
+</pre></div>
+</div>
+<p><strong>Queue allocation:</strong></p>
+<ul class="simple">
+<li><p>Primary initializes memory pools in shared memory</p></li>
+<li><p>Secondary allocates queues from shared pools</p></li>
+<li><p>Each queue belongs to one process</p></li>
+<li><p>Queue memory comes from driver’s shared memory region</p></li>
+</ul>
+<p><strong>Queue cleanup:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_queue_term()</span></code> returns queue resources to pool</p></li>
+<li><p>Process exit should clean up its queues</p></li>
+<li><p>Primary exit terminates all - secondaries lose access</p></li>
+</ul>
+<p><strong>Deferred:</strong> Core-binding support (SPDK reactor affinity) - punted for now.</p>
+<p><strong>Open questions:</strong></p>
+<ul class="simple">
+<li><p>How do non-SPDK drivers (vfio, uio) implement similar sharing?</p></li>
+</ul>
+</section>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│                            xNVMe                            │
+├─────────────────────────────────────────────────────────────┤
+│  g_xnvme_platform (compile-time selected via #ifdef)        │
+│    ├── name: &quot;linux&quot; | &quot;freebsd&quot; | &quot;macos&quot; | &quot;windows&quot;      │
+│    ├── backends[] (NULL-terminated xnvme_be_config array)   │
+│    ├── classify()  -- URI → xnvme_be_cap bitmask            │
+│    ├── dev_open()                                           │
+│    ├── scan()                                               │
+│    └── enumerate()                                          │
+├─────────────────────────────────────────────────────────────┤
+│  Backend Configs (platform-&gt;backends[])                     │
+│                                                             │
+│  Each xnvme_be_config is a complete recipe:                 │
+│    { async, sync, admin, dev, mem, mem_overrides, attr }    │
+│                                                             │
+│  OS-managed configs:                                        │
+│    linux: io_uring_cmd+nvme, io_uring+nvme, libaio+nvme,    │
+│           io_uring+block, libaio+block, thrpool, emu, ...   │
+│    - Each config has caps indicating device type support    │
+│    - Mem overridable (posix default, hugepage optional)     │
+│                                                             │
+│  Userspace-managed configs:                                 │
+│    spdk, vfio, uio, driverkit                               │
+│    - Full lifecycle (init/term, dev_open/close)             │
+│    - Bundle all interfaces (async, sync, admin, mem)        │
+│    - Exclusive access via cref                              │
+├─────────────────────────────────────────────────────────────┤
+│  Cross-platform components                                  │
+│                                                             │
+│  CBI: emu, thrpool, nil, posix mem, psync                   │
+│  Ramdisk: virtual device driver (reusable by any platform)  │
+│  cref: controller reference counting                        │
+└─────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="data-structures">
+<h2>Data Structures<a class="headerlink" href="#data-structures" title="Link to this heading">#</a></h2>
+<section id="uri-as-convenience">
+<h3>URI as Convenience<a class="headerlink" href="#uri-as-convenience" title="Link to this heading">#</a></h3>
+<p>The URI is a convenience for the user at the CLI boundary. It is parsed
+immediately at <code class="docutils literal notranslate"><span class="pre">dev_open()</span></code> into structured fields and never used for internal
+logic. After parsing, all library code works with the structured <code class="docutils literal notranslate"><span class="pre">xnvme_ident</span></code>
+fields – no string matching, no re-parsing.</p>
+<p><strong>Principle:</strong> URI in, structured data out. The URI does not survive past the
+entry point.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>User types:   /dev/ng0n1
+                  ↓
+dev_open():   xnvme_ident_from_uri() → populates structured fields
+                  ↓
+Library uses: ident.trtype, ident.traddr, ident.nsid, ...
+</pre></div>
+</div>
+<p>This means:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_ident</span></code> stores parsed components, not a URI string</p></li>
+<li><p>Scan results are structured data, not URI strings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_ident_to_uri()</span></code> exists for display/logging only</p></li>
+<li><p>No internal code path ever inspects a URI to make decisions</p></li>
+</ul>
+</section>
+<section id="xnvme-ident">
+<h3>xnvme_ident<a class="headerlink" href="#xnvme-ident" title="Link to this heading">#</a></h3>
+<p>Device identifier with parsed transport components:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">trtype</span><span class="p">;</span><span class="w">         </span><span class="c1">// XNVME_TRTYPE_PCIE, _TCP, _RDMA</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">traddr</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span><span class="w">       </span><span class="c1">// IP address or PCI BDF</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">trsvcid</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">       </span><span class="c1">// Port (fabrics) or empty</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">subnqn</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span><span class="w">       </span><span class="c1">// Subsystem NQN</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dtype</span><span class="p">;</span><span class="w">         </span><span class="c1">// Device type</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span><span class="w">          </span><span class="c1">// Namespace ID</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">csi</span><span class="p">;</span><span class="w">            </span><span class="c1">// Command set identifier</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">kernel_driver</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w"> </span><span class="c1">// OS binding (PCIe only)</span>
+<span class="p">};</span>
+
+<span class="c1">// Parse URI string into ident components (entry point only)</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_ident_from_uri</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="n">ident</span><span class="p">);</span>
+
+<span class="c1">// Construct URI string from ident (display/logging only)</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_ident_to_uri</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="n">ident</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Pretty-printing:</strong> The <code class="docutils literal notranslate"><span class="pre">xnvme_ident</span></code> pretty-printer (<code class="docutils literal notranslate"><span class="pre">xnvme_ident_pr()</span></code>)
+should be type-aware – only show fields that are meaningful for the identified
+device. For example:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>PCIe (kernel_driver=nvme)</p></th>
+<th class="head"><p>PCIe (vfio-pci/uio)</p></th>
+<th class="head"><p>TCP/RDMA</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>traddr</p></td>
+<td><p>BDF</p></td>
+<td><p>BDF</p></td>
+<td><p>IP address</p></td>
+</tr>
+<tr class="row-odd"><td><p>trsvcid</p></td>
+<td><p>omit</p></td>
+<td><p>omit</p></td>
+<td><p>port</p></td>
+</tr>
+<tr class="row-even"><td><p>subnqn</p></td>
+<td><p>omit</p></td>
+<td><p>omit</p></td>
+<td><p>show</p></td>
+</tr>
+<tr class="row-odd"><td><p>nsid</p></td>
+<td><p>show (from sysfs)</p></td>
+<td><p>omit</p></td>
+<td><p>show</p></td>
+</tr>
+<tr class="row-even"><td><p>kernel_driver</p></td>
+<td><p>show</p></td>
+<td><p>show</p></td>
+<td><p>omit</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This avoids printing empty or irrelevant fields (e.g., <code class="docutils literal notranslate"><span class="pre">subnqn:</span> <span class="pre">&quot;&quot;</span></code> for a
+local PCIe device, <code class="docutils literal notranslate"><span class="pre">kernel_driver:</span> <span class="pre">&quot;&quot;</span></code> for a fabrics target).</p>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// URI-based open - parses URI immediately, then works with structured ident</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+
+<span class="c1">// Ident-based open - skips parsing, for programmatic use and scan results</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">xnvme_dev_open_ident</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="n">ident</span><span class="p">,</span>
+<span class="w">                                       </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Both paths converge immediately: <code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code> calls
+<code class="docutils literal notranslate"><span class="pre">xnvme_ident_from_uri()</span></code> then delegates to <code class="docutils literal notranslate"><span class="pre">xnvme_dev_open_ident()</span></code>.</p>
+<p><strong>Usage scenarios:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// CLI tools: user provides URI string</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/ng0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="c1">// Programmatic: construct ident directly</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="n">ident</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">trtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_TRTYPE_PCIE</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">dtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_DTYPE_NVME_CHAR</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="n">strncpy</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">));</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open_ident</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ident</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="c1">// Scan results: already structured, no URI round-trip</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">scan_cb</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_entry</span><span class="w"> </span><span class="o">*</span><span class="n">entry</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="n">ident</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">trtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_TRTYPE_PCIE</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">nsid</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">,</span><span class="w"> </span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">ctrlr</span><span class="o">-&gt;</span><span class="n">bdf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">));</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open_ident</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ident</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="xnvme-opts">
+<h3>xnvme_opts<a class="headerlink" href="#xnvme-opts" title="Link to this heading">#</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">be</span><span class="p">;</span><span class="w">       </span><span class="c1">// Backend config name (matches xnvme_be_config.attr.name)</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">async</span><span class="p">;</span><span class="w">    </span><span class="c1">// Async interface filter</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sync</span><span class="p">;</span><span class="w">     </span><span class="c1">// Sync interface filter</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">admin</span><span class="p">;</span><span class="w">    </span><span class="c1">// Admin interface filter</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">mem</span><span class="p">;</span><span class="w">      </span><span class="c1">// Memory allocator override (e.g., &quot;hugepage&quot;)</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span><span class="w">        </span><span class="c1">// Namespace ID (default: 1)</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">shm_id</span><span class="p">;</span><span class="w">      </span><span class="c1">// Shared memory ID for IPC (0 = no sharing)</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">hostnqn</span><span class="p">;</span><span class="w">  </span><span class="c1">// Optional: host NQN for fabrics access control</span>
+<span class="w">	</span><span class="c1">// ... platform-specific fields</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Userspace-managed drivers (mem is fixed by config)</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;vfio&quot;</span><span class="p">});</span>
+
+<span class="c1">// OS-managed -- select specific config by name</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/ng0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring_cmd&quot;</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">});</span>
+
+<span class="c1">// OS-managed with hugepage memory</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span>
+<span class="w">	       </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hugepage&quot;</span><span class="p">});</span>
+
+<span class="c1">// Default -- auto-select via URI classification and caps matching</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="xnvme-be-config">
+<h3>xnvme_be_config<a class="headerlink" href="#xnvme-be-config" title="Link to this heading">#</a></h3>
+<p>Each backend config is a complete “recipe” for populating a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_be</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">attr.caps</span></code> bitmask indicates which device types the config supports, enabling
+URI-based automatic selection.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_be_cap</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_NVME_CDEV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="c1">// NVMe char device (/dev/ng0n1)</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_NVME_BDEV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="c1">// NVMe block device (/dev/nvme0n1)</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_BDEV</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="c1">// Generic block device</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_FILE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="c1">// Regular file</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_RAMDISK</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="c1">// Ramdisk virtual device</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_NVME_PCIE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="c1">// NVMe over PCIe (user-space)</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_NVME_TCP</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="c1">// NVMe over TCP (user-space)</span>
+<span class="w">	</span><span class="n">XNVME_BE_CAP_NVME_RDMA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="c1">// NVMe over RDMA (user-space)</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_async</span><span class="w"> </span><span class="o">*</span><span class="n">async</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_sync</span><span class="w"> </span><span class="o">*</span><span class="n">sync</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_admin</span><span class="w"> </span><span class="o">*</span><span class="n">admin</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="n">mem</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">mem_overrides</span><span class="p">;</span><span class="w"> </span><span class="c1">// Optional overrides</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_attr</span><span class="w"> </span><span class="n">attr</span><span class="p">;</span><span class="w">  </span><span class="c1">// { name, descr, caps, enabled }</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Example configs (Linux):</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// NVMe passthrough via io_uring_cmd</span>
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_be_linux_ucmd_nvme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_async_ucmd</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_sync_nvme</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_admin_nvme</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_dev_linux</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_mem_posix</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem_overrides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_mem_hugepage</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">	</span><span class="p">},</span>
+<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring_cmd&quot;</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring passthru with NVMe ioctl&quot;</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_CDEV</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_BDEV</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="c1">// File I/O via io_uring</span>
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_be_linux_iou_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_async_liburing</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_sync_psync</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_admin_shim</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_dev_linux</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_mem_posix</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem_overrides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_mem_hugepage</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">	</span><span class="p">},</span>
+<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring_file&quot;</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring with file I/O&quot;</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_BE_CAP_FILE</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="c1">// SPDK userspace driver</span>
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_be_spdk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_async</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_sync</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_admin</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_dev</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_mem</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SPDK userspace NVMe driver&quot;</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_PCIE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_TCP</span>
+<span class="w">		       </span><span class="o">|</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_RDMA</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="backend-config-definitions">
+<h3>Backend Config Definitions<a class="headerlink" href="#backend-config-definitions" title="Link to this heading">#</a></h3>
+<p>Each platform defines a flat array of <code class="docutils literal notranslate"><span class="pre">xnvme_be_config</span></code> pointers. The ordering
+determines default priority – the first matching config wins.</p>
+<p><strong>Linux configs:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name (<code class="docutils literal notranslate"><span class="pre">attr.name</span></code>)</p></th>
+<th class="head"><p>async</p></th>
+<th class="head"><p>sync</p></th>
+<th class="head"><p>admin</p></th>
+<th class="head"><p>caps</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emu</span></code></p></td>
+<td><p>emu</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emu_bdev</span></code></p></td>
+<td><p>emu</p></td>
+<td><p>block</p></td>
+<td><p>block</p></td>
+<td><p>NVME_BDEV, BDEV</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code></p></td>
+<td><p>io_uring_cmd</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring</span></code></p></td>
+<td><p>io_uring</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_bdev</span></code></p></td>
+<td><p>io_uring</p></td>
+<td><p>block</p></td>
+<td><p>block</p></td>
+<td><p>NVME_BDEV, BDEV</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">libaio</span></code></p></td>
+<td><p>libaio</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libaio_bdev</span></code></p></td>
+<td><p>libaio</p></td>
+<td><p>block</p></td>
+<td><p>block</p></td>
+<td><p>NVME_BDEV, BDEV</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">posix</span></code></p></td>
+<td><p>posix</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
+<td><p>thrpool</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool_bdev</span></code></p></td>
+<td><p>thrpool</p></td>
+<td><p>block</p></td>
+<td><p>block</p></td>
+<td><p>NVME_BDEV, BDEV</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nil</span></code></p></td>
+<td><p>nil</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_CDEV, NVME_BDEV</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emu_file</span></code></p></td>
+<td><p>emu</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>FILE</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool_file</span></code></p></td>
+<td><p>thrpool</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>FILE</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_file</span></code></p></td>
+<td><p>io_uring</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>FILE</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libaio_file</span></code></p></td>
+<td><p>libaio</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>FILE</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk</span></code></p></td>
+<td><p>nil</p></td>
+<td><p>ramdisk</p></td>
+<td><p>ramdisk</p></td>
+<td><p>RAMDISK</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk_thrpool</span></code></p></td>
+<td><p>thrpool</p></td>
+<td><p>ramdisk</p></td>
+<td><p>ramdisk</p></td>
+<td><p>RAMDISK</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk_emu</span></code></p></td>
+<td><p>emu</p></td>
+<td><p>ramdisk</p></td>
+<td><p>ramdisk</p></td>
+<td><p>RAMDISK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">mem</span></code> on all Linux configs defaults to <code class="docutils literal notranslate"><span class="pre">posix</span></code> with <code class="docutils literal notranslate"><span class="pre">hugepage</span></code> available
+as an override via <code class="docutils literal notranslate"><span class="pre">opts.mem</span></code>.</p>
+</section>
+<section id="uri-format">
+<h3>URI Format<a class="headerlink" href="#uri-format" title="Link to this heading">#</a></h3>
+<p>URIs identify devices only - no query parameters. All configuration via opts.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Format</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PCIe BDF</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;domain&gt;:&lt;bus&gt;:&lt;dev&gt;.&lt;func&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>TCP</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nvme+tcp://&lt;host&gt;:&lt;port&gt;/&lt;nqn&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nvme+tcp://192.168.1.100:4420/nqn.example:subsys</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>RDMA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nvme+rdma://&lt;host&gt;:&lt;port&gt;/&lt;nqn&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nvme+rdma://10.0.0.1:4420/nqn.example:subsys</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Path</p></td>
+<td><p>filesystem path</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/ng0n1</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code>, <code class="docutils literal notranslate"><span class="pre">/tmp/file</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="uri-classification-and-caps-matching">
+<h3>URI Classification and Caps Matching<a class="headerlink" href="#uri-classification-and-caps-matching" title="Link to this heading">#</a></h3>
+<p>Each platform implements a <code class="docutils literal notranslate"><span class="pre">classify()</span></code> callback that maps a URI to a
+<code class="docutils literal notranslate"><span class="pre">xnvme_be_cap</span></code> bitmask. This classification is used to filter the backends
+array during config selection.</p>
+<p><strong>Linux classification (via <code class="docutils literal notranslate"><span class="pre">stat()</span></code>):</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>stat() result</p></th>
+<th class="head"><p>Cap</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S_ISREG</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">FILE</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S_ISCHR</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NVME_CDEV</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S_ISBLK</span></code> + basename <code class="docutils literal notranslate"><span class="pre">nvme*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NVME_BDEV</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S_ISBLK</span></code> + other</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BDEV</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>stat fails + ends with “GB”</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RAMDISK</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>stat fails + PCI BDF pattern</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NVME_PCIE</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>stat fails + contains <code class="docutils literal notranslate"><span class="pre">:</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NVME_TCP</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each platform has its own classify function because device naming conventions
+differ:</p>
+<ul class="simple">
+<li><p>Linux: char devices (<code class="docutils literal notranslate"><span class="pre">/dev/ng*</span></code>), block devices (<code class="docutils literal notranslate"><span class="pre">/dev/nvme*</span></code>, <code class="docutils literal notranslate"><span class="pre">/dev/sd*</span></code>)</p></li>
+<li><p>FreeBSD: char devices (<code class="docutils literal notranslate"><span class="pre">/dev/nvme0ns1</span></code>)</p></li>
+<li><p>macOS: block devices (<code class="docutils literal notranslate"><span class="pre">/dev/diskN</span></code>), DriverKit (<code class="docutils literal notranslate"><span class="pre">MacVFN-*</span></code>)</p></li>
+<li><p>Windows: device handles (<code class="docutils literal notranslate"><span class="pre">\\.\PhysicalDriveN</span></code>)</p></li>
+</ul>
+<p><strong>Caps filter bypass:</strong> When the user explicitly specifies <code class="docutils literal notranslate"><span class="pre">opts.async</span></code>,
+<code class="docutils literal notranslate"><span class="pre">opts.sync</span></code>, or <code class="docutils literal notranslate"><span class="pre">opts.admin</span></code>, the caps filter is skipped entirely. This allows
+users to force specific interface combinations regardless of URI classification.</p>
+</section>
+<section id="device-type-detection">
+<h3>Device Type Detection<a class="headerlink" href="#device-type-detection" title="Link to this heading">#</a></h3>
+<p>Backend determines device type by parsing URI and using stat():</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_dev_type</span><span class="w"> </span><span class="nf">detect_device_type</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. Check for PCIe BDF (e.g., &quot;0000:03:00.0&quot;)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_ident_uri_is_pcie</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PCIE_BDF</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 2. Check for TCP/RDMA endpoint</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_ident_uri_is_tcp</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">TCP</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_ident_uri_is_rdma</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">RDMA</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 3. Use stat() for filesystem paths</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">stat</span><span class="w"> </span><span class="n">st</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">stat</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">st</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">UNKNOWN</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">S_ISCHR</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">st_mode</span><span class="p">))</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">NVME_CHAR</span><span class="p">;</span><span class="w">   </span><span class="c1">// /dev/ng0n1</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">S_ISBLK</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">st_mode</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Use naming convention to distinguish NVMe vs generic block</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">basename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strrchr</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;/&#39;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">basename</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strncmp</span><span class="p">(</span><span class="n">basename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nvme&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">NVME_BLOCK</span><span class="p">;</span><span class="w">  </span><span class="c1">// /dev/nvme0n1</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">BLOCK</span><span class="p">;</span><span class="w">           </span><span class="c1">// /dev/sda</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">S_ISREG</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">st_mode</span><span class="p">))</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kt">FILE</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">UNKNOWN</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Device type to sync/admin mapping (Linux):</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Sync</p></th>
+<th class="head"><p>Admin</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PCIE_BDF</p></td>
+<td><p>(driver)</p></td>
+<td><p>(driver)</p></td>
+<td><p>Userspace driver handles all</p></td>
+</tr>
+<tr class="row-odd"><td><p>TCP/RDMA</p></td>
+<td><p>(driver)</p></td>
+<td><p>(driver)</p></td>
+<td><p>SPDK handles all</p></td>
+</tr>
+<tr class="row-even"><td><p>CHAR</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVMe char device passthrough</p></td>
+</tr>
+<tr class="row-odd"><td><p>BLOCK</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVMe block or generic block</p></td>
+</tr>
+<tr class="row-even"><td><p>FILE</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>Regular file</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ramdisk">
+<h3>Ramdisk<a class="headerlink" href="#ramdisk" title="Link to this heading">#</a></h3>
+<p>Ramdisk is a cross-platform virtual device driver - not a backend, not formally
+CBI, but reusable like CBI.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Ramdisk via URI pattern</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;1GB&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="c1">// Or via backend option</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;1GB&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ramdisk&quot;</span><span class="p">});</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Memory-backed NVMe device emulation</p></li>
+<li><p>Uses CBI async wrappers (thrpool, emu, nil)</p></li>
+<li><p>Available on all platforms</p></li>
+<li><p>Config provides its own sync/admin/dev</p></li>
+</ul>
+</section>
+<section id="migration-opts-async-sync-admin">
+<h3>Migration: opts.async/sync/admin<a class="headerlink" href="#migration-opts-async-sync-admin" title="Link to this heading">#</a></h3>
+<p>Each config now has a unique <code class="docutils literal notranslate"><span class="pre">opts.be</span></code> name, so <code class="docutils literal notranslate"><span class="pre">opts.be</span></code> alone selects the
+exact config. The fields <code class="docutils literal notranslate"><span class="pre">opts.async</span></code>, <code class="docutils literal notranslate"><span class="pre">opts.sync</span></code>, <code class="docutils literal notranslate"><span class="pre">opts.admin</span></code> remain in
+the API as additional filters on the config array, matching against the <code class="docutils literal notranslate"><span class="pre">id</span></code>
+field of each config’s interface:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Preferred: select config by unique name</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="c1">// Legacy: filter by async interface (still works)</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// First config with async.id == &quot;io_uring&quot; and matching caps</span>
+
+<span class="c1">// Force specific combination (bypasses caps filter)</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvme&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvme&quot;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">opts.async</span></code>, <code class="docutils literal notranslate"><span class="pre">opts.sync</span></code>, or <code class="docutils literal notranslate"><span class="pre">opts.admin</span></code> are set, the caps filter is
+bypassed – the user is explicitly choosing their config.</p>
+</section>
+</section>
+<section id="backend-config-compatibility">
+<h2>Backend Config Compatibility<a class="headerlink" href="#backend-config-compatibility" title="Link to this heading">#</a></h2>
+<section id="userspace-managed-configs">
+<h3>Userspace-Managed Configs<a class="headerlink" href="#userspace-managed-configs" title="Link to this heading">#</a></h3>
+<p>Userspace configs bundle everything and don’t allow mixing:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Config name</p></th>
+<th class="head"><p>async</p></th>
+<th class="head"><p>sync</p></th>
+<th class="head"><p>admin</p></th>
+<th class="head"><p>mem</p></th>
+<th class="head"><p>Platforms</p></th>
+<th class="head"><p>Library</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>spdk</p></td>
+<td><p>spdk</p></td>
+<td><p>spdk</p></td>
+<td><p>spdk</p></td>
+<td><p>spdk</p></td>
+<td><p>Linux, FreeBSD</p></td>
+<td><p>SPDK</p></td>
+</tr>
+<tr class="row-odd"><td><p>vfio</p></td>
+<td><p>vfio</p></td>
+<td><p>vfio</p></td>
+<td><p>vfio</p></td>
+<td><p>vfio</p></td>
+<td><p>Linux</p></td>
+<td><p>libvfn</p></td>
+</tr>
+<tr class="row-even"><td><p>uio</p></td>
+<td><p>uio</p></td>
+<td><p>uio</p></td>
+<td><p>uio</p></td>
+<td><p>hugepage</p></td>
+<td><p>Linux</p></td>
+<td><p>uPCIe</p></td>
+</tr>
+<tr class="row-odd"><td><p>driverkit</p></td>
+<td><p>driverkit</p></td>
+<td><p>driverkit</p></td>
+<td><p>driverkit</p></td>
+<td><p>driverkit</p></td>
+<td><p>macOS</p></td>
+<td><p>MacVFN</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cbi-virtual-components">
+<h3>CBI / Virtual Components<a class="headerlink" href="#cbi-virtual-components" title="Link to this heading">#</a></h3>
+<p>Cross-platform common backend implementations:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
+<td><p>async</p></td>
+<td><p>Thread pool wrapping sync interface</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emu</span></code></p></td>
+<td><p>async</p></td>
+<td><p>Emulated async using blocking sync calls</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nil</span></code></p></td>
+<td><p>async</p></td>
+<td><p>Null async (no-op)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk</span></code></p></td>
+<td><p>device</p></td>
+<td><p>Virtual NVMe device backed by memory</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psync</span></code></p></td>
+<td><p>sync</p></td>
+<td><p>POSIX pread/pwrite</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">posix</span></code></p></td>
+<td><p>mem</p></td>
+<td><p>POSIX memory allocation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">thrpool</span></code> and <code class="docutils literal notranslate"><span class="pre">emu</span></code> are async wrappers. Their device type compatibility
+is inherited from the underlying sync driver, not intrinsic to themselves.</p>
+</section>
+</section>
+<section id="platform-specific-details">
+<h2>Platform-Specific Details<a class="headerlink" href="#platform-specific-details" title="Link to this heading">#</a></h2>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h3>
+<p>Primary platform with fullest io-path support.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Path Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nvme_char</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/ng0n1</span></code></p></td>
+<td><p>NVMe character device (passthrough)</p></td>
+</tr>
+<tr class="row-odd"><td><p>nvme_block</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1</span></code></p></td>
+<td><p>NVMe block device</p></td>
+</tr>
+<tr class="row-even"><td><p>block</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code></p></td>
+<td><p>Generic block device</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/path/to/file</span></code></p></td>
+<td><p>Regular file</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>io-path</p></th>
+<th class="head"><p>nvme_char</p></th>
+<th class="head"><p>nvme_block</p></th>
+<th class="head"><p>block</p></th>
+<th class="head"><p>file</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>———-</p></td>
+<td><p>—–</p></td>
+<td><p>—-</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libaio</span></code></p></td>
+<td><p>———</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Sync</p></th>
+<th class="head"><p>Admin</p></th>
+<th class="head"><p>Default io-path</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nvme_char</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>io_uring_cmd</p></td>
+</tr>
+<tr class="row-odd"><td><p>nvme_block</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>io_uring</p></td>
+</tr>
+<tr class="row-even"><td><p>block</p></td>
+<td><p>psync</p></td>
+<td><p>block</p></td>
+<td><p>io_uring</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>io_uring</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Default selection:</strong> When no opts are specified, the URI is classified and
+the first config with matching caps is used – no probing, no fallback cascade.</p>
+</section>
+<section id="freebsd">
+<h3>FreeBSD<a class="headerlink" href="#freebsd" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Path Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nvme_ns</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/nvme0ns1</span></code></p></td>
+<td><p>NVMe namespace device</p></td>
+</tr>
+<tr class="row-odd"><td><p>nvd</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/nvd0</span></code></p></td>
+<td><p>NVMe disk device</p></td>
+</tr>
+<tr class="row-even"><td><p>file</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/path/to/file</span></code></p></td>
+<td><p>Regular file</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>io-path</p></th>
+<th class="head"><p>nvme_ns</p></th>
+<th class="head"><p>nvd</p></th>
+<th class="head"><p>file</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kqueue</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">posix</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emu</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Sync</p></th>
+<th class="head"><p>Admin</p></th>
+<th class="head"><p>Default io-path</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nvme_ns</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>kqueue</p></td>
+</tr>
+<tr class="row-odd"><td><p>nvd</p></td>
+<td><p>psync</p></td>
+<td><p>nvme</p></td>
+<td><p>kqueue</p></td>
+</tr>
+<tr class="row-even"><td><p>file</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>kqueue</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Path Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>block</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\\.\PhysicalDrive0</span></code></p></td>
+<td><p>Block device (including NVMe)</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C:\path\to\file</span></code></p></td>
+<td><p>Regular file</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>io-path</p></th>
+<th class="head"><p>block</p></th>
+<th class="head"><p>file</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">iocp</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iocp_th</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">io_ring</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emu</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">io_ring</span></code> on Windows is experimental and currently only supports reads.
+This is a Windows API limitation, not an <strong>xNVMe</strong> restriction.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Sync</p></th>
+<th class="head"><p>Admin</p></th>
+<th class="head"><p>Default io-path</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>block</p></td>
+<td><p>file</p></td>
+<td><p>scsi</p></td>
+<td><p>iocp</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p>file</p></td>
+<td><p>shim</p></td>
+<td><p>iocp</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Note:</strong> NVMe devices on Windows appear as regular block devices. Most NVMe
+commands must be translated to SCSI. Only a limited set of NVMe admin commands
+(<strong>Identify</strong>, <strong>Get Log Page</strong>, <strong>Get/Set Features</strong>) can be issued directly via
+<code class="docutils literal notranslate"><span class="pre">IOCTL_STORAGE_PROTOCOL_COMMAND</span></code>.</p>
+</section>
+<section id="macos">
+<h3>macOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h3>
+<p><strong>OS-managed (IOKit):</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Path Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>block</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/disk0</span></code></p></td>
+<td><p>Block device</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/path/to/file</span></code></p></td>
+<td><p>Regular file</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>io-path</p></th>
+<th class="head"><p>block</p></th>
+<th class="head"><p>file</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">posix</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emu</span></code></p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Device Type</p></th>
+<th class="head"><p>Sync</p></th>
+<th class="head"><p>Admin</p></th>
+<th class="head"><p>Default io-path</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>block</p></td>
+<td><p>psync</p></td>
+<td><p>macos</p></td>
+<td><p>thrpool</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p>psync</p></td>
+<td><p>shim</p></td>
+<td><p>thrpool</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Limited: no NVMe passthrough via OS path, only SMART data via IOKit.</p>
+<p><strong>Userspace-managed (MacVFN):</strong></p>
+<p>For full NVMe passthrough, use <code class="docutils literal notranslate"><span class="pre">opts.be</span> <span class="pre">=</span> <span class="pre">&quot;driverkit&quot;</span></code>. This uses MacVFN’s
+DriverKit-based userspace driver. The latest version maintains block-device
+functionality while the driver is loaded, allowing concurrent OS and <strong>xNVMe</strong> access.</p>
+</section>
+</section>
+<section id="device-discovery">
+<h2>Device Discovery<a class="headerlink" href="#device-discovery" title="Link to this heading">#</a></h2>
+<section id="design-principles">
+<h3>Design Principles<a class="headerlink" href="#design-principles" title="Link to this heading">#</a></h3>
+<p>Scan answers one question: <strong>“where do I start?”</strong> It provides a lightweight
+inventory of available devices without opening them. The result is a topology
+(not a flat list) that reflects the physical/logical hierarchy.</p>
+<p>Local PCIe scan and fabrics discovery are <strong>separate operations</strong>:</p>
+<ul class="simple">
+<li><p>Local scan is pure OS (sysfs, pciconf) – no driver dependency, no NVMe protocol</p></li>
+<li><p>Fabrics discovery requires driver logic (connect, NVMe Discovery Log Page)</p></li>
+</ul>
+<p>They are kept separate because scan must work without any driver initialized.</p>
+</section>
+<section id="scan-topology">
+<h3>Scan Topology<a class="headerlink" href="#scan-topology" title="Link to this heading">#</a></h3>
+<p>Scan results are structured as a topology, not flat <code class="docutils literal notranslate"><span class="pre">xnvme_ident</span></code> entries.
+The hierarchy reflects the physical device tree:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>BDF (0000:03:00.0)
+  └── Controller (nvme0)
+        ├── Namespace (nsid=1, csi=NVM)
+        └── Namespace (nsid=2, csi=KV)
+</pre></div>
+</div>
+<p><strong>Important:</strong> The Linux kernel device name “n1” does <strong>not</strong> mean nsid=1.
+The nsid must be read from sysfs (<code class="docutils literal notranslate"><span class="pre">/sys/class/nvme/nvme0/nvme0n1/nsid</span></code>), not
+derived from the device name.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ns</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span><span class="w">          </span><span class="c1">// Actual namespace ID (from sysfs, not device name)</span>
+<span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">csi</span><span class="p">;</span><span class="w">            </span><span class="c1">// Command set identifier</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ctrlr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">              </span><span class="c1">// Kernel name: &quot;nvme0&quot;</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">kernel_driver</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">     </span><span class="c1">// &quot;nvme&quot;, &quot;vfio-pci&quot;, &quot;uio_pci_generic&quot;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ns</span><span class="w"> </span><span class="o">*</span><span class="n">ns</span><span class="p">;</span><span class="w">   </span><span class="c1">// Array of namespaces</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nns</span><span class="p">;</span><span class="w">               </span><span class="c1">// Number of namespaces</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_entry</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">bdf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span><span class="w">                   </span><span class="c1">// PCI BDF: &quot;0000:03:00.0&quot;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ctrlr</span><span class="w"> </span><span class="o">*</span><span class="n">ctrlr</span><span class="p">;</span><span class="w"> </span><span class="c1">// Array of controllers (usually 1)</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nctrlr</span><span class="p">;</span><span class="w">                </span><span class="c1">// Number of controllers</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_result</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_entry</span><span class="w"> </span><span class="o">*</span><span class="n">entries</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nentries</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The topology does not model subsystems – <strong>xNVMe</strong> cannot open a subsystem,
+so there is no reason to expose it in scan results.</p>
+</section>
+<section id="scan-api">
+<h3>Scan API<a class="headerlink" href="#scan-api" title="Link to this heading">#</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Local PCIe scan -- returns topology of local devices</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_scan</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_result</span><span class="w"> </span><span class="o">*</span><span class="n">result</span><span class="p">);</span>
+
+<span class="c1">// Free scan result</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">xnvme_scan_result_free</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_result</span><span class="w"> </span><span class="o">*</span><span class="n">result</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Scan is always local. No <code class="docutils literal notranslate"><span class="pre">sys_uri</span></code> parameter, no driver involvement.</p>
+<p><strong>From scan result to dev_open:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_result</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">xnvme_scan</span><span class="p">(</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">nentries</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_entry</span><span class="w"> </span><span class="o">*</span><span class="n">entry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">result</span><span class="p">.</span><span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">nctrlr</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ctrlr</span><span class="w"> </span><span class="o">*</span><span class="n">ctrlr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">ctrlr</span><span class="p">[</span><span class="n">c</span><span class="p">];</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ctrlr</span><span class="o">-&gt;</span><span class="n">nns</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="n">ident</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">.</span><span class="n">trtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_TRTYPE_PCIE</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctrlr</span><span class="o">-&gt;</span><span class="n">ns</span><span class="p">[</span><span class="n">n</span><span class="p">].</span><span class="n">nsid</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">csi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctrlr</span><span class="o">-&gt;</span><span class="n">ns</span><span class="p">[</span><span class="n">n</span><span class="p">].</span><span class="n">csi</span><span class="p">,</span>
+<span class="w">            </span><span class="p">};</span>
+<span class="w">            </span><span class="n">strncpy</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">,</span><span class="w"> </span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">bdf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">));</span>
+<span class="w">            </span><span class="n">strncpy</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">kernel_driver</span><span class="p">,</span><span class="w"> </span><span class="n">ctrlr</span><span class="o">-&gt;</span><span class="n">kernel_driver</span><span class="p">,</span>
+<span class="w">                    </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">kernel_driver</span><span class="p">));</span>
+<span class="w">            </span><span class="c1">// Now open with xnvme_dev_open_ident(&amp;ident, opts)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">xnvme_scan_result_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="enumerate">
+<h3>Enumerate<a class="headerlink" href="#enumerate" title="Link to this heading">#</a></h3>
+<p>Full device inspection. Implemented once in core, not in backends. Uses scan +
+dev_open internally:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">xnvme_enumerate</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_enumerate_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_result</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_scan</span><span class="p">(</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+<span class="w">	</span><span class="c1">// For each namespace in topology: construct ident, dev_open, callback</span>
+<span class="w">	</span><span class="c1">// ...</span>
+<span class="w">	</span><span class="n">xnvme_scan_result_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">result</span><span class="p">);</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="fabrics-discovery">
+<h3>Fabrics Discovery<a class="headerlink" href="#fabrics-discovery" title="Link to this heading">#</a></h3>
+<p>Fabrics discovery is a separate API that requires a backend config with
+discovery support. It connects to a discovery controller and retrieves the
+Discovery Log Page.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Fabrics discovery -- requires backend (e.g. SPDK for TCP/RDMA)</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_discover</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span>
+<span class="w">                   </span><span class="n">xnvme_discover_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This is <strong>not</strong> part of <code class="docutils literal notranslate"><span class="pre">xnvme_scan()</span></code> because:</p>
+<ul class="simple">
+<li><p>It requires driver initialization (SPDK env, etc.)</p></li>
+<li><p>It uses NVMe protocol (connect, identify, discovery log)</p></li>
+<li><p>Scan must work without any driver</p></li>
+</ul>
+</section>
+<section id="fabrics-discovery-architecture">
+<h3>Fabrics Discovery Architecture<a class="headerlink" href="#fabrics-discovery-architecture" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Transport</p></th>
+<th class="head"><p>Requirements</p></th>
+<th class="head"><p>Provider</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PCIe</p></td>
+<td><p>OS APIs only (sysfs, pciconf)</p></td>
+<td><p>Platform (scan)</p></td>
+</tr>
+<tr class="row-odd"><td><p>TCP</p></td>
+<td><p>NVMe protocol (connect, discovery log)</p></td>
+<td><p>Backend config (discover)</p></td>
+</tr>
+<tr class="row-even"><td><p>RDMA</p></td>
+<td><p>NVMe protocol (connect, discovery log)</p></td>
+<td><p>Backend config (discover)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Discovery implementations:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Config</p></th>
+<th class="head"><p>discover()</p></th>
+<th class="head"><p>Transports</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>spdk</p></td>
+<td><p>Yes</p></td>
+<td><p>TCP, RDMA</p></td>
+</tr>
+<tr class="row-odd"><td><p>vfio</p></td>
+<td><p>No</p></td>
+<td><p>———-</p></td>
+</tr>
+<tr class="row-even"><td><p>uio</p></td>
+<td><p>No</p></td>
+<td><p>———-</p></td>
+</tr>
+<tr class="row-odd"><td><p>driverkit</p></td>
+<td><p>No</p></td>
+<td><p>———-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>SPDK’s <code class="docutils literal notranslate"><span class="pre">discover()</span></code>:</p>
+<ol class="arabic simple">
+<li><p>Connect to discovery controller at <code class="docutils literal notranslate"><span class="pre">uri</span></code></p></li>
+<li><p>Retrieve Discovery Log Page (list of subsystems)</p></li>
+<li><p>Callback for each discovered target</p></li>
+</ol>
+<p><strong>URI format for TCP/RDMA:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvme</span><span class="o">+</span><span class="n">tcp</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">address</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">port</span><span class="o">&gt;/&lt;</span><span class="n">nqn</span><span class="o">&gt;</span>
+<span class="n">nvme</span><span class="o">+</span><span class="n">rdma</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">address</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">port</span><span class="o">&gt;/&lt;</span><span class="n">nqn</span><span class="o">&gt;</span>
+
+<span class="n">Examples</span><span class="p">:</span>
+  <span class="n">nvme</span><span class="o">+</span><span class="n">tcp</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.1.100</span><span class="p">:</span><span class="mi">4420</span><span class="o">/</span><span class="n">nqn</span><span class="mf">.2024</span><span class="o">-</span><span class="mf">01.</span><span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="p">:</span><span class="n">subsys1</span>
+  <span class="n">nvme</span><span class="o">+</span><span class="n">rdma</span><span class="p">:</span><span class="o">//</span><span class="mf">10.0.0.1</span><span class="p">:</span><span class="mi">4420</span><span class="o">/</span><span class="n">nqn</span><span class="mf">.2024</span><span class="o">-</span><span class="mf">01.</span><span class="n">com</span><span class="o">.</span><span class="n">example</span><span class="p">:</span><span class="n">subsys2</span>
+</pre></div>
+</div>
+<p><strong>cref for TCP/RDMA:</strong></p>
+<ul class="simple">
+<li><p>Key by structured ident (transport + address + NQN), not URI string</p></li>
+<li><p>Same controller/namespace model applies</p></li>
+<li><p>Driver provides transport-specific attach/detach</p></li>
+</ul>
+</section>
+</section>
+<section id="backend-and-platform-structure">
+<h2>Backend and Platform Structure<a class="headerlink" href="#backend-and-platform-structure" title="Link to this heading">#</a></h2>
+<p>The architecture uses a two-level hierarchy: a platform that owns an array of
+backend configs. The platform handles OS-specific discovery and lifecycle while
+configs define complete I/O path recipes.</p>
+<section id="id1">
+<h3>Data Structures<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// xnvme_platform.h</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">backends</span><span class="p">;</span><span class="w"> </span><span class="c1">// NULL-terminated config array</span>
+
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">classify</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">);</span><span class="w"> </span><span class="c1">// URI → xnvme_be_cap bitmask</span>
+
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">dev_open</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">scan</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sys_uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span>
+<span class="w">	            </span><span class="n">xnvme_scan_cb</span><span class="w"> </span><span class="n">cb_func</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">enumerate</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sys_uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span>
+<span class="w">	                 </span><span class="n">xnvme_enumerate_cb</span><span class="w"> </span><span class="n">cb_func</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">// Shared implementations - all platforms use these by default</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_platform_dev_open</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_platform_enumerate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sys_uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">,</span>
+<span class="w">                             </span><span class="n">xnvme_enumerate_cb</span><span class="w"> </span><span class="n">cb_func</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">);</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="n">g_xnvme_platform_linux</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="n">g_xnvme_platform_freebsd</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="n">g_xnvme_platform_macos</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="n">g_xnvme_platform_windows</span><span class="p">;</span>
+
+<span class="c1">// Global platform pointer - compile-time selected</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="o">*</span><span class="n">g_xnvme_platform</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="shared-platform-operations">
+<h3>Shared Platform Operations<a class="headerlink" href="#shared-platform-operations" title="Link to this heading">#</a></h3>
+<p>All platform operations use shared implementations by default. <code class="docutils literal notranslate"><span class="pre">dev_open</span></code>
+iterates <code class="docutils literal notranslate"><span class="pre">platform-&gt;backends[]</span></code>, applies filters, and calls the first
+matching config’s <code class="docutils literal notranslate"><span class="pre">dev_open</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Shared implementations in xnvme_platform.c</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">xnvme_platform_dev_open</span><span class="p">(...)</span><span class="w">   </span><span class="c1">// Iterate configs, open device</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">xnvme_platform_enumerate</span><span class="p">(...)</span><span class="w">  </span><span class="c1">// Use scan + dev_open + Identify NS List</span>
+</pre></div>
+</div>
+<p>The public API delegates to the platform:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Public API wrappers</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_scan</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">scan</span><span class="p">(...);</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">xnvme_enumerate</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">enumerate</span><span class="p">(...);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Platforms provide their own scan implementation (e.g., Linux uses uPCIe for
+PCIe enumeration) but share dev_open and enumerate.</p>
+<p><strong>Motivation for platform-level operations:</strong></p>
+<p>This design prepares for several improvements:</p>
+<ol class="arabic simple">
+<li><p><strong>Reusable PCIe enumeration</strong>: Moving <code class="docutils literal notranslate"><span class="pre">xnvme_scan()</span></code> from per-backend
+implementations to a shared platform-level implementation using uPCIe.
+Instead of each driver implementing its own scan logic, the platform
+provides a single PCIe enumeration that all drivers can use.</p></li>
+<li><p><strong>Centralized reference counting</strong>: Userspace drivers (spdk, vfio) require
+controller reference counting. By handling this at the platform level,
+drivers become simpler and conflict detection between drivers becomes
+possible.</p></li>
+<li><p><strong>Clean separation of concerns</strong>: The platform handles OS-specific device
+discovery and lifecycle, while backend configs focus purely on I/O path
+definitions.</p></li>
+</ol>
+</section>
+<section id="compile-time-platform-selection">
+<h3>Compile-Time Platform Selection<a class="headerlink" href="#compile-time-platform-selection" title="Link to this heading">#</a></h3>
+<p>The global platform pointer is set at compile-time via preprocessor conditionals:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// xnvme_platform.c</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="o">*</span><span class="n">g_xnvme_platform</span><span class="w"> </span><span class="o">=</span>
+<span class="cp">#if defined(XNVME_PLATFORM_LINUX_ENABLED)</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux</span><span class="p">;</span>
+<span class="cp">#elif defined(XNVME_PLATFORM_FREEBSD_ENABLED)</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_freebsd</span><span class="p">;</span>
+<span class="cp">#elif defined(XNVME_PLATFORM_MACOS_ENABLED)</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_macos</span><span class="p">;</span>
+<span class="cp">#elif defined(XNVME_PLATFORM_WINDOWS_ENABLED)</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_windows</span><span class="p">;</span>
+<span class="cp">#else</span>
+<span class="cp">#error &quot;No platform enabled. Define one of XNVME_PLATFORM_{LINUX,FREEBSD,MACOS,WINDOWS}_ENABLED&quot;</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="platform-specific-config-arrays">
+<h3>Platform-Specific Config Arrays<a class="headerlink" href="#platform-specific-config-arrays" title="Link to this heading">#</a></h3>
+<p>Each platform defines its own array of available backend configs:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Example: Linux platform</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="n">g_xnvme_platform_linux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;linux&quot;</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">classify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_platform_linux_classify</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">backends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
+<span class="cp">#ifdef XNVME_BE_SPDK_ENABLED</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk</span><span class="p">,</span>
+<span class="cp">#endif</span>
+<span class="cp">#ifdef XNVME_BE_VFIO_ENABLED</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_vfio</span><span class="p">,</span>
+<span class="cp">#endif</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_emu_nvme</span><span class="p">,</span>
+<span class="cp">#ifdef XNVME_BE_LINUX_LIBURING_ENABLED</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_ucmd_nvme</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_iou_nvme</span><span class="p">,</span>
+<span class="cp">#endif</span>
+<span class="w">		</span><span class="c1">// ... more configs ...</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_emu_file</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_thrpool_file</span><span class="p">,</span>
+<span class="cp">#ifdef XNVME_BE_RAMDISK_ENABLED</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_ramdisk_nil</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_ramdisk_thrpool</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_ramdisk_emu</span><span class="p">,</span>
+<span class="cp">#endif</span>
+<span class="w">		</span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">	</span><span class="p">},</span>
+<span class="w">	</span><span class="p">.</span><span class="n">dev_open</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_platform_dev_open</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_platform_linux_scan</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">enumerate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_platform_enumerate</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="registry-removal-strategy">
+<h3>Registry Removal Strategy<a class="headerlink" href="#registry-removal-strategy" title="Link to this heading">#</a></h3>
+<p>The old <code class="docutils literal notranslate"><span class="pre">g_xnvme_be_registry[]</span></code> mixed backends and drivers:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Old approach (removed)</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be</span><span class="w"> </span><span class="o">*</span><span class="n">g_xnvme_be_registry</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">xnvme_be_spdk</span><span class="p">,</span><span class="w">            </span><span class="c1">// Now a config in platform-&gt;backends</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">xnvme_be_linux</span><span class="p">,</span><span class="w">           </span><span class="c1">// Replaced by g_xnvme_platform_linux</span>
+<span class="w">	</span><span class="o">&amp;</span><span class="n">xnvme_be_fbsd</span><span class="p">,</span><span class="w">            </span><span class="c1">// Replaced by g_xnvme_platform_freebsd</span>
+<span class="w">	</span><span class="c1">// ...</span>
+<span class="w">	</span><span class="nb">NULL</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Migration (done):</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Platform structs created</strong> - each OS defines <code class="docutils literal notranslate"><span class="pre">g_xnvme_platform_&lt;os&gt;</span></code></p></li>
+<li><p><strong>Configs in platform</strong> - <code class="docutils literal notranslate"><span class="pre">platform-&gt;backends</span></code> array replaces registry</p></li>
+<li><p><strong>Single platform pointer</strong> - <code class="docutils literal notranslate"><span class="pre">g_xnvme_platform</span></code> set at compile-time</p></li>
+<li><p><strong>be_factory() removed</strong> - replaced by <code class="docutils literal notranslate"><span class="pre">platform-&gt;dev_open()</span></code> which calls
+shared <code class="docutils literal notranslate"><span class="pre">xnvme_platform_dev_open()</span></code> implementation</p></li>
+</ol>
+<p><strong>Result:</strong> Clear separation between:</p>
+<ul class="simple">
+<li><p>Platform (single global pointer, OS-specific, contains config array and operations)</p></li>
+<li><p>Backend configs (multiple per platform, runtime selectable via opts or caps)</p></li>
+</ul>
+</section>
+</section>
+<section id="config-selection-logic">
+<h2>Config Selection Logic<a class="headerlink" href="#config-selection-logic" title="Link to this heading">#</a></h2>
+<p>The selection loop in <code class="docutils literal notranslate"><span class="pre">xnvme_platform_dev_open()</span></code> applies filters in order:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">xnvme_platform_dev_open</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">be_opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">async</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">sync</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">admin</span><span class="p">);</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">uri_cap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">	</span><span class="c1">// Classify URI only when user hasn&#39;t specified explicit backend opts</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">be_opts</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">classify</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">uri_cap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">classify</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">ident</span><span class="p">.</span><span class="n">uri</span><span class="p">);</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">backends</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="o">*</span><span class="n">cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">backends</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+
+<span class="w">		</span><span class="c1">// Filter: enabled</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">enabled</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// Filter: opts.be matches config name</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">be</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">be</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">name</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// Filter: opts.async/sync/admin match interface ids</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">async</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">async</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">async</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">sync</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">sync</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">sync</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">admin</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">admin</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">admin</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// Filter: caps -- skip configs that can&#39;t handle this URI type</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uri_cap</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">uri_cap</span><span class="p">))</span>
+<span class="w">			</span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// ... mem override handling ...</span>
+
+<span class="w">		</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">be</span><span class="p">;</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">be</span><span class="p">.</span><span class="n">dev</span><span class="p">.</span><span class="n">dev_open</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EPERM</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// When caps matched, this was the right config -- return its error</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uri_cap</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">caps</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENXIO</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Key behaviors:</strong></p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">uri_cap</span></code> matches a config’s caps, that config is tried and its error
+returned directly (no further probing)</p></li>
+<li><p>When user specifies <code class="docutils literal notranslate"><span class="pre">opts.async</span></code>/<code class="docutils literal notranslate"><span class="pre">opts.sync</span></code>/<code class="docutils literal notranslate"><span class="pre">opts.admin</span></code>, caps filter is
+bypassed (user knows what they want)</p></li>
+<li><p>First matching config wins – array ordering defines priority</p></li>
+<li><p>Permission errors (<code class="docutils literal notranslate"><span class="pre">EPERM</span></code>) always stop immediately</p></li>
+</ul>
+<p><strong>Benefits over old probing approach:</strong></p>
+<p>Old behavior (problematic):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEBUG</span><span class="p">:</span> <span class="n">trying</span> <span class="n">spdk</span><span class="o">...</span> <span class="n">failed</span> <span class="p">(</span><span class="n">ENODEV</span><span class="p">)</span>
+<span class="n">DEBUG</span><span class="p">:</span> <span class="n">trying</span> <span class="n">linux_nvme</span><span class="o">...</span> <span class="n">failed</span> <span class="p">(</span><span class="n">EPERM</span><span class="p">)</span>
+<span class="n">DEBUG</span><span class="p">:</span> <span class="n">trying</span> <span class="n">linux_block</span><span class="o">...</span> <span class="n">failed</span> <span class="p">(</span><span class="n">EINVAL</span><span class="p">)</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">EINVAL</span>  <span class="c1"># User sees last error, not the relevant one</span>
+</pre></div>
+</div>
+<p>After refactor (caps-matched):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEBUG</span><span class="p">:</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;/dev/nvme0n1&#39;</span> <span class="n">classified</span> <span class="n">cap</span><span class="o">=</span><span class="mh">0x2</span> <span class="p">(</span><span class="n">NVME_BDEV</span><span class="p">)</span>
+<span class="n">DEBUG</span><span class="p">:</span> <span class="n">selected</span> <span class="n">config</span><span class="p">:</span> <span class="n">emu</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">EPERM</span>  <span class="c1"># User sees the actual problem</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>URI classified once, correct config selected immediately</p></li>
+<li><p>One meaningful error returned</p></li>
+<li><p>Debug logs show the classification and selection</p></li>
+</ul>
+</section>
+<section id="error-codes">
+<h2>Error Codes<a class="headerlink" href="#error-codes" title="Link to this heading">#</a></h2>
+<p>Consistent error codes for each failure mode:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Scenario</p></th>
+<th class="head"><p>Error</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>No matching config</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ENXIO</span></code></p></td>
+<td><p>No config matches URI + opts combination</p></td>
+</tr>
+<tr class="row-odd"><td><p>Config not supported</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ENOTSUP</span></code></p></td>
+<td><p>Config’s <code class="docutils literal notranslate"><span class="pre">dev_open()</span></code> failed (e.g., no io_uring support)</p></td>
+</tr>
+<tr class="row-even"><td><p>Mem not supported</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">EINVAL</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">opts.mem</span></code> not in config’s mem_overrides array</p></td>
+</tr>
+<tr class="row-odd"><td><p>Device not found</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ENOENT</span></code></p></td>
+<td><p>URI doesn’t resolve to a device</p></td>
+</tr>
+<tr class="row-even"><td><p>Permission denied</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">EPERM</span></code></p></td>
+<td><p>Insufficient permissions to access device</p></td>
+</tr>
+<tr class="row-odd"><td><p>Device busy</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">EBUSY</span></code></p></td>
+<td><p>Device in use by another driver (conflict)</p></td>
+</tr>
+<tr class="row-even"><td><p>Controller attach failed</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">EIO</span></code></p></td>
+<td><p>Driver-specific attach failure</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Principle:</strong> Return the error from the caps-matched config.
+Caps matching ensures the error is always relevant.</p>
+</section>
+<section id="controller-reference-counting-cref">
+<h2>Controller Reference Counting (cref)<a class="headerlink" href="#controller-reference-counting-cref" title="Link to this heading">#</a></h2>
+<p>Centralized management for userspace-managed drivers. The platform handles all
+refcounting - drivers provide open/close logic but are unaware of refcounting.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">cref_entry</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">uri</span><span class="p">[</span><span class="mi">384</span><span class="p">];</span><span class="w"> </span><span class="c1">// Controller URI (PCI BDF)</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">refcount</span><span class="p">;</span>
+<span class="w">	</span><span class="k">enum</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SHAREABLE</span><span class="p">,</span><span class="w"> </span><span class="n">EXCLUSIVE</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">mode</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctrlr</span><span class="p">;</span><span class="w"> </span><span class="c1">// Controller handle with namespace array</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">destructor</span><span class="p">)(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Controller and namespace model:</strong></p>
+<ul class="simple">
+<li><p>Controller owns namespace array, initialized eagerly at attach</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ctrlr-&gt;ns[nsid]</span></code> provides direct lookup</p></li>
+<li><p>cref tracks controllers only - no namespace refcounting</p></li>
+<li><p>Multiple <code class="docutils literal notranslate"><span class="pre">xnvme_dev</span></code> handles can reference same namespace</p></li>
+</ul>
+<p><strong>Platform responsibility:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">xnvme_platform_dev_open</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_userspace_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctrlr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cref_get</span><span class="p">(</span><span class="n">ctrlr_uri</span><span class="p">);</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ctrlr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">			</span><span class="c1">// First open - attach controller, init all namespaces</span>
+<span class="w">			</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">dev_open</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+<span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">				</span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
+<span class="w">			</span><span class="p">}</span>
+<span class="w">			</span><span class="n">cref_insert</span><span class="p">(</span><span class="n">ctrlr_uri</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">ctrlr</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">dev_close</span><span class="p">);</span>
+<span class="w">		</span><span class="p">}</span>
+<span class="w">		</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">ctrlr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctrlr</span><span class="p">;</span>
+<span class="w">		</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctrlr</span><span class="o">-&gt;</span><span class="n">ns</span><span class="p">[</span><span class="n">nsid</span><span class="p">];</span><span class="w"> </span><span class="c1">// Direct array lookup</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+<span class="w">	</span><span class="c1">// OS-managed path...</span>
+<span class="p">}</span>
+
+<span class="kt">void</span>
+<span class="nf">xnvme_platform_dev_close</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_userspace_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">cref_put</span><span class="p">(</span><span class="n">ctrlr_uri</span><span class="p">);</span><span class="w"> </span><span class="c1">// Detaches controller when refcount hits zero</span>
+<span class="w">		</span><span class="k">return</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+<span class="w">	</span><span class="c1">// OS-managed path...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Access modes:</strong></p>
+<ul class="simple">
+<li><p>Shareable: OS-managed configs can coexist</p></li>
+<li><p>Exclusive: userspace-managed configs are mutually exclusive</p></li>
+</ul>
+</section>
+<section id="file-organization">
+<h2>File Organization<a class="headerlink" href="#file-organization" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>lib/
+├── xnvme_platform.c              # Shared dev_open, enumerate
+├── xnvme_platform_linux.c        # Linux: scan, classify
+├── xnvme_platform_freebsd.c      # FreeBSD: scan, classify
+├── xnvme_platform_macos.c        # macOS: scan, classify
+├── xnvme_platform_windows.c      # Windows: scan, classify
+│
+├── xnvme_be_linux.c              # Linux configs + helpers
+├── xnvme_be_linux_dev.c          # Linux: dev_open, dev_close
+├── xnvme_be_linux_sync_nvme.c    # Linux: NVMe ioctl sync
+├── xnvme_be_linux_sync_block.c   # Linux: block layer sync
+├── xnvme_be_linux_admin_nvme.c   # Linux: NVMe ioctl admin
+├── xnvme_be_linux_admin_block.c  # Linux: block layer admin
+├── xnvme_be_linux_async_*.c      # Linux: io_uring, libaio, etc.
+├── xnvme_be_linux_mem_hugepage.c # Linux: hugepage memory
+│
+├── xnvme_be_fbsd*.c              # FreeBSD configs + implementations
+├── xnvme_be_macos*.c             # macOS configs + implementations
+├── xnvme_be_macos_driverkit*.c   # macOS DriverKit configs + implementations
+├── xnvme_be_windows*.c           # Windows configs + implementations
+│
+├── xnvme_be_spdk*.c              # SPDK userspace driver
+├── xnvme_be_vfio*.c              # libvfn userspace driver
+│
+├── xnvme_be_cbi_*.c              # Cross-platform components (emu, thrpool, psync, etc.)
+├── xnvme_be_cref.c               # Controller reference counting
+├── xnvme_be_ramdisk*.c           # Ramdisk virtual device driver
+└── xnvme_be_nosys.c              # Stubs for disabled features
+</pre></div>
+</div>
+</section>
+<section id="naming-convention">
+<h2>Naming Convention<a class="headerlink" href="#naming-convention" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Prefix</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;</span></code></p></td>
+<td><p>Platform (OS-specific scan, classify)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;os&gt;_</span></code></p></td>
+<td><p>Backend implementation (configs, sync, admin, async, mem)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;name&gt;</span></code></p></td>
+<td><p>Userspace driver (spdk, vfio)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_cbi_</span></code></p></td>
+<td><p>Cross-platform backend implementation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_ramdisk</span></code></p></td>
+<td><p>Ramdisk virtual device</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_cref</span></code></p></td>
+<td><p>Controller reference counting</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="migration-progress">
+<h2>Migration Progress<a class="headerlink" href="#migration-progress" title="Link to this heading">#</a></h2>
+<section id="phase-1-foundation-done">
+<h3>Phase 1: Foundation (done)<a class="headerlink" href="#phase-1-foundation-done" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>[x] Add <code class="docutils literal notranslate"><span class="pre">xnvme_scan()</span></code> API</p></li>
+<li><p>[x] Add <code class="docutils literal notranslate"><span class="pre">xnvme_ident.kernel_driver</span></code> field (rename from <code class="docutils literal notranslate"><span class="pre">driver</span></code>)</p></li>
+<li><p>[x] Implement Linux PCIe scan via uPCIe</p></li>
+<li><p>[x] Add controller reference-counting module (<code class="docutils literal notranslate"><span class="pre">xnvme_be_cref</span></code>)</p></li>
+<li><p>[x] Introduce <code class="docutils literal notranslate"><span class="pre">xnvme_platform</span></code> with backends and function pointers</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">g_xnvme_platform</span></code> compile-time selected</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">platform-&gt;backends[]</span></code> array for per-platform config list</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">platform-&gt;dev_open/scan/enumerate</span></code> function pointers</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="phase-2-flat-configs-and-caps-based-selection-done">
+<h3>Phase 2: Flat Configs and Caps-Based Selection (done)<a class="headerlink" href="#phase-2-flat-configs-and-caps-based-selection-done" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>[x] Implement <code class="docutils literal notranslate"><span class="pre">xnvme_scan()</span></code> for all platforms:</p>
+<ul>
+<li><p>Linux: uPCIe</p></li>
+<li><p>FreeBSD: pciconf</p></li>
+<li><p>Windows: SetupAPI</p></li>
+<li><p>macOS: IOKit</p></li>
+</ul>
+</li>
+<li><p>[x] Controller-only <code class="docutils literal notranslate"><span class="pre">dev_open</span></code> with <code class="docutils literal notranslate"><span class="pre">nsid=0</span></code> (SPDK, VFIO)</p></li>
+<li><p>[x] Move enumerate into platform using scan + dev_open + Identify NS List</p></li>
+<li><p>[x] Replace mixin system with flat <code class="docutils literal notranslate"><span class="pre">xnvme_be_config</span></code> lists</p>
+<ul>
+<li><p>Each config is a complete recipe (async+sync+admin+dev+mem)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attr.descr</span></code> describes the config for debugging/display</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attr.caps</span></code> bitmask for device type compatibility</p></li>
+</ul>
+</li>
+<li><p>[x] Add URI classification via per-platform <code class="docutils literal notranslate"><span class="pre">classify()</span></code> callback</p>
+<ul>
+<li><p>Linux: stat() + pattern matching</p></li>
+<li><p>FreeBSD: stat() + pattern matching</p></li>
+<li><p>macOS: stat() + DriverKit pattern</p></li>
+<li><p>Windows: device handle prefix matching</p></li>
+</ul>
+</li>
+<li><p>[x] Implement caps-based config selection in <code class="docutils literal notranslate"><span class="pre">xnvme_platform_dev_open()</span></code></p>
+<ul>
+<li><p>URI classified → caps filter → first matching config</p></li>
+<li><p>Early return on caps match (meaningful error)</p></li>
+<li><p>Bypass caps when user specifies explicit async/sync/admin opts</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="phase-3-userspace-drivers-done">
+<h3>Phase 3: Userspace Drivers (done)<a class="headerlink" href="#phase-3-userspace-drivers-done" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>[x] Move SPDK from backend to userspace driver</p>
+<ul>
+<li><p>Remove SPDK-internal controller refcounting</p></li>
+<li><p>Rely on platform for ref-counting via cref</p></li>
+</ul>
+</li>
+<li><p>[x] Move libvfn from backend to userspace driver</p>
+<ul>
+<li><p>Remove libvfn-internal controller refcounting</p></li>
+<li><p>Rely on platform for ref-counting via cref</p></li>
+</ul>
+</li>
+<li><p>[x] Move DriverKit from separate backend to userspace driver within macOS backend</p></li>
+<li><p>[x] Remove all driver-specific refcounting - rely solely on platform cref</p></li>
+</ul>
+</section>
+<section id="phase-4-cleanup">
+<h3>Phase 4: Cleanup<a class="headerlink" href="#phase-4-cleanup" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>[ ] Remove <code class="docutils literal notranslate"><span class="pre">opts.be</span></code> matching on old backend names (after transition)</p></li>
+<li><p>[ ] After release: remove <code class="docutils literal notranslate"><span class="pre">opts.async</span></code>, <code class="docutils literal notranslate"><span class="pre">opts.sync</span></code>, <code class="docutils literal notranslate"><span class="pre">opts.admin</span></code></p></li>
+<li><p>[ ] Consolidate config naming for consistency</p></li>
+</ul>
+</section>
+<section id="phase-5-single-backend-done">
+<h3>Phase 5: Single Backend (done)<a class="headerlink" href="#phase-5-single-backend-done" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>[x] Remove backend registry (g_xnvme_be_registry)</p></li>
+<li><p>[x] Compile-time backend selection via #ifdef</p></li>
+<li><p>[x] Introduce <code class="docutils literal notranslate"><span class="pre">xnvme_platform</span></code> structure with <code class="docutils literal notranslate"><span class="pre">g_xnvme_platform</span></code> global</p></li>
+</ul>
+</section>
+</section>
+<section id="documentation-restructure">
+<h2>Documentation Restructure<a class="headerlink" href="#documentation-restructure" title="Link to this heading">#</a></h2>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">docs/backends/</span></code> with <code class="docutils literal notranslate"><span class="pre">docs/background/</span></code> to reflect the new architecture
+without losing existing content.</p>
+<section id="current-structure-to-be-replaced">
+<h3>Current Structure (to be replaced)<a class="headerlink" href="#current-structure-to-be-replaced" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docs/backends/
+├── linux/
+├── freebsd/
+├── macos/
+├── windows/
+├── spdk/           # Treated as peer to Linux
+├── libvfn/         # Treated as peer to Linux
+└── common/
+    └── interface/
+</pre></div>
+</div>
+</section>
+<section id="new-structure">
+<h3>New Structure<a class="headerlink" href="#new-structure" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>docs/
+├── getting_started/
+├── background/                 # Replaces backends/
+│   ├── index.rst               # Intro: what xNVMe abstracts
+│   ├── architecture/           # Design rationale (this document)
+│   │   └── index.rst
+│   ├── platforms/              # OS-specific setup and configuration
+│   │   ├── index.rst           # Platform overview and matrix
+│   │   ├── linux/              # From backends/linux/
+│   │   ├── freebsd/            # From backends/freebsd/
+│   │   ├── macos/              # From backends/macos/
+│   │   └── windows/            # From backends/windows/
+│   └── backends/               # Backend config documentation
+│       ├── index.rst           # Config taxonomy, selection logic
+│       ├── spdk.rst            # From backends/spdk/
+│       ├── vfio.rst            # From backends/libvfn/
+│       ├── io_uring.rst        # From backends/linux/io_uring*.rst
+│       ├── libaio.rst          # From backends/linux/libaio.rst
+│       ├── kqueue.rst          # FreeBSD async
+│       ├── iocp.rst            # From backends/windows/iocp*.rst
+│       ├── thrpool.rst         # From backends/common/thrpool.rst
+│       ├── emu.rst             # From backends/common/emu.rst
+│       ├── ramdisk.rst         # From backends/common/ramdisk.rst
+│       └── psync.rst           # From backends/common/psync.rst
+├── tutorial/
+├── tools/
+├── api/
+├── contributing/
+└── ...
+</pre></div>
+</div>
+</section>
+<section id="content-migration">
+<h3>Content Migration<a class="headerlink" href="#content-migration" title="Link to this heading">#</a></h3>
+<p><strong>Platforms</strong> (OS-specific, moved as-is):</p>
+<ul class="simple">
+<li><p>System configuration requirements</p></li>
+<li><p>Device identification schemes</p></li>
+<li><p>Platform-specific setup scripts</p></li>
+</ul>
+<p><strong>Backends</strong> (reorganized, each page covers):</p>
+<ul class="simple">
+<li><p>What the backend config does</p></li>
+<li><p>Which platforms support it</p></li>
+<li><p>How to select it (via <code class="docutils literal notranslate"><span class="pre">opts.be</span></code>, <code class="docutils literal notranslate"><span class="pre">opts.async</span></code>, etc.)</p></li>
+<li><p>Requirements and dependencies</p></li>
+</ul>
+<p><strong>Architecture</strong> (new):</p>
+<ul class="simple">
+<li><p>This design document</p></li>
+<li><p>Config taxonomy and selection logic</p></li>
+<li><p>Compatibility matrices</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#terminology">Terminology</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-driver-vs-opts-be">kernel_driver vs opts.be</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#current-problems">Current Problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-ipc-and-shared-access">Future: IPC and Shared Access</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spdk-multi-process-mode-compatibility">SPDK Multi-Process Mode Compatibility</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queue-management-for-ipc">Queue Management for IPC</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-structures">Data Structures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uri-as-convenience">URI as Convenience</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-ident">xnvme_ident</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-opts">xnvme_opts</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-be-config">xnvme_be_config</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-config-definitions">Backend Config Definitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uri-format">URI Format</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uri-classification-and-caps-matching">URI Classification and Caps Matching</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#device-type-detection">Device Type Detection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ramdisk">Ramdisk</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-opts-async-sync-admin">Migration: opts.async/sync/admin</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-config-compatibility">Backend Config Compatibility</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#userspace-managed-configs">Userspace-Managed Configs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cbi-virtual-components">CBI / Virtual Components</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-specific-details">Platform-Specific Details</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linux">Linux</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#freebsd">FreeBSD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#windows">Windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#macos">macOS</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-discovery">Device Discovery</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#design-principles">Design Principles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scan-topology">Scan Topology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scan-api">Scan API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enumerate">Enumerate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fabrics-discovery">Fabrics Discovery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fabrics-discovery-architecture">Fabrics Discovery Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-and-platform-structure">Backend and Platform Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Data Structures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-platform-operations">Shared Platform Operations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compile-time-platform-selection">Compile-Time Platform Selection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-specific-config-arrays">Platform-Specific Config Arrays</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#registry-removal-strategy">Registry Removal Strategy</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-selection-logic">Config Selection Logic</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#error-codes">Error Codes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controller-reference-counting-cref">Controller Reference Counting (cref)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-organization">File Organization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-convention">Naming Convention</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-progress">Migration Progress</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-1-foundation-done">Phase 1: Foundation (done)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-2-flat-configs-and-caps-based-selection-done">Phase 2: Flat Configs and Caps-Based Selection (done)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-3-userspace-drivers-done">Phase 3: Userspace Drivers (done)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-4-cleanup">Phase 4: Cleanup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-5-single-backend-done">Phase 5: Single Backend (done)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-restructure">Documentation Restructure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#current-structure-to-be-replaced">Current Structure (to be replaced)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-structure">New Structure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#content-migration">Content Migration</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
