@@ -589,11 +589,15 @@
 <dt class="sig sig-object c" id="c.xnvme_buf_fill">
 <span class="target" id="libxnvme__buf_8h_1a6c8ec9c0bac5a5c91bc7d3a723e7472e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_fill</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">content</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_fill" title="Link to this definition">#</a><br /></dt>
 <dd><p>Fills <code class="docutils literal notranslate"><span class="pre">buf</span></code> with content <code class="docutils literal notranslate"><span class="pre">nbytes</span></code> of content. </p>
+<p>The behaviour of this function changes according to the value of content.</p>
+<p>If content is a single character, the buffer will be filled with nbytes repetitions of this character. NOTE: Make sure the argument uses string notation, e.g., “!”. Giving a pointer to a char won’t work.</p>
+<p>If content is a file name, the buffer will be filled with nbytes of the content of this file.</p>
+<p>If content == “zero”, the buffer will be filled with 0s If content == “anum”, the buffer will be filled with ASCII characters in order If content == “rand-k”, the buffer will be filled with ASCII characters randomly sampled with <code class="docutils literal notranslate"><span class="pre">srand(time(NULL))</span></code> If content == “rand-t”, the buffer will be filled with ASCII characters randomly sampled with <code class="docutils literal notranslate"><span class="pre">srand(0)</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>buf</strong> – Pointer to the buffer to fill </p></li>
-<li><p><strong>content</strong> – Name of a file, or special “zero”, “anum”, “rand-k”, “rand-t” </p></li>
+<li><p><strong>content</strong> – A single character, name of a file, or special “zero”, “anum”, “rand-k”, “rand-t” </p></li>
 <li><p><strong>nbytes</strong> – Amount of bytes to fill in buf</p></li>
 </ul>
 </dd>
@@ -979,8 +983,25 @@
 <span class="cm">/**</span>
 <span class="cm"> * Fills `buf` with content `nbytes` of content</span>
 <span class="cm"> *</span>
+<span class="cm"> * The behaviour of this function changes according to the value of content.</span>
+<span class="cm"> *</span>
+<span class="cm"> * If content is a single character, the buffer will be filled with nbytes</span>
+<span class="cm"> * repetitions of this character.</span>
+<span class="cm"> * NOTE: Make sure the argument uses string notation, e.g., &quot;!&quot;. Giving a pointer</span>
+<span class="cm"> * to a char won&#39;t work.</span>
+<span class="cm"> *</span>
+<span class="cm"> * If content is a file name, the buffer will be filled with nbytes of the</span>
+<span class="cm"> * content of this file.</span>
+<span class="cm"> *</span>
+<span class="cm"> * If content == &quot;zero&quot;, the buffer will be filled with 0s</span>
+<span class="cm"> * If content == &quot;anum&quot;, the buffer will be filled with ASCII characters in order</span>
+<span class="cm"> * If content == &quot;rand-k&quot;, the buffer will be filled with ASCII characters</span>
+<span class="cm"> * randomly sampled with `srand(time(NULL))`</span>
+<span class="cm"> * If content == &quot;rand-t&quot;, the buffer will be filled with ASCII characters</span>
+<span class="cm"> * randomly sampled with `srand(0)`</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param buf Pointer to the buffer to fill</span>
-<span class="cm"> * @param content Name of a file, or special &quot;zero&quot;, &quot;anum&quot;, &quot;rand-k&quot;, &quot;rand-t&quot;</span>
+<span class="cm"> * @param content A single character, name of a file, or special &quot;zero&quot;, &quot;anum&quot;, &quot;rand-k&quot;, &quot;rand-t&quot;</span>
 <span class="cm"> * @param nbytes Amount of bytes to fill in buf</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
