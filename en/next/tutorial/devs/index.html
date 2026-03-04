@@ -656,61 +656,20 @@ sudo<span class="w"> </span>make<span class="w"> </span>install
 <h2>cijoe<a class="headerlink" href="#cijoe" title="Link to this heading">#</a></h2>
 <p>Setup by running the following in the root of the <strong>xNVMe</strong> repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git/xnvme
-make<span class="w"> </span>cijoe
+make<span class="w"> </span>guest-env
 </pre></div>
 </div>
-<p>This will install <strong>cijoe</strong> along with a couple of <strong>cijoe-packages</strong> for
-Linux, qemu, and fio. After installation, then a configuation file is added at
-<code class="docutils literal notranslate"><span class="pre">~/.config/cijoe/cijoe-config.toml</span></code>. You need to adjust this to match your
-system, look specifically for these entries:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>qemu<span class="o">]</span>
-<span class="nv">img_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;qemu-img&quot;</span>
-<span class="nv">default_guest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bookworm_arm64&quot;</span>
-
-<span class="o">[</span>qemu.systems.aarch64<span class="o">]</span>
-<span class="c1"># bin = &quot;{{ local.env.HOME }}/opt/qemu/bin/qemu-system-aarch64&quot;</span>
-<span class="nv">bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/opt/qemu/bin/qemu-system-aarch64&quot;</span>
-
-<span class="o">[</span>xnvme.repository<span class="o">]</span>
-<span class="nv">upstream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/OpenMPDK/xNVMe.git&quot;</span>
-<span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{{ local.env.HOME }}/git/xnvme&quot;</span>
-
-<span class="c1"># This is utilized by repository syncing during development.</span>
-<span class="o">[</span>xnvme.repository.sync<span class="o">]</span>
-<span class="nv">branch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;wip&quot;</span>
-<span class="nv">remote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;guest&quot;</span>
-<span class="nv">remote_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/root/git/xnvme&quot;</span>
-</pre></div>
-</div>
-<p>In general, ensure paths to repositories, binaries, etc. match your local system
-and the remote system you are using.</p>
+<p>This will:</p>
+<ol class="arabic simple">
+<li><p>Install <strong>cijoe</strong> along with dependencies for Linux, qemu, and fio</p></li>
+<li><p>Check that QEMU and KVM are available</p></li>
+<li><p>Present an interactive menu to select a guest (e.g. <code class="docutils literal notranslate"><span class="pre">debian-trixie</span></code>,
+<code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code>)</p></li>
+</ol>
+<p>The selected guest is stored in <code class="docutils literal notranslate"><span class="pre">cijoe/current.guest</span></code> and used by all
+subsequent <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-*</span></code> targets.</p>
 <p>Then logout and back in to reload the environment, the addition of <code class="docutils literal notranslate"><span class="pre">pipx</span></code> and
 the <code class="docutils literal notranslate"><span class="pre">cijoe</span></code> into <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>.</p>
-<p>Do a trial-run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a workdir</span>
-mkdir<span class="w"> </span>-p<span class="w"> </span>~/workdirs/cijoe
-<span class="nb">cd</span><span class="w"> </span>~/workdirs/cijoe
-
-<span class="c1"># Create a default configuration and workflow</span>
-cijoe<span class="w"> </span>--example<span class="w"> </span>core
-</pre></div>
-</div>
-<p>In case everything is fine, then it will execute silently.</p>
-<p>You can increase the information-level with <code class="docutils literal notranslate"><span class="pre">-l</span></code>
-argument, the more times you provide the higher the level.
-Try running it with two, that is debug-level:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-ll
-</pre></div>
-</div>
-<p>In the <code class="docutils literal notranslate"><span class="pre">cwd</span></code> then a <code class="docutils literal notranslate"><span class="pre">cijoe-output</span></code> is produced, this
-directory holds all information about what was executed.
-Have a look at the generated report at
-<code class="docutils literal notranslate"><span class="pre">cijoe-output/report.html</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In case you see failures, then inspect the <code class="docutils literal notranslate"><span class="pre">RUNLOG</span></code> in the report, this
-usually tells you exactly what went wrong.</p>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure that <code class="docutils literal notranslate"><span class="pre">pytest</span></code> is not installed system-wide by running <code class="docutils literal notranslate"><span class="pre">which</span>
@@ -816,7 +775,7 @@ sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> <
 </div>
 <p>Checkout qemu:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/qemu<span class="w"> </span>--recursive
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SamsungDS/qemu.git<span class="w"> </span>--recursive
 <span class="nb">cd</span><span class="w"> </span>qemu
 git<span class="w"> </span>checkout<span class="w"> </span><span class="k">for</span>-xnvme
 git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
@@ -857,37 +816,27 @@ devices in the guest for testing. The <strong>xNVMe</strong> <code class="docuti
 helper-targets to do this. That is, spinning up the guest, synchronizing your
 <strong>xNVMe</strong> git repository changes into the qemu-guest, building, installing, and
 running tests.</p>
-<section id="test-linux">
-<h3>Test Linux<a class="headerlink" href="#test-linux" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a cijoe-config for a qemu-guest with Debian Trixie</span>
-cp<span class="w"> </span>cijoe/configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
+<p>The <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-env</span></code> target will present an interactive menu to select the
+guest OS (e.g. <code class="docutils literal notranslate"><span class="pre">debian-trixie</span></code>, <code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code>). The same workflow applies
+regardless of which guest you choose:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># One-time setup: install CIJOE and select a guest</span>
+make<span class="w"> </span>guest-env
 
-<span class="c1"># Provision the machine</span>
-make<span class="w"> </span>cijoe-guest-setup-xnvme-using-git
+<span class="c1"># Build source artifacts and run the full test cycle</span>
+make<span class="w"> </span>gen-artifacts<span class="w"> </span><span class="nv">ALLOW_DIRTY</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>verify-guest
 
-<span class="c1"># Run the test</span>
-make<span class="w"> </span>cijoe-do-test-linux
+<span class="c1"># Or run stages individually:</span>
+make<span class="w"> </span>guest-start<span class="w">          </span><span class="c1"># start the guest</span>
+make<span class="w"> </span>guest-provision<span class="w">   </span><span class="c1"># sync source, build, install</span>
+make<span class="w"> </span>guest-test<span class="w">        </span><span class="c1"># run the test suite</span>
 </pre></div>
 </div>
-</section>
-<section id="generate-documentation-in-linux">
-<h3>Generate documentation in Linux<a class="headerlink" href="#generate-documentation-in-linux" title="Link to this heading">#</a></h3>
-<p>You can reuse the qemu-guest created in the previous section to generate the
-documentation. See the <a class="reference internal" href="#sec-tutorials-devs-linux-reproduce-ci"><span class="std std-ref">Reproduce GitHUB Actions locally</span></a> section for
-using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docgen-guest</span></code> inside the Docker container.</p>
-</section>
-<section id="test-freebsd">
-<h3>Test FreeBSD<a class="headerlink" href="#test-freebsd" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a cijoe-config for a qemu-guest with FreeBSD</span>
-cp<span class="w"> </span>cijoe/configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
-
-<span class="c1"># Provision the machine</span>
-make<span class="w"> </span>cijoe-guest-setup-xnvme-using-git
-
-<span class="c1"># Run the test</span>
-make<span class="w"> </span>cijoe-do-test-freebsd
-</pre></div>
-</div>
+<p>To switch to a different guest, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-select</span></code>.</p>
+<section id="generate-documentation">
+<h3>Generate documentation<a class="headerlink" href="#generate-documentation" title="Link to this heading">#</a></h3>
+<p>You can reuse the qemu-guest to generate the documentation. See the
+<a class="reference internal" href="#sec-tutorials-devs-linux-reproduce-ci"><span class="std std-ref">Reproduce GitHUB Actions locally</span></a> section for using
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docgen-guest</span></code> inside the Docker container.</p>
 </section>
 </section>
 <section id="reproduce-github-actions-locally">
@@ -910,16 +859,16 @@ build that includes NVMe device emulation.</p>
 <p>The container bind-mounts the repository at <code class="docutils literal notranslate"><span class="pre">/tmp/xnvme</span></code> and
 <code class="docutils literal notranslate"><span class="pre">/tmp/artifacts</span></code>, so the artifacts from step 1 are available inside.</p>
 <ol class="arabic simple" start="3">
-<li><p>Inside the container, set up CIJOE and run the desired target:</p></li>
+<li><p>Inside the container, set up CIJOE, select a guest, and run tests:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install CIJOE</span>
-make<span class="w"> </span>cijoe
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install CIJOE and select guest</span>
+<span class="nb">echo</span><span class="w"> </span>debian-trixie<span class="w"> </span><span class="p">|</span><span class="w"> </span>make<span class="w"> </span>guest-env
 
-<span class="c1"># Test on Debian Trixie</span>
-make<span class="w"> </span>verify-guest<span class="w"> </span><span class="nv">GUEST</span><span class="o">=</span>debian-trixie
+<span class="c1"># Test</span>
+make<span class="w"> </span>verify-guest
 
 <span class="c1"># Or generate documentation</span>
-make<span class="w"> </span>docgen-guest<span class="w"> </span><span class="nv">GUEST</span><span class="o">=</span>debian-trixie
+make<span class="w"> </span>docgen-guest
 </pre></div>
 </div>
 <p>In case you are setting up the test-target using other tools, or just want to
@@ -985,14 +934,14 @@ configuration file for another physical machine:</p>
 <p>Open up <code class="docutils literal notranslate"><span class="pre">~/.config/cijoe/cijoe-config.toml</span></code> and adjust it to your physical
 machine. That is, change the ssh-login information, change the list of devices,
 paths to binaries etc. Once you have done that, then go ahead and run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Synchronize your local git with the repos on the remote physical machine</span>
-make<span class="w"> </span>cijoe-sync-git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sync source, build, and install xNVMe on the remote end</span>
+make<span class="w"> </span>guest-provision
 
-<span class="c1"># Build and install **xNVMe** on the remote end</span>
-make<span class="w"> </span>cijoe-setup-xnvme-using-git
+<span class="c1"># Run the test suite</span>
+make<span class="w"> </span>guest-test
 </pre></div>
 </div>
-<p>You can do any of the <strong>cijoe</strong> things like the above.</p>
+<p>You can do any of the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-*</span></code> things like the above.</p>
 </section>
 </section>
 
@@ -1031,9 +980,7 @@ make<span class="w"> </span>cijoe-setup-xnvme-using-git
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-kernel">Linux Kernel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qemu">Qemu</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-qemu-guest-virtual-machine-for-testing">Setup qemu-guest / virtual machine for testing</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-linux">Test Linux</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-documentation-in-linux">Generate documentation in Linux</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-freebsd">Test FreeBSD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-documentation">Generate documentation</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproduce-github-actions-locally">Reproduce GitHUB Actions locally</a></li>
