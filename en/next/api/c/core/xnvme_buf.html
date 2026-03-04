@@ -527,7 +527,7 @@
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-clear"></span><h3>xnvme_buf_clear<a class="headerlink" href="#xnvme-buf-clear" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_clear">
-<span class="target" id="libxnvme__buf_8h_1a6a24fa4902e0dc7c37c797b0ef4fbb48"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_clear</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_clear" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1ae60a14bc29c63b213e4c6cd5755d18ac"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_clear</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_clear" title="Link to this definition">#</a><br /></dt>
 <dd><p>Write zeroes to the first ‘nbytes’ of ‘buf’. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -537,7 +537,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the first argument. </p>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,18 +547,19 @@
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-diff"></span><h3>xnvme_buf_diff<a class="headerlink" href="#xnvme-buf-diff" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_diff">
-<span class="target" id="libxnvme__buf_8h_1a7a6d539a3679f219eedb5550528d3e9a"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_diff</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">expected</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">actual</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_diff" title="Link to this definition">#</a><br /></dt>
-<dd><p>Returns the number of bytes where expected is different from actual. </p>
+<span class="target" id="libxnvme__buf_8h_1afe4751945adbde0692b056e3fd0ce196"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_diff</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">expected</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">actual</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">diff</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_diff" title="Link to this definition">#</a><br /></dt>
+<dd><p>Compare two buffers and count the number of differing bytes. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>expected</strong> – Pointer to buffer of “expected” content </p></li>
-<li><p><strong>actual</strong> – Pointer to buffer to compare to “expected” </p></li>
-<li><p><strong>nbytes</strong> – Amount of bytes to compare</p></li>
+<li><p><strong>expected</strong> – Pointer to buffer containing the expected data </p></li>
+<li><p><strong>actual</strong> – Pointer to buffer to compare against the expected data </p></li>
+<li><p><strong>nbytes</strong> – Number of bytes to compare </p></li>
+<li><p><strong>diff</strong> – Output pointer storing the number of differing bytes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>On success, returns number of bytes that differ </p>
+<dd class="field-even"><p>0 on success, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> on error. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -568,7 +569,7 @@
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-diff-pr"></span><h3>xnvme_buf_diff_pr<a class="headerlink" href="#xnvme-buf-diff-pr" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_buf_diff_pr">
-<span class="target" id="libxnvme__buf_8h_1accd278cb83c8ceebd3269966bb0bb18c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_diff_pr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">expected</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">actual</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_diff_pr" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__buf_8h_1a9da2d797c1dda3ab35d0dcbbe6d29eeb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_diff_pr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">expected</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">actual</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_diff_pr" title="Link to this definition">#</a><br /></dt>
 <dd><p>Prints the number and value of bytes where expected is different from actual. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -578,6 +579,9 @@
 <li><p><strong>nbytes</strong> – Amount of bytes to compare </p></li>
 <li><p><strong>opts</strong> – printer options, see <a class="reference internal" href="../util/xnvme_pp.html#libxnvme__pp_8h_1ad7d65365274d83d044921f00a0e54a21"><span class="std std-ref">xnvme_pr</span></a></p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -1015,22 +1019,23 @@
 <span class="cm"> * @param buf Pointer to the buffer to fill with zeroes</span>
 <span class="cm"> * @param nbytes Amount of bytes to fill with zeroes in buf</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return Returns the first argument.</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
 <span class="cm"> */</span>
-<span class="kt">void</span><span class="w"> </span><span class="o">*</span>
+<span class="kt">int</span>
 <span class="nf">xnvme_buf_clear</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
-<span class="cm"> * Returns the number of bytes where expected is different from actual</span>
+<span class="cm"> * Compare two buffers and count the number of differing bytes.</span>
 <span class="cm"> *</span>
-<span class="cm"> * @param expected Pointer to buffer of &quot;expected&quot; content</span>
-<span class="cm"> * @param actual Pointer to buffer to compare to &quot;expected&quot;</span>
-<span class="cm"> * @param nbytes Amount of bytes to compare</span>
+<span class="cm"> * @param expected Pointer to buffer containing the expected data</span>
+<span class="cm"> * @param actual Pointer to buffer to compare against the expected data</span>
+<span class="cm"> * @param nbytes Number of bytes to compare</span>
+<span class="cm"> * @param diff Output pointer storing the number of differing bytes</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return On success, returns number of bytes that differ</span>
+<span class="cm"> * @return 0 on success, negative `errno` on error.</span>
 <span class="cm"> */</span>
-<span class="kt">size_t</span>
-<span class="nf">xnvme_buf_diff</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_diff</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="o">*</span><span class="n">diff</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Prints the number and value of bytes where expected is different from actual</span>
@@ -1039,8 +1044,10 @@
 <span class="cm"> * @param actual Pointer to buffer to compare to &quot;expected&quot;</span>
 <span class="cm"> * @param nbytes Amount of bytes to compare</span>
 <span class="cm"> * @param opts printer options, see ::xnvme_pr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
 <span class="cm"> */</span>
-<span class="kt">void</span>
+<span class="kt">int</span>
 <span class="nf">xnvme_buf_diff_pr</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
