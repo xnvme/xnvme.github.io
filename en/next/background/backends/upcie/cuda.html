@@ -505,6 +505,11 @@
                   
   <section id="upcie-cuda">
 <span id="sec-backends-upcie-cuda"></span><h1>uPCIe CUDA<a class="headerlink" href="#upcie-cuda" title="Link to this heading">#</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This backend requires a custom Linux kernel patch that is not yet upstream.
+See <a class="reference internal" href="#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Requirement</span></a> for details.</p>
+</div>
 <p>The <strong>upcie-cuda</strong> backend enables direct <strong>PCIe peer-to-peer (P2P)</strong> data
 transfers between the NVMe device and the GPU, with I/O buffers allocated from
 a heap backed by <strong>CUDA device memory</strong>.</p>
@@ -574,6 +579,12 @@ the hugepage setup steps in <a class="reference internal" href="host.html#sec-ba
 <strong>upcie-cuda</strong> device.</p>
 </section>
 </section>
+<section id="gpu-resident-queue-api">
+<span id="sec-backends-upcie-cuda-gpu"></span><h2>GPU-Resident Queue API<a class="headerlink" href="#gpu-resident-queue-api" title="Link to this heading">#</a></h2>
+<p>The <strong>upcie-cuda</strong> backend supports GPU-resident NVMe queue pairs via the
+<code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API. See <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> for the full API reference,
+including host-side setup, CUDA kernel dispatch, and queue depth semantics.</p>
+</section>
 <section id="validation">
 <span id="sec-backends-upcie-cuda-validation"></span><h2>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h2>
 <p>The cijoe workflow <code class="docutils literal notranslate"><span class="pre">test-gpu.yaml</span></code> exercises the <strong>upcie-cuda</strong> backend
@@ -640,6 +651,7 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepages">Hugepages</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-resident-queue-api">GPU-Resident Queue API</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
 </ul>
