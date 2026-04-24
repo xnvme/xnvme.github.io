@@ -477,14 +477,20 @@
 <span id="sec-tools-xnvmeperf"></span><h1>xnvmeperf<a class="headerlink" href="#xnvmeperf" title="Link to this heading">#</a></h1>
 <p><strong>xnvmeperf</strong> is a multi-threaded async I/O benchmark for NVMe devices. It
 runs a time-bounded async I/O loop and reports per-device and aggregate IOPS
-and throughput. A <code class="docutils literal notranslate"><span class="pre">verify</span></code> subcommand is also provided to check data integrity
-by writing a known per-LBA pattern and reading it back.</p>
+and throughput. A <code class="docutils literal notranslate"><span class="pre">verify</span></code> subcommand checks data integrity by writing a known
+per-LBA pattern and reading it back.</p>
+<p>When built with CUDA support (<code class="docutils literal notranslate"><span class="pre">XNVME_BE_UPCIE_CUDA_ENABLED</span></code>), two additional
+subcommands are available: <code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code>. These run NVMe I/O
+directly from CUDA kernels via the <a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda"><span class="std std-ref">uPCIe CUDA</span></a> backend, bypassing
+the host I/O path entirely.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
 Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:
 
 <span class="w">  </span>run<span class="w">              </span><span class="p">|</span><span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices
 <span class="w">  </span>verify<span class="w">           </span><span class="p">|</span><span class="w"> </span>Verify<span class="w"> </span>data<span class="w"> </span>integrity<span class="w"> </span>by<span class="w"> </span>writing<span class="w"> </span>and<span class="w"> </span>reading<span class="w"> </span>back<span class="w"> </span>a<span class="w"> </span>known<span class="w"> </span>pattern
+<span class="w">  </span>cuda-run<span class="w">         </span><span class="p">|</span><span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>GPU<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>upcie-cuda<span class="w"> </span>backend<span class="o">)</span>
+<span class="w">  </span>cuda-verify<span class="w">      </span><span class="p">|</span><span class="w"> </span>Verify<span class="w"> </span>GPU<span class="w"> </span>NVMe<span class="w"> </span>I/O<span class="w"> </span>data<span class="w"> </span>integrity<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>upcie-cuda<span class="w"> </span>backend<span class="o">)</span>
 
 See<span class="w"> </span><span class="s1">&#39;xnvmeperf &lt;command&gt; --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
@@ -512,6 +518,7 @@ Positional<span class="w"> </span>arguments:
 Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
 
 <span class="w">  </span>--iopattern<span class="w"> </span>STRING<span class="w">            </span><span class="p">;</span><span class="w"> </span>IO<span class="w"> </span>pattern<span class="w"> </span><span class="o">(</span>read,<span class="w"> </span>write,<span class="w"> </span>randread,<span class="w"> </span>randwrite<span class="o">)</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--nqueues<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>queues<span class="w"> </span>per<span class="w"> </span>device
 <span class="w">  </span>--qdepth<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>queue<span class="w"> </span>max<span class="w"> </span>capacity
 <span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
 <span class="w">  </span>--runtime<span class="w"> </span>NUM<span class="w">                 </span><span class="p">;</span><span class="w"> </span>Run<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>seconds
@@ -578,6 +585,100 @@ xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> <
 </pre></div>
 </div>
 </section>
+<section id="cuda-run-gpu-benchmark">
+<h2><code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> — GPU benchmark<a class="headerlink" href="#cuda-run-gpu-benchmark" title="Link to this heading">#</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda"><span class="std std-ref">uPCIe CUDA</span></a></dt><dd><p>Backend setup, system configuration, and memory architecture.</p>
+</dd>
+<dt><a class="reference internal" href="../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API used to create queues and dispatch commands
+from CUDA kernels.</p>
+</dd>
+</dl>
+</div>
+<p>Requires the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend. All queues across all devices are driven
+by a single CUDA kernel: each CUDA block owns one NVMe queue and each thread
+within the block owns one queue slot, so <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> threads submit and reap
+commands in lock-step. The grid has <code class="docutils literal notranslate"><span class="pre">ndevs</span> <span class="pre">×</span> <span class="pre">--queues</span></code> blocks in total.</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> and <code class="docutils literal notranslate"><span class="pre">--iosize</span></code> must be powers of 2. Supported patterns are
+<code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">randread</span></code>, and <code class="docutils literal notranslate"><span class="pre">randwrite</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-run<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Run<span class="w"> </span>a<span class="w"> </span>time-bounded<span class="w"> </span>GPU<span class="w"> </span>NVMe<span class="w"> </span>I/O<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>one<span class="w"> </span>or<span class="w"> </span>more<span class="w"> </span>devices.
+All<span class="w"> </span>devices<span class="w"> </span>run<span class="w"> </span><span class="k">in</span><span class="w"> </span>parallel:<span class="w"> </span>one<span class="w"> </span>CUDA<span class="w"> </span>block<span class="w"> </span>per<span class="w"> </span>queue,<span class="w"> </span>all<span class="w"> </span>queues<span class="w"> </span>launched
+<span class="k">in</span><span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span>kernel.<span class="w"> </span>All<span class="w"> </span>devices<span class="w"> </span>must<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>LBA<span class="w"> </span>size.
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span><span class="s1">&#39;0000:01:00.1&#39;</span>,<span class="w"> </span><span class="s1">&#39;10.9.8.1.8888&#39;</span>,<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--iopattern<span class="w"> </span>STRING<span class="w">            </span><span class="p">;</span><span class="w"> </span>IO<span class="w"> </span>pattern<span class="w"> </span><span class="o">(</span>read,<span class="w"> </span>write,<span class="w"> </span>randread,<span class="w"> </span>randwrite<span class="o">)</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--nqueues<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>queues<span class="w"> </span>per<span class="w"> </span>device
+<span class="w">  </span>--qdepth<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>queue<span class="w"> </span>max<span class="w"> </span>capacity
+<span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
+<span class="w">  </span>--runtime<span class="w"> </span>NUM<span class="w">                 </span><span class="p">;</span><span class="w"> </span>Run<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>seconds
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>,<span class="w"> </span><span class="s1">&#39;fbsd&#39;</span>,<span class="w"> </span><span class="s1">&#39;macos&#39;</span>,<span class="w"> </span><span class="s1">&#39;posix&#39;</span>,<span class="w"> </span><span class="s1">&#39;windows&#39;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Example — sequential read, four queues of depth 32 on two devices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">read</span> <span class="o">--</span><span class="n">queues</span> <span class="mi">4</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+<p>Example — random write, single queue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">randwrite</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+</section>
+<section id="cuda-verify-gpu-data-integrity-check">
+<h2><code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> — GPU data integrity check<a class="headerlink" href="#cuda-verify-gpu-data-integrity-check" title="Link to this heading">#</a></h2>
+<p>Uses the same queue topology as <code class="docutils literal notranslate"><span class="pre">cuda-run</span></code>. For each queue slot the kernel
+writes a unique LBA-stamped pattern, then reads it back on the host and
+compares against the expected data. This is intended to confirm that
+<code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> results reflect correct I/O rather than silent data corruption.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-verify<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Write<span class="w"> </span>an<span class="w"> </span>LBA-stamped<span class="w"> </span>pattern<span class="w"> </span>to<span class="w"> </span>each<span class="w"> </span>device<span class="w"> </span>through<span class="w"> </span>GPU<span class="w"> </span>queues<span class="w"> </span>and<span class="w"> </span><span class="nb">read</span>
+it<span class="w"> </span>back,<span class="w"> </span>verifying<span class="w"> </span>that<span class="w"> </span>the<span class="w"> </span>data<span class="w"> </span>matches.<span class="w"> </span>Uses<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>queue<span class="w"> </span>topology
+as<span class="w"> </span>cuda-run<span class="w"> </span>so<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>directly<span class="w"> </span>comparable.
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span><span class="s1">&#39;0000:01:00.1&#39;</span>,<span class="w"> </span><span class="s1">&#39;10.9.8.1.8888&#39;</span>,<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--nqueues<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>queues<span class="w"> </span>per<span class="w"> </span>device
+<span class="w">  </span>--qdepth<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>queue<span class="w"> </span>max<span class="w"> </span>capacity
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>,<span class="w"> </span><span class="s1">&#39;fbsd&#39;</span>,<span class="w"> </span><span class="s1">&#39;macos&#39;</span>,<span class="w"> </span><span class="s1">&#39;posix&#39;</span>,<span class="w"> </span><span class="s1">&#39;windows&#39;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">verify</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -605,6 +706,8 @@ xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> <
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-benchmark"><code class="docutils literal notranslate"><span class="pre">run</span></code> — Benchmark</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-data-integrity-check"><code class="docutils literal notranslate"><span class="pre">verify</span></code> — Data integrity check</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-run-gpu-benchmark"><code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> — GPU benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-verify-gpu-data-integrity-check"><code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> — GPU data integrity check</a></li>
 </ul>
   </nav></div>
 
