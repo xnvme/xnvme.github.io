@@ -1,0 +1,771 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>xnvmeperf &#8212; xNVMe v0.7.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=70f28cd9" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tools/xnvmeperf/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.7.5';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="API" href="../../api/index.html" />
+    <link rel="prev" title="fio IO Engine" href="../fio/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
+    <img src="../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../background/index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../background/index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../xnvme/index.html">xnvme</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/enum/index.html">enum: enumerate devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/feature-get/index.html">feature-get: Device feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/feature-set/index.html">feature-set: Device feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/format/index.html">format: Format a NVM namespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/idfy-ctrlr/index.html">idfy-ctrlr: Controller Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/idfy-ns/index.html">idfy-ns: Namespace Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/idfy/index.html">idfy: User-defined Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/info/index.html">info: Device Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/log-erri/index.html">log-erri: Error-Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/log-health/index.html">log-health: Health-Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/log/index.html">log: User-Defined Log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/padc/index.html">padc: Pass an admin-command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/pioc/index.html">pioc: Pass an IO-command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/sanitize/index.html">sanitize: …</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file/index.html">file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fio/index.html">fio IO Engine</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">xnvmeperf</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tools</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">xnvmeperf</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="xnvmeperf">
+<span id="sec-tools-xnvmeperf"></span><h1>xnvmeperf<a class="headerlink" href="#xnvmeperf" title="Link to this heading">#</a></h1>
+<p><strong>xnvmeperf</strong> is a multi-threaded async I/O benchmark for NVMe devices. It
+runs a time-bounded async I/O loop and reports per-device and aggregate IOPS
+and throughput. A <code class="docutils literal notranslate"><span class="pre">verify</span></code> subcommand checks data integrity by writing a known
+per-LBA pattern and reading it back.</p>
+<p>When built with CUDA support (<code class="docutils literal notranslate"><span class="pre">XNVME_BE_UPCIE_CUDA_ENABLED</span></code>), two additional
+subcommands are available: <code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code>. These run NVMe I/O
+directly from CUDA kernels via the <a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda"><span class="std std-ref">uPCIe CUDA</span></a> backend, bypassing
+the host I/O path entirely.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:
+
+<span class="w">  </span>run<span class="w">              </span><span class="p">|</span><span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices
+<span class="w">  </span>verify<span class="w">           </span><span class="p">|</span><span class="w"> </span>Verify<span class="w"> </span>data<span class="w"> </span>integrity<span class="w"> </span>by<span class="w"> </span>writing<span class="w"> </span>and<span class="w"> </span>reading<span class="w"> </span>back<span class="w"> </span>a<span class="w"> </span>known<span class="w"> </span>pattern
+<span class="w">  </span>cuda-run<span class="w">         </span><span class="p">|</span><span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>GPU<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>upcie-cuda<span class="w"> </span>backend<span class="o">)</span>
+<span class="w">  </span>cuda-verify<span class="w">      </span><span class="p">|</span><span class="w"> </span>Verify<span class="w"> </span>GPU<span class="w"> </span>NVMe<span class="w"> </span>I/O<span class="w"> </span>data<span class="w"> </span>integrity<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>upcie-cuda<span class="w"> </span>backend<span class="o">)</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf &lt;command&gt; --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<section id="run-benchmark">
+<h2><code class="docutils literal notranslate"><span class="pre">run</span></code> — Benchmark<a class="headerlink" href="#run-benchmark" title="Link to this heading">#</a></h2>
+<p>Runs async I/O against one or more NVMe devices for a fixed duration. Devices
+are listed as trailing positional arguments. One thread is spawned per CPU in
+<code class="docutils literal notranslate"><span class="pre">--cpumask</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">0x3</span></code> spawns two threads on CPUs 0 and 1. If there are
+more devices than CPUs, devices are split evenly so each thread owns a slice and
+runs one async job per owned device. If there are more CPUs than devices,
+devices are assigned round-robin so multiple threads drive the same device
+concurrently.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Run<span class="w"> </span>a<span class="w"> </span>time-bounded<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>one<span class="w"> </span>or<span class="w"> </span>more<span class="w"> </span>NVMe<span class="w"> </span>devices.
+Devices<span class="w"> </span>are<span class="w"> </span>distributed<span class="w"> </span>across<span class="w"> </span>CPU<span class="w"> </span>threads<span class="w"> </span>pinned<span class="w"> </span>by<span class="w"> </span>--cpumask.
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span><span class="s1">&#39;0000:01:00.1&#39;</span>,<span class="w"> </span><span class="s1">&#39;10.9.8.1.8888&#39;</span>,<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--iopattern<span class="w"> </span>STRING<span class="w">            </span><span class="p">;</span><span class="w"> </span>IO<span class="w"> </span>pattern<span class="w"> </span><span class="o">(</span>read,<span class="w"> </span>write,<span class="w"> </span>randread,<span class="w"> </span>randwrite<span class="o">)</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--nqueues<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>queues<span class="w"> </span>per<span class="w"> </span>device
+<span class="w">  </span>--qdepth<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>queue<span class="w"> </span>max<span class="w"> </span>capacity
+<span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
+<span class="w">  </span>--runtime<span class="w"> </span>NUM<span class="w">                 </span><span class="p">;</span><span class="w"> </span>Run<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>seconds
+<span class="w">  </span>--cpumask<span class="w"> </span>STRING<span class="w">              </span><span class="p">;</span><span class="w"> </span>Hex<span class="w"> </span>CPU<span class="w"> </span>bitmask<span class="w"> </span><span class="k">for</span><span class="w"> </span>thread<span class="w"> </span>pinning<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span>0x3<span class="o">)</span>
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>,<span class="w"> </span><span class="s1">&#39;fbsd&#39;</span>,<span class="w"> </span><span class="s1">&#39;macos&#39;</span>,<span class="w"> </span><span class="s1">&#39;posix&#39;</span>,<span class="w"> </span><span class="s1">&#39;windows&#39;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--direct<span class="w"> </span><span class="o">]</span><span class="w">                  </span><span class="p">;</span><span class="w"> </span>Bypass<span class="w"> </span>layers
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--poll_io<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">async</span><span class="o">=</span>io_uring,<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>hipri/io-compl.polling
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--poll_sq<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">async</span><span class="o">=</span>io_uring,<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>kernel-side<span class="w"> </span>sqthread-poll
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Example — sequential read on a single device:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">read</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">cpumask</span> <span class="mh">0x1</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span>
+</pre></div>
+</div>
+<p>Example — random write across two devices on two CPUs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">randwrite</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">cpumask</span> <span class="mh">0x3</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme1n1</span>
+</pre></div>
+</div>
+</section>
+<section id="verify-data-integrity-check">
+<h2><code class="docutils literal notranslate"><span class="pre">verify</span></code> — Data integrity check<a class="headerlink" href="#verify-data-integrity-check" title="Link to this heading">#</a></h2>
+<p>Writes <code class="docutils literal notranslate"><span class="pre">--count</span></code> sequential I/Os with a per-LBA stamp pattern, then reads
+them back and compares against the expected data. Reports the number of
+mismatches and I/O errors per device.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>verify<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+For<span class="w"> </span>each<span class="w"> </span>device:<span class="w"> </span>writes<span class="w"> </span>--count<span class="w"> </span>sequential<span class="w"> </span>IOs<span class="w"> </span>with<span class="w"> </span>a<span class="w"> </span>per-LBA<span class="w"> </span>pattern,
+<span class="k">then</span><span class="w"> </span>reads<span class="w"> </span>them<span class="w"> </span>back<span class="w"> </span>and<span class="w"> </span>compares<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>expected<span class="w"> </span>data.
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span><span class="s1">&#39;0000:01:00.1&#39;</span>,<span class="w"> </span><span class="s1">&#39;10.9.8.1.8888&#39;</span>,<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
+<span class="w">  </span>--count<span class="w"> </span>NUM<span class="w">                   </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>count
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>,<span class="w"> </span><span class="s1">&#39;fbsd&#39;</span>,<span class="w"> </span><span class="s1">&#39;macos&#39;</span>,<span class="w"> </span><span class="s1">&#39;posix&#39;</span>,<span class="w"> </span><span class="s1">&#39;windows&#39;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--direct<span class="w"> </span><span class="o">]</span><span class="w">                  </span><span class="p">;</span><span class="w"> </span>Bypass<span class="w"> </span>layers
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--poll_io<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">async</span><span class="o">=</span>io_uring,<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>hipri/io-compl.polling
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--poll_sq<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">async</span><span class="o">=</span>io_uring,<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>kernel-side<span class="w"> </span>sqthread-poll
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">verify</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> <span class="o">--</span><span class="n">count</span> <span class="mi">256</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span>
+</pre></div>
+</div>
+</section>
+<section id="cuda-run-gpu-benchmark">
+<h2><code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> — GPU benchmark<a class="headerlink" href="#cuda-run-gpu-benchmark" title="Link to this heading">#</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda"><span class="std std-ref">uPCIe CUDA</span></a></dt><dd><p>Backend setup, system configuration, and memory architecture.</p>
+</dd>
+<dt><a class="reference internal" href="../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API used to create queues and dispatch commands
+from CUDA kernels.</p>
+</dd>
+</dl>
+</div>
+<p>Requires the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend. All queues across all devices are driven
+by a single CUDA kernel: each CUDA block owns one NVMe queue and each thread
+within the block owns one queue slot, so <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> threads submit and reap
+commands in lock-step. The grid has <code class="docutils literal notranslate"><span class="pre">ndevs</span> <span class="pre">×</span> <span class="pre">--queues</span></code> blocks in total.</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> and <code class="docutils literal notranslate"><span class="pre">--iosize</span></code> must be powers of 2. Supported patterns are
+<code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">randread</span></code>, and <code class="docutils literal notranslate"><span class="pre">randwrite</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-run<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Run<span class="w"> </span>a<span class="w"> </span>time-bounded<span class="w"> </span>GPU<span class="w"> </span>NVMe<span class="w"> </span>I/O<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>one<span class="w"> </span>or<span class="w"> </span>more<span class="w"> </span>devices.
+All<span class="w"> </span>devices<span class="w"> </span>run<span class="w"> </span><span class="k">in</span><span class="w"> </span>parallel:<span class="w"> </span>one<span class="w"> </span>CUDA<span class="w"> </span>block<span class="w"> </span>per<span class="w"> </span>queue,<span class="w"> </span>all<span class="w"> </span>queues<span class="w"> </span>launched
+<span class="k">in</span><span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span>kernel.<span class="w"> </span>All<span class="w"> </span>devices<span class="w"> </span>must<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>LBA<span class="w"> </span>size.
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span><span class="s1">&#39;0000:01:00.1&#39;</span>,<span class="w"> </span><span class="s1">&#39;10.9.8.1.8888&#39;</span>,<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--iopattern<span class="w"> </span>STRING<span class="w">            </span><span class="p">;</span><span class="w"> </span>IO<span class="w"> </span>pattern<span class="w"> </span><span class="o">(</span>read,<span class="w"> </span>write,<span class="w"> </span>randread,<span class="w"> </span>randwrite<span class="o">)</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--nqueues<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>queues<span class="w"> </span>per<span class="w"> </span>device
+<span class="w">  </span>--qdepth<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>queue<span class="w"> </span>max<span class="w"> </span>capacity
+<span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
+<span class="w">  </span>--runtime<span class="w"> </span>NUM<span class="w">                 </span><span class="p">;</span><span class="w"> </span>Run<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>seconds
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>,<span class="w"> </span><span class="s1">&#39;fbsd&#39;</span>,<span class="w"> </span><span class="s1">&#39;macos&#39;</span>,<span class="w"> </span><span class="s1">&#39;posix&#39;</span>,<span class="w"> </span><span class="s1">&#39;windows&#39;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Example — sequential read, four queues of depth 32 on two devices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">read</span> <span class="o">--</span><span class="n">queues</span> <span class="mi">4</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+<p>Example — random write, single queue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">randwrite</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+</section>
+<section id="cuda-verify-gpu-data-integrity-check">
+<h2><code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> — GPU data integrity check<a class="headerlink" href="#cuda-verify-gpu-data-integrity-check" title="Link to this heading">#</a></h2>
+<p>Uses the same queue topology as <code class="docutils literal notranslate"><span class="pre">cuda-run</span></code>. For each queue slot the kernel
+writes a unique LBA-stamped pattern, then reads it back on the host and
+compares against the expected data. This is intended to confirm that
+<code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> results reflect correct I/O rather than silent data corruption.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-verify<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Write<span class="w"> </span>an<span class="w"> </span>LBA-stamped<span class="w"> </span>pattern<span class="w"> </span>to<span class="w"> </span>each<span class="w"> </span>device<span class="w"> </span>through<span class="w"> </span>GPU<span class="w"> </span>queues<span class="w"> </span>and<span class="w"> </span><span class="nb">read</span>
+it<span class="w"> </span>back,<span class="w"> </span>verifying<span class="w"> </span>that<span class="w"> </span>the<span class="w"> </span>data<span class="w"> </span>matches.<span class="w"> </span>Uses<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>queue<span class="w"> </span>topology
+as<span class="w"> </span>cuda-run<span class="w"> </span>so<span class="w"> </span>results<span class="w"> </span>are<span class="w"> </span>directly<span class="w"> </span>comparable.
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;/dev/nvme0n1&#39;</span>,<span class="w"> </span><span class="s1">&#39;0000:01:00.1&#39;</span>,<span class="w"> </span><span class="s1">&#39;10.9.8.1.8888&#39;</span>,<span class="w"> </span><span class="s1">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--iosize<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>bs/iosize
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--nqueues<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>queues<span class="w"> </span>per<span class="w"> </span>device
+<span class="w">  </span>--qdepth<span class="w"> </span>NUM<span class="w">                  </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">&#39;NUM&#39;</span><span class="w"> </span>as<span class="w"> </span>queue<span class="w"> </span>max<span class="w"> </span>capacity
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;linux&#39;</span>,<span class="w"> </span><span class="s1">&#39;spdk&#39;</span>,<span class="w"> </span><span class="s1">&#39;fbsd&#39;</span>,<span class="w"> </span><span class="s1">&#39;macos&#39;</span>,<span class="w"> </span><span class="s1">&#39;posix&#39;</span>,<span class="w"> </span><span class="s1">&#39;windows&#39;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">&#39;xnvmeperf --help&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">verify</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-benchmark"><code class="docutils literal notranslate"><span class="pre">run</span></code> — Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-data-integrity-check"><code class="docutils literal notranslate"><span class="pre">verify</span></code> — Data integrity check</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-run-gpu-benchmark"><code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> — GPU benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-verify-gpu-data-integrity-check"><code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> — GPU data integrity check</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
