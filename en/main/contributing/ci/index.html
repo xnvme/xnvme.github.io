@@ -554,6 +554,81 @@ integration of changes / contributions:</p>
 </ul>
 <p>These following sections provide system-setup notes and other details for the
 various <strong>CI</strong> jobs.</p>
+</section>
+<section id="containers-and-guest-images">
+<span id="sec-ci-environments"></span><h2>Containers and guest images<a class="headerlink" href="#containers-and-guest-images" title="Link to this heading">#</a></h2>
+<p>Two of the <strong>CI</strong> jobs run inside a Docker host container (set by <strong>GHA</strong>’s
+<code class="docutils literal notranslate"><span class="pre">container:</span></code> directive), and several boot a <strong>QEMU</strong> guest as part of their
+work. Both come from <a class="reference external" href="https://github.com/safl/nosi">nosi</a>, which publishes base images as <strong>OCI</strong> artifacts
+on <strong>GHCR</strong>.</p>
+<ul class="simple">
+<li><p><strong>Host containers</strong> carry the toolchain the <strong>GHA</strong> job itself uses: <strong>QEMU</strong>
+binaries, <strong>CIJOE</strong>, devbind / hugepages helpers.</p></li>
+<li><p><strong>Guest disk images</strong> are the qcow2 boot disk the in-job <strong>QEMU</strong> instance
+runs. They are pulled in-job by the <code class="docutils literal notranslate"><span class="pre">stage_nosi_guest</span></code> <strong>CIJOE</strong> script
+(invoked from <code class="docutils literal notranslate"><span class="pre">provision-using-tgz.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">provision-maas-using-tgz</span>
+<span class="pre">.yaml</span></code> right before <code class="docutils literal notranslate"><span class="pre">guest_initialize</span></code>), which talks directly to the
+<strong>OCI</strong> Distribution API via stdlib <code class="docutils literal notranslate"><span class="pre">urllib</span></code> (no <code class="docutils literal notranslate"><span class="pre">oras</span></code> CLI dependency);
+the blob digest is pinned in each <strong>CIJOE</strong> config’s <code class="docutils literal notranslate"><span class="pre">[guest_image].url</span></code>.
+The nosi guests ship with root locked and an operator account <code class="docutils literal notranslate"><span class="pre">odus</span></code>;
+<code class="docutils literal notranslate"><span class="pre">cijoe/scripts/root_unlock.py</span></code> runs right after <code class="docutils literal notranslate"><span class="pre">guest_start</span></code> to open
+root <strong>SSH</strong> so the rest of the <strong>CIJOE</strong> workflow continues as root unchanged
+(Linux uses <code class="docutils literal notranslate"><span class="pre">chpasswd</span></code> + <code class="docutils literal notranslate"><span class="pre">systemctl</span></code>, FreeBSD uses <code class="docutils literal notranslate"><span class="pre">pw</span> <span class="pre">usermod</span></code> +
+<code class="docutils literal notranslate"><span class="pre">service</span> <span class="pre">sshd</span> <span class="pre">reload</span></code>).</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-text">Per-job container + guest-image inventory</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.4%" />
+<col style="width: 34.8%" />
+<col style="width: 34.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Job</p></th>
+<th class="head"><p>Host container</p></th>
+<th class="head"><p>Guest disk image</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">(debian,</span> <span class="pre">trixie)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/ubuntu-2604-docker</span></code> (upstream QEMU + CIJOE)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">(debian,</span> <span class="pre">trixie-noiommu)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/ubuntu-2604-docker</span></code> (upstream QEMU + CIJOE)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">(freebsd,</span> <span class="pre">14)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/ubuntu-2604-docker</span></code> (upstream QEMU + CIJOE)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/freebsd-14-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-maas</span> <span class="pre">(debian,</span> <span class="pre">trixie)</span></code></p></td>
+<td><p>n/a (self-hosted MAAS runner)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-bdev_xnvme</span></code></p></td>
+<td><p>n/a (self-hosted MAAS runner)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-latency</span> <span class="pre">(linux)</span></code></p></td>
+<td><p>n/a (self-hosted MAAS runner)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-latency</span> <span class="pre">(freebsd)</span></code></p></td>
+<td><p>n/a (self-hosted MAAS runner)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/freebsd-14-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">docgen</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/ubuntu-2604-docker</span></code> (upstream QEMU + CIJOE)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>All container-hosted jobs now run on the nosi <code class="docutils literal notranslate"><span class="pre">ubuntu-2604-docker</span></code> image
+with upstream <strong>QEMU</strong>; the NVMe KV command set is supplied by
+<a class="reference external" href="https://github.com/safl/vfio-user-kvssd">vfio-user-kvssd</a> over <strong>vfio-user</strong>. The MAAS jobs run directly on
+bare-metal hardware so do not need a host container.</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -584,6 +659,7 @@ various <strong>CI</strong> jobs.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jobs">Jobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers-and-guest-images">Containers and guest images</a></li>
 </ul>
   </nav></div>
 
