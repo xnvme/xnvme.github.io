@@ -533,8 +533,9 @@ devices to uio_pci_generic or vfio-pci:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
 </pre></div>
 </div>
-<p><strong>upcie</strong> supports both <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> (no-IOMMU path) and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>
-(IOMMU-backed path). <strong>upcie-cuda</strong> requires the non-VFIO path.</p>
+<p>For the host-memory backend, bind devices to <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> for the legacy
+path or <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> for the IOMMU-backed path. The <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend still
+requires the non-VFIO path.</p>
 </section>
 <section id="privileges">
 <h3>Privileges<a class="headerlink" href="#privileges" title="Link to this heading">#</a></h3>
@@ -545,30 +546,6 @@ for DMA.</p></li>
 <li><p>Accessing VFIO device nodes and writing PCI config space via sysfs to
 enable Bus Master when needed.</p></li>
 </ol>
-</section>
-</section>
-<section id="dual-backend-operation">
-<span id="sec-backends-upcie-dual"></span><h2>Dual-Backend Operation<a class="headerlink" href="#dual-backend-operation" title="Link to this heading">#</a></h2>
-<p>The same PCIe device can be opened simultaneously with both <strong>upcie</strong> and
-<strong>upcie-cuda</strong>. This lets one handle send I/O through host-memory buffers while
-another sends I/O through GPU device-memory buffers, both going to the same NVMe
-controller. Opening order does not matter; the controller is torn down only when
-the last handle across both backends is closed. Attempting to open the same URI
-with an unrelated backend while either uPCIe backend holds it returns <code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code>.</p>
-<p>Before opening both handles, complete the system configuration for each backend:
-hugepages for <a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> and the additional CUDA and kernel
-requirements for <a class="reference internal" href="cuda.html#sec-backends-upcie-cuda"><span class="std std-ref">uPCIe CUDA</span></a>.</p>
-<section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h3>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">host_opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_opts_default</span><span class="p">();</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">cuda_opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_opts_default</span><span class="p">();</span>
-<span class="n">host_opts</span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;upcie&quot;</span><span class="p">;</span>
-<span class="n">cuda_opts</span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;upcie-cuda&quot;</span><span class="p">;</span>
-
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">host_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">host_opts</span><span class="p">);</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">cuda_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cuda_opts</span><span class="p">);</span>
-</pre></div>
-</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -602,10 +579,6 @@ requirements for <a class="reference internal" href="cuda.html#sec-backends-upci
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-attachment">Driver Attachment</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#privileges">Privileges</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-backend-operation">Dual-Backend Operation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
 </ul>
 </li>
 </ul>
