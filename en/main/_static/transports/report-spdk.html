@@ -1,0 +1,1957 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIJOE: Workflow State Report</title>
+<!-- TODO: once done, then inline this such that it works "offline" -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+<!-- is syntax highlighting needed?
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+<style>
+.hljs{display:block;overflow-x:auto;padding:0.5em;background:#002b36;color:#839496}.hljs-comment,.hljs-quote{color:#586e75}.hljs-keyword,.hljs-selector-tag,.hljs-addition{color:#859900}.hljs-number,.hljs-string,.hljs-meta .hljs-meta-string,.hljs-literal,.hljs-doctag,.hljs-regexp{color:#2aa198}.hljs-title,.hljs-section,.hljs-name,.hljs-selector-id,.hljs-selector-class{color:#268bd2}.hljs-attribute,.hljs-attr,.hljs-variable,.hljs-template-variable,.hljs-class .hljs-title,.hljs-type{color:#b58900}.hljs-symbol,.hljs-bullet,.hljs-subst,.hljs-meta,.hljs-meta .hljs-keyword,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-link{color:#cb4b16}.hljs-built_in,.hljs-deletion{color:#dc322f}.hljs-formula{background:#073642}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}
+</style>
+-->
+<style>
+div.image {
+  width:100px;
+  height:100px;
+  background-image:url(https://cijoe.readthedocs.io/en/latest/_images/logo.png);
+}
+
+.jumbotron-fluid {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.jumbotron:last-of-type {
+  margin-bottom: 0;
+}
+
+.jumbotron:last-of-type p {
+  margin-bottom: 0;
+}
+
+.jumbotron .btn-group {
+  top: 1.5rem;
+}
+
+.btn-primary {
+  border-color: #0062cc;
+}
+
+.ansi2html-content { display: inline; white-space: pre-wrap; word-wrap: break-word; }
+
+.list-steps .list-group-item {
+  padding: 0.1rem;
+}
+
+.nav-item > a.nav-link {
+  border: 1px solid transparent;
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+.nav-item > a.nav-link:hover {
+  background-color: white;
+  background-opacity: 0.5;
+}
+.workflow-documentation {
+  padding: 0rem;
+}
+.workflow-configuration {
+  padding: 0rem;
+}
+
+.runlog {
+  background: #002b36;
+  color: #839496;
+  padding: 1rem;
+  margin-top:0;
+  margin-bottom: 0;
+}
+
+.runlog > code {
+  margin: 0;
+}
+
+.cmd_output {
+  border-top: 1px solid;
+}
+
+[id^="CONTENT_TESTREPORT"]:has(.btn-success.selected) .list-group-item:not(.list-group-item-success) {
+  display: none;
+}
+[id^="CONTENT_TESTREPORT"]:has(.btn-danger.selected) .list-group-item:not(.list-group-item-danger) {
+  display: none;
+}
+[id^="CONTENT_TESTREPORT"]:has(.btn-secondary.selected) .list-group-item:not(.list-group-item-secondary) {
+  display: none;
+}
+[id^="CONTENT_TESTREPORT"] .btn.selected:not(.btn-primary) {
+  box-shadow: var(--bs-btn-focus-box-shadow);
+}
+</style>
+<script>
+function selectFilter(event) {
+  document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+  event.target.classList.add('selected');
+}
+</script>
+</head>
+<body>
+
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">&nbsp;</div>
+  </div>
+
+  <div class="container"> <!-- BEGIN: First part: status, configuration, documentation -->
+    <div class="card mb-3 border-primary">
+      <div class="card-header">
+        <a href="https://cijoe.readthedocs.io/">
+          <img class="card-img-top" src="https://cijoe.readthedocs.io/en/latest/_images/logo.png" alt="Overview" style="width: 18rem;">
+        </a>
+      </div>
+
+      <h3 class="card-header ">Workflow Report</h3>
+
+      <div class="card-body">
+        <div class="container border rounded" style="padding: 1rem;">
+          <p>
+          This is a HTML-ification of Workflow state (<a href="workflow.state">workflow.state</a>) and
+          the associated files in the workflow <a href="./">output</a> directory.
+          Below is the <code>doc</code> section of the workflow (<code>.workflow</code> file).
+          </p>
+          <hr />
+          <pre class="workflow-documentation">Bring up the SPDK NVMe-over-TCP target, probe it, and tear it down.
+
+Suitable for developer use: invoke individual steps by name, e.g.
+``cijoe workflows/transports-tcp-spdk.yaml nvme_target_start`` to bring up
+the target, and ``cijoe workflows/transports-tcp-spdk.yaml nvme_target_stop``
+to tear it down. Running the workflow without selecting steps performs the
+full sequence (start, probe, stop) and is what docgen captures.</pre>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <ul class="nav nav-tabs" id="tab-content" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="status-tab" data-bs-toggle="tab"
+              data-bs-target="#status-tab-pane" type="button" role="tab" aria-controls="status-tab-pane"
+              aria-selected="true">Status</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="artifacts-tab" data-bs-toggle="tab"
+              data-bs-target="#artifacts-tab-pane" type="button" role="tab" aria-controls="artifacts-tab-pane"
+              aria-selected="false">Artifacts</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="config-tab" data-bs-toggle="tab"
+              data-bs-target="#config-tab-pane" type="button" role="tab" aria-controls="config-tab-pane"
+              aria-selected="false">Configuration</button>
+          </li>
+          <!--
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="doc-tab" data-bs-toggle="tab"
+              data-bs-target="#doc-tab-pane" type="button" role="tab" aria-controls="doc-tab-pane"
+              aria-selected="false">Documentation</button>
+          </li>
+          -->
+        </ul>
+        <div class="tab-content border border-top-0 rounded-bottom" id="tab-content">
+          <div class="tab-pane show active" id="status-tab-pane" role="tabpanel" aria-labelledby="status-tab" tabindex="0">
+
+            <div class="container" style="padding: 1rem;">
+              The workflow started on 29-06-2026, 13:35:45, status on the steps
+              is provided below.
+            </div>
+
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td class="table-success w-25"><button class="btn btn-success">Passed: 3</button></td>
+                  <td class="table-danger w-25"><button class="btn btn-danger">Failed: 0</button></td>
+                  <td class="table-secondary w-25"><button class="btn btn-secondary">Skipped: 0</button></td>
+                  <td class="table-info w-25">
+                    <button class="btn btn-primary bi bi-clock-history" disabled="disabled">
+                    Elapsed: 15.09 sec
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane" id="artifacts-tab-pane" role="tabpanel" aria-labelledby="artifacts-tab" tabindex="0">
+            <div class="card-body">
+              <p>
+                If a workflow step (script / run) or test produced any artifacts, then they are
+                listed here.
+              </p>
+              <hr />
+              <ul class="workflow-artifacts">
+                
+              </ul>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">
+            <div class="card-body">
+              <p>
+                This is the configuration (<code>.config</code> file) with any
+                variable-placeholders such as <code>{{ local.env.HOME }}</code> filled out.
+              </p>
+              <hr />
+              <pre class="workflow-configuration">build:
+  compiler:
+    bin: gcc
+cijoe:
+  transport:
+    odus:
+      hostname: localhost
+      password: odus.321
+      port: 4200
+      username: odus
+    root:
+      hostname: localhost
+      password: root
+      port: 4200
+      username: root
+devices:
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - scc
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme0n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - scc
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng0n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - scc
+  - write_zeroes
+  - ctrlr
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:01:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - zns
+  - zrwa
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme1n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - zns
+  - zrwa
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng1n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - zns
+  - zrwa
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:02:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - kvs
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng2n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - kvs
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:03:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - scc
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme3n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - scc
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng3n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - scc
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:04:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - scc
+  - large_mdts
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme4n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - scc
+  - large_mdts
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng4n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - scc
+  - large_mdts
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:05:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - scc
+  - fdp
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme5n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - scc
+  - fdp
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng5n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - scc
+  - fdp
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:06:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - pi1
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme6n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - pi1
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng6n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - pi1
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:07:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - pi2
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme7n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - pi2
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng7n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - pi2
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:08:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - pi3
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme8n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - pi3
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng8n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - pi3
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: &#39;0000:09:00.0&#39;
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - pi1_ex
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme9n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - pi1_ex
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng9n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - pi1_ex
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: 0000:0a:00.0
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - pi1_pif2
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/nvme10n1
+- driver_attachment: kernel
+  labels:
+  - dev
+  - cdev
+  - nvm
+  - pi1_pif2
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /dev/ng10n1
+- driver_attachment: userspace
+  labels:
+  - dev
+  - pcie
+  - nvm
+  - pi1_pif2
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: 0000:0b:00.0
+- driver_attachment: kernel
+  labels:
+  - ctrlr
+  - cdev
+  - log_health_ns
+  - idfy_cs
+  nsid: 0
+  uri: /dev/nvme0
+- device_path: /dev/nvme3n1
+  driver_attachment: userspace
+  labels:
+  - dev
+  - fabrics
+  - nvm
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  pcie_id: &#39;0000:04:00.0&#39;
+  subnqn: nqn.2019-08.org.qemu:beef0003
+  uri: 127.0.0.1:4420
+- driver_attachment: kernel
+  labels:
+  - file
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: /tmp/xnvme-testfile.bin
+- driver_attachment: kernel
+  labels:
+  - dev
+  - bdev
+  - nvm
+  - ramdisk
+  - write_zeroes
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  uri: 2GB
+fio:
+  bin: fio
+  engines:
+    io_uring:
+      type: builtin
+    io_uring_cmd:
+      type: builtin
+    libaio:
+      type: builtin
+    spdk_bdev:
+      path: /opt/aux/spdk_bdev
+      type: external_preload
+    spdk_nvme:
+      path: /opt/aux/spdk_nvme
+      type: external_preload
+    xnvme:
+      type: builtin
+  repository:
+    path: /root/git/fio
+    remote: https://github.com/axboe/fio.git
+    tag: fio-3.38
+guest_image:
+  url: https://ghcr.io/v2/safl/nosi/debian-13-headless/blobs/sha256:1cdbf24c081516500735ce7f3f96e3212a472fb0528276e23c939035791900dc
+hugetlbfs:
+  mount_point: /mnt/huge
+  nr_hugepages: &#39;1024&#39;
+kvssd:
+  binary: /github/home/guests/vfu_kvssd
+  socket: /tmp/vfu_kvssd.sock
+  url: https://github.com/safl/vfio-user-kvssd/releases/download/v0.1.11/vfu_kvssd-0.1.11-x86_64-linux
+linux:
+  repository:
+    path: /github/home/git/linux
+    remote: https://github.com/torvalds/linux.git
+    tag: v6.12
+os:
+  name: debian
+  version: trixie
+qemu:
+  build:
+    prefix: /github/home/opt/qemu
+  default_guest: trixie_amd64
+  default_systemimage: debian-13-x86_64
+  guests:
+    trixie_amd64:
+      path: /github/home/guests/debian-trixie-amd64
+      system_args:
+        kwa:
+          accel: kvm
+          cpu: host
+          m: 6G
+          smp: 4
+        raw: &#39;-M &#34;type=q35,kernel_irqchip=split&#34; -device &#34;intel-iommu,pt=on,intremap=on,caching-mode=on&#34; &#39;
+        tcp_forward:
+          guest: 22
+          host: 4200
+      system_label: x86_64
+  img_bin: qemu-img
+  repository:
+    path: /github/home/git/qemu
+    remote: https://github.com/qemu/qemu.git
+    tag: v9.0.0
+  systems:
+    x86_64:
+      bin: qemu-system-x86_64
+xnvme:
+  build:
+    type: debug
+  repository:
+    path: /github/home/git/xnvme
+    remote: https://github.com/xnvme/xnvme.git
+    sync:
+      branch: wip
+      remote_alias: guest
+      remote_path: /root/git/xnvme
+</pre>
+            </div>
+          </div>
+
+          <!--
+          <div class="tab-pane" id="doc-tab-pane" role="tabpanel" aria-labelledby="doc-tab" tabindex="0">
+            <div class="card-body">
+              <p>
+                This is the <code>doc</code> section of the workflow (<code>.workflow</code> file).
+              </p>
+              <hr />
+              <pre class="workflow-documentation">Bring up the SPDK NVMe-over-TCP target, probe it, and tear it down.
+
+Suitable for developer use: invoke individual steps by name, e.g.
+``cijoe workflows/transports-tcp-spdk.yaml nvme_target_start`` to bring up
+the target, and ``cijoe workflows/transports-tcp-spdk.yaml nvme_target_stop``
+to tear it down. Running the workflow without selecting steps performs the
+full sequence (start, probe, stop) and is what docgen captures.</pre>
+            </div>
+          </div>
+          -->
+        </div>
+      </div>
+
+      <!-- workflow-steps BEGIN -->
+      <h3 class="card-header ">
+        Steps
+      </h3>
+      <div class="card-body" id="steps">
+
+        <!-- workflow-step BEGIN -->
+        
+        
+          
+          
+        
+
+        <!-- workflow-step-buttons BEGIN -->
+        <ul class="list-group list-steps">
+          <li class="list-group-item list-group-item-success">
+
+            <!-- workflow-step-buttons-left BEGIN -->
+            <button class="btn btn-success" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#CONTENT_DESCRIPTION_001_nvme_target_start"
+                  aria-controls="CONTENT_DESCRIPTION_001_nvme_target_start"
+                  aria-expanded="false">
+              <span style="font-family: monospace;">
+                <b>nvme_target_start</b>
+                
+                (nvme_target_start)
+                
+              </span>
+            </button>
+            <!-- workflow-step-buttons-left END -->
+
+            <!-- workflow-step-buttons-right BEGIN -->
+            <div class="btn-group float-end" role="group">
+              <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                <span style="font-family: monospace;"
+                      title="Elapsed Wall-Clock time in seconds"
+                      data-bs-original-title="Tooltip on right">
+                  8.36 sec
+                </span>
+              </button>
+
+              <button class="btn btn-primary bi bi-file-earmark-ruled" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_TESTREPORT_001_nvme_target_start"
+                      aria-controls="CONTENT_TESTREPORT_001_nvme_target_start"
+                      aria-expanded="false"
+                      disabled="disabled"
+                      >&nbsp;testreport</button>
+
+              <button class="btn btn-primary bi bi-file-earmark-code" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_RUNLOG_001_nvme_target_start"
+                      aria-controls="CONTENT_RUNLOG_001_nvme_target_start"
+                      aria-expanded="false"
+                      
+                      >&nbsp;runlog</button>
+
+              <button class="btn btn-primary bi bi-filetype-yml" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_YAML_001_nvme_target_start"
+                      aria-controls="CONTENT_YAML_001_nvme_target_start"
+                      aria-expanded="false" />
+            </div>
+            <!-- workflow-step-buttons-right END -->
+
+          </li>
+        </ul>
+        <!-- workflow-step-buttons END -->
+
+        <!-- workflow-step-content BEGIN -->
+        <div id="CONTENT_001_nvme_target_start">
+
+          <!-- workflow-step-content-description BEGIN -->
+          <div class="collapse" id="CONTENT_DESCRIPTION_001_nvme_target_start" data-bs-parent="#CONTENT_001_nvme_target_start">
+            <div class="card-header">
+              <p>
+              Steps <code>uses</code> <b>scripts</b>. A description of the <b>script</b> used by
+              the current step is provided below. The description is extracted from the docstring
+              of the script and provided here in verbatim / as-is.
+              <p>
+              <hr />
+              <pre class="runlog cmd"><code>
+Bring up an NVMe TCP transport target
+=====================================
+
+Configure an NVMe target listening on a TCP transport. Two providers are
+supported via ``--provider``:
+
+* ``spdk`` (default): use the SPDK ``nvmf_tgt`` application driven through
+  ``rpc.py`` to export a locally attached PCIe NVMe device.
+* ``linux``: use the Linux kernel ``nvmet`` driver through configfs to
+  export an existing ``/dev/nvmeXn1``.
+
+In both cases the device to export is read from the cijoe config entry
+labelled ``fabrics`` (legacy label name).
+
+Retargetable: True
+</code></pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-description END -->
+
+          <!-- workflow-step-content-yaml BEGIN -->
+          <div class="collapse" id="CONTENT_YAML_001_nvme_target_start" data-bs-parent="#CONTENT_001_nvme_target_start">
+            <div class="card-body">
+              <pre>{&#39;description&#39;: &#39;\n&#39;
+                &#39;Bring up an NVMe TCP transport target\n&#39;
+                &#39;=====================================\n&#39;
+                &#39;\n&#39;
+                &#39;Configure an NVMe target listening on a TCP transport. Two &#39;
+                &#39;providers are\n&#39;
+                &#39;supported via ``--provider``:\n&#39;
+                &#39;\n&#39;
+                &#39;* ``spdk`` (default): use the SPDK ``nvmf_tgt`` application &#39;
+                &#39;driven through\n&#39;
+                &#39;  ``rpc.py`` to export a locally attached PCIe NVMe device.\n&#39;
+                &#39;* ``linux``: use the Linux kernel ``nvmet`` driver through &#39;
+                &#39;configfs to\n&#39;
+                &#39;  export an existing ``/dev/nvmeXn1``.\n&#39;
+                &#39;\n&#39;
+                &#39;In both cases the device to export is read from the cijoe &#39;
+                &#39;config entry\n&#39;
+                &#39;labelled ``fabrics`` (legacy label name).\n&#39;
+                &#39;\n&#39;
+                &#39;Retargetable: True\n&#39;,
+ &#39;extras&#39;: {&#39;runlog&#39;: {&#39;cmd_01&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_01.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740145.6101198,
+                                            &#39;cmd&#39;: &#39;modprobe nvme_tcp&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.14207816123962402,
+                                            &#39;end&#39;: 1782740145.752198,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_01.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_01.state&#39;)},
+                       &#39;cmd_02&#39;: {&#39;output&#39;: &#39;0000:01:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:02:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:03:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:04:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:05:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:06:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:07:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:08:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:09:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:0a:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:0b:00.0 (1b36 0010): nvme -&gt; &#39;
+                                            &#39;vfio-pci\n&#39;
+                                            &#39;0000:00:02.0 (1af4 1001): Active &#39;
+                                            &#39;mountpoints on /dev/vda, so not &#39;
+                                            &#39;binding\n&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_02.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740145.752905,
+                                            &#39;cmd&#39;: &#39;xnvme-driver&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 2.851290225982666,
+                                            &#39;end&#39;: 1782740148.604195,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_02.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_02.state&#39;)},
+                       &#39;cmd_03&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_03.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740148.6048646,
+                                            &#39;cmd&#39;: &#39;pkill -f nvmf_tgt || true&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.15198731422424316,
+                                            &#39;end&#39;: 1782740148.756852,
+                                            &#39;err&#39;: -1,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_03.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_03.state&#39;)},
+                       &#39;cmd_04&#39;: {&#39;output&#39;: &#39;make: Entering directory &#39;
+                                            &#34;&#39;/root/git/xnvme/subprojects/spdk/app/nvmf_tgt&#39;\n&#34;
+                                            &#39;  CC nvmf_tgt/nvmf_main.o\n&#39;
+                                            &#39;  LINK nvmf_tgt\n&#39;
+                                            &#39;make: Leaving directory &#39;
+                                            &#34;&#39;/root/git/xnvme/subprojects/spdk/app/nvmf_tgt&#39;\n&#34;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_04.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740148.7575946,
+                                            &#39;cmd&#39;: &#39;test -x &#39;
+                                                   &#39;/root/git/xnvme/subprojects/spdk/build/bin/nvmf_tgt &#39;
+                                                   &#39;|| make -C &#39;
+                                                   &#39;/root/git/xnvme/subprojects/spdk/app/nvmf_tgt&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.5452232360839844,
+                                            &#39;end&#39;: 1782740149.3028178,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_04.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_04.state&#39;)},
+                       &#39;cmd_05&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_05.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740149.303555,
+                                            &#39;cmd&#39;: &#39;(nohup &#39;
+                                                   &#39;/root/git/xnvme/subprojects/spdk/build/bin/nvmf_tgt &#39;
+                                                   &#39;-m [1] &gt; nvmf_tgt.out 2&gt; &#39;
+                                                   &#39;nvmf_tgt.err &lt; /dev/null &#39;
+                                                   &#39;&amp;)&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.1271498203277588,
+                                            &#39;end&#39;: 1782740149.4307048,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_05.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_05.state&#39;)},
+                       &#39;cmd_06&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_06.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740149.4314017,
+                                            &#39;cmd&#39;: &#39;sleep 3&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 3.1510508060455322,
+                                            &#39;end&#39;: 1782740152.5824525,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_06.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_06.state&#39;)},
+                       &#39;cmd_07&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_07.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740152.5831568,
+                                            &#39;cmd&#39;: &#39;/root/git/xnvme/subprojects/spdk/scripts/rpc.py &#39;
+                                                   &#39;nvmf_create_transport -t &#39;
+                                                   &#39;tcp -u 16384 -m 8 -c 8192&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.22874999046325684,
+                                            &#39;end&#39;: 1782740152.8119068,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_07.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_07.state&#39;)},
+                       &#39;cmd_08&#39;: {&#39;output&#39;: &#39;Nvme0n1\n&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_08.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740152.8127084,
+                                            &#39;cmd&#39;: &#39;/root/git/xnvme/subprojects/spdk/scripts/rpc.py &#39;
+                                                   &#39;bdev_nvme_attach_controller &#39;
+                                                   &#39;-b Nvme0 -t PCIe -a &#39;
+                                                   &#39;0000:04:00.0 -U&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.5071594715118408,
+                                            &#39;end&#39;: 1782740153.3198678,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_08.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_08.state&#39;)},
+                       &#39;cmd_09&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_09.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740153.320485,
+                                            &#39;cmd&#39;: &#39;/root/git/xnvme/subprojects/spdk/scripts/rpc.py &#39;
+                                                   &#39;nvmf_create_subsystem &#39;
+                                                   &#39;nqn.2019-08.org.qemu:beef0003 &#39;
+                                                   &#39;-a -s SPDK00000000000001 &#39;
+                                                   &#39;-d Controller1 -p&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.21319246292114258,
+                                            &#39;end&#39;: 1782740153.5336776,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_09.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_09.state&#39;)},
+                       &#39;cmd_10&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_10.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740153.534762,
+                                            &#39;cmd&#39;: &#39;/root/git/xnvme/subprojects/spdk/scripts/rpc.py &#39;
+                                                   &#39;nvmf_subsystem_add_ns &#39;
+                                                   &#39;nqn.2019-08.org.qemu:beef0003 &#39;
+                                                   &#39;Nvme0n1&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.21261978149414062,
+                                            &#39;end&#39;: 1782740153.7473817,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_10.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_10.state&#39;)},
+                       &#39;cmd_11&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_11.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740153.7481534,
+                                            &#39;cmd&#39;: &#39;/root/git/xnvme/subprojects/spdk/scripts/rpc.py &#39;
+                                                   &#39;nvmf_subsystem_add_listener &#39;
+                                                   &#39;nqn.2019-08.org.qemu:beef0003 &#39;
+                                                   &#39;-t tcp -a 127.0.0.1 -s &#39;
+                                                   &#39;4420 -f ipv4&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.21732068061828613,
+                                            &#39;end&#39;: 1782740153.9654741,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_11.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_11.state&#39;)}}},
+ &#39;id&#39;: &#39;001_nvme_target_start&#39;,
+ &#39;name&#39;: &#39;nvme_target_start&#39;,
+ &#39;nr&#39;: 1,
+ &#39;status&#39;: {&#39;elapsed&#39;: 8.358574628829956,
+            &#39;failed&#39;: 0,
+            &#39;passed&#39;: 1,
+            &#39;skipped&#39;: 0,
+            &#39;started&#39;: 1782740145.6077151},
+ &#39;uses&#39;: &#39;nvme_target_start&#39;,
+ &#39;with&#39;: {&#39;provider&#39;: &#39;spdk&#39;}}</pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-yaml END -->
+
+          <!-- workflow-step-content-runlog BEGIN -->
+          
+          <div class="collapse" id="CONTENT_RUNLOG_001_nvme_target_start" data-bs-parent="#CONTENT_001_nvme_target_start">
+            <div class="card-body" style="background-color: gray;">
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_01
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.14 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_01.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('modprobe nvme_tcp')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_01.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ modprobe nvme_tcp</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_02
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      2.85 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_02.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('xnvme-driver')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_02.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ xnvme-driver</code></pre>
+            <pre class="runlog cmd_output"><code>0000:01:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:02:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:03:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:04:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:05:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:06:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:07:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:08:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:09:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:0a:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:0b:00.0 (1b36 0010): nvme -&gt; vfio-pci
+0000:00:02.0 (1af4 1001): Active mountpoints on /dev/vda, so not binding
+</code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-danger">
+                <button class="btn btn-danger bi bi-file-code" type="button">
+                  cmd_03
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_03.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('pkill -f nvmf_tgt || true')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_03.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ pkill -f nvmf_tgt || true</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_04
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.55 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_04.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('test -x /root/git/xnvme/subprojects/spdk/build/bin/nvmf_tgt || make -C /root/git/xnvme/subprojects/spdk/app/nvmf_tgt')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_04.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ test -x /root/git/xnvme/subprojects/spdk/build/bin/nvmf_tgt || make -C /root/git/xnvme/subprojects/spdk/app/nvmf_tgt</code></pre>
+            <pre class="runlog cmd_output"><code>make: Entering directory &#39;/root/git/xnvme/subprojects/spdk/app/nvmf_tgt&#39;
+  CC nvmf_tgt/nvmf_main.o
+  LINK nvmf_tgt
+make: Leaving directory &#39;/root/git/xnvme/subprojects/spdk/app/nvmf_tgt&#39;
+</code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_05
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.13 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_05.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('(nohup /root/git/xnvme/subprojects/spdk/build/bin/nvmf_tgt -m [1] &gt; nvmf_tgt.out 2&gt; nvmf_tgt.err &lt; /dev/null &amp;)')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_05.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ (nohup /root/git/xnvme/subprojects/spdk/build/bin/nvmf_tgt -m [1] &gt; nvmf_tgt.out 2&gt; nvmf_tgt.err &lt; /dev/null &amp;)</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_06
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      3.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_06.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('sleep 3')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_06.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ sleep 3</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_07
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.23 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_07.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('/root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_create_transport -t tcp -u 16384 -m 8 -c 8192')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_07.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ /root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_create_transport -t tcp -u 16384 -m 8 -c 8192</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_08
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.51 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_08.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('/root/git/xnvme/subprojects/spdk/scripts/rpc.py bdev_nvme_attach_controller -b Nvme0 -t PCIe -a 0000:04:00.0 -U')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_08.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ /root/git/xnvme/subprojects/spdk/scripts/rpc.py bdev_nvme_attach_controller -b Nvme0 -t PCIe -a 0000:04:00.0 -U</code></pre>
+            <pre class="runlog cmd_output"><code>Nvme0n1
+</code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_09
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.21 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_09.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('/root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_create_subsystem nqn.2019-08.org.qemu:beef0003 -a -s SPDK00000000000001 -d Controller1 -p')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_09.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ /root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_create_subsystem nqn.2019-08.org.qemu:beef0003 -a -s SPDK00000000000001 -d Controller1 -p</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_10
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.21 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_10.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('/root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_subsystem_add_ns nqn.2019-08.org.qemu:beef0003 Nvme0n1')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_10.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ /root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_subsystem_add_ns nqn.2019-08.org.qemu:beef0003 Nvme0n1</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_11
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.22 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_11.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('/root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_subsystem_add_listener nqn.2019-08.org.qemu:beef0003 -t tcp -a 127.0.0.1 -s 4420 -f ipv4')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/001_nvme_target_start/cmd_11.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ /root/git/xnvme/subprojects/spdk/scripts/rpc.py nvmf_subsystem_add_listener nqn.2019-08.org.qemu:beef0003 -t tcp -a 127.0.0.1 -s 4420 -f ipv4</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            </div>
+          </div>
+          
+          <!-- workflow-step-content-runlog END -->
+
+          <!-- workflow-step-content-testrunner BEGIN -->
+          
+          <!-- workflow-step-content-testrunner END -->
+
+        </div>
+        <!-- workflow-step-content END -->
+
+        
+        
+          
+          
+        
+
+        <!-- workflow-step-buttons BEGIN -->
+        <ul class="list-group list-steps">
+          <li class="list-group-item list-group-item-success">
+
+            <!-- workflow-step-buttons-left BEGIN -->
+            <button class="btn btn-success" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#CONTENT_DESCRIPTION_002_nvme_target_probe"
+                  aria-controls="CONTENT_DESCRIPTION_002_nvme_target_probe"
+                  aria-expanded="false">
+              <span style="font-family: monospace;">
+                <b>nvme_target_probe</b>
+                
+                (nvme_target_probe)
+                
+              </span>
+            </button>
+            <!-- workflow-step-buttons-left END -->
+
+            <!-- workflow-step-buttons-right BEGIN -->
+            <div class="btn-group float-end" role="group">
+              <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                <span style="font-family: monospace;"
+                      title="Elapsed Wall-Clock time in seconds"
+                      data-bs-original-title="Tooltip on right">
+                  6.48 sec
+                </span>
+              </button>
+
+              <button class="btn btn-primary bi bi-file-earmark-ruled" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_TESTREPORT_002_nvme_target_probe"
+                      aria-controls="CONTENT_TESTREPORT_002_nvme_target_probe"
+                      aria-expanded="false"
+                      disabled="disabled"
+                      >&nbsp;testreport</button>
+
+              <button class="btn btn-primary bi bi-file-earmark-code" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_RUNLOG_002_nvme_target_probe"
+                      aria-controls="CONTENT_RUNLOG_002_nvme_target_probe"
+                      aria-expanded="false"
+                      
+                      >&nbsp;runlog</button>
+
+              <button class="btn btn-primary bi bi-filetype-yml" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_YAML_002_nvme_target_probe"
+                      aria-controls="CONTENT_YAML_002_nvme_target_probe"
+                      aria-expanded="false" />
+            </div>
+            <!-- workflow-step-buttons-right END -->
+
+          </li>
+        </ul>
+        <!-- workflow-step-buttons END -->
+
+        <!-- workflow-step-content BEGIN -->
+        <div id="CONTENT_002_nvme_target_probe">
+
+          <!-- workflow-step-content-description BEGIN -->
+          <div class="collapse" id="CONTENT_DESCRIPTION_002_nvme_target_probe" data-bs-parent="#CONTENT_002_nvme_target_probe">
+            <div class="card-header">
+              <p>
+              Steps <code>uses</code> <b>scripts</b>. A description of the <b>script</b> used by
+              the current step is provided below. The description is extracted from the docstring
+              of the script and provided here in verbatim / as-is.
+              <p>
+              <hr />
+              <pre class="runlog cmd"><code>
+Probe a running NVMe TCP transport target
+=========================================
+
+Issue a discovery against a listener brought up by ``nvme_target_start`` and
+print basic information about the exported namespace. Used as the check step
+between ``nvme_target_start`` and ``nvme_target_stop`` in the transport demo
+workflows.
+
+Retargetable: True
+</code></pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-description END -->
+
+          <!-- workflow-step-content-yaml BEGIN -->
+          <div class="collapse" id="CONTENT_YAML_002_nvme_target_probe" data-bs-parent="#CONTENT_002_nvme_target_probe">
+            <div class="card-body">
+              <pre>{&#39;description&#39;: &#39;\n&#39;
+                &#39;Probe a running NVMe TCP transport target\n&#39;
+                &#39;=========================================\n&#39;
+                &#39;\n&#39;
+                &#39;Issue a discovery against a listener brought up by &#39;
+                &#39;``nvme_target_start`` and\n&#39;
+                &#39;print basic information about the exported namespace. Used as &#39;
+                &#39;the check step\n&#39;
+                &#39;between ``nvme_target_start`` and ``nvme_target_stop`` in the &#39;
+                &#39;transport demo\n&#39;
+                &#39;workflows.\n&#39;
+                &#39;\n&#39;
+                &#39;Retargetable: True\n&#39;,
+ &#39;extras&#39;: {&#39;runlog&#39;: {&#39;cmd_01&#39;: {&#39;output&#39;: &#39;\n&#39;
+                                            &#39;Discovery Log Number of Records &#39;
+                                            &#39;1, Generation counter 1\n&#39;
+                                            &#39;=====Discovery Log Entry 0======\n&#39;
+                                            &#39;trtype:  tcp\n&#39;
+                                            &#39;adrfam:  ipv4\n&#39;
+                                            &#39;subtype: nvme subsystem\n&#39;
+                                            &#39;treq:    not required\n&#39;
+                                            &#39;portid:  0\n&#39;
+                                            &#39;trsvcid: 4420\n&#39;
+                                            &#39;subnqn:  &#39;
+                                            &#39;nqn.2019-08.org.qemu:beef0003\n&#39;
+                                            &#39;traddr:  127.0.0.1\n&#39;
+                                            &#39;eflags:  none\n&#39;
+                                            &#39;sectype: none\n&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_01.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740153.96908,
+                                            &#39;cmd&#39;: &#39;nvme discover -t tcp -a &#39;
+                                                   &#39;127.0.0.1 -s 4420&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.16835737228393555,
+                                            &#39;end&#39;: 1782740154.1374373,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_01.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_01.state&#39;)},
+                       &#39;cmd_02&#39;: {&#39;output&#39;: &#39;xnvme_cli_enumeration:\n&#39;
+                                            &#34;  - {uri: &#39;127.0.0.1:4420&#39;, &#34;
+                                            &#39;dtype: 0x2, nsid: 0x1, csi: 0x0, &#39;
+                                            &#34;kernel_driver: &#39;&#39;, subnqn: &#34;
+                                            &#34;&#39;nqn.2019-08.org.qemu:beef0003&#39;}\n&#34;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_02.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740154.13801,
+                                            &#39;cmd&#39;: &#39;xnvme enum --uri &#39;
+                                                   &#39;127.0.0.1:4420&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.44761085510253906,
+                                            &#39;end&#39;: 1782740154.5856209,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_02.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_02.state&#39;)},
+                       &#39;cmd_03&#39;: {&#39;output&#39;: &#39;xnvme_dev:\n&#39;
+                                            &#39;  xnvme_ident:\n&#39;
+                                            &#34;    uri: &#39;127.0.0.1:4420&#39;\n&#34;
+                                            &#39;    dtype: 0x2\n&#39;
+                                            &#39;    nsid: 0x1\n&#39;
+                                            &#39;    csi: 0x0\n&#39;
+                                            &#34;    kernel_driver: &#39;&#39;\n&#34;
+                                            &#39;    subnqn: &#39;
+                                            &#34;&#39;nqn.2019-08.org.qemu:beef0003&#39;\n&#34;
+                                            &#39;  xnvme_be:\n&#39;
+                                            &#34;    dev: {id: &#39;spdk&#39;}\n&#34;
+                                            &#34;    admin: {id: &#39;spdk&#39;}\n&#34;
+                                            &#34;    sync: {id: &#39;spdk&#39;}\n&#34;
+                                            &#34;    async: {id: &#39;spdk&#39;}\n&#34;
+                                            &#34;    mem: {id: &#39;spdk&#39;}\n&#34;
+                                            &#34;    attr: {name: &#39;spdk&#39;, descr: &#34;
+                                            &#34;&#39;SPDK userspace NVMe driver&#39;, &#34;
+                                            &#39;caps: 0xe0}\n&#39;
+                                            &#39;  xnvme_opts:\n&#39;
+                                            &#34;    be: &#39;spdk&#39;\n&#34;
+                                            &#34;    mem: &#39;spdk&#39;\n&#34;
+                                            &#34;    dev: &#39;linux&#39;\n&#34;
+                                            &#34;    admin: &#39;spdk&#39;\n&#34;
+                                            &#34;    sync: &#39;spdk&#39;\n&#34;
+                                            &#34;    async: &#39;spdk&#39;\n&#34;
+                                            &#39;  xnvme_geo:\n&#39;
+                                            &#39;    type: XNVME_GEO_CONVENTIONAL\n&#39;
+                                            &#39;    npugrp: 1\n&#39;
+                                            &#39;    npunit: 1\n&#39;
+                                            &#39;    nzone: 1\n&#39;
+                                            &#39;    nsect: 2097152\n&#39;
+                                            &#39;    nbytes: 4096\n&#39;
+                                            &#39;    nbytes_oob: 0\n&#39;
+                                            &#39;    tbytes: 8589934592\n&#39;
+                                            &#39;    mdts_nbytes: 131072\n&#39;
+                                            &#39;    lba_nbytes: 4096\n&#39;
+                                            &#39;    lba_extended: 0\n&#39;
+                                            &#39;    ssw: 12\n&#39;
+                                            &#39;    pi_type: 0\n&#39;
+                                            &#39;    pi_loc: 0\n&#39;
+                                            &#39;    pi_format: 0\n&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_03.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740154.5863218,
+                                            &#39;cmd&#39;: &#39;xnvme info 127.0.0.1:4420 &#39;
+                                                   &#39;--subnqn &#39;
+                                                   &#39;nqn.2019-08.org.qemu:beef0003&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.43986058235168457,
+                                            &#39;end&#39;: 1782740155.0261824,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_03.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_03.state&#39;)},
+                       &#39;cmd_04&#39;: {&#39;output&#39;: &#39;Running xnvmeperf with &#39;
+                                            &#39;arguments:\n&#39;
+                                            &#39;- Devices: [127.0.0.1:4420] &#39;
+                                            &#39;(total: 1)\n&#39;
+                                            &#39;- io pattern: randread\n&#39;
+                                            &#39;- queues per device: 1\n&#39;
+                                            &#39;- queue depth: 32\n&#39;
+                                            &#39;- io size: 4096\n&#39;
+                                            &#39;- runtime: 5\n&#39;
+                                            &#39;- CPUs: [2] (total: 1)\n&#39;
+                                            &#39;- host_heap_size: 16781312 bytes\n&#39;
+                                            &#39;\n&#39;
+                                            &#39;====================================================================\n&#39;
+                                            &#39; xnvmeperf (elapsed: 5.00s)\n&#39;
+                                            &#39;====================================================================\n&#39;
+                                            &#39; Device                  &#39;
+                                            &#39;CPUs          IOPS      MiB/s   &#39;
+                                            &#39;Failed\n&#39;
+                                            &#39; 127.0.0.1:4420             &#39;
+                                            &#39;2      76597.00     299.21        &#39;
+                                            &#39;0\n&#39;
+                                            &#39;--------------------------------------------------------------------\n&#39;
+                                            &#39; &#39;
+                                            &#39;Total:                            &#39;
+                                            &#39;76597.00     299.21        0\n&#39;
+                                            &#39;====================================================================\n&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_04.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740155.0268114,
+                                            &#39;cmd&#39;: &#39;xnvmeperf run &#39;
+                                                   &#39;127.0.0.1:4420 --subnqn &#39;
+                                                   &#39;nqn.2019-08.org.qemu:beef0003 &#39;
+                                                   &#39;--iopattern randread &#39;
+                                                   &#39;--iosize 4096 --qdepth 32 &#39;
+                                                   &#39;--nqueues 1 --runtime 5 &#39;
+                                                   &#39;--cpumask 0x4&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 5.422687768936157,
+                                            &#39;end&#39;: 1782740160.4494991,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_04.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_04.state&#39;)}}},
+ &#39;id&#39;: &#39;002_nvme_target_probe&#39;,
+ &#39;name&#39;: &#39;nvme_target_probe&#39;,
+ &#39;nr&#39;: 2,
+ &#39;status&#39;: {&#39;elapsed&#39;: 6.483966827392578,
+            &#39;failed&#39;: 0,
+            &#39;passed&#39;: 1,
+            &#39;skipped&#39;: 0,
+            &#39;started&#39;: 1782740153.966302},
+ &#39;uses&#39;: &#39;nvme_target_probe&#39;,
+ &#39;with&#39;: {&#39;provider&#39;: &#39;spdk&#39;}}</pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-yaml END -->
+
+          <!-- workflow-step-content-runlog BEGIN -->
+          
+          <div class="collapse" id="CONTENT_RUNLOG_002_nvme_target_probe" data-bs-parent="#CONTENT_002_nvme_target_probe">
+            <div class="card-body" style="background-color: gray;">
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_01
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.17 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_01.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('nvme discover -t tcp -a 127.0.0.1 -s 4420')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_01.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ nvme discover -t tcp -a 127.0.0.1 -s 4420</code></pre>
+            <pre class="runlog cmd_output"><code>
+Discovery Log Number of Records 1, Generation counter 1
+=====Discovery Log Entry 0======
+trtype:  tcp
+adrfam:  ipv4
+subtype: nvme subsystem
+treq:    not required
+portid:  0
+trsvcid: 4420
+subnqn:  nqn.2019-08.org.qemu:beef0003
+traddr:  127.0.0.1
+eflags:  none
+sectype: none
+</code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_02
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.45 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_02.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('xnvme enum --uri 127.0.0.1:4420')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_02.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ xnvme enum --uri 127.0.0.1:4420</code></pre>
+            <pre class="runlog cmd_output"><code>xnvme_cli_enumeration:
+  - {uri: &#39;127.0.0.1:4420&#39;, dtype: 0x2, nsid: 0x1, csi: 0x0, kernel_driver: &#39;&#39;, subnqn: &#39;nqn.2019-08.org.qemu:beef0003&#39;}
+</code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_03
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.44 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_03.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('xnvme info 127.0.0.1:4420 --subnqn nqn.2019-08.org.qemu:beef0003')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_03.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ xnvme info 127.0.0.1:4420 --subnqn nqn.2019-08.org.qemu:beef0003</code></pre>
+            <pre class="runlog cmd_output"><code>xnvme_dev:
+  xnvme_ident:
+    uri: &#39;127.0.0.1:4420&#39;
+    dtype: 0x2
+    nsid: 0x1
+    csi: 0x0
+    kernel_driver: &#39;&#39;
+    subnqn: &#39;nqn.2019-08.org.qemu:beef0003&#39;
+  xnvme_be:
+    dev: {id: &#39;spdk&#39;}
+    admin: {id: &#39;spdk&#39;}
+    sync: {id: &#39;spdk&#39;}
+    async: {id: &#39;spdk&#39;}
+    mem: {id: &#39;spdk&#39;}
+    attr: {name: &#39;spdk&#39;, descr: &#39;SPDK userspace NVMe driver&#39;, caps: 0xe0}
+  xnvme_opts:
+    be: &#39;spdk&#39;
+    mem: &#39;spdk&#39;
+    dev: &#39;linux&#39;
+    admin: &#39;spdk&#39;
+    sync: &#39;spdk&#39;
+    async: &#39;spdk&#39;
+  xnvme_geo:
+    type: XNVME_GEO_CONVENTIONAL
+    npugrp: 1
+    npunit: 1
+    nzone: 1
+    nsect: 2097152
+    nbytes: 4096
+    nbytes_oob: 0
+    tbytes: 8589934592
+    mdts_nbytes: 131072
+    lba_nbytes: 4096
+    lba_extended: 0
+    ssw: 12
+    pi_type: 0
+    pi_loc: 0
+    pi_format: 0
+</code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_04
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      5.42 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_04.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('xnvmeperf run 127.0.0.1:4420 --subnqn nqn.2019-08.org.qemu:beef0003 --iopattern randread --iosize 4096 --qdepth 32 --nqueues 1 --runtime 5 --cpumask 0x4')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/002_nvme_target_probe/cmd_04.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ xnvmeperf run 127.0.0.1:4420 --subnqn nqn.2019-08.org.qemu:beef0003 --iopattern randread --iosize 4096 --qdepth 32 --nqueues 1 --runtime 5 --cpumask 0x4</code></pre>
+            <pre class="runlog cmd_output"><code>Running xnvmeperf with arguments:
+- Devices: [127.0.0.1:4420] (total: 1)
+- io pattern: randread
+- queues per device: 1
+- queue depth: 32
+- io size: 4096
+- runtime: 5
+- CPUs: [2] (total: 1)
+- host_heap_size: 16781312 bytes
+
+====================================================================
+ xnvmeperf (elapsed: 5.00s)
+====================================================================
+ Device                  CPUs          IOPS      MiB/s   Failed
+ 127.0.0.1:4420             2      76597.00     299.21        0
+--------------------------------------------------------------------
+ Total:                            76597.00     299.21        0
+====================================================================
+</code></pre>
+            
+            </div>
+          </div>
+          
+          <!-- workflow-step-content-runlog END -->
+
+          <!-- workflow-step-content-testrunner BEGIN -->
+          
+          <!-- workflow-step-content-testrunner END -->
+
+        </div>
+        <!-- workflow-step-content END -->
+
+        
+        
+          
+          
+        
+
+        <!-- workflow-step-buttons BEGIN -->
+        <ul class="list-group list-steps">
+          <li class="list-group-item list-group-item-success">
+
+            <!-- workflow-step-buttons-left BEGIN -->
+            <button class="btn btn-success" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#CONTENT_DESCRIPTION_003_nvme_target_stop"
+                  aria-controls="CONTENT_DESCRIPTION_003_nvme_target_stop"
+                  aria-expanded="false">
+              <span style="font-family: monospace;">
+                <b>nvme_target_stop</b>
+                
+                (nvme_target_stop)
+                
+              </span>
+            </button>
+            <!-- workflow-step-buttons-left END -->
+
+            <!-- workflow-step-buttons-right BEGIN -->
+            <div class="btn-group float-end" role="group">
+              <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                <span style="font-family: monospace;"
+                      title="Elapsed Wall-Clock time in seconds"
+                      data-bs-original-title="Tooltip on right">
+                  0.25 sec
+                </span>
+              </button>
+
+              <button class="btn btn-primary bi bi-file-earmark-ruled" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_TESTREPORT_003_nvme_target_stop"
+                      aria-controls="CONTENT_TESTREPORT_003_nvme_target_stop"
+                      aria-expanded="false"
+                      disabled="disabled"
+                      >&nbsp;testreport</button>
+
+              <button class="btn btn-primary bi bi-file-earmark-code" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_RUNLOG_003_nvme_target_stop"
+                      aria-controls="CONTENT_RUNLOG_003_nvme_target_stop"
+                      aria-expanded="false"
+                      
+                      >&nbsp;runlog</button>
+
+              <button class="btn btn-primary bi bi-filetype-yml" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_YAML_003_nvme_target_stop"
+                      aria-controls="CONTENT_YAML_003_nvme_target_stop"
+                      aria-expanded="false" />
+            </div>
+            <!-- workflow-step-buttons-right END -->
+
+          </li>
+        </ul>
+        <!-- workflow-step-buttons END -->
+
+        <!-- workflow-step-content BEGIN -->
+        <div id="CONTENT_003_nvme_target_stop">
+
+          <!-- workflow-step-content-description BEGIN -->
+          <div class="collapse" id="CONTENT_DESCRIPTION_003_nvme_target_stop" data-bs-parent="#CONTENT_003_nvme_target_stop">
+            <div class="card-header">
+              <p>
+              Steps <code>uses</code> <b>scripts</b>. A description of the <b>script</b> used by
+              the current step is provided below. The description is extracted from the docstring
+              of the script and provided here in verbatim / as-is.
+              <p>
+              <hr />
+              <pre class="runlog cmd"><code>
+Tear down an NVMe TCP transport target
+======================================
+
+Tear down whichever NVMe TCP target was set up by ``nvme_target_start``.
+Two providers are supported via ``--provider``:
+
+* ``spdk`` (default): stop the SPDK ``nvmf_tgt`` process.
+* ``linux``: remove the Linux kernel ``nvmet`` configfs entries.
+
+Both providers are safe to invoke when the target is already down.
+
+Retargetable: True
+</code></pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-description END -->
+
+          <!-- workflow-step-content-yaml BEGIN -->
+          <div class="collapse" id="CONTENT_YAML_003_nvme_target_stop" data-bs-parent="#CONTENT_003_nvme_target_stop">
+            <div class="card-body">
+              <pre>{&#39;description&#39;: &#39;\n&#39;
+                &#39;Tear down an NVMe TCP transport target\n&#39;
+                &#39;======================================\n&#39;
+                &#39;\n&#39;
+                &#39;Tear down whichever NVMe TCP target was set up by &#39;
+                &#39;``nvme_target_start``.\n&#39;
+                &#39;Two providers are supported via ``--provider``:\n&#39;
+                &#39;\n&#39;
+                &#39;* ``spdk`` (default): stop the SPDK ``nvmf_tgt`` process.\n&#39;
+                &#39;* ``linux``: remove the Linux kernel ``nvmet`` configfs &#39;
+                &#39;entries.\n&#39;
+                &#39;\n&#39;
+                &#39;Both providers are safe to invoke when the target is already &#39;
+                &#39;down.\n&#39;
+                &#39;\n&#39;
+                &#39;Retargetable: True\n&#39;,
+ &#39;extras&#39;: {&#39;runlog&#39;: {&#39;cmd_01&#39;: {&#39;output&#39;: &#39;46328\n46458\n&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/003_nvme_target_stop/cmd_01.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1782740160.529354,
+                                            &#39;cmd&#39;: &#39;pgrep -f nvmf_tgt &amp;&amp; pkill &#39;
+                                                   &#39;-f nvmf_tgt; true&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.1683027744293213,
+                                            &#39;end&#39;: 1782740160.6976569,
+                                            &#39;err&#39;: -1,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/003_nvme_target_stop&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/003_nvme_target_stop/cmd_01.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/003_nvme_target_stop/cmd_01.state&#39;)}}},
+ &#39;id&#39;: &#39;003_nvme_target_stop&#39;,
+ &#39;name&#39;: &#39;nvme_target_stop&#39;,
+ &#39;nr&#39;: 3,
+ &#39;status&#39;: {&#39;elapsed&#39;: 0.24811100959777832,
+            &#39;failed&#39;: 0,
+            &#39;passed&#39;: 1,
+            &#39;skipped&#39;: 0,
+            &#39;started&#39;: 1782740160.4502835},
+ &#39;uses&#39;: &#39;nvme_target_stop&#39;,
+ &#39;with&#39;: {&#39;provider&#39;: &#39;spdk&#39;}}</pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-yaml END -->
+
+          <!-- workflow-step-content-runlog BEGIN -->
+          
+          <div class="collapse" id="CONTENT_RUNLOG_003_nvme_target_stop" data-bs-parent="#CONTENT_003_nvme_target_stop">
+            <div class="card-body" style="background-color: gray;">
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-danger">
+                <button class="btn btn-danger bi bi-file-code" type="button">
+                  cmd_01
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.17 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/003_nvme_target_stop/cmd_01.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('pgrep -f nvmf_tgt &amp;&amp; pkill -f nvmf_tgt; true')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-spdk/003_nvme_target_stop/cmd_01.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ pgrep -f nvmf_tgt &amp;&amp; pkill -f nvmf_tgt; true</code></pre>
+            <pre class="runlog cmd_output"><code>46328
+46458
+</code></pre>
+            
+            </div>
+          </div>
+          
+          <!-- workflow-step-content-runlog END -->
+
+          <!-- workflow-step-content-testrunner BEGIN -->
+          
+          <!-- workflow-step-content-testrunner END -->
+
+        </div>
+        <!-- workflow-step-content END -->
+
+        
+        <!-- workflow-step END -->
+      </div>
+      <!-- workflow-steps END -->
+
+      <div class="card-footer text-muted">
+        EOL: In the presence of failure, recall, this too shall pass.
+      </div>
+    </div>
+  </div> <!-- END: First part: status, configuration, documentation -->
+
+  <!-- TODO: once done, then inline this such that it works "offline" -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <!-- TODO: consider whether this syntax-highlighting is needed
+  <script>hljs.initHighlightingOnLoad();</script>
+  -->
+</body>
+</html>
