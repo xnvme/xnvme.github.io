@@ -706,6 +706,7 @@
 <dt class="sig sig-object c" id="c.xnvme_cmd_pass">
 <span class="target" id="libxnvme__cmd_8h_1a42f1493ca3bce4159d34330e49e234a2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_pass</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dbuf_nbytes</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mbuf_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_pass" title="Link to this definition">#</a><br /></dt>
 <dd><p>Pass an NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
+<p>The mode of submission is determined by the command context: a context obtained via <a class="reference internal" href="#libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev()</span></a> submits synchronously and returns once the command has completed, whereas a context obtained via <a class="reference internal" href="#libxnvme__cmd_8h_1a8b4750cb2c68f0cdedfc0bdf5c943638"><span class="std std-ref">xnvme_cmd_ctx_from_queue()</span></a> submits asynchronously and returns once the command has been submitted; its completion is then processed via <a class="reference internal" href="xnvme_queue.html#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -902,6 +903,12 @@
 
 <span class="cm">/**</span>
 <span class="cm"> * Pass an NVMe IO Command through to the device via the given ::xnvme_cmd_ctx</span>
+<span class="cm"> *</span>
+<span class="cm"> * The mode of submission is determined by the command context: a context</span>
+<span class="cm"> * obtained via xnvme_cmd_ctx_from_dev() submits synchronously and returns once</span>
+<span class="cm"> * the command has completed, whereas a context obtained via</span>
+<span class="cm"> * xnvme_cmd_ctx_from_queue() submits asynchronously and returns once the command</span>
+<span class="cm"> * has been submitted; its completion is then processed via xnvme_queue_poke().</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
 <span class="cm"> * @param dbuf pointer to data-payload</span>
