@@ -508,6 +508,24 @@
 <p>FreeBSD is one of several supported platforms. <strong>xNVMe</strong> is likely to work on
 multiple versions of FreeBSD, however to ensure compatibility we recommend using
 a version listed in the <a class="reference internal" href="../../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a> section.</p>
+<section id="user-space-dma-memory-contigmem">
+<span id="sec-platforms-freebsd-contigmem"></span><h3>User-space DMA memory (<code class="docutils literal notranslate"><span class="pre">contigmem</span></code>)<a class="headerlink" href="#user-space-dma-memory-contigmem" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">spdk</span></code> backend gets its DMA memory from the <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> kernel module,
+which the <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script loads. It pre-allocates a pool of
+physically-contiguous buffers, <code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> MB each (<code class="docutils literal notranslate"><span class="pre">256</span></code> by default), up
+to a total of <code class="docutils literal notranslate"><span class="pre">HUGEMEM</span></code> MB (<code class="docutils literal notranslate"><span class="pre">2048</span></code> by default). The pool holds at most 64
+buffers, so <code class="docutils literal notranslate"><span class="pre">HUGEMEM</span> <span class="pre">/</span> <span class="pre">CONTIGMEM_BUFSZ</span></code> must not exceed 64.</p>
+<p><code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> is a hard upper bound on a single DMA allocation: a buffer
+cannot span multiple <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> buffers, so <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> cannot return
+more than <code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> MB no matter how much of the pool is free.</p>
+<p>On a fragmented heap, a large physically-contiguous buffer can be impossible to
+place even when plenty of memory is free, and loading <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> then fails
+with <code class="docutils literal notranslate"><span class="pre">contigmalloc</span> <span class="pre">failed</span> <span class="pre">for</span> <span class="pre">buffer</span> <span class="pre">N</span></code> in <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>. Smaller buffers are easier
+to place, so lowering <code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> avoids the failure:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CONTIGMEM_BUFSZ</span><span class="o">=</span><span class="m">64</span><span class="w"> </span>xnvme-driver
+</pre></div>
+</div>
+</section>
 </section>
 <section id="device-identification">
 <span id="sec-platforms-freebsd-identification"></span><h2>Device Identification<a class="headerlink" href="#device-identification" title="Link to this heading">#</a></h2>
@@ -593,7 +611,10 @@ alignment, add link to CBI</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-space-dma-memory-contigmem">User-space DMA memory (<code class="docutils literal notranslate"><span class="pre">contigmem</span></code>)</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identification">Device Identification</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-configs">Backend Configs</a></li>
 </ul>
