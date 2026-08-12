@@ -1305,6 +1305,12 @@
 </dd></dl>
 
 <dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_cli_opt.XNVME_CLI_OPT_CPULIST">
+<span class="target" id="libxnvme__cli_8h_1ad8a65e820b9bdbd772459cca4d46a716aaad88b0e69406c8a0506e0af95d9d210"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_CLI_OPT_CPULIST</span></span></span><a class="headerlink" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_CPULIST" title="Link to this definition">#</a><br /></dt>
+<dd><p>XNVME_CLI_OPT_CPULIST. </p>
+</dd></dl>
+
+<dl class="c enumerator">
 <dt class="sig sig-object c" id="c.xnvme_cli_opt.XNVME_CLI_OPT_END">
 <span class="target" id="libxnvme__cli_8h_1ad8a65e820b9bdbd772459cca4d46a716ac9ac23901c932cd0c2b2b15d1d6b52bc"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_CLI_OPT_END</span></span></span><a class="headerlink" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_END" title="Link to this definition">#</a><br /></dt>
 <dd><p>XNVME_CLI_OPT_END. </p>
@@ -2081,6 +2087,21 @@
 <dd></dd></dl>
 
 <dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cli_args.cpulist">
+<span class="target" id="structxnvme__cli__args_1aa78cc10c1a1a4933018ff72f3664002c"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cpulist</span></span></span><a class="headerlink" href="#c.xnvme_cli_args.cpulist" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cli_args.cpus">
+<span class="target" id="structxnvme__cli__args_1a63bdd54b2f05c0935885259173374002"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cpus</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">XNVME_CLI_CPU_MAX_ID</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_cli_args.cpus" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cli_args.ncpus">
+<span class="target" id="structxnvme__cli__args_1ae7e81d69efa802b50f3450f497061a28"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ncpus</span></span></span><a class="headerlink" href="#c.xnvme_cli_args.ncpus" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_cli_args.nqueues">
 <span class="target" id="structxnvme__cli__args_1a7159d9e07ee070ab9b38c64cd305830d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nqueues</span></span></span><a class="headerlink" href="#c.xnvme_cli_args.nqueues" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
@@ -2428,6 +2449,8 @@
 <span class="cp">#define XNVME_CLI_ASYNC_OPTS \</span>
 <span class="cp">	XNVME_CLI_SYNC_OPTS, { XNVME_CLI_OPT_ASYNC, XNVME_CLI_LOPT }</span>
 
+<span class="cp">#define XNVME_CLI_CPU_MAX_ID 1024</span>
+
 <span class="cm">/**</span>
 <span class="cm"> * Options are stored in an instance of this structure</span>
 <span class="cm"> *</span>
@@ -2575,7 +2598,13 @@
 
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">runtime</span><span class="p">;</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">iopattern</span><span class="p">;</span>
+
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">cpumask</span><span class="p">;</span>
+
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">cpulist</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">cpus</span><span class="p">[</span><span class="n">XNVME_CLI_CPU_MAX_ID</span><span class="p">];</span><span class="w"> </span><span class="c1">//&lt; Maximum of 1024 pinned CPUs</span>
+<span class="w">	</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">ncpus</span><span class="p">;</span>
+
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nqueues</span><span class="p">;</span>
 
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">posn</span><span class="p">;</span><span class="w"> </span><span class="c1">//&lt; Remaining positional args (points into argv)</span>
@@ -2760,7 +2789,9 @@
 
 <span class="w">	</span><span class="n">XNVME_CLI_OPT_GPU_ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">131</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_GPU_ID</span>
 
-<span class="w">	</span><span class="n">XNVME_CLI_OPT_END</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">132</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_END</span>
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_CPULIST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">132</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_CPULIST</span>
+
+<span class="w">	</span><span class="n">XNVME_CLI_OPT_END</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">133</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; XNVME_CLI_OPT_END</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -3101,6 +3132,7 @@
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_IOVA_MODE"><code class="docutils literal notranslate"><span class="pre">XNVME_CLI_OPT_IOVA_MODE</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_ALT_BE"><code class="docutils literal notranslate"><span class="pre">XNVME_CLI_OPT_ALT_BE</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_GPU_ID"><code class="docutils literal notranslate"><span class="pre">XNVME_CLI_OPT_GPU_ID</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_CPULIST"><code class="docutils literal notranslate"><span class="pre">XNVME_CLI_OPT_CPULIST</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_opt.XNVME_CLI_OPT_END"><code class="docutils literal notranslate"><span class="pre">XNVME_CLI_OPT_END</span></code></a></li>
 </ul>
 </li>
@@ -3274,6 +3306,9 @@
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.runtime"><code class="docutils literal notranslate"><span class="pre">runtime</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.iopattern"><code class="docutils literal notranslate"><span class="pre">iopattern</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.cpumask"><code class="docutils literal notranslate"><span class="pre">cpumask</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.cpulist"><code class="docutils literal notranslate"><span class="pre">cpulist</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.cpus"><code class="docutils literal notranslate"><span class="pre">cpus</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.ncpus"><code class="docutils literal notranslate"><span class="pre">ncpus</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.nqueues"><code class="docutils literal notranslate"><span class="pre">nqueues</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.posn"><code class="docutils literal notranslate"><span class="pre">posn</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cli_args.posn_count"><code class="docutils literal notranslate"><span class="pre">posn_count</span></code></a></li>
