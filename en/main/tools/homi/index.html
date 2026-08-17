@@ -485,8 +485,9 @@ controller hardware state, and it must outlive every secondary attached to it.
 Running <strong>homi</strong> puts that responsibility in a process of its own, so the
 processes actually doing I/O can come and go freely as secondaries.</p>
 <p><a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a> is only available for the
-<a class="reference internal" href="../../background/backends/upcie/index.html#sec-backends-upcie"><span class="std std-ref">uPCIe</span></a> and <a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a> backends. <strong>homi</strong> is
-therefore useful where one of those is built: <code class="docutils literal notranslate"><span class="pre">upcie</span></code> on Linux, and <code class="docutils literal notranslate"><span class="pre">spdk</span></code> on
+<a class="reference internal" href="../../background/backends/upcie/index.html#sec-backends-upcie"><span class="std std-ref">uPCIe</span></a> backend and its GPU variants, and for the
+<a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a> backend. <strong>homi</strong> is therefore useful where one of those
+is built: <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> on Linux, and <code class="docutils literal notranslate"><span class="pre">spdk</span></code> on
 Linux and FreeBSD. On Windows it exits with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>, since no
 multi-process capable backend is available there. On other platforms it runs, but
 opening a device with a non-zero <code class="docutils literal notranslate"><span class="pre">shm_id</span></code> fails with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>.</p>
@@ -532,8 +533,15 @@ devices are open it reports that it has started, then waits for <code class="doc
 <section id="backends">
 <h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">#</a></h2>
 <p><strong>homi</strong> works with any backend that advertises the multi-process capability,
-which is <code class="docutils literal notranslate"><span class="pre">spdk</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie</span></code>:</p>
+which is <code class="docutils literal notranslate"><span class="pre">spdk</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">spdk</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>, <strong>homi</strong> additionally caps the GPU device
+heap at 2 MiB rather than the backend default of 1 GiB. It never allocates data
+buffers, which is all the device heap is used for, so claiming the default would
+take VRAM away from the secondaries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
 </pre></div>
 </div>
 <div class="admonition seealso">

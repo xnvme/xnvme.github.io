@@ -579,6 +579,17 @@ secondary’s mapping by the constant offset between the secondary’s import ba
 and the primary’s published base. PRP entries for a secondary’s own commands are
 translated against its private heap, whose physical pages it resolves itself.</p>
 </section>
+<section id="gpu-backends">
+<h3>GPU backends<a class="headerlink" href="#gpu-backends" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> backends share everything described above: they
+reuse the host backend’s controller and queue-pair init/term, and they keep all
+NVMe control structures on the host hugepage heap. Only data buffers live in GPU
+memory, which is allocated from a per-process heap and therefore requires no
+coordination between processes.</p>
+<p>The CUDA backend also exposes GPU-resident queue pairs through
+<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code>/<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_destroy()</span></code>. These run under the
+same mutex and shared queue-id bitmap as ordinary queue-pair creation.</p>
+</section>
 </section>
 <section id="startup-handshake">
 <span id="sec-backends-upcie-mproc-startup"></span><h2>Startup handshake<a class="headerlink" href="#startup-handshake" title="Link to this heading">#</a></h2>
@@ -688,20 +699,16 @@ startup. Because uPCIe also needs hugepages for its DMA memory, the two cannot
 be expected to share a system, and running uPCIe and SPDK in multi-process
 mode side by side cannot be not guaranteed to work.</p>
 </section>
-<section id="cuda-backend">
-<h3>CUDA backend<a class="headerlink" href="#cuda-backend" title="Link to this heading">#</a></h3>
-<p>Multi-process mode is <strong>not supported</strong> with the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend. The
-backend does not advertise the multi-process capability, so opening an
-<code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> device with a non-zero <code class="docutils literal notranslate"><span class="pre">shm_id</span></code> fails with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>.</p>
-<p>The memory model is not the obstacle: <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> keeps all NVMe control
-structures — the admin queue, the I/O submission/completion rings, PRP lists
-and request pools — on the same host hugepage heap that multi-process mode
-shares, and places only data buffers in per-process GPU memory, which is never
-shared between processes. What is missing is serialization: the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code>
-admin path submits to the shared admin queue without taking the per-controller
-admin mutex, so concurrent processes would race on the admin submission ring.
-Enabling multi-process mode for <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> would require serializing its admin
-path under the same mutex used by the host backend.</p>
+<section id="gpu-backend-doorbell-registration">
+<h3>GPU backend doorbell registration<a class="headerlink" href="#gpu-backend-doorbell-registration" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> registers the I/O queue doorbells of its GPU-resident queue pairs
+with <code class="docutils literal notranslate"><span class="pre">cuMemHostRegister(...,</span> <span class="pre">CU_MEMHOSTREGISTER_IOMEMORY)</span></code>. Each process maps
+BAR0 independently, so each registers its own mapping of the doorbell page; this
+has not been exercised across many concurrent processes on the same controller.</p>
+<p>Note also that <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> require the device to be bound to
+<code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>. The <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path that the host backend supports is
+rejected before the controller is opened, so it is unavailable in multi-process
+mode with these backends as well.</p>
 </section>
 </section>
 </section>
@@ -734,6 +741,7 @@ path under the same mutex used by the host backend.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-memory-segments">Shared memory segments</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#device-ownership">Device ownership</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepage-sharing">Hugepage sharing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-backends">GPU backends</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-handshake">Startup handshake</a></li>
@@ -748,7 +756,7 @@ path under the same mutex used by the host backend.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-isolation-between-processes">No isolation between processes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-ordering-and-timeouts">Startup ordering and timeouts</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility-with-spdk">Compatibility with SPDK</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-backend">CUDA backend</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-backend-doorbell-registration">GPU backend doorbell registration</a></li>
 </ul>
 </li>
 </ul>

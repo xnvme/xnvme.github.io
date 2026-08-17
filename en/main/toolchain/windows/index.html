@@ -466,49 +466,49 @@
 </div>
 <p>Or, run the commands contained within the script manually:</p>
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Check if the script is run with Administrator privileges</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="no">[Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]</span><span class="p">::</span><span class="n">GetCurrent</span><span class="p">()).</span><span class="n">IsInRole</span><span class="p">(</span><span class="no">[Security.Principal.WindowsBuiltInRole]</span> <span class="s2">&quot;Administrator&quot;</span><span class="p">))</span> <span class="p">{</span>
-    <span class="nb">Write-Host</span> <span class="s2">&quot;</span><span class="p">$(</span><span class="nv">$MyInvocation</span><span class="p">.</span><span class="n">MyCommand</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span><span class="s2"> must be run with Administrator privileges&quot;</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="no">[Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]</span><span class="p">::</span><span class="n">GetCurrent</span><span class="p">()).</span><span class="n">IsInRole</span><span class="p">(</span><span class="no">[Security.Principal.WindowsBuiltInRole]</span> <span class="s2">"Administrator"</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nb">Write-Host</span> <span class="s2">"</span><span class="p">$(</span><span class="nv">$MyInvocation</span><span class="p">.</span><span class="n">MyCommand</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span><span class="s2"> must be run with Administrator privileges"</span>
     <span class="n">exit</span> <span class="n">1</span>
 <span class="p">}</span>
 
 <span class="c"># Setup PATH for this session</span>
-<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">&quot;$env:PATH;$env:ALLUSERSPROFILE\chocolatey\bin&quot;</span>
-<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">&quot;$env:PATH;$env:SystemDrive\tools\msys64\mingw64\bin&quot;</span>
-<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">&quot;$env:PATH;$env:SystemDrive\tools\msys64\usr\bin&quot;</span>
-<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">&quot;$env:PATH;$env:SystemDrive\tools\msys64\usr\lib&quot;</span>
-<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">&quot;$env:PATH;$env:SystemDrive\tools\msys64&quot;</span>
+<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">"$env:PATH;$env:ALLUSERSPROFILE\chocolatey\bin"</span>
+<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">"$env:PATH;$env:SystemDrive\tools\msys64\mingw64\bin"</span>
+<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">"$env:PATH;$env:SystemDrive\tools\msys64\usr\bin"</span>
+<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">"$env:PATH;$env:SystemDrive\tools\msys64\usr\lib"</span>
+<span class="nv">$env:PATH</span> <span class="p">=</span> <span class="s2">"$env:PATH;$env:SystemDrive\tools\msys64"</span>
 
 <span class="c"># Persist the changed PATH for future sessions</span>
 <span class="nv">$persist_path</span> <span class="p">=</span> <span class="nv">$env:PATH</span>
-<span class="nb">Set-ItemProperty</span> <span class="n">-Path</span> <span class="s2">&quot;HKCU:\Environment&quot;</span> <span class="n">-Name</span> <span class="s2">&quot;PATH&quot;</span> <span class="n">-Value</span> <span class="nv">$persist_path</span>
+<span class="nb">Set-ItemProperty</span> <span class="n">-Path</span> <span class="s2">"HKCU:\Environment"</span> <span class="n">-Name</span> <span class="s2">"PATH"</span> <span class="n">-Value</span> <span class="nv">$persist_path</span>
 
 <span class="c"># Setup PKG_CONFIG_PATH for this session</span>
-<span class="nv">$env:PKG_CONFIG_PATH</span> <span class="p">=</span> <span class="s2">&quot;$env:PKG_CONFIG_PATH;$env:SystemDrive\tools\msys64\usr\lib\pkgconfig&quot;</span>
+<span class="nv">$env:PKG_CONFIG_PATH</span> <span class="p">=</span> <span class="s2">"$env:PKG_CONFIG_PATH;$env:SystemDrive\tools\msys64\usr\lib\pkgconfig"</span>
 
 <span class="c"># Persist the changed PKG_CONFIG_PATH for future sessions</span>
 <span class="nv">$persist_path</span> <span class="p">=</span> <span class="nv">$env:PKG_CONFIG_PATH</span>
-<span class="nb">Set-ItemProperty</span> <span class="n">-Path</span> <span class="s2">&quot;HKCU:\Environment&quot;</span> <span class="n">-Name</span> <span class="s2">&quot;PKG_CONFIG_PATH&quot;</span> <span class="n">-Value</span> <span class="nv">$persist_path</span>
+<span class="nb">Set-ItemProperty</span> <span class="n">-Path</span> <span class="s2">"HKCU:\Environment"</span> <span class="n">-Name</span> <span class="s2">"PKG_CONFIG_PATH"</span> <span class="n">-Value</span> <span class="nv">$persist_path</span>
 
 <span class="c"># Set execution policy to allow script execution</span>
 <span class="nb">Set-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="n">-Scope</span> <span class="k">Process</span> <span class="n">-Force</span>
 
 <span class="c"># Download and install Chocolatey</span>
-<span class="nb">Invoke-Expression</span> <span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;https://community.chocolatey.org/install.ps1&#39;</span><span class="p">))</span>
+<span class="nb">Invoke-Expression</span> <span class="p">((</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">'https://community.chocolatey.org/install.ps1'</span><span class="p">))</span>
 
 <span class="c"># Use Chocolatey to install msys2, git, and meson</span>
 <span class="n">choco</span> <span class="n">install</span> <span class="n">msys2</span> <span class="n">git</span> <span class="n">-y</span> <span class="n">-r</span>
 
 <span class="c"># Use msys2 to install the compilers and other tools</span>
-<span class="nb">Start-Process</span> <span class="n">msys2_shell</span> <span class="n">-ArgumentList</span> <span class="s1">&#39;-no-start -here -use-full-path -defterm -c &quot;pacman --noconfirm -Syy --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-meson mingw-w64-x86_64-python mingw-w64-x86_64-python-pip&quot;&#39;</span> <span class="n">-NoNewWindow</span> <span class="n">-Wait</span>
+<span class="nb">Start-Process</span> <span class="n">msys2_shell</span> <span class="n">-ArgumentList</span> <span class="s1">'-no-start -here -use-full-path -defterm -c "pacman --noconfirm -Syy --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-meson mingw-w64-x86_64-python mingw-w64-x86_64-python-pip"'</span> <span class="n">-NoNewWindow</span> <span class="n">-Wait</span>
 
 <span class="c"># Check for existence of required tools</span>
-<span class="nv">$tools</span> <span class="p">=</span> <span class="p">@(</span><span class="s2">&quot;choco&quot;</span><span class="p">,</span> <span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;gcc&quot;</span><span class="p">,</span> <span class="s2">&quot;meson&quot;</span><span class="p">)</span>
+<span class="nv">$tools</span> <span class="p">=</span> <span class="p">@(</span><span class="s2">"choco"</span><span class="p">,</span> <span class="s2">"git"</span><span class="p">,</span> <span class="s2">"gcc"</span><span class="p">,</span> <span class="s2">"meson"</span><span class="p">)</span>
 <span class="k">foreach</span> <span class="p">(</span><span class="nv">$tool</span> <span class="k">in</span> <span class="nv">$tools</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="nb">Get-Command</span> <span class="nv">$tool</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span><span class="p">))</span> <span class="p">{</span>
-        <span class="nb">Write-Host</span> <span class="s2">&quot;$tool is not installed or not in the PATH.&quot;</span>
+        <span class="nb">Write-Host</span> <span class="s2">"$tool is not installed or not in the PATH."</span>
         <span class="n">exit</span> <span class="n">1</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nb">Write-Host</span> <span class="s2">&quot;$tool is installed.&quot;</span>
+        <span class="nb">Write-Host</span> <span class="s2">"$tool is installed."</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>

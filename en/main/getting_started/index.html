@@ -515,19 +515,19 @@ sudo<span class="w"> </span>meson<span class="w"> </span>install<span class="w">
 <span class="p">.\</span><span class="n">toolbox</span><span class="p">\</span><span class="n">pkgs</span><span class="p">\</span><span class="n">windows</span><span class="p">-</span><span class="n">2022</span><span class="p">.</span><span class="n">ps1</span>
 
 <span class="c"># Setup helper-function to invoke commands inside msys2 environment from Powershell</span>
-<span class="k">function</span> <span class="n">run</span> <span class="p">{</span> <span class="k">param</span><span class="p">(</span><span class="no">[string]</span><span class="nv">$cmd</span><span class="p">=$(</span><span class="k">throw</span> <span class="s2">&quot;You must specify a command.&quot;</span><span class="p">));</span> <span class="p">&amp;</span> <span class="n">msys2_shell</span> <span class="n">-no-start</span> <span class="n">-here</span> <span class="n">-use-full-path</span> <span class="n">-defterm</span> <span class="n">-mingw64</span> <span class="n">-c</span> <span class="s2">&quot;$cmd&quot;</span> <span class="p">}</span>
+<span class="k">function</span> <span class="n">run</span> <span class="p">{</span> <span class="k">param</span><span class="p">(</span><span class="no">[string]</span><span class="nv">$cmd</span><span class="p">=$(</span><span class="k">throw</span> <span class="s2">"You must specify a command."</span><span class="p">));</span> <span class="p">&amp;</span> <span class="n">msys2_shell</span> <span class="n">-no-start</span> <span class="n">-here</span> <span class="n">-use-full-path</span> <span class="n">-defterm</span> <span class="n">-mingw64</span> <span class="n">-c</span> <span class="s2">"$cmd"</span> <span class="p">}</span>
 
 <span class="c"># configure xNVMe (adjust this to correct path)</span>
-<span class="n">run</span> <span class="s2">&quot;meson setup builddir --prefix=/usr&quot;</span>
+<span class="n">run</span> <span class="s2">"meson setup builddir --prefix=/usr"</span>
 
 <span class="c"># build xNVMe</span>
-<span class="n">run</span> <span class="s2">&quot;meson compile -C builddir&quot;</span>
+<span class="n">run</span> <span class="s2">"meson compile -C builddir"</span>
 
 <span class="c"># install xNVMe</span>
-<span class="n">run</span> <span class="s2">&quot;meson install -C builddir&quot;</span>
+<span class="n">run</span> <span class="s2">"meson install -C builddir"</span>
 
 <span class="c"># uninstall xNVMe</span>
-<span class="c"># cd builddir &amp;&amp; run &quot;meson --internal uninstall&quot;</span>
+<span class="c"># cd builddir &amp;&amp; run "meson --internal uninstall"</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -570,18 +570,18 @@ close the device.</p>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;Usage: %s &lt;identifer&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;identifer&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_dev_open()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_dev_derive_geo</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Failed deriving geometry, check your permissions.&quot;</span><span class="p">);</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Failed deriving geometry, check your permissions."</span><span class="p">);</span>
 <span class="w">	</span><span class="p">}</span>
 <span class="w">	</span><span class="n">xnvme_dev_pr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 <span class="w">	</span><span class="n">xnvme_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
@@ -617,26 +617,26 @@ chmod<span class="w"> </span>+x<span class="w"> </span>hello
 </pre></div>
 </div>
 <p>When doing so, it will print output equivalent to the following.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from &quot;./hello /dev/nvme2n1&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from "./hello /dev/nvme2n1"</span>
 <span class="nt">xnvme_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">xnvme_ident</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/dev/nvme2n1&#39;</span>
+<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'/dev/nvme2n1'</span>
 <span class="w">    </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x2</span>
 <span class="w">    </span><span class="nt">nsid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x1</span>
 <span class="w">    </span><span class="nt">csi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x0</span>
-<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">'nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">'</span>
 <span class="w">  </span><span class="nt">xnvme_be</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;emu&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;linux&#39;</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'emu'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'linux'</span><span class="p p-Indicator">}</span>
 <span class="w">  </span><span class="nt">xnvme_opts</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;linux&#39;</span>
-<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;posix&#39;</span>
-<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;linux&#39;</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;emu&#39;</span>
+<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">'linux'</span>
+<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">'posix'</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">'linux'</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">'emu'</span>
 <span class="w">  </span><span class="nt">xnvme_geo</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XNVME_GEO_CONVENTIONAL</span>
 <span class="w">    </span><span class="nt">npugrp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -667,31 +667,31 @@ sudo<span class="w"> </span>./hello<span class="w"> </span><span class="m">0000<
 </pre></div>
 </div>
 <p>When doing so, it will print output equivalent to the following.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from &quot;xnvme-driver&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from "xnvme-driver"</span>
 <span class="nt">0000:01:00.0 (144d a80c)</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvme -&gt; vfio-pci</span>
 <span class="nt">0000:02:00.0 (144d a80c)</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Active mountpoints on /dev/nvme0n1, so not binding PCI dev</span>
 <span class="nt">0000:05:00.0 (144d a824)</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvme -&gt; vfio-pci</span>
 
-<span class="c1"># Output from &quot;sudo ./hello 0000:05:00.0&quot;</span>
+<span class="c1"># Output from "sudo ./hello 0000:05:00.0"</span>
 <span class="nt">xnvme_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">xnvme_ident</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0000:05:00.0&#39;</span>
+<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'0000:05:00.0'</span>
 <span class="w">    </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x2</span>
 <span class="w">    </span><span class="nt">nsid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x1</span>
 <span class="w">    </span><span class="nt">csi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x0</span>
-<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">'nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">'</span>
 <span class="w">  </span><span class="nt">xnvme_be</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;spdk&#39;</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'spdk'</span><span class="p p-Indicator">}</span>
 <span class="w">  </span><span class="nt">xnvme_opts</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;spdk&#39;</span>
-<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;spdk&#39;</span>
-<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;linux&#39;</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
+<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">'spdk'</span>
+<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">'spdk'</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">'linux'</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
 <span class="w">  </span><span class="nt">xnvme_geo</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XNVME_GEO_CONVENTIONAL</span>
 <span class="w">    </span><span class="nt">npugrp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -719,26 +719,26 @@ chmod<span class="w"> </span>+x<span class="w"> </span>hello
 </pre></div>
 </div>
 <p>When doing so, it will print output equivalent to the following.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from &quot;./hello /dev/nvme0ns1&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from "./hello /dev/nvme0ns1"</span>
 <span class="nt">xnvme_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">xnvme_ident</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/dev/nvme0ns1&#39;</span>
+<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'/dev/nvme0ns1'</span>
 <span class="w">    </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x2</span>
 <span class="w">    </span><span class="nt">nsid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x1</span>
 <span class="w">    </span><span class="nt">csi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x0</span>
-<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">'nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">'</span>
 <span class="w">  </span><span class="nt">xnvme_be</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;emu&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;fbsd&#39;</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'emu'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'fbsd'</span><span class="p p-Indicator">}</span>
 <span class="w">  </span><span class="nt">xnvme_opts</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;fbsd&#39;</span>
-<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;posix&#39;</span>
-<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;freebsd&#39;</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;emu&#39;</span>
+<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">'fbsd'</span>
+<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">'posix'</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">'freebsd'</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">'emu'</span>
 <span class="w">  </span><span class="nt">xnvme_geo</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XNVME_GEO_CONVENTIONAL</span>
 <span class="w">    </span><span class="nt">npugrp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -766,26 +766,26 @@ chmod<span class="w"> </span>+x<span class="w"> </span>hello
 </pre></div>
 </div>
 <p>When doing so, it will print output equivalent to the following.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from &quot;./hello /dev/disk4&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from "./hello /dev/disk4"</span>
 <span class="nt">xnvme_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">xnvme_ident</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/dev/disk4&#39;</span>
+<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'/dev/disk4'</span>
 <span class="w">    </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x3</span>
 <span class="w">    </span><span class="nt">nsid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x1</span>
 <span class="w">    </span><span class="nt">csi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x0</span>
-<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">'nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">'</span>
 <span class="w">  </span><span class="nt">xnvme_be</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;psync&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;emu&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;macos&#39;</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'psync'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'emu'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'macos'</span><span class="p p-Indicator">}</span>
 <span class="w">  </span><span class="nt">xnvme_opts</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;macos&#39;</span>
-<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;posix&#39;</span>
-<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;macos&#39;</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;psync&#39;</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;emu&#39;</span>
+<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">'macos'</span>
+<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">'posix'</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">'macos'</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">'psync'</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">'emu'</span>
 <span class="w">  </span><span class="nt">xnvme_geo</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XNVME_GEO_CONVENTIONAL</span>
 <span class="w">    </span><span class="nt">npugrp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -805,33 +805,33 @@ chmod<span class="w"> </span>+x<span class="w"> </span>hello
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-1-1-4" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-4" name="1-4" role="tabpanel" tabindex="0"><div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Build, link and make the example executable</span>
-<span class="n">sh</span> <span class="s2">&quot;gcc ..\getting_started\hello.c -I..\..\toolbox\third-party\windows </span><span class="p">$(</span><span class="n">pkg-config</span> <span class="p">-</span><span class="n">-libs</span> <span class="n">xnvme</span><span class="p">)</span><span class="s2"> -o hello&quot;</span>
+<span class="n">sh</span> <span class="s2">"gcc ..\getting_started\hello.c -I..\..\toolbox\third-party\windows </span><span class="p">$(</span><span class="n">pkg-config</span> <span class="p">-</span><span class="n">-libs</span> <span class="n">xnvme</span><span class="p">)</span><span class="s2"> -o hello"</span>
 
 <span class="c"># Run it</span>
 <span class="p">.\</span><span class="n">hello</span><span class="p">.</span><span class="n">exe</span> <span class="p">.\</span><span class="n">PhysicalDrive1</span>
 </pre></div>
 </div>
 <p>When doing so, it will print output equivalent to the following.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from &quot;.\hello.exe \\.\PhysicalDrive1&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from ".\hello.exe \\.\PhysicalDrive1"</span>
 <span class="nt">xnvme_dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">xnvme_ident</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;\\.\PhysicalDrive1&#39;</span>
+<span class="w">    </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'\\.\PhysicalDrive1'</span>
 <span class="w">    </span><span class="nt">dtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x2</span>
 <span class="w">    </span><span class="nt">nsid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x1</span>
 <span class="w">    </span><span class="nt">csi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0x0</span>
-<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">&#39;</span>
+<span class="w">    </span><span class="nt">subnqn</span><span class="p">:</span><span class="w"> </span><span class="s">'nqn.1994-11.com.samsung:nvme:PM1733:2.5-inch:S537NE0MB00092</span><span class="nv">      </span><span class="s">'</span>
 <span class="w">  </span><span class="nt">xnvme_be</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;iocp&#39;</span><span class="p p-Indicator">}</span>
-<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;windows&#39;</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">'iocp'</span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">attr</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'windows'</span><span class="p p-Indicator">}</span>
 <span class="w">  </span><span class="nt">xnvme_opts</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;windows&#39;</span>
-<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;windows&#39;</span>
-<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;windows&#39;</span>
-<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nvme&#39;</span>
-<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;iocp&#39;</span>
+<span class="w">    </span><span class="nt">be</span><span class="p">:</span><span class="w"> </span><span class="s">'windows'</span>
+<span class="w">    </span><span class="nt">mem</span><span class="p">:</span><span class="w"> </span><span class="s">'windows'</span>
+<span class="w">    </span><span class="nt">dev</span><span class="p">:</span><span class="w"> </span><span class="s">'windows'</span>
+<span class="w">    </span><span class="nt">admin</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">sync</span><span class="p">:</span><span class="w"> </span><span class="s">'nvme'</span>
+<span class="w">    </span><span class="nt">async</span><span class="p">:</span><span class="w"> </span><span class="s">'iocp'</span>
 <span class="w">  </span><span class="nt">xnvme_geo</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XNVME_GEO_CONVENTIONAL</span>
 <span class="w">    </span><span class="nt">npugrp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>

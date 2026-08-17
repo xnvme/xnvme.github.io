@@ -657,14 +657,14 @@ for this model - the daemon must own the controller while clients hold queue ref
 </div>
 <p><strong>Approach:</strong> Follow SPDK’s explicit model - no automatic detection.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Primary (daemon) - initializes controller, creates shared memory</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
-<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">,</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"0000:03:00.0"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"spdk"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">.</span><span class="n">shm_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="c1">// Explicit shared memory ID</span>
 <span class="p">});</span>
 
 <span class="c1">// Secondary (client) - connects to existing primary</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
-<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">,</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"0000:03:00.0"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"spdk"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">.</span><span class="n">shm_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">    </span><span class="p">.</span><span class="n">secondary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span>
 <span class="p">});</span>
@@ -690,11 +690,11 @@ for this model - the daemon must own the controller while clients hold queue ref
 <p><strong>Queue lifecycle:</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Primary (daemon)</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(...);</span><span class="w">  </span><span class="c1">// Owns controller</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Daemon&#39;s queue</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Daemon's queue</span>
 
 <span class="c1">// Secondary (client)</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(...);</span><span class="w">  </span><span class="c1">// Connects to controller</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Client&#39;s own queue</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Client's own queue</span>
 <span class="c1">// q2 is independent of q1, allocated from shared memory pool</span>
 </pre></div>
 </div>
@@ -724,7 +724,7 @@ for this model - the daemon must own the controller while clients hold queue ref
 │                            xNVMe                            │
 ├─────────────────────────────────────────────────────────────┤
 │  g_xnvme_platform (compile-time selected via #ifdef)        │
-│    ├── name: &quot;linux&quot; | &quot;freebsd&quot; | &quot;macos&quot; | &quot;windows&quot;      │
+│    ├── name: "linux" | "freebsd" | "macos" | "windows"      │
 │    ├── backends[] (NULL-terminated xnvme_be_config array)   │
 │    ├── classify()  -- URI → xnvme_be_cap bitmask            │
 │    ├── dev_open()                                           │
@@ -860,7 +860,7 @@ local PCIe device, <code class="docutils literal notranslate"><span class="pre">
 <code class="docutils literal notranslate"><span class="pre">xnvme_ident_from_uri()</span></code> then delegates to <code class="docutils literal notranslate"><span class="pre">xnvme_dev_open_ident()</span></code>.</p>
 <p><strong>Usage scenarios:</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// CLI tools: user provides URI string</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/ng0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/ng0n1"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 
 <span class="c1">// Programmatic: construct ident directly</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="n">ident</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
@@ -868,7 +868,7 @@ local PCIe device, <code class="docutils literal notranslate"><span class="pre">
 <span class="w">    </span><span class="p">.</span><span class="n">dtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_DTYPE_NVME_CHAR</span><span class="p">,</span>
 <span class="w">    </span><span class="p">.</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="p">};</span>
-<span class="n">strncpy</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">));</span>
+<span class="n">strncpy</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">,</span><span class="w"> </span><span class="s">"0000:03:00.0"</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ident</span><span class="p">.</span><span class="n">traddr</span><span class="p">));</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open_ident</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ident</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 
 <span class="c1">// Scan results: already structured, no URI round-trip</span>
@@ -891,7 +891,7 @@ local PCIe device, <code class="docutils literal notranslate"><span class="pre">
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">async</span><span class="p">;</span><span class="w">    </span><span class="c1">// Async interface filter</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">sync</span><span class="p">;</span><span class="w">     </span><span class="c1">// Sync interface filter</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">admin</span><span class="p">;</span><span class="w">    </span><span class="c1">// Admin interface filter</span>
-<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">mem</span><span class="p">;</span><span class="w">      </span><span class="c1">// Memory allocator override (e.g., &quot;hugepage&quot;)</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">mem</span><span class="p">;</span><span class="w">      </span><span class="c1">// Memory allocator override (e.g., "hugepage")</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span><span class="w">        </span><span class="c1">// Namespace ID (default: 1)</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">shm_id</span><span class="p">;</span><span class="w">      </span><span class="c1">// Shared memory ID for IPC (0 = no sharing)</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">hostnqn</span><span class="p">;</span><span class="w">  </span><span class="c1">// Optional: host NQN for fabrics access control</span>
@@ -901,19 +901,19 @@ local PCIe device, <code class="docutils literal notranslate"><span class="pre">
 </div>
 <p><strong>Usage:</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Userspace-managed drivers (mem is fixed by config)</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">});</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;0000:03:00.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;vfio&quot;</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"0000:03:00.0"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"spdk"</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"0000:03:00.0"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"vfio"</span><span class="p">});</span>
 
 <span class="c1">// OS-managed -- select specific config by name</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/ng0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring_cmd&quot;</span><span class="p">});</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/ng0n1"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring_cmd"</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/nvme0n1"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring"</span><span class="p">});</span>
 
 <span class="c1">// OS-managed with hugepage memory</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span>
-<span class="w">	       </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hugepage&quot;</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/nvme0n1"</span><span class="p">,</span>
+<span class="w">	       </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring"</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hugepage"</span><span class="p">});</span>
 
 <span class="c1">// Default -- auto-select via URI classification and caps matching</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/nvme0n1"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -955,8 +955,8 @@ URI-based automatic selection.</p>
 <span class="w">	</span><span class="p">.</span><span class="n">mem_overrides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
 <span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_mem_hugepage</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
 <span class="w">	</span><span class="p">},</span>
-<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring_cmd&quot;</span><span class="p">,</span>
-<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring passthru with NVMe ioctl&quot;</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring_cmd"</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring passthru with NVMe ioctl"</span><span class="p">,</span>
 <span class="w">		 </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_CDEV</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_BDEV</span><span class="p">,</span>
 <span class="w">		 </span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
 <span class="p">};</span>
@@ -971,8 +971,8 @@ URI-based automatic selection.</p>
 <span class="w">	</span><span class="p">.</span><span class="n">mem_overrides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
 <span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_mem_hugepage</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
 <span class="w">	</span><span class="p">},</span>
-<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring_file&quot;</span><span class="p">,</span>
-<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring with file I/O&quot;</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring_file"</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring with file I/O"</span><span class="p">,</span>
 <span class="w">		 </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_BE_CAP_FILE</span><span class="p">,</span>
 <span class="w">		 </span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
 <span class="p">};</span>
@@ -984,8 +984,8 @@ URI-based automatic selection.</p>
 <span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_admin</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_dev</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_spdk_mem</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;spdk&quot;</span><span class="p">,</span>
-<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SPDK userspace NVMe driver&quot;</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"spdk"</span><span class="p">,</span>
+<span class="w">		 </span><span class="p">.</span><span class="n">descr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"SPDK userspace NVMe driver"</span><span class="p">,</span>
 <span class="w">		 </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_PCIE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_TCP</span>
 <span class="w">		       </span><span class="o">|</span><span class="w"> </span><span class="n">XNVME_BE_CAP_NVME_RDMA</span><span class="p">,</span>
 <span class="w">		 </span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
@@ -1206,7 +1206,7 @@ users to force specific interface combinations regardless of URI classification.
 <h3>Device Type Detection<a class="headerlink" href="#device-type-detection" title="Link to this heading">#</a></h3>
 <p>Backend determines device type by parsing URI and using stat():</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="n">xnvme_dev_type</span><span class="w"> </span><span class="nf">detect_device_type</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// 1. Check for PCIe BDF (e.g., &quot;0000:03:00.0&quot;)</span>
+<span class="w">    </span><span class="c1">// 1. Check for PCIe BDF (e.g., "0000:03:00.0")</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_ident_uri_is_pcie</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">PCIE_BDF</span><span class="p">;</span>
 
@@ -1226,8 +1226,8 @@ users to force specific interface combinations regardless of URI classification.
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">S_ISBLK</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">st_mode</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Use naming convention to distinguish NVMe vs generic block</span>
-<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">basename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strrchr</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;/&#39;</span><span class="p">);</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">basename</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strncmp</span><span class="p">(</span><span class="n">basename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;nvme&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">basename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strrchr</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="sc">'/'</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">basename</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strncmp</span><span class="p">(</span><span class="n">basename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">"nvme"</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">NVME_BLOCK</span><span class="p">;</span><span class="w">  </span><span class="c1">// /dev/nvme0n1</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">BLOCK</span><span class="p">;</span><span class="w">           </span><span class="c1">// /dev/sda</span>
 <span class="w">    </span><span class="p">}</span>
@@ -1283,10 +1283,10 @@ users to force specific interface combinations regardless of URI classification.
 <p>Ramdisk is a cross-platform virtual device driver - not a backend, not formally
 CBI, but reusable like CBI.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Ramdisk via URI pattern</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;1GB&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"1GB"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 
 <span class="c1">// Or via backend option</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;1GB&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ramdisk&quot;</span><span class="p">});</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"1GB"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ramdisk"</span><span class="p">});</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1303,20 +1303,20 @@ exact config. The fields <code class="docutils literal notranslate"><span class=
 the API as additional filters on the config array, matching against the <code class="docutils literal notranslate"><span class="pre">id</span></code>
 field of each config’s interface:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Preferred: select config by unique name</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
-<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/nvme0n1"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">be</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring"</span><span class="p">,</span>
 <span class="p">});</span>
 
 <span class="c1">// Legacy: filter by async interface (still works)</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
-<span class="w">    </span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span>
-<span class="p">});</span><span class="w">  </span><span class="c1">// First config with async.id == &quot;io_uring&quot; and matching caps</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/nvme0n1"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring"</span><span class="p">,</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// First config with async.id == "io_uring" and matching caps</span>
 
 <span class="c1">// Force specific combination (bypasses caps filter)</span>
-<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">&quot;/dev/nvme0n1&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
-<span class="w">    </span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;io_uring&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvme&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvme&quot;</span>
+<span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"/dev/nvme0n1"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="p">){</span>
+<span class="w">    </span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"io_uring"</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nvme"</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nvme"</span>
 <span class="p">});</span>
 </pre></div>
 </div>
@@ -1790,14 +1790,14 @@ derived from the device name.</p>
 <span class="p">};</span>
 
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ctrlr</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">              </span><span class="c1">// Kernel name: &quot;nvme0&quot;</span>
-<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">kernel_driver</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">     </span><span class="c1">// &quot;nvme&quot;, &quot;vfio-pci&quot;, &quot;uio_pci_generic&quot;</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">              </span><span class="c1">// Kernel name: "nvme0"</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">kernel_driver</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span><span class="w">     </span><span class="c1">// "nvme", "vfio-pci", "uio_pci_generic"</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ns</span><span class="w"> </span><span class="o">*</span><span class="n">ns</span><span class="p">;</span><span class="w">   </span><span class="c1">// Array of namespaces</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nns</span><span class="p">;</span><span class="w">               </span><span class="c1">// Number of namespaces</span>
 <span class="p">};</span>
 
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_entry</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">bdf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span><span class="w">                   </span><span class="c1">// PCI BDF: &quot;0000:03:00.0&quot;</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">bdf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span><span class="w">                   </span><span class="c1">// PCI BDF: "0000:03:00.0"</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_scan_ctrlr</span><span class="w"> </span><span class="o">*</span><span class="n">ctrlr</span><span class="p">;</span><span class="w"> </span><span class="c1">// Array of controllers (usually 1)</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nctrlr</span><span class="p">;</span><span class="w">                </span><span class="c1">// Number of controllers</span>
 <span class="p">};</span>
@@ -2047,7 +2047,7 @@ definitions.</p></li>
 <span class="cp">#elif defined(XNVME_PLATFORM_WINDOWS_ENABLED)</span>
 <span class="w">	</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_windows</span><span class="p">;</span>
 <span class="cp">#else</span>
-<span class="cp">#error &quot;No platform enabled. Define one of XNVME_PLATFORM_{LINUX,FREEBSD,MACOS,WINDOWS}_ENABLED&quot;</span>
+<span class="cp">#error "No platform enabled. Define one of XNVME_PLATFORM_{LINUX,FREEBSD,MACOS,WINDOWS}_ENABLED"</span>
 <span class="cp">#endif</span>
 </pre></div>
 </div>
@@ -2057,7 +2057,7 @@ definitions.</p></li>
 <p>Each platform defines its own array of available backend configs:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Example: Linux platform</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_platform</span><span class="w"> </span><span class="n">g_xnvme_platform_linux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;linux&quot;</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"linux"</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">classify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_platform_linux_classify</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">backends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
 <span class="cp">#ifdef XNVME_BE_SPDK_ENABLED</span>
@@ -2125,7 +2125,7 @@ shared <code class="docutils literal notranslate"><span class="pre">xnvme_platfo
 <span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">be_opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">async</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">sync</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">admin</span><span class="p">);</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">uri_cap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 
-<span class="w">	</span><span class="c1">// Classify URI only when user hasn&#39;t specified explicit backend opts</span>
+<span class="w">	</span><span class="c1">// Classify URI only when user hasn't specified explicit backend opts</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">be_opts</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">classify</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="n">uri_cap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_xnvme_platform</span><span class="o">-&gt;</span><span class="n">classify</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">ident</span><span class="p">.</span><span class="n">uri</span><span class="p">);</span>
 <span class="w">	</span><span class="p">}</span>
@@ -2144,7 +2144,7 @@ shared <code class="docutils literal notranslate"><span class="pre">xnvme_platfo
 <span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">sync</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">sync</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">sync</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
 <span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">admin</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">opts</span><span class="o">-&gt;</span><span class="n">admin</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">admin</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
 
-<span class="w">		</span><span class="c1">// Filter: caps -- skip configs that can&#39;t handle this URI type</span>
+<span class="w">		</span><span class="c1">// Filter: caps -- skip configs that can't handle this URI type</span>
 <span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uri_cap</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">attr</span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">uri_cap</span><span class="p">))</span>
 <span class="w">			</span><span class="k">continue</span><span class="p">;</span>
 
@@ -2180,7 +2180,7 @@ bypassed (user knows what they want)</p></li>
 </pre></div>
 </div>
 <p>After refactor (caps-matched):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEBUG</span><span class="p">:</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;/dev/nvme0n1&#39;</span> <span class="n">classified</span> <span class="n">cap</span><span class="o">=</span><span class="mh">0x2</span> <span class="p">(</span><span class="n">NVME_BDEV</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEBUG</span><span class="p">:</span> <span class="n">uri</span><span class="o">=</span><span class="s1">'/dev/nvme0n1'</span> <span class="n">classified</span> <span class="n">cap</span><span class="o">=</span><span class="mh">0x2</span> <span class="p">(</span><span class="n">NVME_BDEV</span><span class="p">)</span>
 <span class="n">DEBUG</span><span class="p">:</span> <span class="n">selected</span> <span class="n">config</span><span class="p">:</span> <span class="n">emu</span>
 <span class="n">Error</span><span class="p">:</span> <span class="n">EPERM</span>  <span class="c1"># User sees the actual problem</span>
 </pre></div>

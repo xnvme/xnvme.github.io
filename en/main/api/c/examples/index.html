@@ -534,18 +534,18 @@ specify the desired backend, sync/async/admin command interface, etc.</p>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;Usage: %s &lt;identifer&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;identifer&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_dev_open()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_dev_derive_geo</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Failed deriving geometry, check your permissions.&quot;</span><span class="p">);</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Failed deriving geometry, check your permissions."</span><span class="p">);</span>
 <span class="w">	</span><span class="p">}</span>
 <span class="w">	</span><span class="n">xnvme_dev_pr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 <span class="w">	</span><span class="n">xnvme_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
@@ -587,29 +587,29 @@ The example is intended to be easily extended by adding a for-loop and submittin
 <span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;Usage: %s &lt;ident&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;ident&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_dev_open()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 <span class="w">	</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
 
 <span class="w">	</span><span class="n">buf_nbytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_get_geo</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">;</span>
 
-<span class="w">	</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">&quot;Allocate a payload-buffer of nbytes: %zu&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
+<span class="w">	</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Allocate a payload-buffer of nbytes: %zu"</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
 <span class="w">	</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">buf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_buf_alloc()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_buf_alloc()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
 <span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_clear</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_buf_clear()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_buf_clear()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
 <span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
@@ -620,12 +620,12 @@ The example is intended to be easily extended by adding a for-loop and submittin
 <span class="w">		</span><span class="c1">// Submit and wait for the completion of a read command</span>
 <span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_nvm_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 <span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">			</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_nvm_read()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">			</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_nvm_read()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
 <span class="w">			</span><span class="n">xnvme_cmd_ctx_pr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 <span class="w">			</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="n">EIO</span><span class="p">;</span>
 <span class="w">			</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">		</span><span class="p">}</span>
-<span class="w">		</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">&quot;Submitted and completed command succesfully&quot;</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Submitted and completed command succesfully"</span><span class="p">);</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="nl">exit</span><span class="p">:</span>
@@ -675,10 +675,10 @@ submitting multiple commands.</p>
 <span class="nf">cb_fn</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">XNVME_UNUSED</span><span class="p">(</span><span class="n">cb_arg</span><span class="p">))</span>
 <span class="p">{</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">&quot;Command did not complete successfully&quot;</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Command did not complete successfully"</span><span class="p">);</span>
 <span class="w">		</span><span class="n">xnvme_cmd_ctx_pr</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 <span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">&quot;Command completed succesfully&quot;</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Command completed succesfully"</span><span class="p">);</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="c1">// Completed: Put the command-context back in the queue</span>
@@ -709,13 +709,13 @@ submitting multiple commands.</p>
 <span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;Usage: %s &lt;ident&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;ident&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_dev_open()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_dev_open()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 <span class="w">	</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
@@ -723,7 +723,7 @@ submitting multiple commands.</p>
 <span class="w">	</span><span class="c1">// Initialize a command-queue</span>
 <span class="w">	</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_init()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_queue_init()"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
 <span class="w">		</span><span class="n">xnvme_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
 <span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
@@ -735,16 +735,16 @@ submitting multiple commands.</p>
 
 <span class="w">	</span><span class="n">buf_nbytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_get_geo</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">;</span>
 
-<span class="w">	</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">&quot;Allocate a payload-buffer of nbytes: %zu&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
+<span class="w">	</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Allocate a payload-buffer of nbytes: %zu"</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
 <span class="w">	</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">buf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_buf_alloc()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_buf_alloc()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
 <span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_clear</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_buf_clear()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_buf_clear()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
 <span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
@@ -757,7 +757,7 @@ submitting multiple commands.</p>
 <span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_nvm_read</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 <span class="w">		</span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
-<span class="w">			</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">&quot;Submission succeeded&quot;</span><span class="p">);</span>
+<span class="w">			</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Submission succeeded"</span><span class="p">);</span>
 <span class="w">			</span><span class="k">break</span><span class="p">;</span>
 
 <span class="w">		</span><span class="c1">// Submission failed: queue is full =&gt; process completions and try again</span>
@@ -768,7 +768,7 @@ submitting multiple commands.</p>
 
 <span class="w">		</span><span class="c1">// Submission failed: unexpected error, put the command-context back in the queue</span>
 <span class="w">		</span><span class="k">default</span><span class="o">:</span>
-<span class="w">			</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_nvm_read()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">			</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_nvm_read()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
 <span class="w">			</span><span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
 <span class="w">			</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">		</span><span class="p">}</span>
@@ -777,7 +777,7 @@ submitting multiple commands.</p>
 <span class="w">	</span><span class="c1">// Done submitting, wait for all outstanding I/O to complete as we are about to exit</span>
 <span class="w">	</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_drain</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">&quot;xnvme_queue_drain()&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_queue_drain()"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
 <span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
