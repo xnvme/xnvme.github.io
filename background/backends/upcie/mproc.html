@@ -699,16 +699,22 @@ startup. Because uPCIe also needs hugepages for its DMA memory, the two cannot
 be expected to share a system, and running uPCIe and SPDK in multi-process
 mode side by side is not guaranteed to work.</p>
 </section>
+<section id="attachment-mode-restriction">
+<h3>Attachment-mode restriction<a class="headerlink" href="#attachment-mode-restriction" title="Link to this heading">#</a></h3>
+<p>Multi-process mode requires the device to be bound to <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
+(the UIO_LUT attachment mode), which is also what <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and
+<code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> require. The <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> attachment modes that <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">upcie</span></code>
+otherwise supports, described under <a class="reference internal" href="index.html#sec-backends-upcie-attachment"><span class="std std-ref">Attachment Modes</span></a>,
+hold per-process fds that a secondary cannot inherit, so <code class="docutils literal notranslate"><span class="pre">_rte_init</span></code>
+returns <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code> up front when <code class="docutils literal notranslate"><span class="pre">opts.shm_id</span></code> is set under either of
+them.</p>
+</section>
 <section id="gpu-backend-doorbell-registration">
 <h3>GPU backend doorbell registration<a class="headerlink" href="#gpu-backend-doorbell-registration" title="Link to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> registers the I/O queue doorbells of its GPU-resident queue pairs
 with <code class="docutils literal notranslate"><span class="pre">cuMemHostRegister(...,</span> <span class="pre">CU_MEMHOSTREGISTER_IOMEMORY)</span></code>. Each process maps
 BAR0 independently, so each registers its own mapping of the doorbell page; this
 has not been exercised across many concurrent processes on the same controller.</p>
-<p>Note also that <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> require the device to be bound to
-<code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>. The <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path that the host backend supports is
-rejected before the controller is opened, so it is unavailable in multi-process
-mode with these backends as well.</p>
 </section>
 </section>
 </section>
@@ -756,6 +762,7 @@ mode with these backends as well.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-isolation-between-processes">No isolation between processes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-ordering-and-timeouts">Startup ordering and timeouts</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility-with-spdk">Compatibility with SPDK</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attachment-mode-restriction">Attachment-mode restriction</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-backend-doorbell-registration">GPU backend doorbell registration</a></li>
 </ul>
 </li>

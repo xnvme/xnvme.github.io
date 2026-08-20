@@ -539,7 +539,28 @@ devices to uio_pci_generic or vfio-pci:</p>
 </pre></div>
 </div>
 <p><strong>upcie</strong> supports both <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> (no-IOMMU path) and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>
-(IOMMU-backed path). <strong>upcie-cuda</strong> requires the non-VFIO path.</p>
+(IOMMU-backed path). <strong>upcie-cuda</strong> and <strong>upcie-hip</strong> require the non-VFIO
+path.</p>
+</section>
+<section id="attachment-modes">
+<span id="sec-backends-upcie-attachment"></span><h3>Attachment Modes<a class="headerlink" href="#attachment-modes" title="Link to this heading">#</a></h3>
+<p>The attachment mode follows the driver bound to the device, and decides how
+DMA memory is wired up:</p>
+<dl class="simple myst">
+<dt><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code></dt><dd><p>UIO_LUT. BAR mapping plus a hugepage-backed lookup-table translator. The
+only mode that supports <a class="reference internal" href="mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> with <code class="docutils literal notranslate"><span class="pre">/dev/iommu</span></code></dt><dd><p>VFIO_CDEV. One iommufd IOAS shared across controllers, memory imported
+from a hugepage-backed memfd.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> without <code class="docutils literal notranslate"><span class="pre">/dev/iommu</span></code></dt><dd><p>VFIO_TYPE1. The legacy vfio container, one per runtime, with the
+hugepage mapped into it.</p>
+</dd>
+</dl>
+<p>Between the two <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> modes, the backend prefers VFIO_CDEV when
+<code class="docutils literal notranslate"><span class="pre">/dev/iommu</span></code> is available and the device has a <code class="docutils literal notranslate"><span class="pre">vfio-dev</span></code> entry, falling
+back to VFIO_TYPE1. Setting <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_VFIO_MODE</span></code> to <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> or
+<code class="docutils literal notranslate"><span class="pre">type1</span></code> forces the choice.</p>
 </section>
 <section id="privileges">
 <h3>Privileges<a class="headerlink" href="#privileges" title="Link to this heading">#</a></h3>
@@ -606,6 +627,7 @@ requirements for <a class="reference internal" href="cuda.html#sec-backends-upci
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-attachment">Driver Attachment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attachment-modes">Attachment Modes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#privileges">Privileges</a></li>
 </ul>
 </li>
