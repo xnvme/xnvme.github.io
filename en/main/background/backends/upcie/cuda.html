@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=cf061042" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -49,7 +49,7 @@
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'background/backends/upcie/cuda';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -509,8 +509,8 @@
 <span id="sec-backends-upcie-cuda"></span><h1>uPCIe CUDA<a class="headerlink" href="#upcie-cuda" title="Link to this heading">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This backend requires a custom Linux kernel patch that is not yet upstream.
-See <a class="reference internal" href="#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Requirement</span></a> for details.</p>
+<p>This backend requires an out-of-tree kernel module that is not yet upstream.
+See <a class="reference internal" href="#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Module</span></a> for details.</p>
 </div>
 <p>The <strong>upcie-cuda</strong> backend enables direct <strong>PCIe peer-to-peer (P2P)</strong> data
 transfers between the NVMe device and the GPU, with I/O buffers allocated from
@@ -548,16 +548,29 @@ size used by NVMe for PRP construction and sector alignment.</p>
 <strong>control</strong> path (submission queue entries, completion queue entries, PRP lists)
 still flows through host memory. As a result, both the CUDA heap and the host
 hugepage runtime are initialized when the first <strong>upcie-cuda</strong> device is opened.</p>
+<p>A caller can hand over device memory it allocated itself with
+<code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>, which registers the range through the same registry the
+heap uses, so such a buffer is usable exactly as one from
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code>. Registering a range twice is cheap, since what it
+covers is refcounted.</p>
 </section>
-<section id="kernel-requirement">
-<span id="sec-backends-upcie-cuda-kernel"></span><h2>Kernel Requirement<a class="headerlink" href="#kernel-requirement" title="Link to this heading">#</a></h2>
+<section id="kernel-module">
+<span id="sec-backends-upcie-cuda-kernel"></span><h2>Kernel Module<a class="headerlink" href="#kernel-module" title="Link to this heading">#</a></h2>
 <p>Physical address resolution for CUDA device memory relies on importing a
-<code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> exported by the CUDA driver into the kernel’s DMA subsystem. This
-requires a Linux kernel patch that is not yet upstream:</p>
+<code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> exported by the CUDA driver into the kernel’s DMA subsystem. The
+ioctls that do so are not upstream. They ship as <code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code>, a standalone
+out-of-tree module serving <code class="docutils literal notranslate"><span class="pre">/dev/dmabuf_import</span></code>, packaged for DKMS.</p>
+<p>This backend requires <strong>dmabuf-import 0.2.0</strong>, published as an asset of the
+uPCIe release the headers here are vendored from:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/xnvme/udmabuf-import">xnvme/udmabuf-import</a></p></li>
+<li><p><a class="reference external" href="https://github.com/safl/upcie/releases/tag/v0.7.0">safl/upcie v0.7.0</a></p></li>
 </ul>
-<p>Build and install that patched kernel before using the <strong>upcie-cuda</strong> backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./dmabuf-import-dkms_0.2.0_all.deb
+</pre></div>
+</div>
+<p>These ioctls began as a patch to the in-tree <code class="docutils literal notranslate"><span class="pre">udmabuf</span></code> driver, which meant
+rebuilding the kernel to get them. That is no longer necessary, and the module
+supersedes the <code class="docutils literal notranslate"><span class="pre">udmabuf-import</span></code> package that carried the patched version.</p>
 </section>
 <section id="system-configuration">
 <span id="sec-backends-upcie-cuda-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
@@ -618,7 +631,6 @@ limit return <code class="docutils literal notranslate"><span class="pre">ENOMEM
 is 513 × 4 KiB ≈ 2 MiB.</p></li>
 <li><p><strong>No <code class="docutils literal notranslate"><span class="pre">buf_realloc</span></code>.</strong> Buffer reallocation is not implemented and returns
 <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
-<li><p><strong>No memory mapping</strong> (<code class="docutils literal notranslate"><span class="pre">mem_map</span></code> / <code class="docutils literal notranslate"><span class="pre">mem_unmap</span></code>). These return <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
 <li><p><strong>No pseudo commands.</strong> Show registers, controller reset, subsystem reset,
 and namespace rescan all return <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
 </ul>
@@ -649,7 +661,7 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-architecture">Memory Architecture</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-requirement">Kernel Requirement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-module">Kernel Module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-requirements">Hardware Requirements</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepages">Hugepages</a></li>
@@ -674,8 +686,8 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -709,7 +721,7 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
