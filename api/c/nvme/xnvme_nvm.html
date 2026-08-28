@@ -679,6 +679,8 @@
 <dt class="sig sig-object c" id="c.xnvme_nvm_write">
 <span class="target" id="libxnvme__nvm_8h_1a5d8ec2bb46fe6460b77628c03d880f33"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_nvm_write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../core/xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dbuf</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mbuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_nvm_write" title="Link to this definition">#</a><br /></dt>
 <dd><p>Submit a NVMe Write command. </p>
+<p>NOTE: fields which are not arguments here, such as ‘ctx-&gt;cmd.nvm.fua’, are left untouched; set them on the context before calling this. Neither this function nor <a class="reference internal" href="../core/xnvme_queue.html#libxnvme__queue_8h_1a8a94129b14520613784136499c6dfa88"><span class="std std-ref">xnvme_queue_get_cmd_ctx</span></a> clears them, so a context which is reused for another command carries them over. Reset it with <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1aad9ccd2a8eb80f845453ce7684862f42"><span class="std std-ref">xnvme_cmd_ctx_clear</span></a> when that is not intended.</p>
+<p>NOTE: whether ‘ctx-&gt;cmd.nvm.fua’ is honoured is backend-dependent, and it applies to NVM writes only. Backends passing the command through to an NVMe device (ioctl, io_uring_cmd, spdk, libvfn, upcie) carry the bit in the command itself. The Linux io_uring and libaio backends translate it to RWF_DSYNC, which on a raw block device makes the kernel issue the write with REQ_FUA. The remaining backends (psync, POSIX-aio, ramdisk, FreeBSD, Windows, macOS) ignore it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -750,6 +752,7 @@
 <span class="target" id="libxnvme__nvm_8h_1a187c917a67639401e97aab3835c7300b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_prep_nvm</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../core/xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">opcode</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">nsid</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">slba</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nlb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_prep_nvm" title="Link to this definition">#</a><br /></dt>
 <dd><p>Prepare a NVMe command context for an I/O command. </p>
 <p>This populates the command fields in the given context, it does not submit the command. Submit it with e.g. <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1a42f1493ca3bce4159d34330e49e234a2"><span class="std std-ref">xnvme_cmd_pass</span></a>.</p>
+<p>NOTE: only the fields given as arguments are populated; the remaining ones, such as ‘ctx-&gt;cmd.nvm.fua’, are left as they were. Reset a reused context with <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1aad9ccd2a8eb80f845453ce7684862f42"><span class="std std-ref">xnvme_cmd_ctx_clear</span></a> when carrying them over is not intended.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -803,6 +806,20 @@
 <span class="cm">/**</span>
 <span class="cm"> * Submit a NVMe Write command</span>
 <span class="cm"> *</span>
+<span class="cm"> * NOTE: fields which are not arguments here, such as 'ctx-&gt;cmd.nvm.fua', are</span>
+<span class="cm"> * left untouched; set them on the context before calling this. Neither this</span>
+<span class="cm"> * function nor ::xnvme_queue_get_cmd_ctx clears them, so a context which is</span>
+<span class="cm"> * reused for another command carries them over. Reset it with</span>
+<span class="cm"> * ::xnvme_cmd_ctx_clear when that is not intended.</span>
+<span class="cm"> *</span>
+<span class="cm"> * NOTE: whether 'ctx-&gt;cmd.nvm.fua' is honoured is backend-dependent, and it</span>
+<span class="cm"> * applies to NVM writes only. Backends passing the command through to an NVMe</span>
+<span class="cm"> * device (ioctl, io_uring_cmd, spdk, libvfn, upcie) carry the bit in the</span>
+<span class="cm"> * command itself. The Linux io_uring and libaio backends translate it to</span>
+<span class="cm"> * RWF_DSYNC, which on a raw block device makes the kernel issue the write</span>
+<span class="cm"> * with REQ_FUA. The remaining backends (psync, POSIX-aio, ramdisk, FreeBSD,</span>
+<span class="cm"> * Windows, macOS) ignore it.</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
 <span class="cm"> * @param nsid Namespace Identifier</span>
 <span class="cm"> * @param slba The LBA to start the write at</span>
@@ -849,6 +866,10 @@
 <span class="cm"> *</span>
 <span class="cm"> * This populates the command fields in the given context, it does not submit</span>
 <span class="cm"> * the command. Submit it with e.g. ::xnvme_cmd_pass.</span>
+<span class="cm"> *</span>
+<span class="cm"> * NOTE: only the fields given as arguments are populated; the remaining ones,</span>
+<span class="cm"> * such as 'ctx-&gt;cmd.nvm.fua', are left as they were. Reset a reused context</span>
+<span class="cm"> * with ::xnvme_cmd_ctx_clear when carrying them over is not intended.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
 <span class="cm"> * @param opcode Opcode for the NVMe command</span>
