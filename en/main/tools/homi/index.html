@@ -478,7 +478,7 @@
                   
   <section id="homi">
 <span id="sec-tools-homi"></span><h1>homi<a class="headerlink" href="#homi" title="Link to this heading">#</a></h1>
-<p><strong>homi</strong>, Host-Orchestrated Multi-process I/O,  opens a set of NVMe devices and
+<p><strong>homi</strong>, Host-Orchestrated Multi-path I/O, opens a set of NVMe devices and
 holds them open until it is told to stop. It does no I/O of its own.</p>
 <p>Its purpose is to provide the long-lived <strong>primary</strong> process for
 <a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a>. The primary owns the DMA hugepages and the
@@ -487,47 +487,83 @@ Running <strong>homi</strong> puts that responsibility in a process of its own, 
 processes actually doing I/O can come and go freely as secondaries.</p>
 <p><a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a> is only available for the
 <a class="reference internal" href="../../background/backends/upcie/index.html#sec-backends-upcie"><span class="std std-ref">uPCIe</span></a> backend and its GPU variants, and for the
-<a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a> backend. <strong>homi</strong> is therefore useful where one of those
-is built: <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> on Linux, and <code class="docutils literal notranslate"><span class="pre">spdk</span></code> on
+<a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a> backend. <strong>homi</strong> is therefore useful where one of
+those is built: <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> on Linux, and <code class="docutils literal notranslate"><span class="pre">spdk</span></code> on
 Linux and FreeBSD. On Windows it exits with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>, since no
-multi-process capable backend is available there. On other platforms it runs, but
-opening a device with a non-zero <code class="docutils literal notranslate"><span class="pre">shm_id</span></code> fails with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>.</p>
+multi-process capable backend is available there. On other platforms it runs,
+but opening a device with a non-zero <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code> fails with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>homi<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:
+
+<span class="w">  </span>start<span class="w">            </span><span class="p">|</span><span class="w"> </span>Open<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices<span class="w"> </span>and<span class="w"> </span>hold<span class="w"> </span>them<span class="w"> </span>open
+
+See<span class="w"> </span><span class="s1">'homi &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
 <section id="start-hold-devices-open">
-<h2><code class="docutils literal notranslate"><span class="pre">start</span></code> — Hold devices open<a class="headerlink" href="#start-hold-devices-open" title="Link to this heading">#</a></h2>
-<p>Opens every device given as a positional argument, then blocks until signalled.</p>
-<p><code class="docutils literal notranslate"><span class="pre">--shm_id</span></code> is required and sets the shared-memory id the devices are opened
-with. Every process that should share these controllers must be started with the
-same id. <code class="docutils literal notranslate"><span class="pre">--be</span></code> optionally selects the backend.</p>
-<p>Roles are not assigned by the tool: whichever process claims a given <code class="docutils literal notranslate"><span class="pre">shm_id</span></code>
-first becomes the primary (see <a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc-model"><span class="std std-ref">Process model</span></a>). Starting
-<strong>homi</strong> before any secondary is therefore what makes it the primary.</p>
-<p><code class="docutils literal notranslate"><span class="pre">--host_heap_size</span></code> sets the size of the <code class="docutils literal notranslate"><span class="pre">upcie</span></code> host DMA heap, in bytes. The
-heap is allocated once per process, on the first device open, so this value covers
-every device <strong>homi</strong> holds rather than being per device.</p>
-<p>Rather than the 1 GiB the backend would otherwise use, <strong>homi</strong> defaults to 16 MiB
-per device held. It needs only the admin queue and the sync queue pair that opening
-a device creates, and each of those carries a request pool costing 4 MiB — so 16
-MiB per device is roughly double what is required. Every process in multi-process
-mode allocates a heap of its own, so a primary claiming the backend default would
-leave nothing in the hugepage pool for the secondaries it exists to serve:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span> <span class="o">--</span><span class="n">host_heap_size</span> <span class="mi">134217728</span>
+<h2><code class="docutils literal notranslate"><span class="pre">start</span></code>: Hold devices open<a class="headerlink" href="#start-hold-devices-open" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>homi<span class="w"> </span>start<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Open<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices<span class="w"> </span>and<span class="w"> </span>hold<span class="w"> </span>them<span class="w"> </span>open
+<span class="w">  </span>
+Positional<span class="w"> </span>arguments:
+
+<span class="w">  </span><span class="o">[</span>uri<span class="w"> </span>...<span class="o">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'/dev/nvme0n1'</span>,<span class="w"> </span><span class="s1">'0000:01:00.1'</span>,<span class="w"> </span><span class="s1">'10.9.8.1:8888'</span>,<span class="w"> </span><span class="s1">'\\.\PhysicalDrive1'</span>
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--homi-id<span class="w"> </span>NUM<span class="w">                 </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
+<span class="w">  </span>
+With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'spdk'</span>,<span class="w"> </span><span class="s1">'libvfn'</span>,<span class="w"> </span><span class="s1">'upcie'</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--host_heap_size<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">      </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">=</span>upcie,<span class="w"> </span>host<span class="w"> </span>DMA<span class="w"> </span>heap<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bytes
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--device_heap_size<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">    </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">={</span>upcie-cuda,upcie-hip<span class="o">}</span>,<span class="w"> </span>GPU<span class="w"> </span>device<span class="w"> </span>heap<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bytes
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">'homi --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Opens every device given as a positional argument, then blocks until
+signalled.</p>
+<p>Every process that should share these controllers must be started with the
+same id.</p>
+<p>Roles are not assigned by the tool: whichever process claims a given <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>
+first becomes the primary (see <a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc-model"><span class="std std-ref">Process model</span></a>).
+Starting <strong>homi</strong> before any secondary is therefore what makes it the primary.</p>
+<p>The heap is allocated once per process, on the first device open, so
+<code class="docutils literal notranslate"><span class="pre">--host_heap_size</span></code> covers every device <strong>homi</strong> holds rather than being per
+device.</p>
+<p>Rather than the 1 GiB the backend would otherwise use, <strong>homi</strong> defaults to 16
+MiB per device held. It needs only the admin queue and the sync queue pair
+that opening a device creates, and each of those carries a request pool
+costing 4 MiB, so 16 MiB per device is roughly double what is required.
+Every process in multi-process mode allocates a heap of its own, so a primary
+claiming the backend default would leave nothing in the hugepage pool for the
+secondaries it exists to serve:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>start<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span><span class="w"> </span>--host_heap_size<span class="w"> </span><span class="m">134217728</span>
 </pre></div>
 </div>
 <p>If any device fails to open, <strong>homi</strong> closes the devices it has already opened
 and exits with an error, rather than holding a partial set open. Once all
 devices are open it reports that it has started, then waits for <code class="docutils literal notranslate"><span class="pre">SIGINT</span></code>
 (Ctrl+C) or <code class="docutils literal notranslate"><span class="pre">SIGTERM</span></code>. On either signal it closes all devices and exits.</p>
-<p>Example — hold a single device open as the primary for <code class="docutils literal notranslate"><span class="pre">shm_id</span></code> 1:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
+<p>Example: hold a single device open as the primary for <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code> 1:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>start<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
-<p>Example — hold several devices under the same <code class="docutils literal notranslate"><span class="pre">shm_id</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
+<p>Example: hold several devices under the same <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>start<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="m">0000</span>:04:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 <p>While it runs, other processes attach as secondaries by passing the same
-<code class="docutils literal notranslate"><span class="pre">--shm_id</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme</span> <span class="n">info</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
+identifier:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 </section>
@@ -535,23 +571,24 @@ devices are open it reports that it has started, then waits for <code class="doc
 <h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">#</a></h2>
 <p><strong>homi</strong> works with any backend that advertises the multi-process capability,
 which is <code class="docutils literal notranslate"><span class="pre">spdk</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">spdk</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>start<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 <p>With <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>, <strong>homi</strong> additionally caps the GPU device
-heap at 2 MiB rather than the backend default of 1 GiB. It never allocates data
-buffers, which is all the device heap is used for, so claiming the default would
-take VRAM away from the secondaries:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">homi</span> <span class="n">start</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="o">--</span><span class="n">shm_id</span> <span class="mi">1</span>
+heap at 2 MiB rather than the backend default of 1 GiB. It never allocates
+data buffers, which is all the device heap is used for, so claiming the
+default would take VRAM away from the secondaries:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>start<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie-cuda<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">homi</span> <span class="pre">status</span></code> is the exception: it reads uPCIe’s shared segment directly, so a
+primary started with <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">spdk</span></code> reads as absent rather than as running, and on
+a platform without uPCIe the subcommand refuses outright. The same applies to
+the systemd unit, whose readiness gate is that command.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a></dt><dd><p>The process model, startup handshake, admin-queue serialization, and the
-known limitations of multi-process mode.</p>
-</dd>
-</dl>
+<p><a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a> covers the process model, startup handshake,
+admin-queue serialization, and the known limitations of multi-process mode.</p>
 </div>
 </section>
 </section>
@@ -579,7 +616,7 @@ known limitations of multi-process mode.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#start-hold-devices-open"><code class="docutils literal notranslate"><span class="pre">start</span></code> — Hold devices open</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#start-hold-devices-open"><code class="docutils literal notranslate"><span class="pre">start</span></code>: Hold devices open</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends">Backends</a></li>
 </ul>
   </nav></div>

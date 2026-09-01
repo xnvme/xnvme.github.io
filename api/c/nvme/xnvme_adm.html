@@ -612,6 +612,28 @@
 </dd></dl>
 
 </section>
+<section id="xnvme-adm-gfeat-nqueues">
+<span id="sec-api-c-xnvme-adm-func-xnvme-adm-gfeat-nqueues"></span><h3>xnvme_adm_gfeat_nqueues<a class="headerlink" href="#xnvme-adm-gfeat-nqueues" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_adm_gfeat_nqueues">
+<span class="target" id="libxnvme__adm_8h_1a8774133d30e5a220e01021e92f2d7dc0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_adm_gfeat_nqueues</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../core/xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">nsq</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ncq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_adm_gfeat_nqueues" title="Link to this definition">#</a><br /></dt>
+<dd><p>Ask the controller how many I/O queues it has allocated. </p>
+<p>A helper on top of <a class="reference internal" href="#libxnvme__adm_8h_1a2315c81bc83f781f7d9011347871dabc"><span class="std std-ref">xnvme_adm_gfeat()</span></a>, not a one-to-one mapping of it. Get Features for FID 0x07 answers in cdw0 with NSQA and NCQA, which are zero-based as queue-allocation fields are throughout the specification. This transforms them: <code class="docutils literal notranslate"><span class="pre">nsq</span></code> and <code class="docutils literal notranslate"><span class="pre">ncq</span></code> are NSQA + 1 and NCQA + 1, so they are counts and can be compared with a number of queues directly. A caller that wants the fields as the controller reported them should issue <a class="reference internal" href="#libxnvme__adm_8h_1a2315c81bc83f781f7d9011347871dabc"><span class="std std-ref">xnvme_adm_gfeat()</span></a> and read cdw0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Pointer to <a class="reference internal" href="../core/xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a></p></li>
+<li><p><strong>nsq</strong> – Filled with NSQA + 1, the number of I/O submission queues </p></li>
+<li><p><strong>ncq</strong> – Filled with NCQA + 1, the number of I/O completion queues</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned and both counts are filled. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned and neither is written; zero would be a plausible answer rather than an absent one. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="xnvme-adm-idfy">
 <span id="sec-api-c-xnvme-adm-func-xnvme-adm-idfy"></span><h3>xnvme_adm_idfy<a class="headerlink" href="#xnvme-adm-idfy" title="Link to this heading">#</a></h3>
 <dl class="c function">
@@ -1033,6 +1055,28 @@
 <span class="w">		</span><span class="kt">size_t</span><span class="w"> </span><span class="n">dbuf_nbytes</span><span class="p">);</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Ask the controller how many I/O queues it has allocated</span>
+<span class="cm"> *</span>
+<span class="cm"> * A helper on top of xnvme_adm_gfeat(), not a one-to-one mapping of it. Get</span>
+<span class="cm"> * Features for FID 0x07 answers in cdw0 with NSQA and NCQA, which are</span>
+<span class="cm"> * zero-based as queue-allocation fields are throughout the specification. This</span>
+<span class="cm"> * transforms them: `nsq` and `ncq` are NSQA + 1 and NCQA + 1, so they are</span>
+<span class="cm"> * counts and can be compared with a number of queues directly. A caller that</span>
+<span class="cm"> * wants the fields as the controller reported them should issue</span>
+<span class="cm"> * xnvme_adm_gfeat() and read cdw0.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
+<span class="cm"> * @param nsq Filled with NSQA + 1, the number of I/O submission queues</span>
+<span class="cm"> * @param ncq Filled with NCQA + 1, the number of I/O completion queues</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned and both counts are filled. On error,</span>
+<span class="cm"> *         negative `errno` is returned and neither is written; zero would be a</span>
+<span class="cm"> *         plausible answer rather than an absent one.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_adm_gfeat_nqueues</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">nsq</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">ncq</span><span class="p">);</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * Submit and wait for completion of an NVMe Set Feature (sfeat) command</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param ctx Pointer to ::xnvme_cmd_ctx</span>
@@ -1174,6 +1218,10 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-adm-gfeat">xnvme_adm_gfeat</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_adm_gfeat"><code class="docutils literal notranslate"><span class="pre">xnvme_adm_gfeat()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-adm-gfeat-nqueues">xnvme_adm_gfeat_nqueues</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_adm_gfeat_nqueues"><code class="docutils literal notranslate"><span class="pre">xnvme_adm_gfeat_nqueues()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-adm-idfy">xnvme_adm_idfy</a><ul class="nav section-nav flex-column">

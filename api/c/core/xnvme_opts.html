@@ -651,7 +651,7 @@
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_opts.shm_id">
 <span class="target" id="structxnvme__opts_1a51f070e3001f4fb9a649dab1734f669d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">shm_id</span></span></span><a class="headerlink" href="#c.xnvme_opts.shm_id" title="Link to this definition">#</a><br /></dt>
-<dd><p>shared-memory-id </p>
+<dd><p>SPDK: DPDK shared-memory-id. </p>
 </dd></dl>
 
 <dl class="c var">
@@ -730,6 +730,12 @@
 <dt class="sig sig-object c" id="c.xnvme_opts.gpu_id">
 <span class="target" id="structxnvme__opts_1a50883976bd44a21205f71eacd1b3ba1f"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gpu_id</span></span></span><a class="headerlink" href="#c.xnvme_opts.gpu_id" title="Link to this definition">#</a><br /></dt>
 <dd><p>upcie-cuda/upcie-hip: GPU ordinal to use (default 0) </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_opts.homi_id">
+<span class="target" id="structxnvme__opts_1a86da13115880ad748e288497f4631ac2"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">homi_id</span></span></span><a class="headerlink" href="#c.xnvme_opts.homi_id" title="Link to this definition">#</a><br /></dt>
+<dd><p>upcie: the control-plane server to attach to; 0 opens the controller here </p>
 </dd></dl>
 
 </div>
@@ -847,7 +853,7 @@
 <span class="w">	</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">register_buffers</span><span class="p">;</span><span class="w">  </span><span class="c1">///&lt; io_uring: enable buffer-registration</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts_css</span><span class="w"> </span><span class="n">css</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; SPDK controller-setup: do command-set-selection</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">use_cmb_sqs</span><span class="p">;</span><span class="w">      </span><span class="c1">///&lt; SPDK controller-setup: use controller-memory-buffer for sq</span>
-<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">shm_id</span><span class="p">;</span><span class="w">           </span><span class="c1">///&lt; shared-memory-id</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">shm_id</span><span class="p">;</span><span class="w">           </span><span class="c1">///&lt; SPDK: DPDK shared-memory-id</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">main_core</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; SPDK: main-core</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">core_mask</span><span class="p">;</span><span class="w">     </span><span class="c1">///&lt; SPDK: core-mask</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">iova_mode</span><span class="p">;</span><span class="w">     </span><span class="c1">///&lt; SPDK env-init: DPDK IOVA mode ("va" or "pa")</span>
@@ -862,6 +868,9 @@
 <span class="w">	</span><span class="kt">size_t</span><span class="w"> </span><span class="n">device_heap_size</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; upcie-cuda/upcie-hip: GPU device heap size in bytes (0 =</span>
 <span class="w">				 </span><span class="c1">///&lt; default 1 GiB)</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">gpu_id</span><span class="p">;</span><span class="w">         </span><span class="c1">///&lt; upcie-cuda/upcie-hip: GPU ordinal to use (default 0)</span>
+
+<span class="w">	</span><span class="cm">/** upcie: the control-plane server to attach to; 0 opens the controller here */</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">homi_id</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
@@ -953,6 +962,7 @@
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_opts.host_heap_size"><code class="docutils literal notranslate"><span class="pre">host_heap_size</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_opts.device_heap_size"><code class="docutils literal notranslate"><span class="pre">device_heap_size</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_opts.gpu_id"><code class="docutils literal notranslate"><span class="pre">gpu_id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_opts.homi_id"><code class="docutils literal notranslate"><span class="pre">homi_id</span></code></a></li>
 </ul>
 </li>
 </ul>
