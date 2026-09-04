@@ -602,6 +602,9 @@ xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> <
 <dl class="simple">
 <dt><a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda"><span class="std std-ref">uPCIe CUDA</span></a></dt><dd><p>Backend setup, system configuration, and memory architecture.</p>
 </dd>
+<dt><a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a></dt><dd><p>Required with an IOMMU enabled. Without it the run succeeds while every
+I/O fails.</p>
+</dd>
 <dt><a class="reference internal" href="../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API used to create queues and dispatch commands
 from CUDA kernels.</p>
 </dd>
@@ -610,7 +613,7 @@ from CUDA kernels.</p>
 <p>Requires the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend. All queues across all devices are driven
 by a single CUDA kernel: each CUDA block owns one NVMe queue and each thread
 within the block owns one queue slot, so <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> threads submit and reap
-commands in lock-step. The grid has <code class="docutils literal notranslate"><span class="pre">ndevs</span> <span class="pre">×</span> <span class="pre">--queues</span></code> blocks in total.</p>
+commands in lock-step. The grid has <code class="docutils literal notranslate"><span class="pre">ndevs</span> <span class="pre">×</span> <span class="pre">--nqueues</span></code> blocks in total.</p>
 <p>Both <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> and <code class="docutils literal notranslate"><span class="pre">--iosize</span></code> must be powers of 2. Supported patterns are
 <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">randread</span></code>, and <code class="docutils literal notranslate"><span class="pre">randwrite</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-run<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
@@ -644,7 +647,7 @@ xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> <
 </pre></div>
 </div>
 <p>Example — sequential read, four queues of depth 32 on two devices:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">read</span> <span class="o">--</span><span class="n">queues</span> <span class="mi">4</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">cuda</span><span class="o">-</span><span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">read</span> <span class="o">--</span><span class="n">nqueues</span> <span class="mi">4</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">32</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
     <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">00.0</span>
 </pre></div>
 </div>

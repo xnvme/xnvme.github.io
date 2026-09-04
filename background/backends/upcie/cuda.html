@@ -563,7 +563,7 @@ out-of-tree module serving <code class="docutils literal notranslate"><span clas
 <p>This backend requires <strong>dmabuf-import 0.2.0</strong>, published as an asset of the
 uPCIe release the headers here are vendored from:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/safl/upcie/releases/tag/v0.7.0">safl/upcie v0.7.0</a></p></li>
+<li><p><a class="reference external" href="https://github.com/safl/upcie/releases/tag/v0.8.0">safl/upcie v0.8.0</a></p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./dmabuf-import-dkms_0.2.0_all.deb
 </pre></div>
@@ -571,6 +571,68 @@ uPCIe release the headers here are vendored from:</p>
 <p>These ioctls began as a patch to the in-tree <code class="docutils literal notranslate"><span class="pre">udmabuf</span></code> driver, which meant
 rebuilding the kernel to get them. That is no longer necessary, and the module
 supersedes the <code class="docutils literal notranslate"><span class="pre">udmabuf-import</span></code> package that carried the patched version.</p>
+</section>
+<section id="enforcing-iommu">
+<span id="sec-backends-upcie-cuda-iommu"></span><h2>Enforcing IOMMU<a class="headerlink" href="#enforcing-iommu" title="Link to this heading">#</a></h2>
+<p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> the controller consumes physical addresses and the
+registry hands it those. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> an IOMMU translates, so every address
+it sees is an IOVA. Device memory cannot get one the way host memory does,
+since <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> rejects the dma-bufs the CUDA driver exports.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">iommu-map-pa</span></code> module inserts the VRAM into the controller’s domain
+directly, and the registry’s table holds the resulting IOVAs. It is published as
+an asset of the same release as <code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code>, packaged for DKMS:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/safl/upcie/releases/tag/v0.8.0">safl/upcie v0.8.0</a></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./iommu-map-pa-dkms_0.2.0_all.deb
+</pre></div>
+</div>
+<section id="iova-window">
+<h3>IOVA window<a class="headerlink" href="#iova-window" title="Link to this heading">#</a></h3>
+<p>The module maps at IOVAs of its own choosing without telling the domain’s owner,
+so a window is reserved for it: 64 GiB at 256 GiB, with the IOAS allowed every
+usable IOVA except that. Override where it does not fit:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XNVME_UPCIE_GPU_IOVA_BASE</span><span class="o">=</span>0x2000000000<span class="w">  </span><span class="c1"># 128 GiB</span>
+<span class="nv">XNVME_UPCIE_GPU_IOVA_SIZE</span><span class="o">=</span>0x400000000<span class="w">   </span><span class="c1"># 16 GiB</span>
+<span class="nv">XNVME_UPCIE_GPU_IOVA_SLICE</span><span class="o">=</span>0x80000000<span class="w">   </span><span class="c1"># 2 GiB per controller</span>
+</pre></div>
+</div>
+<p>A window outside every usable IOVA range fails <code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code> with <code class="docutils literal notranslate"><span class="pre">ERANGE</span></code>.</p>
+</section>
+<section id="several-controllers">
+<h3>Several controllers<a class="headerlink" href="#several-controllers" title="Link to this heading">#</a></h3>
+<p>A mapping reaches one IOMMU domain, so each controller gets its own slice of the
+window and maps the heap into its own domain. Three limits follow, on the
+<code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path only:</p>
+<ul class="simple">
+<li><p>A slice is twice the size of the heap, leaving room for buffers registered
+with <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>. Set the width with <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_GPU_IOVA_SLICE</span></code>. A
+full slice fails the registration with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
+<li><p>The window holds 31 controllers by default, and never more than 64. Past that
+<code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code> fails with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
+<li><p>Each controller reserves a translation table of its own, sized as
+<a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> describes. <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_VA_BITS</span></code> bounds it.</p></li>
+</ul>
+<p>A controller attaching later brings its own reserved regions. Where one overlaps
+the ranges the IOAS was told to allow, that attach fails with <code class="docutils literal notranslate"><span class="pre">EADDRINUSE</span></code>. Move
+the window with <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_GPU_IOVA_BASE</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> is unaffected. Physical addresses read the same from every
+controller, so one table serves them all.</p>
+</section>
+<section id="registering-buffers">
+<h3>Registering buffers<a class="headerlink" href="#registering-buffers" title="Link to this heading">#</a></h3>
+<p>A buffer from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> comes off the heap, which every controller
+maps, so it works on any of them.</p>
+<p>A buffer handed to <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> is registered against the device passed to
+the call, so behind an IOMMU it resolves for that controller only. Register it
+with each device it is used from, and unmap it against each:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme_mem_map</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="n">xnvme_mem_map</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> one table serves every controller, so a single
+registration covers them all.</p>
+</section>
 </section>
 <section id="system-configuration">
 <span id="sec-backends-upcie-cuda-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
@@ -593,12 +655,92 @@ the host hugepage runtime (256 MiB) used to hold NVMe control structures. Follow
 the hugepage setup steps in <a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> before opening an
 <strong>upcie-cuda</strong> device.</p>
 </section>
+<section id="gpu-iommu-domain">
+<span id="sec-backends-upcie-cuda-gpu-domain"></span><h3>GPU IOMMU domain<a class="headerlink" href="#gpu-iommu-domain" title="Link to this heading">#</a></h3>
+<p>Needed only for GPU-resident queues, meaning <code class="docutils literal notranslate"><span class="pre">xnvmeperf</span> <span class="pre">cuda-run</span></code>, <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code>
+and anything else built on <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a>. Host-driven I/O needs nothing
+here.</p>
+<p>With a GPU-resident queue the GPU writes the doorbell register itself, rather
+than the CPU doing it, so the write is peer-to-peer traffic into the
+controller’s BAR0. It is translated by the GPU’s own domain, not the
+controller’s that <a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a> sets up, and CUDA hands
+the GPU a physical address. With the GPU in a translating domain nothing has
+mapped it, so every write faults.</p>
+<section id="recognising-it">
+<h4>Recognising it<a class="headerlink" href="#recognising-it" title="Link to this heading">#</a></h4>
+<p>The run completes while every I/O fails, taking the queue’s timeout rather than
+<code class="docutils literal notranslate"><span class="pre">--runtime</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> Device                        IOPS      MiB/s   Failed
+ 0000:01:00.0                  2.30       0.01       32
+</pre></div>
+</div>
+<p>The kernel log names the <strong>GPU</strong>, not the NVMe:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nvidia 0000:2b:00.0: AMD-Vi: IO_PAGE_FAULT domain=0x0012 address=0xee901010
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">0xee901010</span></code> is BAR0 plus <code class="docutils literal notranslate"><span class="pre">0x1010</span></code>, the submission-queue doorbell of queue 2. An
+Intel host reports the equivalent under <code class="docutils literal notranslate"><span class="pre">DMAR:</span></code>.</p>
+</section>
+<section id="fixing-it-persistently">
+<h4>Fixing it persistently<a class="headerlink" href="#fixing-it-persistently" title="Link to this heading">#</a></h4>
+<p>Boot with the GPU in a passthrough domain. Add <code class="docutils literal notranslate"><span class="pre">iommu.passthrough=1</span></code> to
+<code class="docutils literal notranslate"><span class="pre">GRUB_CMDLINE_LINUX_DEFAULT</span></code> in <code class="docutils literal notranslate"><span class="pre">/etc/default/grub</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">update-grub</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">reboot</span></code>. This changes only the <em>default</em> domain type,
+so <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> still attaches its own enforcing domain to the NVMe.</p>
+</section>
+<section id="fixing-it-without-a-reboot">
+<h4>Fixing it without a reboot<a class="headerlink" href="#fixing-it-without-a-reboot" title="Link to this heading">#</a></h4>
+<p>A group’s domain type can be switched only while <strong>no device in that group has a
+driver bound</strong>. Find the group and everything in it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>readlink<span class="w"> </span>-f<span class="w"> </span>/sys/bus/pci/devices/0000:2b:00.0/iommu_group
+ls<span class="w"> </span>/sys/bus/pci/devices/0000:2b:00.0/iommu_group/devices/
+</pre></div>
+</div>
+<p>The addresses and group number below are from one host. Substitute what those
+report, then release, unbind, switch, and rebind:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fuser<span class="w"> </span>-v<span class="w"> </span>/dev/nvidia*<span class="w">   </span><span class="c1"># an empty result is what you want</span>
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>nvidia-dcgm<span class="w"> </span>nvidia-persistenced
+sudo<span class="w"> </span>rmmod<span class="w"> </span>nvidia_uvm<span class="w">   </span><span class="c1"># plus nvidia_drm and nvidia_modeset where loaded</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.1<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/snd_hda_intel/unbind
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.0<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/nvidia/unbind
+
+<span class="nb">echo</span><span class="w"> </span>identity<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/kernel/iommu_groups/16/type
+
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.0<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/nvidia/bind
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.1<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/snd_hda_intel/bind
+sudo<span class="w"> </span>modprobe<span class="w"> </span>nvidia_uvm
+sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>nvidia-dcgm
+</pre></div>
+</div>
+<p>The switch fails with <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code> if anything is still bound, and does <strong>not</strong>
+survive a reboot.</p>
+</section>
+<section id="verifying-the-switch">
+<h4>Verifying the switch<a class="headerlink" href="#verifying-the-switch" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/sys/kernel/iommu_groups/16/type<span class="w">      </span><span class="c1"># identity</span>
+sudo<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-verify<span class="w"> </span>--be<span class="w"> </span>upcie-cuda<span class="w"> </span>--iosize<span class="w"> </span><span class="m">4096</span><span class="w"> </span>--qdepth<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--nqueues<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">0000</span>:01:00.0
+sudo<span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'AMD-Vi|DMAR'</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> should report <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">mismatches</span></code> and <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> nothing at all.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This applies to any peer-to-peer write from a GPU into another device’s BAR,
+not just to xNVMe.</p>
+</div>
+</section>
+</section>
 </section>
 <section id="gpu-resident-queue-api">
 <span id="sec-backends-upcie-cuda-gpu"></span><h2>GPU-Resident Queue API<a class="headerlink" href="#gpu-resident-queue-api" title="Link to this heading">#</a></h2>
 <p>The <strong>upcie-cuda</strong> backend supports GPU-resident NVMe queue pairs via the
 <code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API. See <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> for the full API reference,
 including host-side setup, CUDA kernel dispatch, and queue depth semantics.</p>
+<p>GPU-resident queues need the setup described in
+<a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a>.</p>
 </section>
 <section id="validation">
 <span id="sec-backends-upcie-cuda-validation"></span><h2>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h2>
@@ -620,8 +762,8 @@ your cijoe configuration:</p>
 <section id="limitations">
 <span id="sec-backends-upcie-cuda-limitations"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>No <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> support.</strong> The CUDA backend currently supports the
-non-IOMMU user-space driver path only.</p></li>
+<li><p><strong>31 controllers per process under an enforcing IOMMU</strong> at the default heap
+and window size, capped at 64. See <a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.</p></li>
 <li><p><strong>GPU 0 only.</strong> The CUDA context and heap are always created on CUDA device
 0. Multiple GPU support is not implemented.</p></li>
 <li><p><strong>1 GiB heap.</strong> The CUDA heap is fixed at 1 GiB. Allocations beyond this
@@ -662,9 +804,22 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-architecture">Memory Architecture</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-module">Kernel Module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#enforcing-iommu">Enforcing IOMMU</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-window">IOVA window</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#several-controllers">Several controllers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#registering-buffers">Registering buffers</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-requirements">Hardware Requirements</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepages">Hugepages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-iommu-domain">GPU IOMMU domain</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#recognising-it">Recognising it</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixing-it-persistently">Fixing it persistently</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixing-it-without-a-reboot">Fixing it without a reboot</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-the-switch">Verifying the switch</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-resident-queue-api">GPU-Resident Queue API</a></li>
