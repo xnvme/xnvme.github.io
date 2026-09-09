@@ -52,3 +52,14 @@ Example — user space NVMe via uPCIe, with multiple hardware queues::
    qublk run 0000:01:00.0 --be upcie --qdepth 64 --nqueues 4
 
 While **qublk** is running, ``/dev/ublkb0`` is the resulting block device.
+
+``del`` — Delete a leftover device
+==================================
+
+A ``qublk run`` that is killed rather than signalled cleanly leaves its ublk
+device behind. ``del`` stops and deletes such a device by identifier::
+
+   qublk del --dev-id 0
+
+.. literalinclude:: qublk_del_usage.out
+   :language: bash
