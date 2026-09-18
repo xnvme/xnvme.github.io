@@ -500,14 +500,18 @@ configured through <code class="docutils literal notranslate"><span class="pre">
 NVMe driver so its local <code class="docutils literal notranslate"><span class="pre">/dev/nvmeXn1</span></code> can be exported as a <code class="docutils literal notranslate"><span class="pre">nvmet</span></code>
 namespace.</p>
 <p>Both providers are driven by the same <code class="docutils literal notranslate"><span class="pre">nvme_target_start</span></code>,
-<code class="docutils literal notranslate"><span class="pre">nvme_target_probe</span></code>, and <code class="docutils literal notranslate"><span class="pre">nvme_target_stop</span></code> cijoe scripts, switched via
-<code class="docutils literal notranslate"><span class="pre">--provider</span></code>. The initiator side (xNVMe access via TCP URI) is identical
-between the two and is documented below.</p>
+<code class="docutils literal notranslate"><span class="pre">nvme_target_probe</span></code>, and <code class="docutils literal notranslate"><span class="pre">nvme_target_stop</span></code> cijoe scripts; <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">stop</span></code>
+are switched via <code class="docutils literal notranslate"><span class="pre">--nvme-provider</span></code>, <code class="docutils literal notranslate"><span class="pre">probe</span></code> discovers whichever is listening.
+The initiator side (xNVMe access via a fabrics URI) is identical between the
+two and is documented below.</p>
 <div class="toctree-wrapper compound">
 </div>
-<section id="shared-configuration">
-<h2>Shared configuration<a class="headerlink" href="#shared-configuration" title="Link to this heading">#</a></h2>
-<p>The three cijoe scripts share the same set of flags:</p>
+<section id="script-configuration">
+<h2>Script configuration<a class="headerlink" href="#script-configuration" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">nvme_target_start.py</span></code>, <code class="docutils literal notranslate"><span class="pre">nvme_target_probe.py</span></code>, and <code class="docutils literal notranslate"><span class="pre">nvme_target_stop.py</span></code>
+each take their own set of arguments; <code class="docutils literal notranslate"><span class="pre">--transport-name</span></code> is the one all three
+share.</p>
+<p><code class="docutils literal notranslate"><span class="pre">nvme_target_start.py</span></code> accepts the following arguments:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Argument</p></th>
@@ -516,25 +520,77 @@ between the two and is documented below.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--provider</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-provider</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--traddr</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-traddr</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p></td>
 <td><p>Transport address (IP) for the listener.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--trsvcid</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-trsvcid</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">4420</span></code></p></td>
-<td><p>Transport service id (TCP port).</p></td>
+<td><p>Transport service id (port); rdma listens on one as well.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--trtype</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-trtype</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">tcp</span></code></p></td>
 <td><p>Transport type.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--adrfam</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-adrfam</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ipv4</span></code></p></td>
 <td><p>Address family.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--transport-name</span></code></p></td>
+<td><p>None</p></td>
+<td><p>CIJOE Transport to use. Defaults to first-found, if not specified.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">nvme_target_probe.py</span></code> accepts the following arguments:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-traddr</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p></td>
+<td><p>Transport address (IP) for the listener.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-trsvcid</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">4420</span></code></p></td>
+<td><p>Transport service id (port); rdma listens on one as well.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-trtype</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tcp</span></code></p></td>
+<td><p>Transport type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--transport-name</span></code></p></td>
+<td><p>None</p></td>
+<td><p>CIJOE Transport to use. Defaults to first-found, if not specified.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">nvme_target_stop.py</span></code> accepts the following arguments:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-provider</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--transport-name</span></code></p></td>
+<td><p>None</p></td>
+<td><p>CIJOE Transport to use. Defaults to first-found, if not specified.</p></td>
 </tr>
 </tbody>
 </table>
@@ -608,7 +664,7 @@ latency by using a larger block size and/or higher io-depth.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-configuration">Shared configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#script-configuration">Script configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiator-usage">Initiator usage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#footguns-and-rules-of-thumb">Footguns and rules of thumb</a></li>
 </ul>
