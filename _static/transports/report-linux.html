@@ -160,7 +160,7 @@ full sequence (start, probe, stop) and is what docgen captures.</pre>
           <div class="tab-pane show active" id="status-tab-pane" role="tabpanel" aria-labelledby="status-tab" tabindex="0">
 
             <div class="container" style="padding: 1rem;">
-              The task started on 30-09-2026, 18:57:27, status on the steps
+              The task started on 01-10-2026, 11:04:50, status on the steps
               is provided below.
             </div>
 
@@ -172,7 +172,7 @@ full sequence (start, probe, stop) and is what docgen captures.</pre>
                   <td class="table-secondary w-25"><button class="btn btn-secondary">Skipped: 0</button></td>
                   <td class="table-info w-25">
                     <button class="btn btn-primary bi bi-clock-history" disabled="disabled">
-                    Elapsed: 13.22 sec
+                    Elapsed: 16.35 sec
                     </button>
                   </td>
                 </tr>
@@ -556,7 +556,7 @@ devices:
   nsid: 0
   uri: /dev/nvme0
 - device_path: /dev/nvme3n1
-  driver_attachment: userspace
+  driver_attachment: none
   labels:
   - dev
   - fabrics
@@ -568,6 +568,30 @@ devices:
   pcie_id: &#39;0000:04:00.0&#39;
   subnqn: nqn.2019-08.org.qemu:beef0003
   uri: 127.0.0.1:4420
+- device_path: /dev/nvme1n1
+  driver_attachment: none
+  labels:
+  - dev
+  - fabrics
+  - zns
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  pcie_id: &#39;0000:02:00.0&#39;
+  subnqn: nqn.2019-08.org.qemu:beef0001
+  uri: 127.0.0.1:4421
+- driver_attachment: none
+  labels:
+  - dev
+  - fabrics
+  - kvs
+  - log_health_ns
+  - idfy_cs
+  nsid: 1
+  passthrough: true
+  pcie_id: &#39;0000:03:00.0&#39;
+  subnqn: nqn.2019-08.org.qemu:beef0002
+  uri: 127.0.0.1:4422
 - driver_attachment: kernel
   labels:
   - file
@@ -721,7 +745,7 @@ full sequence (start, probe, stop) and is what docgen captures.</pre>
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
-                  5.09 sec
+                  7.39 sec
                 </span>
               </button>
 
@@ -777,8 +801,10 @@ supported via ``--nvme-provider``:
 * ``linux``: use the Linux kernel ``nvmet`` driver through configfs to
   export an existing ``/dev/nvmeXn1``.
 
-In both cases the device to export is read from the cijoe config entry
-labelled ``fabrics`` (legacy label name).
+Each cijoe config entry labelled ``fabrics`` (legacy label name) becomes one
+subsystem, listening on the ``uri`` of the entry, e.g. ``127.0.0.1:4420``.
+Passthrough is off unless the entry sets ``passthrough = true``; the Linux
+provider skips such entries.
 
 Retargetable: True
 </code></pre>
@@ -804,9 +830,13 @@ Retargetable: True
                 &#39;configfs to\n&#39;
                 &#39;  export an existing ``/dev/nvmeXn1``.\n&#39;
                 &#39;\n&#39;
-                &#39;In both cases the device to export is read from the cijoe &#39;
-                &#39;config entry\n&#39;
-                &#39;labelled ``fabrics`` (legacy label name).\n&#39;
+                &#39;Each cijoe config entry labelled ``fabrics`` (legacy label &#39;
+                &#39;name) becomes one\n&#39;
+                &#39;subsystem, listening on the ``uri`` of the entry, e.g. &#39;
+                &#39;``127.0.0.1:4420``.\n&#39;
+                &#39;Passthrough is off unless the entry sets ``passthrough = &#39;
+                &#39;true``; the Linux\n&#39;
+                &#39;provider skips such entries.\n&#39;
                 &#39;\n&#39;
                 &#39;Retargetable: True\n&#39;,
  &#39;extras&#39;: {&#39;runlog&#39;: {&#39;cmd_01&#39;: {&#39;output&#39;: &#39;0000:01:00.0 (1b36 0010): &#39;
@@ -834,11 +864,11 @@ Retargetable: True
                                             &#39;0000:00:02.0 (1af4 1001): Already &#39;
                                             &#39;using the virtio-pci driver\n&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_01.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794647.421594,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852690.3269515,
                                             &#39;cmd&#39;: &#39;xnvme-driver reset&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 2.7462871074676514,
-                                            &#39;end&#39;: 1790794650.167881,
+                                            &#39;elapsed&#39;: 3.100558280944824,
+                                            &#39;end&#39;: 1790852693.4275098,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -846,11 +876,11 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_01.state&#39;)},
                        &#39;cmd_02&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_02.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794650.1687489,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852693.4286058,
                                             &#39;cmd&#39;: &#39;modprobe nvme&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.15534663200378418,
-                                            &#39;end&#39;: 1790794650.3240955,
+                                            &#39;elapsed&#39;: 0.15719199180603027,
+                                            &#39;end&#39;: 1790852693.5857978,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -858,11 +888,11 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_02.state&#39;)},
                        &#39;cmd_03&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_03.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794650.3247848,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852693.5867243,
                                             &#39;cmd&#39;: &#39;modprobe nvmet&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.18059706687927246,
-                                            &#39;end&#39;: 1790794650.5053818,
+                                            &#39;elapsed&#39;: 0.18758511543273926,
+                                            &#39;end&#39;: 1790852693.7743094,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -870,11 +900,11 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_03.state&#39;)},
                        &#39;cmd_04&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_04.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794650.5061035,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852693.7750354,
                                             &#39;cmd&#39;: &#39;modprobe nvmet_tcp&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.15143847465515137,
-                                            &#39;end&#39;: 1790794650.657542,
+                                            &#39;elapsed&#39;: 0.16897249221801758,
+                                            &#39;end&#39;: 1790852693.9440079,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -882,14 +912,14 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_04.state&#39;)},
                        &#39;cmd_05&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_05.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794650.6582386,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852693.9450188,
                                             &#39;cmd&#39;: &#39;mountpoint -q &#39;
                                                    &#39;/sys/kernel/config || &#39;
                                                    &#39;mount -t configfs none &#39;
                                                    &#39;/sys/kernel/config&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.16665911674499512,
-                                            &#39;end&#39;: 1790794650.8248978,
+                                            &#39;elapsed&#39;: 0.148101806640625,
+                                            &#39;end&#39;: 1790852694.0931206,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -897,12 +927,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_05.state&#39;)},
                        &#39;cmd_06&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_06.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794650.825687,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852694.0940676,
                                             &#39;cmd&#39;: &#39;mkdir -p &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.1501777172088623,
-                                            &#39;end&#39;: 1790794650.9758646,
+                                            &#39;elapsed&#39;: 0.18109917640686035,
+                                            &#39;end&#39;: 1790852694.2751667,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -910,12 +940,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_06.state&#39;)},
                        &#39;cmd_07&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_07.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794650.976602,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852694.2761683,
                                             &#39;cmd&#39;: &#39;echo 1 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003/attr_allow_any_host&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.162492036819458,
-                                            &#39;end&#39;: 1790794651.139094,
+                                            &#39;elapsed&#39;: 0.14592528343200684,
+                                            &#39;end&#39;: 1790852694.4220936,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -923,12 +953,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_07.state&#39;)},
                        &#39;cmd_08&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_08.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794651.139832,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852694.4231102,
                                             &#39;cmd&#39;: &#39;mkdir -p &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003/namespaces/1&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.15215277671813965,
-                                            &#39;end&#39;: 1790794651.2919848,
+                                            &#39;elapsed&#39;: 0.16709089279174805,
+                                            &#39;end&#39;: 1790852694.5902011,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -936,12 +966,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_08.state&#39;)},
                        &#39;cmd_09&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_09.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794651.292679,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852694.591187,
                                             &#39;cmd&#39;: &#39;echo -n /dev/nvme3n1 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003/namespaces/1/device_path&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.14609169960021973,
-                                            &#39;end&#39;: 1790794651.4387708,
+                                            &#39;elapsed&#39;: 0.18920016288757324,
+                                            &#39;end&#39;: 1790852694.7803872,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -949,12 +979,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_09.state&#39;)},
                        &#39;cmd_10&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_10.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794651.439524,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852694.7814,
                                             &#39;cmd&#39;: &#39;echo 1 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003/namespaces/1/enable&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.1434612274169922,
-                                            &#39;end&#39;: 1790794651.5829852,
+                                            &#39;elapsed&#39;: 0.18732929229736328,
+                                            &#39;end&#39;: 1790852694.9687293,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -962,12 +992,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_10.state&#39;)},
                        &#39;cmd_11&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_11.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794651.5835874,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852694.9696703,
                                             &#39;cmd&#39;: &#39;mkdir -p &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.14817047119140625,
-                                            &#39;end&#39;: 1790794651.7317579,
+                                            &#39;elapsed&#39;: 0.16210699081420898,
+                                            &#39;end&#39;: 1790852695.1317773,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -975,12 +1005,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_11.state&#39;)},
                        &#39;cmd_12&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_12.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794651.732495,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852695.132798,
                                             &#39;cmd&#39;: &#39;echo 127.0.0.1 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1/addr_traddr&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.1624927520751953,
-                                            &#39;end&#39;: 1790794651.8949878,
+                                            &#39;elapsed&#39;: 0.15521645545959473,
+                                            &#39;end&#39;: 1790852695.2880144,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -988,12 +1018,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_12.state&#39;)},
                        &#39;cmd_13&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_13.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794651.895735,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852695.2890332,
                                             &#39;cmd&#39;: &#39;echo tcp &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1/addr_trtype&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.1553032398223877,
-                                            &#39;end&#39;: 1790794652.0510383,
+                                            &#39;elapsed&#39;: 0.15068507194519043,
+                                            &#39;end&#39;: 1790852695.4397182,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -1001,12 +1031,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_13.state&#39;)},
                        &#39;cmd_14&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_14.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794652.0517278,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852695.4406826,
                                             &#39;cmd&#39;: &#39;echo 4420 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1/addr_trsvcid&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.14706039428710938,
-                                            &#39;end&#39;: 1790794652.1987882,
+                                            &#39;elapsed&#39;: 0.15056467056274414,
+                                            &#39;end&#39;: 1790852695.5912473,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -1014,12 +1044,12 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_14.state&#39;)},
                        &#39;cmd_15&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_15.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794652.1994584,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852695.5922744,
                                             &#39;cmd&#39;: &#39;echo ipv4 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1/addr_adrfam&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.15533208847045898,
-                                            &#39;end&#39;: 1790794652.3547904,
+                                            &#39;elapsed&#39;: 0.16873502731323242,
+                                            &#39;end&#39;: 1790852695.7610095,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
@@ -1027,26 +1057,170 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_15.state&#39;)},
                        &#39;cmd_16&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_16.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794652.3555455,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852695.7620063,
                                             &#39;cmd&#39;: &#39;ln -s &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003 &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1/subsystems/nqn.2019-08.org.qemu:beef0003&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.15132570266723633,
-                                            &#39;end&#39;: 1790794652.5068712,
+                                            &#39;elapsed&#39;: 0.17325210571289062,
+                                            &#39;end&#39;: 1790852695.9352584,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
                                             &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_16.output&#39;},
-                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_16.state&#39;)}}},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_16.state&#39;)},
+                       &#39;cmd_17&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_17.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852695.936278,
+                                            &#39;cmd&#39;: &#39;mkdir -p &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.18539857864379883,
+                                            &#39;end&#39;: 1790852696.1216767,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_17.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_17.state&#39;)},
+                       &#39;cmd_18&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_18.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852696.1226232,
+                                            &#39;cmd&#39;: &#39;echo 1 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/attr_allow_any_host&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.16357731819152832,
+                                            &#39;end&#39;: 1790852696.2862005,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_18.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_18.state&#39;)},
+                       &#39;cmd_19&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_19.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852696.2871327,
+                                            &#39;cmd&#39;: &#39;mkdir -p &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.166046142578125,
+                                            &#39;end&#39;: 1790852696.453179,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_19.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_19.state&#39;)},
+                       &#39;cmd_20&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_20.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852696.4539435,
+                                            &#39;cmd&#39;: &#39;echo -n /dev/nvme1n1 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/device_path&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.16420483589172363,
+                                            &#39;end&#39;: 1790852696.6181483,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_20.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_20.state&#39;)},
+                       &#39;cmd_21&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_21.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852696.6192029,
+                                            &#39;cmd&#39;: &#39;echo 1 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/enable&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.14322662353515625,
+                                            &#39;end&#39;: 1790852696.7624295,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_21.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_21.state&#39;)},
+                       &#39;cmd_22&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_22.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852696.7633905,
+                                            &#39;cmd&#39;: &#39;mkdir -p &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.15279912948608398,
+                                            &#39;end&#39;: 1790852696.9161897,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_22.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_22.state&#39;)},
+                       &#39;cmd_23&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_23.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852696.9172695,
+                                            &#39;cmd&#39;: &#39;echo 127.0.0.1 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2/addr_traddr&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.1642143726348877,
+                                            &#39;end&#39;: 1790852697.0814838,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_23.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_23.state&#39;)},
+                       &#39;cmd_24&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_24.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852697.0823898,
+                                            &#39;cmd&#39;: &#39;echo tcp &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2/addr_trtype&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.1542801856994629,
+                                            &#39;end&#39;: 1790852697.23667,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_24.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_24.state&#39;)},
+                       &#39;cmd_25&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_25.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852697.2375455,
+                                            &#39;cmd&#39;: &#39;echo 4421 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2/addr_trsvcid&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.15256452560424805,
+                                            &#39;end&#39;: 1790852697.39011,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_25.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_25.state&#39;)},
+                       &#39;cmd_26&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_26.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852697.391238,
+                                            &#39;cmd&#39;: &#39;echo ipv4 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2/addr_adrfam&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.15372681617736816,
+                                            &#39;end&#39;: 1790852697.5449648,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_26.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_26.state&#39;)},
+                       &#39;cmd_27&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_27.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852697.5459783,
+                                            &#39;cmd&#39;: &#39;ln -s &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001 &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2/subsystems/nqn.2019-08.org.qemu:beef0001&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.16324090957641602,
+                                            &#39;end&#39;: 1790852697.7092192,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_27.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_27.state&#39;)}}},
  &#39;id&#39;: &#39;001_nvme_target_start&#39;,
  &#39;name&#39;: &#39;nvme_target_start&#39;,
  &#39;nr&#39;: 1,
- &#39;status&#39;: {&#39;elapsed&#39;: 5.088399410247803,
+ &#39;status&#39;: {&#39;elapsed&#39;: 7.386603116989136,
             &#39;failed&#39;: 0,
             &#39;passed&#39;: 1,
             &#39;skipped&#39;: 0,
-            &#39;started&#39;: 1790794647.4192421},
+            &#39;started&#39;: 1790852690.3236117},
  &#39;uses&#39;: &#39;nvme_target_start&#39;,
  &#39;with&#39;: {&#39;nvme-provider&#39;: &#39;linux&#39;}}</pre>
             </div>
@@ -1069,7 +1243,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      2.75 sec
+                      3.10 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_01.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1129,7 +1303,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.18 sec
+                      0.19 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_03.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1153,7 +1327,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.15 sec
+                      0.17 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_04.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1177,7 +1351,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.17 sec
+                      0.15 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_05.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1201,7 +1375,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.15 sec
+                      0.18 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_06.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1225,7 +1399,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.16 sec
+                      0.15 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_07.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1249,7 +1423,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.15 sec
+                      0.17 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_08.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1273,7 +1447,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.15 sec
+                      0.19 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_09.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1297,7 +1471,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.14 sec
+                      0.19 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_10.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1321,7 +1495,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.15 sec
+                      0.16 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_11.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1369,7 +1543,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.16 sec
+                      0.15 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_13.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1417,7 +1591,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.16 sec
+                      0.17 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_15.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1441,7 +1615,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.15 sec
+                      0.17 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_16.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1452,6 +1626,270 @@ Retargetable: True
               </li>
             </ul>
             <pre class="runlog cmd"><code>$ ln -s /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003 /sys/kernel/config/nvmet/ports/1/subsystems/nqn.2019-08.org.qemu:beef0003</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_17
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.19 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_17.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('mkdir -p /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_17.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ mkdir -p /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_18
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.16 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_18.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo 1 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/attr_allow_any_host')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_18.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo 1 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/attr_allow_any_host</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_19
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.17 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_19.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('mkdir -p /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_19.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ mkdir -p /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_20
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.16 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_20.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo -n /dev/nvme1n1 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/device_path')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_20.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo -n /dev/nvme1n1 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/device_path</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_21
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.14 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_21.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo 1 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/enable')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_21.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo 1 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/enable</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_22
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_22.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('mkdir -p /sys/kernel/config/nvmet/ports/2')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_22.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ mkdir -p /sys/kernel/config/nvmet/ports/2</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_23
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.16 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_23.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo 127.0.0.1 &gt; /sys/kernel/config/nvmet/ports/2/addr_traddr')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_23.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo 127.0.0.1 &gt; /sys/kernel/config/nvmet/ports/2/addr_traddr</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_24
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_24.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo tcp &gt; /sys/kernel/config/nvmet/ports/2/addr_trtype')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_24.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo tcp &gt; /sys/kernel/config/nvmet/ports/2/addr_trtype</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_25
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_25.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo 4421 &gt; /sys/kernel/config/nvmet/ports/2/addr_trsvcid')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_25.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo 4421 &gt; /sys/kernel/config/nvmet/ports/2/addr_trsvcid</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_26
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_26.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo ipv4 &gt; /sys/kernel/config/nvmet/ports/2/addr_adrfam')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_26.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo ipv4 &gt; /sys/kernel/config/nvmet/ports/2/addr_adrfam</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_27
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.16 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_27.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('ln -s /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001 /sys/kernel/config/nvmet/ports/2/subsystems/nqn.2019-08.org.qemu:beef0001')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/001_nvme_target_start/cmd_27.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ ln -s /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001 /sys/kernel/config/nvmet/ports/2/subsystems/nqn.2019-08.org.qemu:beef0001</code></pre>
             <pre class="runlog cmd_output"><code></code></pre>
             
             </div>
@@ -1497,7 +1935,7 @@ Retargetable: True
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
-                  7.38 sec
+                  7.34 sec
                 </span>
               </button>
 
@@ -1574,7 +2012,7 @@ Retargetable: True
                 &#39;Retargetable: True\n&#39;,
  &#39;extras&#39;: {&#39;runlog&#39;: {&#39;cmd_01&#39;: {&#39;output&#39;: &#39;\n&#39;
                                             &#39;Discovery Log Number of Records &#39;
-                                            &#39;2, Generation counter 2\n&#39;
+                                            &#39;2, Generation counter 4\n&#39;
                                             &#39;=====Discovery Log Entry 0======\n&#39;
                                             &#39;trtype:  tcp\n&#39;
                                             &#39;adrfam:  ipv4\n&#39;
@@ -1603,12 +2041,12 @@ Retargetable: True
                                             &#39;eflags:  none\n&#39;
                                             &#39;sectype: none\n&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_01.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794652.5108247,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852697.7157776,
                                             &#39;cmd&#39;: &#39;nvme discover -t tcp -a &#39;
                                                    &#39;127.0.0.1 -s 4420&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.4888622760772705,
-                                            &#39;end&#39;: 1790794652.999687,
+                                            &#39;elapsed&#39;: 0.3222310543060303,
+                                            &#39;end&#39;: 1790852698.0380087,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe&#39;,
@@ -1620,12 +2058,12 @@ Retargetable: True
                                             &#34;kernel_driver: &#39;&#39;, subnqn: &#34;
                                             &#34;&#39;nqn.2019-08.org.qemu:beef0003&#39;}\n&#34;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_02.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794653.0004072,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852698.0392632,
                                             &#39;cmd&#39;: &#39;xnvme enum --uri &#39;
                                                    &#39;127.0.0.1:4420&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.7463054656982422,
-                                            &#39;end&#39;: 1790794653.7467127,
+                                            &#39;elapsed&#39;: 0.8503999710083008,
+                                            &#39;end&#39;: 1790852698.8896632,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe&#39;,
@@ -1673,13 +2111,13 @@ Retargetable: True
                                             &#39;    pi_loc: 0\n&#39;
                                             &#39;    pi_format: 0\n&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_03.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794653.7472687,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852698.8906353,
                                             &#39;cmd&#39;: &#39;xnvme info 127.0.0.1:4420 &#39;
                                                    &#39;--subnqn &#39;
                                                    &#39;nqn.2019-08.org.qemu:beef0003&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.5763506889343262,
-                                            &#39;end&#39;: 1790794654.3236194,
+                                            &#39;elapsed&#39;: 0.5596978664398193,
+                                            &#39;end&#39;: 1790852699.450333,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe&#39;,
@@ -1704,15 +2142,15 @@ Retargetable: True
                                             &#39;CPUs          IOPS      MiB/s   &#39;
                                             &#39;Failed\n&#39;
                                             &#39; 127.0.0.1:4420             &#39;
-                                            &#39;2      44466.26     173.70        &#39;
+                                            &#39;2      30828.84     120.43        &#39;
                                             &#39;0\n&#39;
                                             &#39;--------------------------------------------------------------------\n&#39;
                                             &#39; &#39;
                                             &#39;Total:                            &#39;
-                                            &#39;44466.26     173.70        0\n&#39;
+                                            &#39;30828.84     120.43        0\n&#39;
                                             &#39;====================================================================\n&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_04.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794654.3242211,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852699.451236,
                                             &#39;cmd&#39;: &#39;xnvmeperf run &#39;
                                                    &#39;127.0.0.1:4420 --subnqn &#39;
                                                    &#39;nqn.2019-08.org.qemu:beef0003 &#39;
@@ -1721,8 +2159,8 @@ Retargetable: True
                                                    &#39;--nqueues 1 --runtime 5 &#39;
                                                    &#39;--cpumask 0x4&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 5.560999393463135,
-                                            &#39;end&#39;: 1790794659.8852205,
+                                            &#39;elapsed&#39;: 5.597910642623901,
+                                            &#39;end&#39;: 1790852705.0491467,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe&#39;,
@@ -1731,11 +2169,11 @@ Retargetable: True
  &#39;id&#39;: &#39;002_nvme_target_probe&#39;,
  &#39;name&#39;: &#39;nvme_target_probe&#39;,
  &#39;nr&#39;: 2,
- &#39;status&#39;: {&#39;elapsed&#39;: 7.37833046913147,
+ &#39;status&#39;: {&#39;elapsed&#39;: 7.339878797531128,
             &#39;failed&#39;: 0,
             &#39;passed&#39;: 1,
             &#39;skipped&#39;: 0,
-            &#39;started&#39;: 1790794652.5076532},
+            &#39;started&#39;: 1790852697.7102273},
  &#39;uses&#39;: &#39;nvme_target_probe&#39;}</pre>
             </div>
           </div>
@@ -1757,7 +2195,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.49 sec
+                      0.32 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_01.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1769,7 +2207,7 @@ Retargetable: True
             </ul>
             <pre class="runlog cmd"><code>$ nvme discover -t tcp -a 127.0.0.1 -s 4420</code></pre>
             <pre class="runlog cmd_output"><code>
-Discovery Log Number of Records 2, Generation counter 2
+Discovery Log Number of Records 2, Generation counter 4
 =====Discovery Log Entry 0======
 trtype:  tcp
 adrfam:  ipv4
@@ -1805,7 +2243,7 @@ sectype: none
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.75 sec
+                      0.85 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_02.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1831,7 +2269,7 @@ sectype: none
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.58 sec
+                      0.56 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_03.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1893,7 +2331,7 @@ sectype: none
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      5.56 sec
+                      5.60 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/002_nvme_target_probe/cmd_04.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -1918,9 +2356,9 @@ sectype: none
  xnvmeperf (elapsed: 5.01s)
 ====================================================================
  Device                  CPUs          IOPS      MiB/s   Failed
- 127.0.0.1:4420             2      44466.26     173.70        0
+ 127.0.0.1:4420             2      30828.84     120.43        0
 --------------------------------------------------------------------
- Total:                            44466.26     173.70        0
+ Total:                            30828.84     120.43        0
 ====================================================================
 </code></pre>
             
@@ -1967,7 +2405,7 @@ sectype: none
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
-                  0.75 sec
+                  1.62 sec
                 </span>
               </button>
 
@@ -2050,12 +2488,12 @@ Retargetable: True
                 &#39;Retargetable: True\n&#39;,
  &#39;extras&#39;: {&#39;runlog&#39;: {&#39;cmd_01&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_01.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794659.888608,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852705.0533981,
                                             &#39;cmd&#39;: &#39;rm -f &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1/subsystems/nqn.2019-08.org.qemu:beef0003&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.16217684745788574,
-                                            &#39;end&#39;: 1790794660.0507848,
+                                            &#39;elapsed&#39;: 0.15852761268615723,
+                                            &#39;end&#39;: 1790852705.2119257,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
@@ -2063,13 +2501,13 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_01.state&#39;)},
                        &#39;cmd_02&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_02.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794660.0515597,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852705.2128718,
                                             &#39;cmd&#39;: &#39;rmdir &#39;
                                                    &#39;/sys/kernel/config/nvmet/ports/1; &#39;
                                                    &#39;true&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.1394050121307373,
-                                            &#39;end&#39;: 1790794660.1909647,
+                                            &#39;elapsed&#39;: 0.14614582061767578,
+                                            &#39;end&#39;: 1790852705.3590176,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
@@ -2077,13 +2515,13 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_02.state&#39;)},
                        &#39;cmd_03&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_03.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794660.1917236,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852705.3602538,
                                             &#39;cmd&#39;: &#39;echo 0 &gt; &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003/namespaces/1/enable; &#39;
                                                    &#39;true&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.15630030632019043,
-                                            &#39;end&#39;: 1790794660.348024,
+                                            &#39;elapsed&#39;: 0.1916029453277588,
+                                            &#39;end&#39;: 1790852705.5518568,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
@@ -2091,13 +2529,13 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_03.state&#39;)},
                        &#39;cmd_04&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_04.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794660.3487806,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852705.5528567,
                                             &#39;cmd&#39;: &#39;rmdir &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003/namespaces/1; &#39;
                                                    &#39;true&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.13776159286499023,
-                                            &#39;end&#39;: 1790794660.4865422,
+                                            &#39;elapsed&#39;: 0.15021657943725586,
+                                            &#39;end&#39;: 1790852705.7030733,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
@@ -2105,26 +2543,95 @@ Retargetable: True
                                   &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_04.state&#39;)},
                        &#39;cmd_05&#39;: {&#39;output&#39;: &#39;&#39;,
                                   &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_05.output&#39;),
-                                  &#39;state&#39;: {&#39;begin&#39;: 1790794660.4872296,
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852705.7041576,
                                             &#39;cmd&#39;: &#39;rmdir &#39;
                                                    &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003; &#39;
                                                    &#39;true&#39;,
                                             &#39;cwd&#39;: &#39;None&#39;,
-                                            &#39;elapsed&#39;: 0.14990568161010742,
-                                            &#39;end&#39;: 1790794660.6371353,
+                                            &#39;elapsed&#39;: 0.1522071361541748,
+                                            &#39;end&#39;: 1790852705.8563647,
                                             &#39;err&#39;: 0,
                                             &#39;is_done&#39;: True,
                                             &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
                                             &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_05.output&#39;},
-                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_05.state&#39;)}}},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_05.state&#39;)},
+                       &#39;cmd_06&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_06.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852705.8572795,
+                                            &#39;cmd&#39;: &#39;rm -f &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2/subsystems/nqn.2019-08.org.qemu:beef0001&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.1555023193359375,
+                                            &#39;end&#39;: 1790852706.0127819,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_06.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_06.state&#39;)},
+                       &#39;cmd_07&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_07.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852706.0137165,
+                                            &#39;cmd&#39;: &#39;rmdir &#39;
+                                                   &#39;/sys/kernel/config/nvmet/ports/2; &#39;
+                                                   &#39;true&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.1481156349182129,
+                                            &#39;end&#39;: 1790852706.161832,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_07.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_07.state&#39;)},
+                       &#39;cmd_08&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_08.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852706.1628451,
+                                            &#39;cmd&#39;: &#39;echo 0 &gt; &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/enable; &#39;
+                                                   &#39;true&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.17479157447814941,
+                                            &#39;end&#39;: 1790852706.3376367,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_08.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_08.state&#39;)},
+                       &#39;cmd_09&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_09.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852706.3386652,
+                                            &#39;cmd&#39;: &#39;rmdir &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1; &#39;
+                                                   &#39;true&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.17511773109436035,
+                                            &#39;end&#39;: 1790852706.513783,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_09.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_09.state&#39;)},
+                       &#39;cmd_10&#39;: {&#39;output&#39;: &#39;&#39;,
+                                  &#39;output_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_10.output&#39;),
+                                  &#39;state&#39;: {&#39;begin&#39;: 1790852706.5146964,
+                                            &#39;cmd&#39;: &#39;rmdir &#39;
+                                                   &#39;/sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001; &#39;
+                                                   &#39;true&#39;,
+                                            &#39;cwd&#39;: &#39;None&#39;,
+                                            &#39;elapsed&#39;: 0.15782713890075684,
+                                            &#39;end&#39;: 1790852706.6725235,
+                                            &#39;err&#39;: 0,
+                                            &#39;is_done&#39;: True,
+                                            &#39;output_dpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop&#39;,
+                                            &#39;output_fpath&#39;: &#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_10.output&#39;},
+                                  &#39;state_path&#39;: PosixPath(&#39;/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_10.state&#39;)}}},
  &#39;id&#39;: &#39;003_nvme_target_stop&#39;,
  &#39;name&#39;: &#39;nvme_target_stop&#39;,
  &#39;nr&#39;: 3,
- &#39;status&#39;: {&#39;elapsed&#39;: 0.7518439292907715,
+ &#39;status&#39;: {&#39;elapsed&#39;: 1.623354434967041,
             &#39;failed&#39;: 0,
             &#39;passed&#39;: 1,
             &#39;skipped&#39;: 0,
-            &#39;started&#39;: 1790794659.8859992},
+            &#39;started&#39;: 1790852705.0501196},
  &#39;uses&#39;: &#39;nvme_target_stop&#39;,
  &#39;with&#39;: {&#39;nvme-provider&#39;: &#39;linux&#39;}}</pre>
             </div>
@@ -2171,7 +2678,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.14 sec
+                      0.15 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_02.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -2195,7 +2702,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.16 sec
+                      0.19 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_03.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -2219,7 +2726,7 @@ Retargetable: True
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     
-                      0.14 sec
+                      0.15 sec
                     
                   </button>
                   <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_04.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
@@ -2254,6 +2761,126 @@ Retargetable: True
               </li>
             </ul>
             <pre class="runlog cmd"><code>$ rmdir /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0003; true</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_06
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.16 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_06.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('rm -f /sys/kernel/config/nvmet/ports/2/subsystems/nqn.2019-08.org.qemu:beef0001')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_06.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ rm -f /sys/kernel/config/nvmet/ports/2/subsystems/nqn.2019-08.org.qemu:beef0001</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_07
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.15 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_07.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('rmdir /sys/kernel/config/nvmet/ports/2; true')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_07.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ rmdir /sys/kernel/config/nvmet/ports/2; true</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_08
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.17 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_08.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('echo 0 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/enable; true')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_08.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ echo 0 &gt; /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1/enable; true</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_09
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.18 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_09.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('rmdir /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1; true')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_09.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ rmdir /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001/namespaces/1; true</code></pre>
+            <pre class="runlog cmd_output"><code></code></pre>
+            
+            
+              
+            
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-success bi bi-file-code" type="button">
+                  cmd_10
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    
+                      0.16 sec
+                    
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_10.output" class="btn btn-primary bi bi-file-code">&nbsp;.output</a>
+                  <button class="btn btn-primary bi bi-clipboard" type="button" onclick="navigator.clipboard.writeText('rmdir /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001; true')">
+                  </button>
+                  <a href="/__w/xnvme/xnvme/cijoe/cijoe-output-transports-linux/003_nvme_target_stop/cmd_10.state" class="btn btn-primary bi bi-filetype-yml"></a>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog cmd"><code>$ rmdir /sys/kernel/config/nvmet/subsystems/nqn.2019-08.org.qemu:beef0001; true</code></pre>
             <pre class="runlog cmd_output"><code></code></pre>
             
             </div>
