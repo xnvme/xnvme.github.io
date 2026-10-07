@@ -521,6 +521,7 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'spdk'</span>,<span class="w"> </span><span class="s1">'libvfn'</span>,<span class="w"> </span><span class="s1">'upcie'</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--host_heap_size<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">      </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">=</span>upcie,<span class="w"> </span>host<span class="w"> </span>DMA<span class="w"> </span>heap<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bytes
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--device_heap_size<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">    </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">={</span>upcie-cuda,upcie-hip<span class="o">}</span>,<span class="w"> </span>GPU<span class="w"> </span>device<span class="w"> </span>heap<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bytes
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--no-cuse<span class="w"> </span><span class="o">]</span><span class="w">                 </span><span class="p">;</span><span class="w"> </span>Disable<span class="w"> </span>the<span class="w"> </span>NVMe-driver<span class="w"> </span>ioctl<span class="o">()</span><span class="w"> </span>CUSE<span class="w"> </span>mimic
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
 See<span class="w"> </span><span class="s1">'homi --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
@@ -560,6 +561,15 @@ devices are open it reports that it has started, then waits for <code class="doc
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>start<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="m">0000</span>:04:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
+<p>For a controller reached over a PCIe-attached backend (<code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">spdk</span></code>), whose
+URI is therefore its bus:device.function address, <strong>homi</strong> also exposes a
+<code class="docutils literal notranslate"><span class="pre">/dev/xnvme/&lt;bdf&gt;</span></code> character device answering the Linux kernel NVMe driver’s
+ioctl() interface, the same mimic <code class="docutils literal notranslate"><span class="pre">qublk</span></code> serves as <code class="docutils literal notranslate"><span class="pre">/dev/ublkb&lt;N&gt;-nvme</span></code> (see
+<a class="reference internal" href="../qublk/index.html#sec-tools-qublk"><span class="std std-ref">qublk</span></a>). A controller reached any other way
+(fabrics, a bare device-file path) has no such address and is left
+unexposed, with no fallback name. Pass <code class="docutils literal notranslate"><span class="pre">--no-cuse</span></code> to skip it entirely. The
+mimic itself is Linux-only; on another platform <strong>homi</strong> still runs, quietly
+skipping the character device for every controller.</p>
 <p>While it runs, other processes attach as secondaries by passing the same
 identifier:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>

@@ -507,6 +507,14 @@ qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </spa
 <li><p>for user space backends such as <strong>uPCIe</strong>, a device bound to
 <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> and hugepages configured; see <a class="reference internal" href="../../background/backends/upcie/index.html#sec-backends-upcie"><span class="std std-ref">uPCIe</span></a></p></li>
 </ul>
+<p>The Linux-NVMe-driver ioctl() mimic (see below) additionally needs a kernel
+new enough to carry <code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO64_CMD_VEC</span></code> in <code class="docutils literal notranslate"><span class="pre">&lt;linux/nvme_ioctl.h&gt;</span></code>
+(5.17+) alongside <code class="docutils literal notranslate"><span class="pre">&lt;linux/fuse.h&gt;</span></code>, both at build time;
+<code class="docutils literal notranslate"><span class="pre">-Dwith-cuse=disabled</span></code> skips it explicitly, and without either header
+<strong>qublk</strong> still builds, quietly serving every device without its <code class="docutils literal notranslate"><span class="pre">-nvme</span></code>
+character device, since that is a permanent build-time condition rather
+than a one-off failure; a CUSE device that fails to come up at runtime for
+some other reason still warns and does the same.</p>
 </section>
 <section id="run-serve-a-block-device">
 <h2><code class="docutils literal notranslate"><span class="pre">run</span></code> — Serve a block-device<a class="headerlink" href="#run-serve-a-block-device" title="Link to this heading">#</a></h2>
@@ -536,6 +544,7 @@ Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--max-io-bytes<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">        </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">'NUM'</span><span class="w"> </span>as<span class="w"> </span>per-IO<span class="w"> </span>buffer<span class="w"> </span>size<span class="w"> </span><span class="k">in</span><span class="w"> </span>bytes
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--cpumask<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">          </span><span class="p">;</span><span class="w"> </span>Hex<span class="w"> </span>CPU<span class="w"> </span>bitmask<span class="w"> </span><span class="k">for</span><span class="w"> </span>thread<span class="w"> </span>pinning<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span>0x3<span class="o">)</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--cpulist<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">          </span><span class="p">;</span><span class="w"> </span>Comma-separated<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>CPU<span class="w"> </span>ids<span class="w"> </span>or<span class="w"> </span>CPU<span class="w"> </span>id<span class="w"> </span>ranges<span class="w"> </span><span class="k">for</span><span class="w"> </span>thread<span class="w"> </span>pinning<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span><span class="m">0</span>-3,4,6<span class="o">)</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--no-cuse<span class="w"> </span><span class="o">]</span><span class="w">                 </span><span class="p">;</span><span class="w"> </span>Disable<span class="w"> </span>the<span class="w"> </span>NVMe-driver<span class="w"> </span>ioctl<span class="o">()</span><span class="w"> </span>CUSE<span class="w"> </span>mimic
 <span class="w">  </span>
 With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
 
@@ -562,6 +571,24 @@ qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </spa
 </pre></div>
 </div>
 <p>While <strong>qublk</strong> is running, each device appears as <code class="docutils literal notranslate"><span class="pre">/dev/ublkb&lt;N&gt;</span></code>.</p>
+<p>A device driven by one of xNVMe’s user-space NVMe drivers (<code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">spdk</span></code>,
+<code class="docutils literal notranslate"><span class="pre">libvfn</span></code> or <code class="docutils literal notranslate"><span class="pre">upcie</span></code>) also gets a <code class="docutils literal notranslate"><span class="pre">/dev/ublkb&lt;N&gt;-nvme</span></code> character device
+answering the Linux kernel NVMe driver’s ioctl() interface (<code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_ID</span></code>,
+<code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_ADMIN_CMD</span></code>, <code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO_CMD</span></code>, <code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_ADMIN64_CMD</span></code>,
+<code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO64_CMD</span></code>, <code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO64_CMD_VEC</span></code>), so tools such as
+<code class="docutils literal notranslate"><span class="pre">nvme-cli</span></code> address it like a kernel-attached namespace. Other devices get
+none: a kernel-managed NVMe namespace already has <code class="docutils literal notranslate"><span class="pre">/dev/nvme&lt;X&gt;n&lt;Y&gt;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">/dev/ng&lt;X&gt;n&lt;Y&gt;</span></code>, and a device that is not NVMe, such as <code class="docutils literal notranslate"><span class="pre">/dev/sda</span></code> or a
+file, has no NVMe interface to mimic. Pass <code class="docutils literal notranslate"><span class="pre">--no-cuse</span></code> to skip it; a failed
+CUSE device only disables itself, the block device still comes up.</p>
+<p>Passthru data and metadata, together with the
+<code class="docutils literal notranslate"><span class="pre">nvme_passthru_cmd</span></code>/<code class="docutils literal notranslate"><span class="pre">nvme_passthru_cmd64</span></code> struct itself, are capped at
+128KiB by the kernel’s CUSE ioctl handling, not the device’s real
+<code class="docutils literal notranslate"><span class="pre">MDTS</span></code>. <code class="docutils literal notranslate"><span class="pre">NVME_IOCTL_IO64_CMD_VEC</span></code> additionally rejects a request whose
+<code class="docutils literal notranslate"><span class="pre">vec_cnt</span></code> is above 125: every retry round resends the same iovec list as
+both the fetch and the scatter-back list, and the kernel’s own
+<code class="docutils literal notranslate"><span class="pre">FUSE_IOCTL_MAX_IOV</span></code> (256) bounds their combined count, well below the
+real driver’s <code class="docutils literal notranslate"><span class="pre">UIO_MAXIOV</span></code>.</p>
 </section>
 <section id="del-delete-a-leftover-device">
 <h2><code class="docutils literal notranslate"><span class="pre">del</span></code> — Delete a leftover device<a class="headerlink" href="#del-delete-a-leftover-device" title="Link to this heading">#</a></h2>
