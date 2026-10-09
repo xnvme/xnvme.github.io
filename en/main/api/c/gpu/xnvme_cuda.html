@@ -671,6 +671,10 @@
 <span class="target" id="libxnvme__cuda_8h_1a2ef063c514f8e57d898620e656f54eab"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cuda_queue_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">depth</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cuda_queue" title="xnvme_cuda_queue"><span class="n"><span class="pre">xnvme_cuda_queue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cuda_queue_create" title="Link to this definition">#</a><br /></dt>
 <dd><p>Create a GPU-resident NVMe IO queue. </p>
 <p>Allocates a queue pair in CUDA device memory and registers it with the NVMe controller. The resulting pointer lives in device memory and can be passed directly as a CUDA kernel argument.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -693,6 +697,10 @@
 <span class="target" id="libxnvme__cuda_8h_1a64824105a20215ba287bb74f0802040f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cuda_queue_destroy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cuda_queue" title="xnvme_cuda_queue"><span class="n"><span class="pre">xnvme_cuda_queue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cuda_queue_destroy" title="Link to this definition">#</a><br /></dt>
 <dd><p>Destroy a GPU-resident NVMe IO queue. </p>
 <p>Deletes the queue pair from the NVMe controller and frees the device memory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -819,6 +827,9 @@
 <span class="cm"> * controller. The resulting pointer lives in device memory and can be passed</span>
 <span class="cm"> * directly as a CUDA kernel argument.</span>
 <span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param dev   An xnvme_dev opened on an ``upcie-cuda`` device</span>
 <span class="cm"> * @param depth Number of IO slots in the queue</span>
 <span class="cm"> * @param queue On success, set to a device pointer to the GPU queue</span>
@@ -832,6 +843,9 @@
 <span class="cm"> * Destroy a GPU-resident NVMe IO queue</span>
 <span class="cm"> *</span>
 <span class="cm"> * Deletes the queue pair from the NVMe controller and frees the device memory.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param dev   The xnvme_dev used to create the queue</span>
 <span class="cm"> * @param queue GPU queue pointer returned by xnvme_cuda_queue_create()</span>

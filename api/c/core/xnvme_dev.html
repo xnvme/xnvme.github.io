@@ -542,6 +542,10 @@
 <dt class="sig sig-object c" id="c.xnvme_dev_close">
 <span class="target" id="libxnvme__dev_8h_1a54a4f6077d8c7af52d2f3ff1bd988f4f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_close</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_close" title="Link to this definition">#</a><br /></dt>
 <dd><p>Destroy the given device handle (xnvme_dev). </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -804,6 +808,10 @@
 <dt class="sig sig-object c" id="c.xnvme_dev_open">
 <span class="target" id="libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_dev_open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_uri</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts"><span class="n"><span class="pre">xnvme_opts</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_dev_open" title="Link to this definition">#</a><br /></dt>
 <dd><p>Creates a device handle (xnvme_dev) based on the given device-uri. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -844,6 +852,10 @@
 <dt class="sig sig-object c" id="c.xnvme_enumerate">
 <span class="target" id="libxnvme__dev_8h_1a1076e8cecb6cd11772db1bd3ebccd1a6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_enumerate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sys_uri</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_opts.html#c.xnvme_opts" title="xnvme_opts"><span class="n"><span class="pre">xnvme_opts</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">opts</span></span>, <span class="n"><span class="pre">xnvme_enumerate_cb</span></span><span class="w"> </span><span class="n"><span class="pre">cb_func</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb_args</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_enumerate" title="Link to this definition">#</a><br /></dt>
 <dd><p>enumerate devices </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -922,6 +934,9 @@
 
 <span class="cm">/**</span>
 <span class="cm"> * enumerate devices</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param sys_uri URI of the system to enumerate, when NULL, localhost/PCIe</span>
 <span class="cm"> * @param opts Options for instrumenting the runtime during enumeration</span>
@@ -1073,6 +1088,9 @@
 <span class="cm">/**</span>
 <span class="cm"> * Creates a device handle (::xnvme_dev) based on the given device-uri</span>
 <span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param dev_uri File path "/dev/nvme0n1" or "0000:04.01"</span>
 <span class="cm"> * @param opts Options for library backend and system-interfaces</span>
 <span class="cm"> *</span>
@@ -1084,6 +1102,9 @@
 
 <span class="cm">/**</span>
 <span class="cm"> * Destroy the given device handle (::xnvme_dev)</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
 <span class="cm"> */</span>

@@ -647,6 +647,10 @@
 <dt class="sig sig-object c" id="c.xnvme_queue_init">
 <span class="target" id="libxnvme__queue_8h_1a7dbb9f0cc2f52394b97af2f043758cb0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">capacity</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_init" title="Link to this definition">#</a><br /></dt>
 <dd><p>Allocate a Command Queue for asynchronous command submission and completion. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -735,6 +739,10 @@
 <dt class="sig sig-object c" id="c.xnvme_queue_term">
 <span class="target" id="libxnvme__queue_8h_1aaadd62c08f500eb40e872373e0579bbf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_term</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_term" title="Link to this definition">#</a><br /></dt>
 <dd><p>Tear down the given xnvme_queue. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -801,6 +809,9 @@
 <span class="cm">/**</span>
 <span class="cm"> * Allocate a Command Queue for asynchronous command submission and completion</span>
 <span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param dev Device handle (::xnvme_dev) obtained with xnvme_dev_open()</span>
 <span class="cm"> * @param capacity Maximum number of outstanding commands on the initialized queue, note that it</span>
 <span class="cm"> * must be a power of 2 within the range [1,4096]</span>
@@ -836,6 +847,9 @@
 
 <span class="cm">/**</span>
 <span class="cm"> * Tear down the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param queue Pointer to the ::xnvme_queue to tear down</span>
 <span class="cm"> *</span>

@@ -538,7 +538,27 @@ only available on the platform that the backend services</p></li>
 <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> which is operating similar to <code class="docutils literal notranslate"><span class="pre">malloc()/free()</span></code>.</p></li>
 </ul>
 </li>
-<li><p>The API and its backend implementation cannot be assumed to be thread-safe</p></li>
+<li><p>The library is not thread-safe. Only the following control-plane calls may
+be made concurrently, on every backend, and only with respect to each other:
+a call made while another thread uses the same device, queue or buffer for
+I/O is not covered</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_dev_close()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_enumerate()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">xnvme_queue_init()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_queue_term()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_realloc()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_free()</span></code>, their <code class="docutils literal notranslate"><span class="pre">xnvme_buf_phys_*()</span></code>
+variants, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_vtophys()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">xnvme_mem_unmap()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_destroy()</span></code>; one process-wide lock serialises them
+(<code class="docutils literal notranslate"><span class="pre">lib/xnvme_lock.c</span></code>)</p></li>
+<li><p>A queue, and the command contexts drawn from it, belongs to one thread at a
+time, and so do a device’s synchronous and admin command paths</p></li>
+<li><p>The device getters that identify the device on first use, such as
+<code class="docutils literal notranslate"><span class="pre">xnvme_dev_get_geo()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_dev_get_ident()</span></code>, must not make that
+first call from several threads at once</p></li>
+<li><p>Backend code that reaches the same process-wide state from threads of its
+own takes the same lock, <code class="docutils literal notranslate"><span class="pre">xnvme_lock()</span></code></p></li>
+</ul>
+</li>
 <li><p>Be minimal with definitions in the public API</p>
 <ul>
 <li><p>E.g. the ‘sys/queue.h’ was removed from the public API as it gave several
