@@ -483,6 +483,16 @@
 <ul>
 <li><p>The default CI-jobs consists of running style/linters and building <strong>xNVMe</strong></p></li>
 <li><p>Average time for a full functional verification run is about 40min</p></li>
+<li><p>The documentation is built early, without a guest and so without running
+the commands, and the builds and the verification wait for it</p></li>
+<li><p>A pull-request changing only <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and top-level Markdown files skips
+the builds and the verification. Merged, it runs only what the website
+needs, and publishes it. A changed <code class="docutils literal notranslate"><span class="pre">.cmd</span></code> file runs everything, since only
+the guest runs the commands</p></li>
+<li><p>Merging requires the check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>, which passes when every job did.
+A pull-request changing code also needs the verification on physical
+devices, which runs once the pull-request has the label <code class="docutils literal notranslate"><span class="pre">maas</span></code>; until
+then <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> fails</p></li>
 <li><p>One manual CI-job is triggered via the label <code class="docutils literal notranslate"><span class="pre">bench</span></code></p></li>
 </ul>
 </li>
@@ -498,6 +508,8 @@ your pull-request / changes</p></li>
 goal</p></li>
 <li><p>All commits must have their commit messages formatted according to
 <a class="reference internal" href="#sec-contributing-process-commit-messages"><span class="std std-ref">Commit Messages</span></a></p></li>
+<li><p>Neither commit messages nor source code refer to GitHub pull requests or
+issues, see <a class="reference internal" href="#sec-contributing-process-references"><span class="std std-ref">References to GitHub</span></a></p></li>
 <li><p>Commits are rebased on top of <code class="docutils literal notranslate"><span class="pre">main</span></code></p></li>
 <li><p>New functionality is accompanied by tests verifying it</p></li>
 <li><p>The tests are passing</p></li>
@@ -544,6 +556,22 @@ specification. And in addition, for readability:</p>
 you are changing, that should give you an idea of the “component” as well as the
 other items on the list above.</p>
 </section>
+<section id="references-to-github">
+<span id="sec-contributing-process-references"></span><h2>References to GitHub<a class="headerlink" href="#references-to-github" title="Link to this heading">#</a></h2>
+<p>Commit messages and source code do not refer to pull requests, issues, or
+anything else GitHub numbers or links. Git is the record, and GitHub is a
+service on top of it. The history and the code outlive it: they are cloned,
+mirrored, moved to another host, and read offline, where <code class="docutils literal notranslate"><span class="pre">#811</span></code> names nothing
+or something else.</p>
+<p>Say instead what the reference would have pointed at. Name the behaviour, the
+function, or the commit, and name a commit by its abbreviated hash and its
+subject. The same goes for closing keywords such as <code class="docutils literal notranslate"><span class="pre">Fixes</span> <span class="pre">#123</span></code> and for
+links to GitHub.</p>
+<p>Although not allowed in commit messages, such references are highly encouraged
+in pull-request descriptions. A pull-request description lives on GitHub, so
+link the issues and pull-requests it relates to, and put a closing keyword
+there.</p>
+</section>
 </section>
 
 
@@ -571,6 +599,7 @@ other items on the list above.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request-checklist">Pull-Request Checklist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commit-messages">Commit Messages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references-to-github">References to GitHub</a></li>
 </ul>
   </nav></div>
 
