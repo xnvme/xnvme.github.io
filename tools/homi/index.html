@@ -480,28 +480,37 @@
 <span id="sec-tools-homi"></span><h1>homi<a class="headerlink" href="#homi" title="Link to this heading">#</a></h1>
 <p><strong>homi</strong>, Host-Orchestrated Multi-path I/O, opens a set of NVMe devices and
 holds them open until it is told to stop. It does no I/O of its own.</p>
-<p>Its purpose is to provide the long-lived <strong>primary</strong> process for
-<a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a>. The primary owns the DMA hugepages and the
-controller hardware state, and it must outlive every secondary attached to it.
-Running <strong>homi</strong> puts that responsibility in a process of its own, so the
-processes actually doing I/O can come and go freely as secondaries.</p>
-<p><a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a> is only available for the
-<a class="reference internal" href="../../background/backends/upcie/index.html#sec-backends-upcie"><span class="std std-ref">uPCIe</span></a> backend and its GPU variants, and for the
-<a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a> backend. <strong>homi</strong> is therefore useful where one of
+<p>The name borrows from ANA deliberately. Where ANA has the controller report
+the paths to a namespace and the host choose among them, this arranges them
+from the host: each connected client gets queues of its own to the same
+namespace, and the controller is never asked which clients exist. The
+parallel is in who orchestrates rather than in the topology: ANA spans
+controllers, and this shares one.</p>
+<p>Its purpose is to provide the long-lived <strong>server</strong> process that controller
+sharing needs. The server owns the DMA hugepages and the controller hardware
+state, and it must outlive every client connected to it.
+Running <strong>homi</strong> puts that responsibility in a process of its own, so its
+clients can come and go freely. A client may be another process or an
+accelerator.</p>
+<p>Controller sharing is a backend capability. The <a class="reference internal" href="../../background/backends/upcie/index.html#sec-backends-upcie"><span class="std std-ref">uPCIe</span></a>
+backend and its GPU variants provide it through their control plane, see
+<a class="reference internal" href="../../background/backends/upcie/cplane.html#sec-backends-upcie-cplane"><span class="std std-ref">uPCIe (control plane)</span></a>, and the <a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a> backend
+through SPDK’s multi-process mode. <strong>homi</strong> is therefore useful where one of
 those is built: <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> on Linux, and <code class="docutils literal notranslate"><span class="pre">spdk</span></code> on
 Linux and FreeBSD. On Windows it exits with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>, since no
-multi-process capable backend is available there. On other platforms it runs,
-but opening a device with a non-zero <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code> fails with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>.</p>
+backend that can share a controller is available there. On other platforms it
+runs, but opening a device with a non-zero <code class="docutils literal notranslate"><span class="pre">homi_id</span></code> fails with <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>homi<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
 Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:
 
 <span class="w">  </span>serve<span class="w">            </span><span class="p">|</span><span class="w"> </span>Open<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices<span class="w"> </span>and<span class="w"> </span>hold<span class="w"> </span>them<span class="w"> </span>open
+<span class="w">  </span>status<span class="w">           </span><span class="p">|</span><span class="w"> </span>Report<span class="w"> </span>whether<span class="w"> </span>a<span class="w"> </span>server<span class="w"> </span>is<span class="w"> </span>holding<span class="w"> </span>devices
 
 See<span class="w"> </span><span class="s1">'homi &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 See<span class="w"> </span><span class="s1">'homi --version'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>library<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>revision<span class="w"> </span>it<span class="w"> </span>was<span class="w"> </span>built<span class="w"> </span>from
 
-homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'f359511'</span><span class="o">}</span>
+homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'fbfa502'</span><span class="o">}</span>
 </pre></div>
 </div>
 <section id="serve-hold-devices-open">
@@ -528,38 +537,47 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 
 See<span class="w"> </span><span class="s1">'homi --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'f359511'</span><span class="o">}</span>
+homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'fbfa502'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Opens every device given as a positional argument, then blocks until
 signalled.</p>
 <p>Every process that should share these controllers must be started with the
 same id.</p>
-<p>Roles are not assigned by the tool: whichever process claims a given <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>
-first becomes the primary (see <a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc-model"><span class="std std-ref">Process model</span></a>).
-Starting <strong>homi</strong> before any secondary is therefore what makes it the primary.</p>
+<p>Roles are not assigned by the tool: whichever process claims a given
+<code class="docutils literal notranslate"><span class="pre">homi_id</span></code> first becomes the server (see
+<a class="reference internal" href="../../background/backends/upcie/cplane.html#sec-backends-upcie-cplane-model"><span class="std std-ref">Process model</span></a>). Starting <strong>homi</strong> before any client
+is therefore what makes it the server.</p>
 <p>The heap is allocated once per process, on the first device open, so
 <code class="docutils literal notranslate"><span class="pre">--host_heap_size</span></code> covers every device <strong>homi</strong> holds rather than being per
 device.</p>
-<p>Rather than the 1 GiB the backend would otherwise use, <strong>homi</strong> defaults to 16
-MiB per device held. It needs only the admin queue and the sync queue pair
-that opening a device creates, and each of those carries a request pool
-costing 4 MiB, so 16 MiB per device is roughly double what is required.
-Every process in multi-process mode allocates a heap of its own, so a primary
-claiming the backend default would leave nothing in the hugepage pool for the
-secondaries it exists to serve:</p>
+<p>Rather than the 1 GiB the backend would otherwise use, <strong>homi</strong> defaults to 80
+MiB per device held. The heap is the pool every client draws from, since a
+client brings no memory of its own, and 64 MiB of that is for them. The rest
+is what <strong>homi</strong> itself needs: the admin queue and the sync queue pair that
+opening a device creates, each carrying a request pool costing 4 MiB. The two
+are budgeted separately so that a client can be handed a buffer the size of
+the pool from a server holding a single device. Claiming the backend default
+instead would leave nothing in the hugepage pool for clients of anything else,
+so size it for the buffers the clients will ask for:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span><span class="w"> </span>--host_heap_size<span class="w"> </span><span class="m">134217728</span>
 </pre></div>
 </div>
+<p>When every device given sits on one NUMA node, as sysfs reports it, <strong>homi</strong>
+binds its memory and threads to that node before opening anything, so the heap
+the controllers fetch from is local to them; otherwise it leaves placement
+alone. It says which when it starts. The binding is strict, so the hugepages
+have to be reserved on that node: a node short of them fails the open rather
+than spilling to another, and <strong>homi</strong> names the node when it does.</p>
 <p>If any device fails to open, <strong>homi</strong> closes the devices it has already opened
 and exits with an error, rather than holding a partial set open. Once all
 devices are open it reports that it has started, then waits for <code class="docutils literal notranslate"><span class="pre">SIGINT</span></code>
 (Ctrl+C) or <code class="docutils literal notranslate"><span class="pre">SIGTERM</span></code>. On either signal it closes all devices and exits.</p>
-<p>Example: hold a single device open as the primary for <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code> 1:</p>
+<p>Example: hold a single device open as the server for <code class="docutils literal notranslate"><span class="pre">homi_id</span></code> 1:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
-<p>Example: hold several devices under the same <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>:</p>
+<p>Example: hold several devices under the same <code class="docutils literal notranslate"><span class="pre">homi_id</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="m">0000</span>:04:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
@@ -572,34 +590,169 @@ ioctl() interface, the same mimic <code class="docutils literal notranslate"><sp
 unexposed, with no fallback name. Pass <code class="docutils literal notranslate"><span class="pre">--no-cuse</span></code> to skip it entirely. The
 mimic itself is Linux-only; on another platform <strong>homi</strong> still runs, quietly
 skipping the character device for every controller.</p>
-<p>While it runs, other processes attach as secondaries by passing the same
-identifier:</p>
+<p>While it runs, clients connect by passing the same
+<code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 </section>
+<section id="status-report-whether-a-server-is-running">
+<h2><code class="docutils literal notranslate"><span class="pre">status</span></code>: Report whether a server is running<a class="headerlink" href="#status-report-whether-a-server-is-running" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>homi<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Report<span class="w"> </span>whether<span class="w"> </span>a<span class="w"> </span>server<span class="w"> </span>is<span class="w"> </span>holding<span class="w"> </span>devices.<span class="w"> </span>Asks<span class="w"> </span>the<span class="w"> </span>server<span class="w"> </span>over<span class="w"> </span>its<span class="w"> </span>socket<span class="w"> </span>and<span class="w"> </span>opens<span class="w"> </span>no<span class="w"> </span>device,<span class="w"> </span>so<span class="w"> </span>it<span class="w"> </span>disturbs<span class="w"> </span>no<span class="w"> </span>I/O.<span class="w"> </span>Exits<span class="w"> </span>non-zero<span class="w"> </span><span class="k">until</span><span class="w"> </span>a<span class="w"> </span>server<span class="w"> </span>is<span class="w"> </span>up<span class="w"> </span>and<span class="w"> </span>its<span class="w"> </span>devices<span class="w"> </span>are<span class="w"> </span>ready.
+<span class="w">  </span>
+Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
+
+<span class="w">  </span>--homi-id<span class="w"> </span>NUM<span class="w">                 </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
+
+See<span class="w"> </span><span class="s1">'homi --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+
+homi<span class="w"> </span>-<span class="w"> </span>Host-Orchestrated<span class="w"> </span>Multi-path<span class="w"> </span>I/O<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'fbfa502'</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Answers whether anything is holding controllers, without opening a device:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>status<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>It reports whether a server is holding controllers under that id and, when
+one is, what it holds: how many connections each controller has, how
+many I/O submission and completion queues are in use, and how many the
+controller allocated. It exits zero only when a server is running and every
+controller it holds has finished coming up, so it can be used as a readiness
+or health check without parsing its output.</p>
+<p>It reports on the uPCIe backend only, and exists only where that backend does,
+which is Linux and only when it was built in. Elsewhere the subcommand refuses
+rather than reporting: <strong>homi</strong> itself still runs, since <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">spdk</span></code> is able
+to share a controller on other platforms, but its bookkeeping is not somewhere
+this can read. Where uPCIe is present and a runtime belongs to another
+backend, that runtime likewise reads as absent rather than as running.</p>
+<p>Output is YAML, matching the rest of xNVMe, since the caller is as likely to
+be a monitoring loop as a person:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">homi_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9</span>
+<span class="nt">server_running</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="nt">controllers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'0000:03:00.0'</span>
+<span class="w">    </span><span class="nt">readable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">initialized</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">    </span><span class="nt">nsq_used</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">    </span><span class="nt">ncq_used</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="w">    </span><span class="nt">nsq_total</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="w">    </span><span class="nt">ncq_total</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="nt">ready</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>The top-level <code class="docutils literal notranslate"><span class="pre">connections</span></code> counts the sockets the server has open, including
+the one <code class="docutils literal notranslate"><span class="pre">homi</span> <span class="pre">status</span></code> is using to ask, so a server serving two clients reads
+as three. There is one per client process, however many controllers that
+process reaches, since a request names the controller it is about. The per-
+controller <code class="docutils literal notranslate"><span class="pre">connections</span></code> is that controller’s own: the clients that asked the
+server for it, whether or not they went on to take a queue, and not the one
+asking. <code class="docutils literal notranslate"><span class="pre">ready</span></code> is what the exit status follows: it is false while a server
+holds the role but its controllers are still coming up, which is a window a
+service manager would otherwise mistake for being up.</p>
+<p><code class="docutils literal notranslate"><span class="pre">nsq_used</span></code> and <code class="docutils literal notranslate"><span class="pre">ncq_used</span></code> are necessarily equal: a queue pair is created as
+one submission and one completion queue sharing a queue identifier, and the
+identifier is what is tracked. They are reported separately so each reads
+against its own total. The totals are the queues the controller has allocated,
+which need not agree, and the smaller is what limits queue pairs; both are
+given rather than their minimum so it is visible which one binds. They are
+omitted entirely when the controller did not report them, since absent says
+unknown where zero would say none.</p>
+<p>What it inspects is whoever is serving that identifier. It connects to the
+runtime’s socket and asks, which answers most of the question by succeeding: a
+socket that answers has the process holding the controllers behind it. Nothing
+is opened, nothing is locked, and nothing is inferred from what a process left
+in memory.</p>
+<p>That removes a distinction the previous arrangement needed. A server that was
+killed left a shared segment behind which read exactly like a live runtime, so
+status had to report whether what it found was debris. There is nothing to
+tell apart now: the process that holds the socket is the only thing that
+answers on it, and when it dies the name stops working.</p>
+<p>The queue totals are read once when the server brings a controller up, with
+Get Features (Number of Queues). Set Features would let a driver ask for a
+larger allocation, but the drives tested here reject it, so what is reported
+is the allocation the controller made on its own.</p>
+</section>
+<section id="running-several-servers">
+<h2>Running several servers<a class="headerlink" href="#running-several-servers" title="Link to this heading">#</a></h2>
+<p>A host can run more than one server, each holding a disjoint set of
+controllers under its own <code class="docutils literal notranslate"><span class="pre">homi_id</span></code>. Clients reach the one they want by
+passing the matching id:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="m">0000</span>:04:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
+homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:05:00.0<span class="w"> </span><span class="m">0000</span>:06:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+<p>Two things are shared across all of them and have to be budgeted rather than
+assumed. The hugepage pool is one: each server allocates a heap, and every
+client of it draws from that heap rather than bringing one of its own, so a
+server’s <code class="docutils literal notranslate"><span class="pre">--host_heap_size</span></code> has to cover the buffers all of its clients hold
+at once. Reserve hugepages for the sum of every server’s heap, and size each
+for its clients rather than for the server.</p>
+<p>The controllers are the other. A controller can be held by one server only,
+so the sets must not overlap; the second server to claim one fails rather
+than sharing it.</p>
+</section>
+<section id="running-as-a-service">
+<h2>Running as a service<a class="headerlink" href="#running-as-a-service" title="Link to this heading">#</a></h2>
+<p>A server is only useful while it is running, which makes it a service rather
+than a command someone remembers to start. A unit template for that is
+installed with xNVMe, along with an example configuration file, so enabling an
+instance is all that remains:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>/etc/xnvme/homi.conf.example<span class="w"> </span>/etc/xnvme/homi-1.conf
+systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>xnvme-homi@1
+</pre></div>
+</div>
+<p>The unit is installed where systemd says units belong, and its <code class="docutils literal notranslate"><span class="pre">ExecStart</span></code>
+names the <code class="docutils literal notranslate"><span class="pre">homi</span></code> that this build installs, so a prefixed build points at its
+own binary rather than at whichever one is first on <code class="docutils literal notranslate"><span class="pre">PATH</span></code>. Two build options
+govern it:</p>
+<p><code class="docutils literal notranslate"><span class="pre">-Dsystemd=auto</span></code> is the default. It installs the unit where systemd is
+present and stays quiet where it is not, which is any non-Linux platform and
+any build configured with <code class="docutils literal notranslate"><span class="pre">-Dtools=false</span></code>. Use <code class="docutils literal notranslate"><span class="pre">-Dsystemd=disabled</span></code> to keep a
+build from writing to the unit directory at all, and <code class="docutils literal notranslate"><span class="pre">-Dsystemd=enabled</span></code> to
+have configuration fail instead of skipping it silently.</p>
+<p>The unit reads its configuration from the <code class="docutils literal notranslate"><span class="pre">sysconfdir</span></code> of the same build, so
+a prefixed install writes the example and reads the configuration under that
+prefix rather than writing to one path and reading from another. Pass
+<code class="docutils literal notranslate"><span class="pre">--sysconfdir=/etc</span></code> to keep it at the usual place regardless of prefix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-Dsystemd_unitdir=</span></code> overrides the location. Left empty, it is whatever
+systemd reports through <code class="docutils literal notranslate"><span class="pre">pkg-config</span></code>, resolved against the configured prefix
+rather than taken as the absolute path systemd reports, so <code class="docutils literal notranslate"><span class="pre">--prefix</span></code> and
+<code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code> are both honoured. Set it to place units somewhere else, such as
+<code class="docutils literal notranslate"><span class="pre">-Dsystemd_unitdir=/etc/systemd/system</span></code> for a machine-local override.</p>
+<p>The unit is templated on <code class="docutils literal notranslate"><span class="pre">homi_id</span></code>, matching the model above, so several
+instances can run side by side. It does not bind controllers or reserve
+hugepages: those are prerequisites it checks for and refuses to start without,
+because inferring a machine’s driver bindings from a unit file is worse than
+failing with a clear message. <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span></code> returns only once a client
+could actually connect, which it establishes with <code class="docutils literal notranslate"><span class="pre">homi</span> <span class="pre">status</span></code>.</p>
+</section>
 <section id="backends">
 <h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">#</a></h2>
-<p><strong>homi</strong> works with any backend that advertises the multi-process capability,
-which is <code class="docutils literal notranslate"><span class="pre">spdk</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>:</p>
+<p><strong>homi</strong> works with any backend that can share a controller, which is <code class="docutils literal notranslate"><span class="pre">spdk</span></code>,
+<code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 <p>With <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code>, <strong>homi</strong> additionally caps the GPU device
 heap at 2 MiB rather than the backend default of 1 GiB. It never allocates
 data buffers, which is all the device heap is used for, so claiming the
-default would take VRAM away from the secondaries:</p>
+default would take VRAM away from the clients:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>homi<span class="w"> </span>serve<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie-cuda<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">homi</span> <span class="pre">status</span></code> is the exception: it reads uPCIe’s shared segment directly, so a
-primary started with <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">spdk</span></code> reads as absent rather than as running, and on
+<p><code class="docutils literal notranslate"><span class="pre">homi</span> <span class="pre">status</span></code> is the exception: it asks over the socket uPCIe serves, so a
+server started with <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">spdk</span></code> reads as absent rather than as running, and on
 a platform without uPCIe the subcommand refuses outright. The same applies to
 the systemd unit, whose readiness gate is that command.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="../../background/backends/upcie/mproc.html#sec-backends-upcie-mproc"><span class="std std-ref">uPCIe (multi-process)</span></a> covers the process model, startup handshake,
-admin-queue serialization, and the known limitations of multi-process mode.</p>
+<p><a class="reference internal" href="../../background/backends/upcie/cplane.html#sec-backends-upcie-cplane"><span class="std std-ref">uPCIe (control plane)</span></a> covers the process model, startup handshake,
+admin-queue serialization, and the known limitations of the control plane.</p>
 </div>
 </section>
 </section>
@@ -628,6 +781,9 @@ admin-queue serialization, and the known limitations of multi-process mode.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#serve-hold-devices-open"><code class="docutils literal notranslate"><span class="pre">serve</span></code>: Hold devices open</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#status-report-whether-a-server-is-running"><code class="docutils literal notranslate"><span class="pre">status</span></code>: Report whether a server is running</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-several-servers">Running several servers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-as-a-service">Running as a service</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backends">Backends</a></li>
 </ul>
   </nav></div>

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libxnvme_cplane.h &#8212; xNVMe v0.7.5 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=cf061042" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/c/nvme/xnvme_cplane';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="libxnvme_kvs.h" href="xnvme_kvs.html" />
+    <link rel="prev" title="libxnvme_adm.h" href="xnvme_adm.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.7.5" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background/index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background/index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">C</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../core/index.html">Core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_buf.html">libxnvme_buf.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_cmd.html">libxnvme_cmd.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_geo.html">libxnvme_geo.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_ident.html">libxnvme_ident.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_mem.html">libxnvme_mem.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_opts.html">libxnvme_opts.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_queue.html">libxnvme_queue.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_scan.html">libxnvme_scan.h</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">NVMe</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="xnvme_adm.html">libxnvme_adm.h</a></li>
+<li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">libxnvme_cplane.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_kvs.html">libxnvme_kvs.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_nvm.html">libxnvme_nvm.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_pi.html">libxnvme_pi.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_spec.html">libxnvme_spec.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_spec_fs.html">libxnvme_spec_fs.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_spec_pp.html">libxnvme_spec_pp.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_topology.html">libxnvme_topology.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_znd.html">libxnvme_znd.h</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../file/index.html">File</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../file/xnvme_file.html">libxnvme_file.h</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../util/index.html">Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_be.html">libxnvme_be.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_lba.html">libxnvme_lba.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_libconf.html">libxnvme_libconf.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_pp.html">libxnvme_pp.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_util.html">libxnvme_util.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_ver.html">libxnvme_ver.h</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../cli/index.html">Command-line Interface (CLI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/xnvme_cli.html">libxnvme_cli.h</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../gpu/index.html">GPU-Resident Queue API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gpu/xnvme_cuda.html">libxnvme_cuda.h</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/index.html">API Code Examples</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python/index.html">Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rust/index.html">Rust</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">C</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">NVMe</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libxnvme_cplane.h</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="libxnvme-cplane-h">
+<span id="sec-api-c-xnvme-cplane"></span><h1>libxnvme_cplane.h<a class="headerlink" href="#libxnvme-cplane-h" title="Link to this heading">#</a></h1>
+<section id="structs">
+<span id="sec-api-c-xnvme-cplane-struct"></span><h2>Structs<a class="headerlink" href="#structs" title="Link to this heading">#</a></h2>
+<section id="xnvme-cplane-ctrlr-info">
+<span id="sec-api-c-xnvme-cplane-struct-xnvme-cplane-ctrlr-info"></span><h3>xnvme_cplane_ctrlr_info<a class="headerlink" href="#xnvme-cplane-ctrlr-info" title="Link to this heading">#</a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info">
+<span class="target" id="structxnvme__cplane__ctrlr__info"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cplane_ctrlr_info</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info" title="Link to this definition">#</a><br /></dt>
+<dd><p>What a runtime says about one controller it holds. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__ctrlr__info_1a857210d0cf78f9c09e89a0d623f82bb9"><span class="std std-ref"><span class="pre">nconnections</span></span></a></code> counts the clients given this controller’s descriptors, whether or not they took a queue; asking for this is not one of them. A queue identifier covers a pair, so <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__ctrlr__info_1a19af866ab53fed0d42cd8771150622d8"><span class="std std-ref"><span class="pre">nsq_used</span></span></a></code> and <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__ctrlr__info_1a94c26d9f38c5b9f8185e9975e350df19"><span class="std std-ref"><span class="pre">ncq_used</span></span></a></code> are equal. The smaller of <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__ctrlr__info_1a2b5f62a406188c7fc941a55a41f9bcfe"><span class="std std-ref"><span class="pre">nsq_total</span></span></a></code> and <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__ctrlr__info_1a66d102cbf350dff5e0e17d51815f806a"><span class="std std-ref"><span class="pre">ncq_total</span></span></a></code> limits the queue pairs, and zero means the controller did not answer, not that it has none. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info.nconnections">
+<span class="target" id="structxnvme__cplane__ctrlr__info_1a857210d0cf78f9c09e89a0d623f82bb9"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nconnections</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info.nconnections" title="Link to this definition">#</a><br /></dt>
+<dd><p>Clients of this controller. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info.nsq_used">
+<span class="target" id="structxnvme__cplane__ctrlr__info_1a19af866ab53fed0d42cd8771150622d8"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nsq_used</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info.nsq_used" title="Link to this definition">#</a><br /></dt>
+<dd><p>I/O submission queues in use. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info.ncq_used">
+<span class="target" id="structxnvme__cplane__ctrlr__info_1a94c26d9f38c5b9f8185e9975e350df19"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ncq_used</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info.ncq_used" title="Link to this definition">#</a><br /></dt>
+<dd><p>I/O completion queues in use. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info.nsq_total">
+<span class="target" id="structxnvme__cplane__ctrlr__info_1a2b5f62a406188c7fc941a55a41f9bcfe"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nsq_total</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info.nsq_total" title="Link to this definition">#</a><br /></dt>
+<dd><p>I/O submission queues the controller allocated. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info.ncq_total">
+<span class="target" id="structxnvme__cplane__ctrlr__info_1a66d102cbf350dff5e0e17d51815f806a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ncq_total</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info.ncq_total" title="Link to this definition">#</a><br /></dt>
+<dd><p>I/O completion queues the controller allocated. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_ctrlr_info.initialized">
+<span class="target" id="structxnvme__cplane__ctrlr__info_1aefab0f507c5a9da395f45d6fb5973a51"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">initialized</span></span></span><a class="headerlink" href="#c.xnvme_cplane_ctrlr_info.initialized" title="Link to this definition">#</a><br /></dt>
+<dd><p>Whether the controller is up and being served. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+<section id="xnvme-cplane-info">
+<span id="sec-api-c-xnvme-cplane-struct-xnvme-cplane-info"></span><h3>xnvme_cplane_info<a class="headerlink" href="#xnvme-cplane-info" title="Link to this heading">#</a></h3>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.xnvme_cplane_info">
+<span class="target" id="structxnvme__cplane__info"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cplane_info</span></span></span><a class="headerlink" href="#c.xnvme_cplane_info" title="Link to this definition">#</a><br /></dt>
+<dd><p>What a runtime says about itself and what it holds. </p>
+<p>A client reaches every controller the server holds over one connection, so <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__info_1a8cd00245eaf184097d311a91cfa47c06"><span class="std std-ref"><span class="pre">nconnections</span></span></a></code> counts client processes. <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__info_1abe24e4fd9ed4a72fdc395770c11ecee7"><span class="std std-ref"><span class="pre">nctrlrs_held</span></span></a></code> exceeds <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__info_1a567094525647c4ae2ffd817f2aa33ce5"><span class="std std-ref"><span class="pre">nctrlrs</span></span></a></code> when there were more than XNVME_CPLANE_MAX_CTRLRS to list. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_info.nconnections">
+<span class="target" id="structxnvme__cplane__info_1a8cd00245eaf184097d311a91cfa47c06"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nconnections</span></span></span><a class="headerlink" href="#c.xnvme_cplane_info.nconnections" title="Link to this definition">#</a><br /></dt>
+<dd><p>Connections the server has, the caller’s included. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_info.nctrlrs">
+<span class="target" id="structxnvme__cplane__info_1a567094525647c4ae2ffd817f2aa33ce5"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nctrlrs</span></span></span><a class="headerlink" href="#c.xnvme_cplane_info.nctrlrs" title="Link to this definition">#</a><br /></dt>
+<dd><p>Controllers listed in <code class="docutils literal notranslate"><a class="reference internal" href="#structxnvme__cplane__info_1acb9513a1dbab0240ce25aea1a6522a73"><span class="std std-ref"><span class="pre">ctrlrs</span></span></a></code>. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_info.nctrlrs_held">
+<span class="target" id="structxnvme__cplane__info_1abe24e4fd9ed4a72fdc395770c11ecee7"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nctrlrs_held</span></span></span><a class="headerlink" href="#c.xnvme_cplane_info.nctrlrs_held" title="Link to this definition">#</a><br /></dt>
+<dd><p>Controllers held. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.xnvme_cplane_info.ctrlrs">
+<span class="target" id="structxnvme__cplane__info_1acb9513a1dbab0240ce25aea1a6522a73"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ctrlrs</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">XNVME_CPLANE_MAX_CTRLRS</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">XNVME_IDENT_URI_LEN</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.xnvme_cplane_info.ctrlrs" title="Link to this definition">#</a><br /></dt>
+<dd><p>Their identifiers. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="functions">
+<span id="sec-api-c-xnvme-cplane-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<section id="xnvme-cplane-get-ctrlr-info">
+<span id="sec-api-c-xnvme-cplane-func-xnvme-cplane-get-ctrlr-info"></span><h3>xnvme_cplane_get_ctrlr_info<a class="headerlink" href="#xnvme-cplane-get-ctrlr-info" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_cplane_get_ctrlr_info">
+<span class="target" id="libxnvme__cplane_8h_1aeaf4237c78c664fb1a2e0f6107773fcf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cplane_get_ctrlr_info</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uri</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cplane_ctrlr_info" title="xnvme_cplane_ctrlr_info"><span class="n"><span class="pre">xnvme_cplane_ctrlr_info</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">info</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cplane_get_ctrlr_info" title="Link to this definition">#</a><br /></dt>
+<dd><p>Ask the server holding the controller at <code class="docutils literal notranslate"><span class="pre">uri</span></code> about it. </p>
+<p>The servers are asked in turn until one holds the controller. Neither this nor <a class="reference internal" href="#libxnvme__cplane_8h_1af4f3bb6958e90861465baf619a7d377a"><span class="std std-ref">xnvme_cplane_get_info()</span></a> becomes a client: the connection only asks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uri</strong> – Device identifier, as passed to <a class="reference internal" href="../core/xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>info</strong> – Filled on success</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative errno is returned: -ENOENT when nobody serves this controller, -ENOSYS where sharing is unavailable. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-cplane-get-info">
+<span id="sec-api-c-xnvme-cplane-func-xnvme-cplane-get-info"></span><h3>xnvme_cplane_get_info<a class="headerlink" href="#xnvme-cplane-get-info" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_cplane_get_info">
+<span class="target" id="libxnvme__cplane_8h_1af4f3bb6958e90861465baf619a7d377a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cplane_get_info</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">cplane_id</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cplane_info" title="xnvme_cplane_info"><span class="n"><span class="pre">xnvme_cplane_info</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">info</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cplane_get_info" title="Link to this definition">#</a><br /></dt>
+<dd><p>Ask the server of <code class="docutils literal notranslate"><span class="pre">cplane_id</span></code> what it holds. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cplane_id</strong> – Identifier the runtime was created with </p></li>
+<li><p><strong>info</strong> – Filled on success</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative errno is returned: -ENOENT when nobody serves this id, -ENOSYS where sharing is unavailable. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-cplane-serve">
+<span id="sec-api-c-xnvme-cplane-func-xnvme-cplane-serve"></span><h3>xnvme_cplane_serve<a class="headerlink" href="#xnvme-cplane-serve" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_cplane_serve">
+<span class="target" id="libxnvme__cplane_8h_1a03fd8e0fe1cbb08092c35ddbaf1b8ce2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cplane_serve</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">devs</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ndevs</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">cplane_id</span></span>, <span class="k"><span class="pre">volatile</span></span><span class="w"> </span><span class="n"><span class="pre">sig_atomic_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">stop</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cplane_serve" title="Link to this definition">#</a><br /></dt>
+<dd><p>Serve clients of the given devices until told to stop. </p>
+<p>Holds one socket, named from <code class="docutils literal notranslate"><span class="pre">cplane_id</span></code>, and answers processes that connect: hands over the descriptors and offsets they need to map the heap and a controller’s BAR0, creates queues on request, submits admin commands on their behalf, and releases whatever a client held when it disconnects.</p>
+<p>One thread reads every connection and one per controller runs the requests that reach the controller; they are created and joined here. An admin command holds xnvme_lock() for as long as it runs, as it does outside the server, so a Format delays the server’s other queue and memory requests.</p>
+<p>Blocks until <code class="docutils literal notranslate"><span class="pre">*stop</span></code> becomes non-zero, which a signal handler is expected to do. Returns when the last thing it was serving has been let go, so a caller can close its devices afterwards.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>devs</strong> – Devices this process has opened </p></li>
+<li><p><strong>ndevs</strong> – How many </p></li>
+<li><p><strong>cplane_id</strong> – Identifier to serve under; the sockets are named from it </p></li>
+<li><p><strong>stop</strong> – Set to non-zero to bring the server down; typed for a signal handler, since that is what usually sets it</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative errno on error </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-cplane-server-alive">
+<span id="sec-api-c-xnvme-cplane-func-xnvme-cplane-server-alive"></span><h3>xnvme_cplane_server_alive<a class="headerlink" href="#xnvme-cplane-server-alive" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_cplane_server_alive">
+<span class="target" id="libxnvme__cplane_8h_1a9c56eab5664104ebc85db29354057230"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cplane_server_alive</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">cplane_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cplane_server_alive" title="Link to this definition">#</a><br /></dt>
+<dd><p>Report whether a process currently serves the runtime for <code class="docutils literal notranslate"><span class="pre">cplane_id</span></code>. </p>
+<p>Connecting is most of the answer: a socket that answers has a process behind it, since the address stops accepting when its holder dies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cplane_id</strong> – Identifier the runtime was created with</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1 when a process serves it, 0 when none does, negative errno on error, including -ENOSYS where sharing is unavailable. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="header">
+<span id="sec-api-c-xnvme-cplane-header"></span><h2>Header<a class="headerlink" href="#header" title="Link to this heading">#</a></h2>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="c1">//</span>
+<span class="c1">// SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Sharing a controller with other processes</span>
+<span class="cm"> *</span>
+<span class="cm"> * One process opens a controller and serves it; others connect and do I/O</span>
+<span class="cm"> * against the same device. The server hands over descriptors rather than naming</span>
+<span class="cm"> * objects in the filesystem, because a vfio device file cannot be bound twice,</span>
+<span class="cm"> * so what a client needs cannot be found by name.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note uPCIe only, so -ENOSYS elsewhere.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note This API is experimental and may change without notice.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @file libxnvme_cplane.h</span>
+<span class="cm"> */</span>
+
+<span class="cp">#ifndef __LIBXNVME_CPLANE_H</span>
+<span class="cp">#define __LIBXNVME_CPLANE_H</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;signal.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdint.h&gt;</span>
+
+<span class="cp">#define XNVME_CPLANE_MAX_CTRLRS 64</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * What a runtime says about itself and what it holds</span>
+<span class="cm"> *</span>
+<span class="cm"> * A client reaches every controller the server holds over one connection, so</span>
+<span class="cm"> * `nconnections` counts client processes. `nctrlrs_held` exceeds `nctrlrs`</span>
+<span class="cm"> * when there were more than XNVME_CPLANE_MAX_CTRLRS to list.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cplane_info</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nconnections</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Connections the server has, the caller's included</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nctrlrs</span><span class="p">;</span><span class="w">      </span><span class="c1">///&lt; Controllers listed in `ctrlrs`</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nctrlrs_held</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Controllers held</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">ctrlrs</span><span class="p">[</span><span class="n">XNVME_CPLANE_MAX_CTRLRS</span><span class="p">][</span><span class="n">XNVME_IDENT_URI_LEN</span><span class="p">];</span><span class="w"> </span><span class="c1">///&lt; Their identifiers</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Report whether a process currently serves the runtime for `cplane_id`</span>
+<span class="cm"> *</span>
+<span class="cm"> * Connecting is most of the answer: a socket that answers has a process behind</span>
+<span class="cm"> * it, since the address stops accepting when its holder dies.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param cplane_id Identifier the runtime was created with</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return 1 when a process serves it, 0 when none does, negative errno on</span>
+<span class="cm"> *         error, including -ENOSYS where sharing is unavailable.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cplane_server_alive</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cplane_id</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Ask the server of `cplane_id` what it holds</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param cplane_id Identifier the runtime was created with</span>
+<span class="cm"> * @param info Filled on success</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative errno is returned:</span>
+<span class="cm"> *         -ENOENT when nobody serves this id, -ENOSYS where sharing is</span>
+<span class="cm"> *         unavailable.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cplane_get_info</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cplane_id</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cplane_info</span><span class="w"> </span><span class="o">*</span><span class="n">info</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * What a runtime says about one controller it holds</span>
+<span class="cm"> *</span>
+<span class="cm"> * `nconnections` counts the clients given this controller's descriptors,</span>
+<span class="cm"> * whether or not they took a queue; asking for this is not one of them. A queue</span>
+<span class="cm"> * identifier covers a pair, so `nsq_used` and `ncq_used` are equal. The smaller</span>
+<span class="cm"> * of `nsq_total` and `ncq_total` limits the queue pairs, and zero means the</span>
+<span class="cm"> * controller did not answer, not that it has none.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cplane_ctrlr_info</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nconnections</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Clients of this controller</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsq_used</span><span class="p">;</span><span class="w">     </span><span class="c1">///&lt; I/O submission queues in use</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ncq_used</span><span class="p">;</span><span class="w">     </span><span class="c1">///&lt; I/O completion queues in use</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsq_total</span><span class="p">;</span><span class="w">    </span><span class="c1">///&lt; I/O submission queues the controller allocated</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ncq_total</span><span class="p">;</span><span class="w">    </span><span class="c1">///&lt; I/O completion queues the controller allocated</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">initialized</span><span class="p">;</span><span class="w">  </span><span class="c1">///&lt; Whether the controller is up and being served</span>
+<span class="p">};</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Ask the server holding the controller at `uri` about it</span>
+<span class="cm"> *</span>
+<span class="cm"> * The servers are asked in turn until one holds the controller. Neither this</span>
+<span class="cm"> * nor xnvme_cplane_get_info() becomes a client: the connection only asks.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param uri Device identifier, as passed to xnvme_dev_open()</span>
+<span class="cm"> * @param info Filled on success</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative errno is returned:</span>
+<span class="cm"> *         -ENOENT when nobody serves this controller, -ENOSYS where sharing</span>
+<span class="cm"> *         is unavailable.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cplane_get_ctrlr_info</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">uri</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cplane_ctrlr_info</span><span class="w"> </span><span class="o">*</span><span class="n">info</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Serve clients of the given devices until told to stop</span>
+<span class="cm"> *</span>
+<span class="cm"> * Holds one socket, named from `cplane_id`, and answers processes that</span>
+<span class="cm"> * connect: hands over the descriptors and offsets they need to map the heap</span>
+<span class="cm"> * and a controller's BAR0, creates queues on request, submits admin commands</span>
+<span class="cm"> * on their behalf, and releases whatever a client held when it disconnects.</span>
+<span class="cm"> *</span>
+<span class="cm"> * One thread reads every connection and one per controller runs the requests</span>
+<span class="cm"> * that reach the controller; they are created and joined here. An admin</span>
+<span class="cm"> * command holds xnvme_lock() for as long as it runs, as it does outside the</span>
+<span class="cm"> * server, so a Format delays the server's other queue and memory requests.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Blocks until `*stop` becomes non-zero, which a signal handler is expected to</span>
+<span class="cm"> * do. Returns when the last thing it was serving has been let go, so a caller</span>
+<span class="cm"> * can close its devices afterwards.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param devs Devices this process has opened</span>
+<span class="cm"> * @param ndevs How many</span>
+<span class="cm"> * @param cplane_id Identifier to serve under; the sockets are named from it</span>
+<span class="cm"> * @param stop Set to non-zero to bring the server down; typed for a signal</span>
+<span class="cm"> * handler, since that is what usually sets it</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return 0 on success, negative errno on error</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_cplane_serve</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">**</span><span class="n">devs</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ndevs</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cplane_id</span><span class="p">,</span>
+<span class="w">		   </span><span class="k">volatile</span><span class="w"> </span><span class="kt">sig_atomic_t</span><span class="w"> </span><span class="o">*</span><span class="n">stop</span><span class="p">);</span>
+
+<span class="cp">#endif </span><span class="cm">/* __LIBXNVME_CPLANE_H */</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#structs">Structs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cplane-ctrlr-info">xnvme_cplane_ctrlr_info</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info"><code class="docutils literal notranslate"><span class="pre">xnvme_cplane_ctrlr_info</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info.nconnections"><code class="docutils literal notranslate"><span class="pre">nconnections</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info.nsq_used"><code class="docutils literal notranslate"><span class="pre">nsq_used</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info.ncq_used"><code class="docutils literal notranslate"><span class="pre">ncq_used</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info.nsq_total"><code class="docutils literal notranslate"><span class="pre">nsq_total</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info.ncq_total"><code class="docutils literal notranslate"><span class="pre">ncq_total</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_ctrlr_info.initialized"><code class="docutils literal notranslate"><span class="pre">initialized</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cplane-info">xnvme_cplane_info</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_info"><code class="docutils literal notranslate"><span class="pre">xnvme_cplane_info</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_info.nconnections"><code class="docutils literal notranslate"><span class="pre">nconnections</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_info.nctrlrs"><code class="docutils literal notranslate"><span class="pre">nctrlrs</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_info.nctrlrs_held"><code class="docutils literal notranslate"><span class="pre">nctrlrs_held</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_info.ctrlrs"><code class="docutils literal notranslate"><span class="pre">ctrlrs</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cplane-get-ctrlr-info">xnvme_cplane_get_ctrlr_info</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_get_ctrlr_info"><code class="docutils literal notranslate"><span class="pre">xnvme_cplane_get_ctrlr_info()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cplane-get-info">xnvme_cplane_get_info</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_get_info"><code class="docutils literal notranslate"><span class="pre">xnvme_cplane_get_info()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cplane-serve">xnvme_cplane_serve</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_serve"><code class="docutils literal notranslate"><span class="pre">xnvme_cplane_serve()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cplane-server-alive">xnvme_cplane_server_alive</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cplane_server_alive"><code class="docutils literal notranslate"><span class="pre">xnvme_cplane_server_alive()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#header">Header</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

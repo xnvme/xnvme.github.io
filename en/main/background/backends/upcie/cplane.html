@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>uPCIe (multi-process) &#8212; xNVMe v0.7.5 documentation</title>
+    <title>uPCIe (control plane) &#8212; xNVMe v0.7.5 documentation</title>
   
   
   
@@ -46,7 +46,7 @@
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'background/backends/upcie/mproc';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'background/backends/upcie/cplane';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
@@ -421,7 +421,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">uPCIe</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="host.html">uPCIe (host memory)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cuda.html">uPCIe CUDA</a></li>
-<li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">uPCIe (multi-process)</a></li>
+<li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">uPCIe (control plane)</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../xnvme_be_macos.html">macOS</a></li>
@@ -488,7 +488,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">uPCIe</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">uPCIe (multi-process)</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">uPCIe (control plane)</span></li>
   </ul>
 </nav>
 </div>
@@ -505,216 +505,203 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="upcie-multi-process">
-<span id="sec-backends-upcie-mproc"></span><h1>uPCIe (multi-process)<a class="headerlink" href="#upcie-multi-process" title="Link to this heading">#</a></h1>
-<p>The <strong>upcie</strong> backend supports a <strong>multi-process</strong> mode in which several
-independent processes share NVMe controllers. In a multi-process setup, there
-will always be one <strong>primary</strong> process, and any number of <strong>secondary</strong>
-processes. The <strong>primary</strong> owns the DMA hugepages and the controller hardware
-state. The <strong>secondary</strong> processes attach to that state and drive their own
-I/O without re-initializing the device.</p>
-<p>Multi-process mode is opt-in and enabled per device by supplying a non-zero
-<strong>shared-memory id</strong> via the <code class="docutils literal notranslate"><span class="pre">--shm_id</span></code> option (or the <code class="docutils literal notranslate"><span class="pre">shm_id</span></code> field of
-<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_opts</span></code>). All processes that should share a controller must be
-launched with the <strong>same</strong> <code class="docutils literal notranslate"><span class="pre">shm_id</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Primary (first process to claim the shm_id) and secondaries use the same id</span>
-xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--shm_id<span class="w"> </span><span class="m">1</span>
+  <section id="upcie-control-plane">
+<span id="sec-backends-upcie-cplane"></span><h1>uPCIe (control plane)<a class="headerlink" href="#upcie-control-plane" title="Link to this heading">#</a></h1>
+<p>The <strong>upcie</strong> backend offers a <strong>control plane</strong> through which several
+independent processes share NVMe controllers. One process <strong>owns</strong> a
+controller: it opened the device, allocated the DMA memory, and holds the
+admin queue. Any number of <strong>clients</strong> connect to what it owns and drive
+their own I/O without re-initializing anything.</p>
+<p>Ownership is not something a library user falls into. The server is
+<a class="reference internal" href="../../../tools/homi/index.html#sec-tools-homi"><span class="std std-ref">homi</span></a>, which exists to be one. A process that names no server
+runs on its own, and one that names a server nobody runs fails to open with
+<code class="docutils literal notranslate"><span class="pre">ENOENT</span></code> rather than falling back.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The server holds the controller for as long as it runs</span>
+homi<span class="w"> </span>serve<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span><span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span><span class="m">0000</span>:03:00.0
+
+<span class="c1"># Clients name the same id and connect to it</span>
+xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
+<p>The identifier is <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>: the number a server listens under and a client
+asks for. <strong>homi</strong> and <strong>xnvmeperf</strong> take that spelling and no other. Tools
+that are not about sharing still accept <code class="docutils literal notranslate"><span class="pre">--shm_id</span></code>, which named this before
+there was a control plane, and it goes on meaning a segment identifier for
+<a class="reference internal" href="../spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a>, which hands the value to DPDK. Either spelling sets
+both, so a value given once reaches whichever backend reads it.</p>
 <section id="process-model">
-<span id="sec-backends-upcie-mproc-model"></span><h2>Process model<a class="headerlink" href="#process-model" title="Link to this heading">#</a></h2>
-<section id="role-election">
-<h3>Role election<a class="headerlink" href="#role-election" title="Link to this heading">#</a></h3>
-<p>Roles are decided with an advisory file lock (<code class="docutils literal notranslate"><span class="pre">flock</span></code>) on a lock file keyed by
-<code class="docutils literal notranslate"><span class="pre">shm_id</span></code> (<code class="docutils literal notranslate"><span class="pre">/tmp/xnvme-upcie-flock-&lt;shm_id&gt;</span></code>):</p>
+<span id="sec-backends-upcie-cplane-model"></span><h2>Process model<a class="headerlink" href="#process-model" title="Link to this heading">#</a></h2>
+<section id="rendezvous">
+<h3>Rendezvous<a class="headerlink" href="#rendezvous" title="Link to this heading">#</a></h3>
+<p>A server listens on a unix socket named for the identifier clients pass,
+<code class="docutils literal notranslate"><span class="pre">/tmp/xnvme-homi-&lt;homi_id&gt;.sock</span></code>. A client derives the same name from
+<code class="docutils literal notranslate"><span class="pre">--homi-id</span></code> and connects; finding nothing there means nobody is serving that
+identifier, and the open fails with <code class="docutils literal notranslate"><span class="pre">ENOENT</span></code> rather than falling back to a
+runtime of its own, so a process that asked to be served never silently runs
+direct. Only the server opens controllers without the identifier and serves
+them under it afterwards.</p>
+<p>One socket for the whole runtime, whatever it holds, and one connection per
+client process. Every request names the controller it is about, so a client
+using several needs no more than the one connection, and nothing about what a
+server holds has to be encoded in a file name.</p>
+<p>Every message carries the version its sender speaks, and a peer speaking
+another one is refused and then let go. Refusing is not enough on its own:
+versions differ because the message does, so a refused peer is waiting for a
+reply of a size the server does not send, and only the socket ending tells it
+so.</p>
+<p>A socket rather than a shared segment because a segment cannot carry a file
+descriptor, and under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> a descriptor is the only thing that grants
+access to a device. It is a filesystem path rather than an abstract name
+because an abstract address cannot be reached from another network namespace,
+which a containerised client would need.</p>
+</section>
+<section id="what-crosses-when-a-connection-is-initialised">
+<h3>What crosses when a connection is initialised<a class="headerlink" href="#what-crosses-when-a-connection-is-initialised" title="Link to this heading">#</a></h3>
+<p>Descriptors, and offsets into what they describe:</p>
 <ul class="simple">
-<li><p>The first process to acquire the exclusive, non-blocking lock becomes the
-<strong>primary</strong>. It holds the lock for its entire lifetime.</p></li>
-<li><p>Any process that finds the lock already held becomes a <strong>secondary</strong>.</p></li>
+<li><p>the DMA heap, which the client maps to see the same memory;</p></li>
+<li><p>BAR0, so that the client rings its own doorbells;</p></li>
+<li><p>the controller’s <strong>base</strong>, what the server opened it with: its capabilities,
+configuration and timeouts, which the client builds its own controller
+around, together with the offset of a description of the heap.</p></li>
+</ul>
+<p>The heap description carries the physical address of each granule. The server
+read those when it allocated, which needs <code class="docutils literal notranslate"><span class="pre">CAP_SYS_ADMIN</span></code>; leaving them where
+the client will map them anyway is what lets an unprivileged client
+translate at all.</p>
+</section>
+<section id="what-a-client-does-for-itself-and-what-it-asks-for">
+<h3>What a client does for itself, and what it asks for<a class="headerlink" href="#what-a-client-does-for-itself-and-what-it-asks-for" title="Link to this heading">#</a></h3>
+<p>A client submits I/O on queues it was allocated, ringing its own doorbell.
+Nothing is on the socket during I/O.</p>
+<p>Everything else is a request, because the resources belong to the server:</p>
+<ul class="simple">
+<li><p><strong>Queues.</strong> Creating one means an admin command and memory from the heap, so
+the client asks and receives an identifier plus the offsets of its
+submission queue, completion queue and PRP scratch.</p></li>
+<li><p><strong>Memory.</strong> The heap’s allocator is the server’s and its free list has no
+lock, so <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> asks for an offset.</p></li>
+<li><p><strong>Admin commands.</strong> There is one admin queue and it belongs to the server.
+The payload does not travel with the request: the command names an address
+the device can already reach, so an identify lands in the client’s own
+buffer and only the command and its completion cross.</p></li>
 </ul>
 </section>
-<section id="shared-memory-segments">
-<h3>Shared memory segments<a class="headerlink" href="#shared-memory-segments" title="Link to this heading">#</a></h3>
-<p>Two kinds of POSIX shared-memory segments are used:</p>
-<ul class="simple">
-<li><p><strong>Runtime segment</strong> (<code class="docutils literal notranslate"><span class="pre">/xnvme-upcie-shm-&lt;shm_id&gt;</span></code>) — one per <code class="docutils literal notranslate"><span class="pre">shm_id</span></code>, created
-by the primary. It carries the hugepage backing-file path and the primary’s
-hugepage virtual base address so that secondaries can import the same DMA
-memory. A shared <code class="docutils literal notranslate"><span class="pre">refcount</span></code> keeps track of how many processes are attached.
-Terminating a primary process while <code class="docutils literal notranslate"><span class="pre">refcount</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> will not block, but instead
-only warn that the state of secondary processes will be corrupted.</p></li>
-<li><p><strong>Controller segment</strong> (<code class="docutils literal notranslate"><span class="pre">/xnvme-upcie-&lt;bdf&gt;</span></code>) — one per physical controller,
-created by the primary. It embeds the full <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">nvme_controller</span></code>, a robust
-process-shared mutex guarding the admin queue, the bound driver name, an
-attach <code class="docutils literal notranslate"><span class="pre">refcount</span></code>, and an <code class="docutils literal notranslate"><span class="pre">is_initialized</span></code> publication flag. Again, primary
-processes will not be blocked from terminating even if secondary processes are
-still attached.</p></li>
-</ul>
+<section id="threads">
+<h3>Threads<a class="headerlink" href="#threads" title="Link to this heading">#</a></h3>
+<p>The expected arrangement is several client processes at once, each allocating
+buffers, creating queues and submitting admin commands, none of them
+synchronising with any other. Making that safe is the server’s job.</p>
+<p>One thread reads every connection. Most requests are memory and are answered
+where they are read: handing over the descriptors, carving a buffer from the
+heap, giving one back, reporting what is held. A request is one packet on a
+<code class="docutils literal notranslate"><span class="pre">SOCK_SEQPACKET</span></code> socket and is read only once it has arrived, so no client
+can hold the thread by sending part of one.</p>
+<p>What reaches the controller cannot be answered there. An admin command can run
+as long as a Format, and creating or deleting a queue is a round trip of its
+own, so those go to a thread per controller; so does releasing what a client
+held, since giving a queue back means telling the controller. That is the
+granularity the admin queue already has, because completions are reaped from
+the head with no record of who submitted and a submission does not check that
+the answer it takes is its own. One thread draining a queue of pending work is
+what serialises it, so no lock is needed over it.</p>
+<p>Two locks are involved. The server’s own lock guards the connection table and
+is never held across an admin command. The heap and the admin queues are
+guarded by the library lock, <code class="docutils literal notranslate"><span class="pre">xnvme_lock()</span></code>, as in any process using xNVMe,
+and an admin command holds it for as long as it runs. The reader takes the
+library lock to answer a buffer request, so while a Format runs, the first
+buffer request stops the reader and with it every client of the server, until
+the Format completes.</p>
+<p>Creating and deleting a queue holds both locks, because allocating the memory
+and telling the controller about it are made in one call and the allocation
+is the heap’s. So the reader can also be held for a Create or a Delete round
+trip.</p>
+<p>The number of connections a server will hold at once is bounded, and by a
+constant, since nothing about the hardware predicts it: a connection is a
+client process, and most take one queue while some take none. The queues one
+connection may hold are bounded by a constant as well, a separate limit and the
+one that refuses with <code class="docutils literal notranslate"><span class="pre">-ENOSPC</span></code>; a controller that has run out of queues
+refuses the Create instead, which the client sees as <code class="docutils literal notranslate"><span class="pre">-EIO</span></code>.</p>
+<p>Within one client process, a queue belongs to one thread, as everywhere else
+in xNVMe, but threads working separate queues are not expected to synchronise
+with each other. The socket is the process’s rather than the queue’s or the
+controller’s, so asking for a queue, asking for a buffer and submitting an
+admin command all meet on it, and a request and its reply are two calls that
+must not interleave. The client serialises those so a caller does not have to.</p>
+<p>A reply is never waited on. One thread answers every connection, so a client
+that stops reading its replies while carrying on sending requests would stall
+that thread and with it everybody else. The socket buffer holds thousands of
+replies, so nothing but a client that has stopped reading can fill it, and
+such a client is let go.</p>
 </section>
-<section id="device-ownership">
-<h3>Device ownership<a class="headerlink" href="#device-ownership" title="Link to this heading">#</a></h3>
-<p>The controller segment is keyed by device BDF, independent of <code class="docutils literal notranslate"><span class="pre">shm_id</span></code>. To stop
-two primaries — for example two processes launched with different <code class="docutils literal notranslate"><span class="pre">shm_id</span></code>s —
-from both driving the same physical controller, the creating primary holds a
-second advisory lock keyed by the BDF (<code class="docutils literal notranslate"><span class="pre">/tmp/xnvme-upcie-&lt;bdf&gt;-lock</span></code>) for as long
-as it owns the controller. A process that cannot acquire this lock fails rather
-than creating a conflicting segment.</p>
-<p>Because the kernel releases the lock when its holder exits, the controller
-segment is self-healing across a primary crash: the next primary acquires the
-released lock, unlinks any segment the dead primary left behind, and creates a
-fresh one.</p>
+<section id="liveness">
+<h3>Liveness<a class="headerlink" href="#liveness" title="Link to this heading">#</a></h3>
+<p>The connection is the liveness signal. A client that exits cleanly hands its
+queues and memory back; one that is killed mid-command does not, and the
+socket closing is what tells the server to reclaim them, queues first so that
+the controller loses its reach on an address before the address stops
+resolving.</p>
+<p>Nothing is left behind for anyone to clean up, and nothing has to be told
+apart from debris: a socket that answers has a process behind it.</p>
 </section>
-<section id="hugepage-sharing">
-<h3>Hugepage sharing<a class="headerlink" href="#hugepage-sharing" title="Link to this heading">#</a></h3>
-<p>Every process allocates its own private DMA heap from its own hugepages. This
-means that I/O queue pairs and buffers are allocated from a private heap. The
-admin PRP pools are also allocated on the private heap, but the admin queue itself
-is allocated only once on the heap of the primary process. The primary
-publishes its hugepage backing-file path and virtual base into the runtime shared
-memory segment; a secondary imports that hugepage purely to reach the admin
-submission/completion rings and does not allocate from the imported mapping. The
-import lands at a kernel-chosen address, so the admin-queue pointers stored in
-the controller segment (which are primary-relative) are relocated into the
-secondary’s mapping by the constant offset between the secondary’s import base
-and the primary’s published base. PRP entries for a secondary’s own commands are
-translated against its private heap, whose physical pages it resolves itself.</p>
-</section>
-<section id="gpu-backends">
-<h3>GPU backends<a class="headerlink" href="#gpu-backends" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> backends share everything described above: they
-reuse the host backend’s controller and queue-pair init/term, and they keep all
-NVMe control structures on the host hugepage heap. Only data buffers live in GPU
-memory, which is allocated from a per-process heap and therefore requires no
-coordination between processes.</p>
-<p>The CUDA backend also exposes GPU-resident queue pairs through
-<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code>/<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_destroy()</span></code>. These run under the
-same mutex and shared queue-id bitmap as ordinary queue-pair creation.</p>
-</section>
-</section>
-<section id="startup-handshake">
-<span id="sec-backends-upcie-mproc-startup"></span><h2>Startup handshake<a class="headerlink" href="#startup-handshake" title="Link to this heading">#</a></h2>
-<p>Secondaries may be launched concurrently with the primary, so attachment is
-guarded by two ordering barriers:</p>
-<ol class="arabic simple">
-<li><p><strong>Runtime segment</strong> — a secondary will wait up to ~1 second for the primary
-to publish the hugepage information before importing hugepages.</p></li>
-<li><p><strong>Controller segment</strong> — a secondary will wait up to ~1 second for the
-per-controller segment to (a) exist, (b) be fully sized, and (c) have its
-<code class="docutils literal notranslate"><span class="pre">is_initialized</span></code> flag published before reading any shared field.</p></li>
-</ol>
-<p>If the primary does not become ready within the timeout, attachment fails with
-<code class="docutils literal notranslate"><span class="pre">-ENOENT</span></code>.</p>
-</section>
-<section id="admin-queue-serialization">
-<span id="sec-backends-upcie-mproc-admin"></span><h2>Admin queue serialization<a class="headerlink" href="#admin-queue-serialization" title="Link to this heading">#</a></h2>
-<p>There is a single admin queue per controller, shared by all processes. Access
-is serialized with a <strong>robust, process-shared</strong> mutex (<code class="docutils literal notranslate"><span class="pre">PTHREAD_PROCESS_SHARED</span></code>
-and <code class="docutils literal notranslate"><span class="pre">PTHREAD_MUTEX_ROBUST</span></code>) held in the controller segment:</p>
-<ul class="simple">
-<li><p>On <strong>lock</strong>, the holder reloads the admin queue head/tail/phase from shared
-memory into its local controller view.</p></li>
-<li><p>On <strong>unlock</strong>, the holder publishes its head/tail/phase back to shared memory.</p></li>
-</ul>
-<p>Synchronous admin commands and I/O queue-pair create/delete operations all run
-under this mutex. I/O queue identifiers are tracked in a shared bitmap in the
-controller segment and mutated only while the mutex is held, so each process
-creates and tears down its own I/O queue pairs without colliding.</p>
-<p>I/O <strong>data</strong> transfers are not serialized: each process owns its own I/O queue
-pairs and submits to them independently.</p>
-<section id="crash-recovery">
-<span id="sec-backends-upcie-mproc-recovery"></span><h3>Crash Recovery<a class="headerlink" href="#crash-recovery" title="Link to this heading">#</a></h3>
-<p>Because the admin mutex is robust, if a process dies while holding it, the next
-locker receives <code class="docutils literal notranslate"><span class="pre">EOWNERDEAD</span></code>. In that case this process will:</p>
-<ol class="arabic simple">
-<li><p>Drain any completions the dead owner may have left in the admin completion
-queue, advancing the shared head/phase and ringing the completion-queue
-doorbell. Since the shared head/phase are only published on unlock and
-therefore never run ahead of the device, draining can only reap real or
-phantom completions — never skip one.</p></li>
-<li><p>Mark the mutex consistent (<code class="docutils literal notranslate"><span class="pre">pthread_mutex_consistent</span></code>) and proceed.</p></li>
-</ol>
-<p>If the mutex has been marked unrecoverable, locking fails with <code class="docutils literal notranslate"><span class="pre">ENOTRECOVERABLE</span></code>.</p>
+<section id="properties-worth-preserving">
+<h3>Properties worth preserving<a class="headerlink" href="#properties-worth-preserving" title="Link to this heading">#</a></h3>
+<p>Three properties are easy to undo by accident and expensive to notice
+afterwards, so they are worth naming.</p>
+<p>A client holding several controllers keeps a mapping of BAR0 and a controller
+base per controller. Sharing one across them makes every controller look like
+whichever was opened first: the commands complete, the throughput looks
+plausible, and the I/O lands on the wrong device.</p>
+<p>Payload buffers are carved from hugepages of their own rather than sharing a
+page with a queue. A controller is measurably slower at fetching submissions
+and posting completions while payloads are written into the same 2 MiB page,
+and first-fit will put them there unless the two allocations are kept apart.</p>
+<p>A queue whose server has gone completes nothing, so a client watches its
+control socket and gives up on what is in flight once the socket closes and a
+command timeout has passed. Without that a client drains forever, holding the
+heap it maps and the hugepages behind it.</p>
 </section>
 </section>
-<section id="teardown">
-<span id="sec-backends-upcie-mproc-teardown"></span><h2>Teardown<a class="headerlink" href="#teardown" title="Link to this heading">#</a></h2>
-<p>Each process decrements the relevant <code class="docutils literal notranslate"><span class="pre">refcount</span></code> on exit. When the primary tears
-down a controller it deletes <strong>all</strong> I/O queue pairs still marked allocated in
-the shared bitmap before closing the controller, and then unmaps and unlinks the
-shared segments. Secondaries detach by deleting their own queue pairs, releasing
-their local request pool and BAR mapping, and unmapping the shared segments
-without unlinking or freeing DMA memory they do not own.</p>
-</section>
-<section id="vulnerabilities-and-limitations">
-<span id="sec-backends-upcie-mproc-vulns"></span><h2>Vulnerabilities and limitations<a class="headerlink" href="#vulnerabilities-and-limitations" title="Link to this heading">#</a></h2>
-<p>Multi-process mode is functional on the cooperative happy path but has known
-robustness and trust gaps. It is intended for trusted, same-user processes and
-should not be treated as a security boundary.</p>
-<section id="partial-crash-robustness">
-<h3>Partial crash robustness<a class="headerlink" href="#partial-crash-robustness" title="Link to this heading">#</a></h3>
-<p>Owner-death recovery covers <strong>only</strong> the admin mutex and the admin completion
-queue. Other state left behind by a crashed process is <strong>not</strong> reclaimed:</p>
-<ul class="simple">
-<li><p><strong>Leaked I/O queues and queue ids.</strong> If a secondary crashes, the I/O queue
-ids it allocated remain marked as in-use in the shared bitmap and the
-corresponding device-side queues are never deleted. Over many crash/restart
-cycles this can exhaust the queue-id space until the primary tears the
-controller down.</p></li>
-<li><p><strong>Stale attach refcounts.</strong> A crashed process never decrements its
-<code class="docutils literal notranslate"><span class="pre">refcount</span></code>. The primary’s “secondaries still attached” accounting therefore
-becomes permanently inflated after any crash. The refcount is advisory only,
-and therefore it is not used for blocking or preventing a primary from
-exiting.</p></li>
-</ul>
-</section>
-<section id="primary-lifetime">
-<h3>Primary lifetime<a class="headerlink" href="#primary-lifetime" title="Link to this heading">#</a></h3>
-<p>The primary owns the hugepages and the controller hardware. If the primary
-exits — cleanly or otherwise — while secondaries are still attached, those
-secondaries are left with admin-queue mapping and controller that may have been
-closed and freed. A clean primary teardown only logs a warning in this case; it
-does not prevent it. Operators must ensure the primary outlives all secondaries.</p>
-<p>The <a class="reference internal" href="../../../tools/homi/index.html#sec-tools-homi"><span class="std std-ref">homi</span></a> tool serves this purpose: it opens a set of devices and
-holds them open until signalled, giving the primary role to a process whose only
-job is to outlive the secondaries.</p>
-</section>
+<section id="limitations">
+<span id="sec-backends-upcie-cplane-vulns"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
 <section id="no-isolation-between-processes">
 <h3>No isolation between processes<a class="headerlink" href="#no-isolation-between-processes" title="Link to this heading">#</a></h3>
-<p>All participating processes map the controller segment read/write, including the
-embedded <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">nvme_controller</span></code>. A misbehaving or compromised secondary can
-corrupt shared state and affect every other process sharing the controller.
-There is no privilege separation: any process running as the same user that can
-open the shared-memory segments can submit admin commands to the device.</p>
+<p>A client maps BAR0 and can therefore ring any doorbell and write <code class="docutils literal notranslate"><span class="pre">CC</span></code>, which
+is to say it can reset the controller. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> it also holds the
+device descriptor. The server creates the socket for its own user alone and
+refuses a peer whose credentials name another user; a client in turn refuses a
+server that runs as neither root nor the client’s user, since the path lies in
+a directory anyone can write and the client maps what the server hands over.
+Clients are inside one trust domain by construction; where that is
+unacceptable, the answer is the kernel driver, which arbitrates because it
+owns the device.</p>
 </section>
-<section id="startup-ordering-and-timeouts">
-<h3>Startup ordering and timeouts<a class="headerlink" href="#startup-ordering-and-timeouts" title="Link to this heading">#</a></h3>
-<p>Attachment waits at most ~1 second at each handshake barrier. A primary that
-takes longer than that to initialize a controller will cause secondaries to time
-out with <code class="docutils literal notranslate"><span class="pre">-ENOENT</span></code>. The timeout is fixed and not currently configurable.</p>
+<section id="the-message-names-the-controller-so-the-socket-does-not-have-to">
+<h3>The message names the controller, so the socket does not have to<a class="headerlink" href="#the-message-names-the-controller-so-the-socket-does-not-have-to" title="Link to this heading">#</a></h3>
+<p>Every request carries the index of the controller it is about, and a reply to
+a status request at index zero says how many there are, so a client walks the
+range to find the one it wants and matches on the identifier the server
+publishes.</p>
+<p>The alternative is a socket per controller, and then the file name is the
+addressing. That costs more than it looks: a client has to know what a server
+holds before it can ask what a server holds, a controller with an awkward
+identifier has to be spelled the same way at both ends, and a process using
+several controllers pays a connection for each. Naming the controller in the
+message removes all three, and it is four bytes.</p>
 </section>
-<section id="compatibility-with-spdk">
-<h3>Compatibility with SPDK<a class="headerlink" href="#compatibility-with-spdk" title="Link to this heading">#</a></h3>
-<p>SPDK’s own multi-process mode claims <strong>all</strong> free hugepages on the system at
-startup. Because uPCIe also needs hugepages for its DMA memory, the two cannot
-be expected to share a system, and running uPCIe and SPDK in multi-process
-mode side by side is not guaranteed to work.</p>
+<section id="the-server-has-to-be-answering">
+<h3>The server has to be answering<a class="headerlink" href="#the-server-has-to-be-answering" title="Link to this heading">#</a></h3>
+<p>Initialising, allocating and admin all depend on the server being responsive.
+Under the arrangement this replaced, a server stuck in a poll loop blocked
+nobody, because those were reads of shared memory. That is the price of having
+one place where a policy could be applied and of a record that needs no lock.</p>
 </section>
-<section id="attachment-mode-restriction">
-<h3>Attachment-mode restriction<a class="headerlink" href="#attachment-mode-restriction" title="Link to this heading">#</a></h3>
-<p>Multi-process mode requires the device to be bound to <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
-(the UIO_LUT attachment mode), which is also what <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> and
-<code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> require. The <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> attachment modes that <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">upcie</span></code>
-otherwise supports, described under <a class="reference internal" href="index.html#sec-backends-upcie-attachment"><span class="std std-ref">Attachment Modes</span></a>,
-hold per-process fds that a secondary cannot inherit, so <code class="docutils literal notranslate"><span class="pre">_rte_init</span></code>
-returns <code class="docutils literal notranslate"><span class="pre">-ENOTSUP</span></code> up front when <code class="docutils literal notranslate"><span class="pre">opts.shm_id</span></code> is set under either of
-them.</p>
-</section>
-<section id="gpu-backend-doorbell-registration">
-<h3>GPU backend doorbell registration<a class="headerlink" href="#gpu-backend-doorbell-registration" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> registers the I/O queue doorbells of its GPU-resident queue pairs
-with <code class="docutils literal notranslate"><span class="pre">cuMemHostRegister(...,</span> <span class="pre">CU_MEMHOSTREGISTER_IOMEMORY)</span></code>. Each process maps
-BAR0 independently, so each registers its own mapping of the doorbell page; this
-has not been exercised across many concurrent processes on the same controller.</p>
+<section id="gpu-clients">
+<h3>GPU clients<a class="headerlink" href="#gpu-clients" title="Link to this heading">#</a></h3>
+<p>A controller behind an IOMMU cannot yet DMA into VRAM: <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code>
+does not accept dma-bufs exported by CUDA or HIP. GPU workloads therefore stay
+on <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> until that changes, and the vfio path serves
+CPU-submitted I/O into host memory.</p>
 </section>
 </section>
 </section>
@@ -743,27 +730,19 @@ has not been exercised across many concurrent processes on the same controller.<
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#process-model">Process model</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-election">Role election</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-memory-segments">Shared memory segments</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#device-ownership">Device ownership</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepage-sharing">Hugepage sharing</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-backends">GPU backends</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rendezvous">Rendezvous</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-crosses-when-a-connection-is-initialised">What crosses when a connection is initialised</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-client-does-for-itself-and-what-it-asks-for">What a client does for itself, and what it asks for</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#threads">Threads</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#liveness">Liveness</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-worth-preserving">Properties worth preserving</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-handshake">Startup handshake</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#admin-queue-serialization">Admin queue serialization</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#crash-recovery">Crash Recovery</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teardown">Teardown</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vulnerabilities-and-limitations">Vulnerabilities and limitations</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#partial-crash-robustness">Partial crash robustness</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#primary-lifetime">Primary lifetime</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-isolation-between-processes">No isolation between processes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-ordering-and-timeouts">Startup ordering and timeouts</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility-with-spdk">Compatibility with SPDK</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attachment-mode-restriction">Attachment-mode restriction</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-backend-doorbell-registration">GPU backend doorbell registration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-message-names-the-controller-so-the-socket-does-not-have-to">The message names the controller, so the socket does not have to</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-server-has-to-be-answering">The server has to be answering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-clients">GPU clients</a></li>
 </ul>
 </li>
 </ul>
