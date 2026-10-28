@@ -57,7 +57,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="uPCIe (control plane)" href="cplane.html" />
+    <link rel="next" title="uPCIe HIP" href="hip.html" />
     <link rel="prev" title="uPCIe (host memory)" href="host.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
@@ -421,6 +421,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">uPCIe</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="host.html">uPCIe (host memory)</a></li>
 <li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">uPCIe CUDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hip.html">uPCIe HIP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cplane.html">uPCIe (control plane)</a></li>
 </ul>
 </details></li>
@@ -541,6 +542,14 @@ size used by NVMe for PRP construction and sector alignment.</p>
 <td><p>Host hugepage memory (host heap, 256 MiB)</p></td>
 <td><p>The CPU writes and the NVMe controller DMA-reads these structures; host-accessible memory is required</p></td>
 </tr>
+<tr class="row-even"><td><p>CQ, with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code></p></td>
+<td><p>GPU device memory, mirrored into the host CQ by a resident kernel</p></td>
+<td><p>Keeps the controller’s completion writes behind its data writes on one path; see <a class="reference internal" href="#sec-backends-upcie-cuda-p2p-cq-mirror"><span class="std std-ref">Completions in device memory</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>SQ of a GPU-issued queue</p></td>
+<td><p>GPU device memory; host memory with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code></p></td>
+<td><p>The controller fetches entries; from DRAM that is faster than across the root complex, see <a class="reference internal" href="#sec-backends-upcie-cuda-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -553,11 +562,74 @@ first device, or, when none is current, in the device’s primary context, which
 the backend retains and makes current. An application on the runtime API thus
 finds the heap in the context it already uses on every thread, and what it
 creates after the open is untouched by the last close.</p>
+</section>
+<section id="completions-in-device-memory">
+<span id="sec-backends-upcie-cuda-p2p-cq-mirror"></span><h2>Completions in device memory<a class="headerlink" href="#completions-in-device-memory" title="Link to this heading">#</a></h2>
+<p>PCIe keeps a requester’s posted writes in order. With one destination that
+costs nothing; with two, the root complex holds each write until the one ahead
+of it has been accepted at the other. A controller that writes its payloads
+into the GPU and its completions into host memory changes destination at every
+command, and on a fast enough device that shows up as a ceiling on small I/O:
+on a drive that reaches 4.0M IOPS at 512 B with the buffers in host memory, the
+same run into device memory stops at 2.8M, from a queue depth of 64 upwards.
+Larger transfers are unaffected, and so are drives that never approach the
+rate. The other split, payloads in host memory and completions in the GPU, has
+not been measured; by this account it pays the same.</p>
+<p>Opening a queue with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code> places its completion queue in device
+memory as well, beside the data, so the controller has a single destination
+again. The CPU still owns the queue: it builds submissions, rings doorbells and
+polls for completions exactly as before, against the host-memory CQ the queue
+would have had anyway. What changes is who fills that CQ. A kernel resident on
+the GPU for as long as the process has such a queue watches each device-memory
+CQ with one warp, and copies completions into the host CQ as their phase bit
+turns. No command is issued from the GPU and the GPU never touches the
+controller’s registers, so this needs none of the setup that
+<a class="reference internal" href="#sec-backends-upcie-cuda-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> does and works behind a translating IOMMU.</p>
+<p>The mirror costs about a microsecond per completion, which is a loss below a
+queue depth of 32 and a gain above 64. On the drive above the ceiling is gone
+at every size measured, 512 B through 4 KiB, with host memory and device memory
+within a percent or two of each other. One kernel serves every queue in the
+process, up to 64 of them, and is launched with the first and retired with the
+last. It runs on a stream of its own, in the context that holds the heap: the
+caller’s, or the primary context as above. So while such a queue is open,
+<code class="docutils literal notranslate"><span class="pre">cudaDeviceSynchronize()</span></code> and <code class="docutils literal notranslate"><span class="pre">cudaFree()</span></code> in that context wait for the kernel
+and do not return: synchronize on streams instead, and free device memory once
+the last such queue is terminated. For the same reason a process does not
+hold such a queue and a GPU-issued one at once, since creating and destroying
+the latter synchronise the device: each is refused with <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code> while the other
+is open. The <code class="docutils literal notranslate"><span class="pre">--p2p-cq-mirror</span></code> flag of <a class="reference internal" href="../../../tools/xnvmeperf/index.html#sec-tools-xnvmeperf"><span class="std std-ref">xnvmeperf</span></a> and of the
+test tools sets the flag. <a class="reference internal" href="hip.html#sec-backends-upcie-hip"><span class="std std-ref">uPCIe HIP</span></a> implements it as
+well. The <strong>upcie</strong> backend rejects the flag with <code class="docutils literal notranslate"><span class="pre">ENOTSUP</span></code>, having no GPU to
+put the CQ in; the other backends ignore it, as they do the polling flags they
+do not implement.</p>
+<p>The host and the kernel share a table with a slot per queue: the addresses
+of the two completion queues, the depth, a generation and an
+acknowledgement. The host fills a slot and raises its generation to an odd
+value; the warp copies until the generation changes, then acknowledges the
+value it worked under, and the host frees nothing before it sees that. A
+warp finding an even generation acknowledges the odd value before it, since
+a queue detached before the warp took it up has nothing to drain. The
+kernel is the only CUDA device code in the library and is compiled by
+<code class="docutils literal notranslate"><span class="pre">nvcc</span></code> in a translation unit of its own; the rest of <strong>upcie-cuda</strong> is C
+against the driver API.</p>
+<p>A controller served by <a class="reference internal" href="../../../tools/homi/index.html#sec-tools-homi"><span class="std std-ref">homi</span></a> takes the flag as well. The
+client cannot create the queue itself there, so it asks the server for one
+whose completion queue alone lies in the heap the client registered, naming it
+by offset; the submission queue and the PRP scratch stay in the server’s heap,
+as for any served queue, and the server creates the pair with the completion
+queue at the client’s address. What comes back names a completion queue in the
+server’s heap that the controller never writes, and the resident kernel keeps
+that one a copy of the queue it placed, so the submitting side is unchanged.</p>
 <p>A caller can hand over device memory it allocated itself with
 <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>, which registers the range through the same registry the
 heap uses, so such a buffer is usable exactly as one from
 <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code>. Registering a range twice is cheap, since what it
-covers is refcounted.</p>
+covers is refcounted. On a controller a server holds, the range is exported as
+a dma-buf and registered with the server instead, and the description that
+comes back is adopted into the same table; that is a socket round trip per
+call, so a client registers its buffers before it submits, not per command.
+Either way the range is whole device pages, 64 KiB on CUDA, since that is the
+granule the export works in.</p>
 </section>
 <section id="kernel-module">
 <span id="sec-backends-upcie-cuda-kernel"></span><h2>Kernel Module<a class="headerlink" href="#kernel-module" title="Link to this heading">#</a></h2>
@@ -583,6 +655,9 @@ supersedes the <code class="docutils literal notranslate"><span class="pre">udma
 registry hands it those. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> an IOMMU translates, so every address
 it sees is an IOVA. Device memory cannot get one the way host memory does,
 since <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> rejects the dma-bufs the CUDA driver exports.</p>
+<p>Where the controller is on <code class="docutils literal notranslate"><span class="pre">vfio-cdev</span></code>, <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> is asked first: it maps the
+heap once for the whole process and needs no out-of-tree module. It cannot
+always, and what follows is what happens when it cannot.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">iommu-map-pa</span></code> module inserts the VRAM into the controller’s domain
 directly, and the registry’s table holds the resulting IOVAs. It is published as
 an asset of the same release as <code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code>, packaged for DKMS:</p>
@@ -599,24 +674,22 @@ so a window is reserved for it: 64 GiB at 256 GiB, with the IOAS allowed every
 usable IOVA except that. Override where it does not fit:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XNVME_UPCIE_IOVA_BASE</span><span class="o">=</span>0x2000000000<span class="w">  </span><span class="c1"># 128 GiB</span>
 <span class="nv">XNVME_UPCIE_IOVA_SIZE</span><span class="o">=</span>0x400000000<span class="w">   </span><span class="c1"># 16 GiB</span>
-<span class="nv">XNVME_UPCIE_IOVA_SLICE</span><span class="o">=</span>0x80000000<span class="w">   </span><span class="c1"># 2 GiB per controller</span>
 </pre></div>
 </div>
 <p>A window outside every usable IOVA range fails <code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code> with <code class="docutils literal notranslate"><span class="pre">ERANGE</span></code>.</p>
 </section>
 <section id="several-controllers">
 <h3>Several controllers<a class="headerlink" href="#several-controllers" title="Link to this heading">#</a></h3>
-<p>A mapping reaches one IOMMU domain, so each controller gets its own slice of the
-window and maps the heap into its own domain. Three limits follow, on the
-<code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path only:</p>
+<p>The window holds one set of addresses for the process. The first controller
+opened claims it and the heap is installed in it; every controller opened after
+that is attached to the same range, so all of them reach the heap, and anything
+registered with <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>, at the same IOVAs through one translation
+table. Two limits follow, on the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path only:</p>
 <ul class="simple">
-<li><p>A slice is twice the size of the heap, leaving room for buffers registered
-with <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>. Set the width with <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_IOVA_SLICE</span></code>. A
-full slice fails the registration with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
-<li><p>The window holds 31 controllers by default, and never more than 64. Past that
-<code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code> fails with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
-<li><p>Each controller reserves a translation table of its own, sized as
-<a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> describes. <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_VA_BITS</span></code> bounds it.</p></li>
+<li><p>The heap and every registered buffer have to fit in the window. A full window
+fails the registration with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
+<li><p>The translation table is sized as <a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> describes.
+<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_VA_BITS</span></code> bounds it.</p></li>
 </ul>
 <p>A controller attaching later brings its own reserved regions. Where one overlaps
 the ranges the IOAS was told to allow, that attach fails with <code class="docutils literal notranslate"><span class="pre">EADDRINUSE</span></code>. Move
@@ -637,6 +710,28 @@ with each device it is used from, and unmap it against each:</p>
 </div>
 <p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> one table serves every controller, so a single
 registration covers them all.</p>
+</section>
+<section id="what-upstream-would-have-to-change">
+<span id="sec-backends-upcie-cuda-upstream"></span><h3>What upstream would have to change<a class="headerlink" href="#what-upstream-would-have-to-change" title="Link to this heading">#</a></h3>
+<p>None of the out-of-tree code here exists because the kernel cannot do these
+things. It exists because the interfaces that would are closed to a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code>
+that a GPU exported, or to memory that is not RAM. Three changes would retire
+it:</p>
+<ul class="simple">
+<li><p><strong>A way to resolve a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> to physical addresses.</strong> This is what
+<code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code> does, and what a driver already does internally when it maps
+one for DMA. Nothing equivalent is exposed to user space.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> accepting a GPU <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code>.</strong> It refuses one today,
+which is why the mapping is installed from physical addresses instead.</p></li>
+<li><p><strong>A CUDA runtime that can map a BAR it is handed.</strong>
+<code class="docutils literal notranslate"><span class="pre">cuMemHostRegister(...,</span> <span class="pre">CU_MEMHOSTREGISTER_IOMEMORY)</span></code> puts a BAR in the GPU’s
+address space, which is what lets a kernel ring a doorbell. It takes a host
+mapping and resolves it, and for a mapping made through a <code class="docutils literal notranslate"><span class="pre">vfio</span></code> device it
+will not: only the first page of one is accepted, and the doorbells are never
+in it. Taking a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> wrapping the BAR, which <code class="docutils literal notranslate"><span class="pre">vfio</span></code> can export, would
+make the mapping a thing the runtime is given rather than something it has to
+work out from a virtual address.</p></li>
+</ul>
 </section>
 </section>
 <section id="system-configuration">
@@ -662,6 +757,14 @@ the hugepage setup steps in <a class="reference internal" href="host.html#sec-ba
 </section>
 <section id="gpu-iommu-domain">
 <span id="sec-backends-upcie-cuda-gpu-domain"></span><h3>GPU IOMMU domain<a class="headerlink" href="#gpu-iommu-domain" title="Link to this heading">#</a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>GPU-issued I/O behind a translating IOMMU needs the <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module. With
+it loaded the backend maps the controller’s BAR0 into the GPU’s domain itself
+and nothing else is needed; without it the queue is refused, and the fallback is
+the domain type, set as described below. Host-issued I/O, including
+<a class="reference internal" href="#sec-backends-upcie-cuda-p2p-cq-mirror"><span class="std std-ref">Completions in device memory</span></a>, needs none of this.</p>
+</div>
 <p>Needed only for GPU-resident queues, meaning <code class="docutils literal notranslate"><span class="pre">xnvmeperf</span> <span class="pre">cuda-run</span></code>, <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code>
 and anything else built on <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a>. Host-driven I/O needs nothing
 here.</p>
@@ -670,7 +773,23 @@ than the CPU doing it, so the write is peer-to-peer traffic into the
 controller’s BAR0. It is translated by the GPU’s own domain, not the
 controller’s that <a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a> sets up, and CUDA hands
 the GPU a physical address. With the GPU in a translating domain nothing has
-mapped it, so every write faults.</p>
+mapped it, so every write faults, which is what the identity mapping of the
+BAR into that domain prevents. The backend installs it, at the BAR’s own
+physical address, when it opens a controller for GPU-issued I/O and the GPU’s
+group is of type <code class="docutils literal notranslate"><span class="pre">DMA</span></code> or <code class="docutils literal notranslate"><span class="pre">DMA-FQ</span></code>, through the same <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module the
+heap relies on for the reverse direction; the throughput is then the one
+measured with the IOMMU off. The mapping is per controller and held for as
+long as the controller is open. The domain is the kernel’s, the one the GPU’s
+driver allocates its own DMA addresses from, and those come from the top of
+the 32-bit range downwards, so a BAR placed below 4 GiB can collide with them.
+Where the identity range is taken, GPU-issued I/O is declined for that
+controller, since a mapping the driver placed there looks the same as one an
+earlier opener of the controller installed. Setting
+<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_CUDA_DOORBELL_SHARE</span></code> takes the collision to be the latter, for a
+second process opening the same controller for the same GPU. The mapping is
+then the first process’s and goes when it closes the controller, so the first
+has to outlive the second. What follows
+describes the situation without the module.</p>
 <section id="recognising-it">
 <h4>Recognising it<a class="headerlink" href="#recognising-it" title="Link to this heading">#</a></h4>
 <p>The run completes while every I/O fails, taking the queue’s timeout rather than
@@ -744,8 +863,34 @@ not just to xNVMe.</p>
 <p>The <strong>upcie-cuda</strong> backend supports GPU-resident NVMe queue pairs via the
 <code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API. See <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> for the full API reference,
 including host-side setup, CUDA kernel dispatch, and queue depth semantics.</p>
-<p>GPU-resident queues need the setup described in
-<a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a>.</p>
+<p>GPU-resident queues behind a translating IOMMU need the <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code>
+module, through which the backend puts the controller’s registers where the
+GPU’s doorbell writes land; see <a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a> for
+the mechanism and for the domain setting that stands in for the module when
+it is absent.</p>
+<p>By default the whole queue pair lives in device memory: the kernel writes
+entries locally, the controller fetches them across PCIe, completes into
+device memory and moves payloads to and from it, so nothing of the I/O
+touches host DRAM. Passing <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code> to
+<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> moves the submission queue alone into host
+memory, taken from the process’s own heap or, on a served controller, from
+the server’s, and mapped into the GPU’s address space; the kernel then writes
+entries across PCIe and the controller fetches them from DRAM. The reader
+decides: a controller fetching entries from device memory pays a PCIe round
+trip per fetch and keeps only so many in flight, which on a fast controller
+capped a queue pair below what the host can drive, whereas the GPU’s writes
+and the controller’s completion writes are posted and cost nothing of the
+sort. Measured with 512 B random reads, the host placement raised one queue
+pair from 1.65M to 3.8M IOPS and eight drives from 40M to 49M, at the same
+latency at a depth of one. What it costs is the entries themselves on the
+GPU’s transmit side, four 16-byte writes per command, which is idle traffic
+for reads but competes with the controller’s payload reads on writes; and
+the placement depends on host memory the GPU can map. The <code class="docutils literal notranslate"><span class="pre">--sq-hostmem</span></code> flag of
+<code class="docutils literal notranslate"><span class="pre">xnvmeperf</span> <span class="pre">cuda-run</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> selects it.</p>
+<p>A kernel writes an entry as four 16-byte stores cached at L2 only, so the
+L2 combines them into whole sectors before they leave the GPU. With
+narrower stores each would cross PCIe as a posted write of its own, and
+sixteen of them per entry bound the rate before the controller does.</p>
 </section>
 <section id="validation">
 <span id="sec-backends-upcie-cuda-validation"></span><h2>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h2>
@@ -767,8 +912,31 @@ your cijoe configuration:</p>
 <section id="limitations">
 <span id="sec-backends-upcie-cuda-limitations"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>31 controllers per process under an enforcing IOMMU</strong> at the default heap
-and window size, capped at 64. See <a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.</p></li>
+<li><p><strong>100 controllers per process, 16 where the heap goes in through
+<code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code>.</strong> The first is the controller table
+(<code class="docutils literal notranslate"><span class="pre">XNVME_BE_CREF_MAX_ENTRIES</span></code>), the second the one importer a process attaches
+its controllers to (<code class="docutils literal notranslate"><span class="pre">DMAMEM_IOMMU_MAP_PA_DEVS_MAX</span></code>). Under an enforcing IOMMU
+the heap and every registered buffer must also fit in the IOVA window, see
+<a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> may need the mapping installed by hand.</strong> Describing the GPU heap
+by mapping its <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> is what <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> would do, and it
+refuses one a GPU runtime exported. Where <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> cannot map it, the mapping
+goes in from the physical addresses behind it instead. That happens either
+way: a server does it for a client, and a process holding the controller does
+it for itself. See <a class="reference internal" href="#sec-backends-upcie-cuda-upstream"><span class="std std-ref">What upstream would have to change</span></a>.</p></li>
+<li><p><strong>Doorbells come from <code class="docutils literal notranslate"><span class="pre">sysfs</span></code> under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>.</strong> A queue the GPU submits on
+needs the doorbell page in the GPU’s address space, and the CUDA runtime will
+not take it from a <code class="docutils literal notranslate"><span class="pre">vfio</span></code> mapping, so it is taken from the BAR’s <code class="docutils literal notranslate"><span class="pre">resource0</span></code>
+instead. Both name the same registers. This costs a served client something:
+everything else it needs arrives as a descriptor over the socket, and this it
+has to open for itself, which <code class="docutils literal notranslate"><span class="pre">resource0</span></code> only permits to root. A client that
+submits from the host is unaffected.</p></li>
+<li><p><strong>I/O the GPU issues needs no server.</strong> A controller this process opened
+builds the same queue in the same device memory, and behind an IOMMU installs
+the mapping itself rather than being given one.</p></li>
+<li><p><strong>I/O the GPU issues behind a translating IOMMU needs the mapper module.</strong> See
+<a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a>. What a client submits from the host
+works either way.</p></li>
 <li><p><strong>GPU 0 only.</strong> The heap is always created on CUDA device 0. Multiple GPU
 support is not implemented.</p></li>
 <li><p><strong>1 GiB heap.</strong> The CUDA heap is fixed at 1 GiB. Allocations beyond this
@@ -808,11 +976,13 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-architecture">Memory Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#completions-in-device-memory">Completions in device memory</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-module">Kernel Module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#enforcing-iommu">Enforcing IOMMU</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-window">IOVA window</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#several-controllers">Several controllers</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#registering-buffers">Registering buffers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-upstream-would-have-to-change">What upstream would have to change</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">

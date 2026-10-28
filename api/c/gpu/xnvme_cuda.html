@@ -519,7 +519,7 @@
 <dt class="sig sig-object c" id="c.xnvme_cuda_queue">
 <span class="target" id="structxnvme__cuda__queue"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cuda_queue</span></span></span><a class="headerlink" href="#c.xnvme_cuda_queue" title="Link to this definition">#</a><br /></dt>
 <dd><p>GPU-resident NVMe queue pair. </p>
-<p>Instances live in CUDA device memory. Create one via <a class="reference internal" href="#libxnvme__cuda_8h_1a2ef063c514f8e57d898620e656f54eab"><span class="std std-ref">xnvme_cuda_queue_create()</span></a> and pass the returned pointer as a kernel argument.</p>
+<p>Instances live in CUDA device memory. Create one via <a class="reference internal" href="#libxnvme__cuda_8h_1aa6f3db5404618c7f77604679a6f4c7fa"><span class="std std-ref">xnvme_cuda_queue_create()</span></a> and pass the returned pointer as a kernel argument.</p>
 <p>With <strong>CUDACC</strong> (nvcc compiling CUDA kernels): the full definition is provided. This is required for <a class="reference internal" href="#libxnvme__cuda_8h_1aa5aa50feb69fd6fa770f239ab15f1ff4"><span class="std std-ref">xnvme_cuda_cmd_io()</span></a>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
@@ -615,7 +615,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>qp</strong> – GPU queue pair (from <a class="reference internal" href="#libxnvme__cuda_8h_1a2ef063c514f8e57d898620e656f54eab"><span class="std std-ref">xnvme_cuda_queue_create()</span></a>) </p></li>
+<li><p><strong>qp</strong> – GPU queue pair (from <a class="reference internal" href="#libxnvme__cuda_8h_1aa6f3db5404618c7f77604679a6f4c7fa"><span class="std std-ref">xnvme_cuda_queue_create()</span></a>) </p></li>
 <li><p><strong>cmd</strong> – Command to submit (only read for tid &lt; batch_size) </p></li>
 <li><p><strong>tid</strong> – Thread index within the block (threadIdx.x) </p></li>
 <li><p><strong>batch_size</strong> – Number of IOs to submit; threads with tid &gt;= batch_size participate in barriers but do not submit or reap</p></li>
@@ -669,9 +669,10 @@
 <span id="sec-api-c-xnvme-cuda-func-xnvme-cuda-queue-create"></span><h3>xnvme_cuda_queue_create<a class="headerlink" href="#xnvme-cuda-queue-create" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_cuda_queue_create">
-<span class="target" id="libxnvme__cuda_8h_1a2ef063c514f8e57d898620e656f54eab"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cuda_queue_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">depth</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cuda_queue" title="xnvme_cuda_queue"><span class="n"><span class="pre">xnvme_cuda_queue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cuda_queue_create" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="libxnvme__cuda_8h_1aa6f3db5404618c7f77604679a6f4c7fa"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cuda_queue_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">depth</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cuda_queue" title="xnvme_cuda_queue"><span class="n"><span class="pre">xnvme_cuda_queue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cuda_queue_create" title="Link to this definition">#</a><br /></dt>
 <dd><p>Create a GPU-resident NVMe IO queue. </p>
 <p>Allocates a queue pair in CUDA device memory and registers it with the NVMe controller. The resulting pointer lives in device memory and can be passed directly as a CUDA kernel argument.</p>
+<p>With <code class="docutils literal notranslate"><a class="reference internal" href="../core/xnvme_queue.html#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6afb9e55bc29e192d02ad6773224a72cc3"><span class="std std-ref"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></span></a></code> in <code class="docutils literal notranslate"><span class="pre">opts</span></code> the submission queue is placed in host memory; the other queue options are ignored.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
@@ -681,11 +682,12 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dev</strong> – An xnvme_dev opened on an <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> device </p></li>
 <li><p><strong>depth</strong> – Number of IO slots in the queue </p></li>
+<li><p><strong>opts</strong> – Queue options, see <a class="reference internal" href="../core/xnvme_queue.html#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6"><span class="std std-ref">xnvme_queue_opts</span></a>; 0 for the defaults </p></li>
 <li><p><strong>queue</strong> – On success, set to a device pointer to the GPU queue</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>0 on success, negative error code on failure </p>
+<dd class="field-even"><p>0 on success, -ENOTCONN when no <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> device is open, another negative error code on failure </p>
 </dd>
 </dl>
 </dd></dl>
@@ -697,7 +699,7 @@
 <dt class="sig sig-object c" id="c.xnvme_cuda_queue_destroy">
 <span class="target" id="libxnvme__cuda_8h_1a64824105a20215ba287bb74f0802040f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cuda_queue_destroy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cuda_queue" title="xnvme_cuda_queue"><span class="n"><span class="pre">xnvme_cuda_queue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cuda_queue_destroy" title="Link to this definition">#</a><br /></dt>
 <dd><p>Destroy a GPU-resident NVMe IO queue. </p>
-<p>Deletes the queue pair from the NVMe controller and frees the device memory.</p>
+<p>Deletes the queue pair from the NVMe controller and frees the device memory. Destroy it before closing the device that created it.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
@@ -706,7 +708,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dev</strong> – The xnvme_dev used to create the queue </p></li>
-<li><p><strong>queue</strong> – GPU queue pointer returned by <a class="reference internal" href="#libxnvme__cuda_8h_1a2ef063c514f8e57d898620e656f54eab"><span class="std std-ref">xnvme_cuda_queue_create()</span></a></p></li>
+<li><p><strong>queue</strong> – GPU queue pointer returned by <a class="reference internal" href="#libxnvme__cuda_8h_1aa6f3db5404618c7f77604679a6f4c7fa"><span class="std std-ref">xnvme_cuda_queue_create()</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -828,22 +830,29 @@
 <span class="cm"> * controller. The resulting pointer lives in device memory and can be passed</span>
 <span class="cm"> * directly as a CUDA kernel argument.</span>
 <span class="cm"> *</span>
+<span class="cm"> * With ``XNVME_QUEUE_SQ_HOSTMEM`` in ``opts`` the submission queue is placed in host</span>
+<span class="cm"> * memory; the other queue options are ignored.</span>
+<span class="cm"> *</span>
 <span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
 <span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param dev   An xnvme_dev opened on an ``upcie-cuda`` device</span>
 <span class="cm"> * @param depth Number of IO slots in the queue</span>
+<span class="cm"> * @param opts  Queue options, see ::xnvme_queue_opts; 0 for the defaults</span>
 <span class="cm"> * @param queue On success, set to a device pointer to the GPU queue</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return 0 on success, negative error code on failure</span>
+<span class="cm"> * @return 0 on success, -ENOTCONN when no ``upcie-cuda`` device is open, another</span>
+<span class="cm"> * negative error code on failure</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
-<span class="nf">xnvme_cuda_queue_create</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">depth</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cuda_queue</span><span class="w"> </span><span class="o">**</span><span class="n">queue</span><span class="p">);</span>
+<span class="nf">xnvme_cuda_queue_create</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">depth</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">opts</span><span class="p">,</span>
+<span class="w">			</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cuda_queue</span><span class="w"> </span><span class="o">**</span><span class="n">queue</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Destroy a GPU-resident NVMe IO queue</span>
 <span class="cm"> *</span>
 <span class="cm"> * Deletes the queue pair from the NVMe controller and frees the device memory.</span>
+<span class="cm"> * Destroy it before closing the device that created it.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
 <span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
@@ -872,16 +881,14 @@
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="o">*</span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">qp</span><span class="o">-&gt;</span><span class="n">sq</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">index</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">qp</span><span class="o">-&gt;</span><span class="n">tail</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">qp</span><span class="o">-&gt;</span><span class="n">depth</span><span class="p">;</span>
 
-<span class="w">	</span><span class="c1">// Copy the command to the SQ word-by-word. The destination uses a volatile</span>
-<span class="w">	</span><span class="c1">// pointer to bypass the per-SM L1 cache so writes reach system DRAM</span>
-<span class="w">	</span><span class="c1">// without waiting for eviction, making them visible to the NVMe DMA engine.</span>
-<span class="w">	</span><span class="c1">// The source does not need to be volatile: cmd is a per-thread local copy</span>
-<span class="w">	</span><span class="c1">// held in registers.</span>
-<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
-<span class="w">	</span><span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sq</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+<span class="w">	</span><span class="c1">// 16-byte stores cached at L2 only: the L2 combines them into whole sectors,</span>
+<span class="w">	</span><span class="c1">// where narrower stores to a host-memory SQ each cross PCIe on their own</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="n">uint4</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uint4</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+<span class="w">	</span><span class="n">uint4</span><span class="w"> </span><span class="o">*</span><span class="n">dst</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">uint4</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sq</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
 
-<span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">dst</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="cp">#pragma unroll</span>
+<span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">uint4</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">__stcg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dst</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
 <span class="w">	</span><span class="p">}</span>
 <span class="p">}</span>
 

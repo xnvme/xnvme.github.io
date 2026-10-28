@@ -549,7 +549,9 @@ without any host involvement after launch.</p>
 <p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_cuda_queue</span></code> is an opaque type — its internals are not part of the
 public API. <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> allocates and initializes the queue
 pair in CUDA device memory, so the returned pointer can be passed directly to a
-kernel without any additional copy. This is in contrast to the command array, which
+kernel without any additional copy. Its <code class="docutils literal notranslate"><span class="pre">opts</span></code> take <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code>
+to place the submission queue in host memory instead; the other queue options
+do not apply to a GPU-issued queue. This is in contrast to the command array, which
 is prepared on the host and must be copied to device memory with
 <code class="docutils literal notranslate"><span class="pre">cudaMemcpy()</span></code> before the kernel launch.</p>
 </section>
@@ -643,7 +645,7 @@ kernel:</p>
 <span class="w">	</span><span class="p">}</span>
 <span class="w">	</span><span class="n">cudaMemset</span><span class="p">(</span><span class="n">d_errors</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 
-<span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_cuda_queue_create</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gpu_queue</span><span class="p">);</span>
+<span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_cuda_queue_create</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gpu_queue</span><span class="p">);</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_cuda_queue_create()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
 <span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>

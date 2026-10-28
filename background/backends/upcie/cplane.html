@@ -58,7 +58,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="macOS" href="../xnvme_be_macos.html" />
-    <link rel="prev" title="uPCIe CUDA" href="cuda.html" />
+    <link rel="prev" title="uPCIe HIP" href="hip.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
@@ -421,6 +421,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">uPCIe</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="host.html">uPCIe (host memory)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cuda.html">uPCIe CUDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hip.html">uPCIe HIP</a></li>
 <li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">uPCIe (control plane)</a></li>
 </ul>
 </details></li>
@@ -584,7 +585,10 @@ lock, so <code class="docutils literal notranslate"><span class="pre">xnvme_buf_
 <li><p><strong>Admin commands.</strong> There is one admin queue and it belongs to the server.
 The payload does not travel with the request: the command names an address
 the device can already reach, so an identify lands in the client’s own
-buffer and only the command and its completion cross.</p></li>
+buffer and only the command and its completion cross.
+A command the controller refuses has completed, and its status reaches
+the client as it would reach the owning process; only a command that
+never completed is reported as an error.</p></li>
 </ul>
 </section>
 <section id="threads">
@@ -667,12 +671,25 @@ heap it maps and the hugepages behind it.</p>
 <section id="no-isolation-between-processes">
 <h3>No isolation between processes<a class="headerlink" href="#no-isolation-between-processes" title="Link to this heading">#</a></h3>
 <p>A client maps BAR0 and can therefore ring any doorbell and write <code class="docutils literal notranslate"><span class="pre">CC</span></code>, which
-is to say it can reset the controller. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> it also holds the
-device descriptor. The server creates the socket for its own user alone and
-refuses a peer whose credentials name another user; a client in turn refuses a
-server that runs as neither root nor the client’s user, since the path lies in
-a directory anyone can write and the client maps what the server hands over.
-Clients are inside one trust domain by construction; where that is
+is to say it can reset the controller. What it maps is the whole of BAR0
+rather than the doorbells it was given, so what a client can reach is not
+bounded by what it was allocated: one that asked for a single queue can ring
+the doorbells of every other queue on the controller, including queues held by
+other clients. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> it also holds the device descriptor, and a GPU
+client maps the same registers a second time through the BAR’s sysfs resource,
+which is the only mapping its kernels can be given.</p>
+<p>Admission to the socket is therefore the whole of the boundary, and it is a
+coarse one. The server creates the socket for its own user alone and refuses a
+peer whose credentials name another user; a client in turn refuses a server
+that runs as neither root nor the client’s user, since the path lies in a
+directory anyone can write and the client maps what the server hands over. It
+is not quite the whole of what a client needs, either: a GPU
+issuing its own I/O reaches the doorbells through the BAR’s sysfs resource
+rather than the descriptor it was handed, so that client needs privileges of
+its own rather than only what the server gives it. Handing out only the
+doorbell page a client was allocated would be finer, and the register layout
+allows it where the page granularity happens to line up, but that is not what
+this does. Clients are inside one trust domain by construction; where that is
 unacceptable, the answer is the kernel driver, which arbitrates because it
 owns the device.</p>
 </section>
@@ -698,10 +715,40 @@ one place where a policy could be applied and of a record that needs no lock.</p
 </section>
 <section id="gpu-clients">
 <h3>GPU clients<a class="headerlink" href="#gpu-clients" title="Link to this heading">#</a></h3>
-<p>A controller behind an IOMMU cannot yet DMA into VRAM: <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code>
-does not accept dma-bufs exported by CUDA or HIP. GPU workloads therefore stay
-on <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> until that changes, and the vfio path serves
-CPU-submitted I/O into host memory.</p>
+<p>A GPU client registers its own device memory and the server describes it to
+the controller, so I/O a client submits from the host reaches VRAM under
+either attachment mode. Behind an IOMMU that description cannot come from
+mapping the dma-buf, since <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> does not accept one exported
+by CUDA or HIP; it is installed from the physical addresses behind it instead,
+by the server here and by a process that opened the controller for itself.
+A region registered again, for another controller, is handed the description
+it already has, so the addresses a client resolves through do not change.
+The heap is registered this way when the client opens the controller, and a
+buffer the client allocated itself the same way when it hands it to
+<code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>: one registration per buffer and controller, given back on
+<code class="docutils literal notranslate"><span class="pre">xnvme_mem_unmap()</span></code> or with the connection.</p>
+<p>A host-driven GPU client can also ask for a queue whose completion queue alone
+lies in a region it registered, which is what <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code> needs,
+and a GPU-issuing client asks the same way for <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code>: the
+submission queue and the PRP scratch stay in the server’s heap and the
+controller completes beside the client’s data. The server resolves the offset
+through the registration as it does for a queue the GPU issues on, and the
+allocation it returns names a completion queue in its heap that the controller
+never writes; the client mirrors into it. <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> names an offset into the heap it
+registered at open; <code class="docutils literal notranslate"><span class="pre">upcie-hip</span></code> keeps its completion queue in uncached memory
+of its own outside that heap, so it registers that region by itself, whole,
+and names offset zero in it.</p>
+<p>I/O the GPU issues itself needs no server at all: a controller this process
+opened builds the same queue in the same device memory, and only the
+identifier and the admin queue come from somewhere else. It does ask one more
+thing of the platform. The controller’s domain is not what decides: it
+translates either way, through the one <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> installs for it. The GPU
+stays on its own driver and uses the default domain, and its doorbell writes
+are translated there; where that domain translates, the client installs the
+controller’s BAR into it through the <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module, served or not,
+since the mapping concerns the GPU’s domain and not the controller’s owner.
+Without the module the queue is refused; see the GPU IOMMU domain section of
+the CUDA backend page.</p>
 </section>
 </section>
 </section>

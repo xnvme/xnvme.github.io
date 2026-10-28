@@ -494,11 +494,12 @@ Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span clas
 <span class="w">  </span>verify<span class="w">           </span><span class="p">|</span><span class="w"> </span>Verify<span class="w"> </span>data<span class="w"> </span>integrity<span class="w"> </span>by<span class="w"> </span>writing<span class="w"> </span>and<span class="w"> </span>reading<span class="w"> </span>back<span class="w"> </span>a<span class="w"> </span>known<span class="w"> </span>pattern
 <span class="w">  </span>cuda-run<span class="w">         </span><span class="p">|</span><span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>GPU<span class="w"> </span>benchmark<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>devices<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>upcie-cuda<span class="w"> </span>backend<span class="o">)</span>
 <span class="w">  </span>cuda-verify<span class="w">      </span><span class="p">|</span><span class="w"> </span>Verify<span class="w"> </span>GPU<span class="w"> </span>NVMe<span class="w"> </span>I/O<span class="w"> </span>data<span class="w"> </span>integrity<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>upcie-cuda<span class="w"> </span>backend<span class="o">)</span>
+<span class="w">  </span>htod-roofline<span class="w">    </span><span class="p">|</span><span class="w"> </span>Host-to-device<span class="w"> </span>copy<span class="w"> </span>bandwidth<span class="w"> </span>ceiling<span class="w"> </span><span class="o">(</span>requires<span class="w"> </span>a<span class="w"> </span>GPU<span class="w"> </span>backend<span class="w"> </span>build<span class="o">)</span>
 
 See<span class="w"> </span><span class="s1">'xnvmeperf &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 See<span class="w"> </span><span class="s1">'xnvmeperf --version'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>library<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>revision<span class="w"> </span>it<span class="w"> </span>was<span class="w"> </span>built<span class="w"> </span>from
 
-xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4da42f8'</span><span class="o">}</span>
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'7c53a62'</span><span class="o">}</span>
 </pre></div>
 </div>
 <section id="run-benchmark">
@@ -539,11 +540,13 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--gpu_id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">=</span>upcie-cuda/upcie-hip,<span class="w"> </span>GPU<span class="w"> </span>ordinal<span class="w"> </span>to<span class="w"> </span>use
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--homi-id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--report-freq<span class="w"> </span>FLOAT<span class="w"> </span><span class="o">]</span><span class="w">       </span><span class="p">;</span><span class="w"> </span>Report<span class="w"> </span>progress<span class="w"> </span>every<span class="w"> </span><span class="s1">'FLOAT'</span><span class="w"> </span>seconds
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--p2p-cq-mirror<span class="w"> </span><span class="o">]</span><span class="w">           </span><span class="p">;</span><span class="w"> </span>Complete<span class="w"> </span>into<span class="w"> </span>GPU<span class="w"> </span>memory,<span class="w"> </span>beside<span class="w"> </span>the<span class="w"> </span>data<span class="w"> </span><span class="o">(</span>XNVME_QUEUE_P2P_CQ_MIRROR<span class="o">)</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--buf-host-bounce<span class="w"> </span><span class="o">]</span><span class="w">         </span><span class="p">;</span><span class="w"> </span>Read<span class="w"> </span>into<span class="w"> </span>a<span class="w"> </span>host<span class="w"> </span>buffer<span class="w"> </span>and<span class="w"> </span>copy<span class="w"> </span>it<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>GPU,<span class="w"> </span>instead<span class="w"> </span>of<span class="w"> </span>P2P
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
 See<span class="w"> </span><span class="s1">'xnvmeperf --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4da42f8'</span><span class="o">}</span>
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'7c53a62'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>The title of the results block carries the library version and the revision
@@ -562,6 +565,42 @@ A copy of the sources with neither git metadata nor that stamp shows
 <p>Example — random write across two devices on two CPUs:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">randwrite</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
     <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">cpumask</span> <span class="mh">0x3</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme1n1</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">upcie-cuda</span></code> or <code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">upcie-hip</span></code> the payloads land in GPU memory
+while the CPU drives the queues. Adding <code class="docutils literal notranslate"><span class="pre">--p2p-cq-mirror</span></code> places the completion
+queues there as well, so the controller’s completion writes no longer queue
+behind its data writes; see <a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda-p2p-cq-mirror"><span class="std std-ref">Completions in device memory</span></a> for when
+that matters. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">randread</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">128</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">512</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">cpulist</span> <span class="mi">0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span><span class="o">-</span><span class="n">cuda</span> <span class="o">--</span><span class="n">p2p</span><span class="o">-</span><span class="n">cq</span><span class="o">-</span><span class="n">mirror</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+<p>For <code class="docutils literal notranslate"><span class="pre">cuda-run</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code>, where the GPU issues the I/O, the queue
+pair lives in GPU memory. Adding <code class="docutils literal notranslate"><span class="pre">--sq-hostmem</span></code> moves the submission queue
+into host memory, which the controller fetches from faster than from GPU
+memory; see <a class="reference internal" href="../../background/backends/upcie/cuda.html#sec-backends-upcie-cuda-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> for the trade-off.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--buf-host-bounce</span></code> keeps the I/O on a host backend and moves each payload
+on to the GPU named by <code class="docutils literal notranslate"><span class="pre">--gpu_id</span></code> once it completes, with the runtime’s
+asynchronous copy. Every queue slot has a host buffer of its own, page-locked
+so the copy runs at link speed, and a slot is reused only once its copy has
+drained, so when the copy is slower than the drive, submission waits for it.
+At most 128 MiB of such buffers are in flight per device, so that the heap
+stays within the GPU’s IOMMU aperture; the host heap is sized with headroom
+for the per-buffer overhead and for the hugepages a served <strong>homi</strong> shares,
+and kept under the 4 GiB at which the DMA mapping collides in that aperture,
+which is what caps the usable <code class="docutils literal notranslate"><span class="pre">--iosize</span></code>. A buffer the runtime refuses to
+page-lock is copied at the pageable rate, which the report then shows.
+Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">run</span> <span class="o">--</span><span class="n">iopattern</span> <span class="n">randread</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> \
+    <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">buf</span><span class="o">-</span><span class="n">host</span><span class="o">-</span><span class="n">bounce</span> <span class="o">--</span><span class="n">gpu_id</span> <span class="mi">0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">htod-roofline</span></code> measures what that copy delivers on its own: it keeps
+<code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> page-locked copies of <code class="docutils literal notranslate"><span class="pre">--iosize</span></code> in flight to the GPU for
+<code class="docutils literal notranslate"><span class="pre">--runtime</span></code> seconds and reports the host-to-device GB/s, taking no
+devices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvmeperf</span> <span class="n">htod</span><span class="o">-</span><span class="n">roofline</span> <span class="o">--</span><span class="n">iosize</span> <span class="mi">4096</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">runtime</span> <span class="mi">10</span> <span class="o">--</span><span class="n">gpu_id</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </section>
@@ -593,11 +632,12 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--poll_sq<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">async</span><span class="o">=</span>io_uring,<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>kernel-side<span class="w"> </span>sqthread-poll
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--gpu_id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">=</span>upcie-cuda/upcie-hip,<span class="w"> </span>GPU<span class="w"> </span>ordinal<span class="w"> </span>to<span class="w"> </span>use
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--homi-id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--p2p-cq-mirror<span class="w"> </span><span class="o">]</span><span class="w">           </span><span class="p">;</span><span class="w"> </span>Complete<span class="w"> </span>into<span class="w"> </span>GPU<span class="w"> </span>memory,<span class="w"> </span>beside<span class="w"> </span>the<span class="w"> </span>data<span class="w"> </span><span class="o">(</span>XNVME_QUEUE_P2P_CQ_MIRROR<span class="o">)</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
 See<span class="w"> </span><span class="s1">'xnvmeperf --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4da42f8'</span><span class="o">}</span>
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'7c53a62'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Example:</p>
@@ -622,8 +662,25 @@ from CUDA kernels.</p>
 </div>
 <p>Requires the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend. All queues across all devices are driven
 by a single CUDA kernel: each CUDA block owns one NVMe queue and each thread
-within the block owns one queue slot, so <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> threads submit and reap
-commands in lock-step. The grid has <code class="docutils literal notranslate"><span class="pre">ndevs</span> <span class="pre">×</span> <span class="pre">--nqueues</span></code> blocks in total.</p>
+within the block owns one queue slot. The grid has <code class="docutils literal notranslate"><span class="pre">ndevs</span> <span class="pre">×</span> <span class="pre">--nqueues</span></code>
+blocks in total.</p>
+<p>The slots of a queue form groups of one warp, 32 slots, that take turns: a
+group reaps the queue’s next batch of completions and refills the room they
+leave, while the other groups’ commands stay in service. Submitting the whole
+depth and then waiting for it would leave the queue empty for one GPU round
+trip per depth’s worth of I/O, so a single queue per drive could not reach the
+drive’s rate however deep it is. A depth below 32 is a single group.</p>
+<p>A slot’s previous command may still be in flight when a group reuses it,
+since a group reaps the queue’s oldest completions and not necessarily its
+own, so a command identifier advances by the depth on every submission.
+Each thread fences its own entry before the group’s barrier: with two
+batches in flight, a single fence by the thread that rings the doorbell let
+the controller fetch entries before they were written and execute what it
+found there, a few per million.
+The stop flag lives in host memory, where reading it is a PCIe round trip
+on the turn’s critical path, so the kernel samples it every 32nd turn, and
+it rings the doorbell without a second fence, since every entry was fenced
+before the barrier.</p>
 <p>Both <code class="docutils literal notranslate"><span class="pre">--qdepth</span></code> and <code class="docutils literal notranslate"><span class="pre">--iosize</span></code> must be powers of 2. Supported patterns are
 <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">randread</span></code>, and <code class="docutils literal notranslate"><span class="pre">randwrite</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvmeperf<span class="w"> </span>cuda-run<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
@@ -650,11 +707,12 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--gpu_id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">=</span>upcie-cuda/upcie-hip,<span class="w"> </span>GPU<span class="w"> </span>ordinal<span class="w"> </span>to<span class="w"> </span>use
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--homi-id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--report-freq<span class="w"> </span>FLOAT<span class="w"> </span><span class="o">]</span><span class="w">       </span><span class="p">;</span><span class="w"> </span>Report<span class="w"> </span>progress<span class="w"> </span>every<span class="w"> </span><span class="s1">'FLOAT'</span><span class="w"> </span>seconds
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--sq-hostmem<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>Submit<span class="w"> </span>GPU-issued<span class="w"> </span>I/O<span class="w"> </span>from<span class="w"> </span>host<span class="w"> </span>memory<span class="w"> </span><span class="o">(</span>XNVME_QUEUE_SQ_HOSTMEM<span class="o">)</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
 See<span class="w"> </span><span class="s1">'xnvmeperf --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4da42f8'</span><span class="o">}</span>
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'7c53a62'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Example — sequential read, four queues of depth 32 on two devices:</p>
@@ -695,11 +753,12 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'spdk'</span>,<span class="w"> </span><span class="s1">'libvfn'</span>,<span class="w"> </span><span class="s1">'upcie'</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--gpu_id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>For<span class="w"> </span><span class="nv">be</span><span class="o">=</span>upcie-cuda/upcie-hip,<span class="w"> </span>GPU<span class="w"> </span>ordinal<span class="w"> </span>to<span class="w"> </span>use
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--homi-id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--sq-hostmem<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>Submit<span class="w"> </span>GPU-issued<span class="w"> </span>I/O<span class="w"> </span>from<span class="w"> </span>host<span class="w"> </span>memory<span class="w"> </span><span class="o">(</span>XNVME_QUEUE_SQ_HOSTMEM<span class="o">)</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
 See<span class="w"> </span><span class="s1">'xnvmeperf --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4da42f8'</span><span class="o">}</span>
+xnvmeperf<span class="w"> </span>-<span class="w"> </span>NVMe<span class="w"> </span>async<span class="w"> </span>IO<span class="w"> </span>benchmark<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'7c53a62'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Example:</p>
