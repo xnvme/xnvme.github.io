@@ -474,9 +474,12 @@
                   
   <section id="on-hetzner">
 <span id="sec-ci-runners-hetzner"></span><h1>On Hetzner<a class="headerlink" href="#on-hetzner" title="Link to this heading">#</a></h1>
-<p>Qemu guests on MaaS from Hetzner <strong>AX42</strong>, using vfio-passthru for one of the
-two NVMe SSDs on the host. Simultaneous Multithreading (SMT) disabled and six
-cores pinned for the guest machine, two left for Linux and the GitHub runner.</p>
+<p>Qemu guests on MaaS from Hetzner <strong>AX42</strong>, booted in the xnvme-devenv host
+container with one of the two NVMe SSDs on the host passed through by the
+<code class="docutils literal notranslate"><span class="pre">storage-node-passthru</span></code> rig. Simultaneous Multithreading (SMT) disabled and
+six cores pinned for the guest machine, two left for Linux and the GitHub
+runner. The jobs bring QEMU, <strong>CIJOE</strong> and swtpm with the container; the host
+provides Docker, <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> and the guest images that cannot be distributed.</p>
 <p>Hostname naming convention for the guest:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">xnvme-ci-hetzner-bookworm-amd64-XX</span></code></p></li>
@@ -541,8 +544,12 @@ provided making this less of an effort.</p>
 vfio-passthru</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ghr</span></code> has <code class="docutils literal notranslate"><span class="pre">memlock</span> <span class="pre">unlimited</span></code> and can thus launch qemu guest with a lot
 of memory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghr</span></code> is a member of <code class="docutils literal notranslate"><span class="pre">docker</span></code>, thus, can start the xnvme-devenv host
+container that <code class="docutils literal notranslate"><span class="pre">verify-maas</span></code> and the benchmarks run in</p></li>
 </ul>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/ghr/system_imaging</span></code> holds the guest images, the Windows one among
+them, and the jobs mount it into the container, so an image is staged once</p></li>
 </ul>
 <p>To install a system have a look at the following section and for details, then
 look at the scripts and config files referred to there.</p>
@@ -621,8 +628,9 @@ under <code class="docutils literal notranslate"><span class="pre">Settings</spa
 <h2>Windows Guest Image<a class="headerlink" href="#windows-guest-image" title="Link to this heading">#</a></h2>
 <p>Unlike the other guests, the Windows image cannot be distributed. Therefore,
 you must manually retrieve it from the private Hetzner Storage Box. The
-<code class="docutils literal notranslate"><span class="pre">postinstall.sh</span></code> script has already prepared everything needed to launch
-a Windows guest, including UEFI, OVMF, and TPM support.</p>
+<code class="docutils literal notranslate"><span class="pre">postinstall.sh</span></code> script has already fetched the virtio drivers the Windows
+guest needs; its UEFI firmware and TPM come with xnvme-devenv’s
+<code class="docutils literal notranslate"><span class="pre">uefi-secureboot-tpm</span></code> rig.</p>
 <p>Download the image using the command below, replacing your username with your
 Storage Box <code class="docutils literal notranslate"><span class="pre">&lt;USERNAME&gt;</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Download the Windows image from Hetzner Storage Box

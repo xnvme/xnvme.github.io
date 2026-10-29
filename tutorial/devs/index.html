@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Linux Dev. Environment &#8212; xNVMe v0.7.5 documentation</title>
+    <title>Development Environment &#8212; xNVMe v0.7.5 documentation</title>
   
   
   
@@ -392,7 +392,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../fdp/index.html">Flexible Data Placement</a></li>
-<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Linux Dev. Environment</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dynamic_loading/index.html">Dynamically loading xNVMe</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../transports/index.html">NVMe Transports</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../transports/spdk/index.html">SPDK Target</a></li>
@@ -443,7 +443,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Linux Dev. Environment</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Development Environment</span></li>
   </ul>
 </nav>
 </div>
@@ -460,495 +460,139 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="linux-dev-environment">
-<span id="sec-tutorials-devs-linux"></span><h1>Linux Dev. Environment<a class="headerlink" href="#linux-dev-environment" title="Link to this heading">#</a></h1>
-<p>This shows the manual steps of setting up a physical machine for <strong>xNVMe</strong> test
-and development. This includes using devices attached to the machine, as well
-as using the physical machine to setup virtual machines with advanced
-NVMe-device emulation.</p>
-<p>Advanced NVMe device emulation covers command-set enchancements such as
-Flexible Data-Placement (FDP), Zoned Namespaces (ZNS), and Key-Value SSDs (KV).</p>
-<p>The documentation is provided as a means to setup development environment with
-minimal fuss and maximum foss :)</p>
+  <section id="development-environment">
+<span id="sec-tutorials-devs-linux"></span><h1>Development Environment<a class="headerlink" href="#development-environment" title="Link to this heading">#</a></h1>
+<p><strong>xNVMe</strong> is developed and tested in <a class="reference external" href="https://github.com/xnvme/xnvme-devenv">xnvme-devenv</a>’s host container: a
+container with <strong>QEMU</strong>, <strong>CIJOE</strong>, the vfio-user device servers and the rigs,
+the PCIe topologies a guest boots with. The guest runs <strong>xNVMe</strong>, built from
+your tree, against emulated NVMe devices. The <strong>CI</strong> runs its emulated jobs in
+the same container, so a job and your own run boot the same guest on the same
+rig.</p>
+<p>What you need on your machine:</p>
 <ul class="simple">
-<li><p><strong>xNVMe</strong></p>
-<ul>
-<li><p>Built from source</p></li>
-<li><p>Testing package</p></li>
+<li><p>Linux on x86-64 with <strong>KVM</strong>, that is <code class="docutils literal notranslate"><span class="pre">/dev/kvm</span></code></p></li>
+<li><p>Docker or Podman</p></li>
+<li><p>Room on disk: the staged guest images are some 7 GiB each, and the guests
+and their NVMe backing images take tens of GiB more</p></li>
 </ul>
-</li>
-<li><p>CIJOE</p>
-<ul>
-<li><p>Scripts and utilities for development, testing, and maintenance</p></li>
-</ul>
-</li>
-<li><p>Custom Qemu</p>
-<ul>
-<li><p>Built from source</p></li>
-<li><p>Latest NVMe emulation features</p></li>
-</ul>
-</li>
-<li><p>Custom Linux kernel</p>
-<ul>
-<li><p>Built from source</p></li>
-<li><p>Installed via <code class="docutils literal notranslate"><span class="pre">.deb</span></code></p></li>
-</ul>
-</li>
-</ul>
-<section id="physical-machine">
-<span id="sec-tutorials-devs-linux-pm"></span><h2>Physical Machine<a class="headerlink" href="#physical-machine" title="Link to this heading">#</a></h2>
-<p>It is assumed that you have a physisical machine with NVMe storage available,
-and that you can utilize it destructively. That is, that any data can and will
-be lost when using the NVMe devices for testing.</p>
-<p>Qemu is utilized extensively during testing to verify NVMe functionality of
-NVM, ZNS, KV, FDP, etc. that is NVMe features not readiliy available in HW
-is emulated via qemu. Thus, a physical machine is attractive reduce build and
-runtime.</p>
-<p>It is of course possible to do nested-virtualization, however, it is often
-impractical as I/O get orders of magnitudes slower which less than ideal during
-build.</p>
-<p>Most machines will do for common development and testing, throughout a machine
-with the following traits are used:</p>
+<section id="guests">
+<h2>Guests<a class="headerlink" href="#guests" title="Link to this heading">#</a></h2>
+<p>The guest to pick depends on what you work on. Debian 13 is kept
+upstream-pure, a stock kernel with in-tree drivers only, so plain NVMe work
+runs on a kernel users run, without bleeding-edge surprises.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Work on</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">DEVENV_GUEST</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">RIG</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NVMe/PCIe, NVMe/TCP</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">debian-trixie-iommu_disabled</span></code>, <code class="docutils literal notranslate"><span class="pre">debian-trixie-iommu_enabled</span></code> or
+<code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code></p></td>
+<td><p>the default, <code class="docutils literal notranslate"><span class="pre">storage-node-emulated</span> <span class="pre">homi-queues</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>NVMe/PCIe on a drive of your machine</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">debian-trixie-iommu_enabled</span></code>, <code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code> or <code class="docutils literal notranslate"><span class="pre">windows-11</span></code></p></td>
+<td><p>none; <code class="docutils literal notranslate"><span class="pre">PASSTHRU=&lt;bdf&gt;</span></code> names the drive</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A rig is named for the machine it stands in for and where its devices come
+from. <code class="docutils literal notranslate"><span class="pre">RIG</span></code> takes a list of rig names or files, each one more <strong>CIJOE</strong>
+config layered over the one before, so a later one changes a detail of an
+earlier. A name is looked up in <code class="docutils literal notranslate"><span class="pre">cijoe/rigs/</span></code>, then in the host container’s
+rigs; <code class="docutils literal notranslate"><span class="pre">homi-queues</span></code>, in <code class="docutils literal notranslate"><span class="pre">cijoe/rigs/</span></code>, gives one controller of
+<code class="docutils literal notranslate"><span class="pre">storage-node-emulated</span></code> the queue count the homi tests need.</p>
+<p><code class="docutils literal notranslate"><span class="pre">PASSTHRU=&lt;bdf&gt;</span></code> passes the drive at that address on your machine through to
+the guest with vfio-pci, which takes it from the host: the guest boots on
+<code class="docutils literal notranslate"><span class="pre">storage-node-passthru</span></code>, and the tests use the <code class="docutils literal notranslate"><span class="pre">[[devices]]</span></code> of
+<code class="docutils literal notranslate"><span class="pre">cijoe/rigs/passthru-&lt;debian|freebsd|windows&gt;.toml</span></code>, which name the drive as
+the guest sees it. The host needs its IOMMU on, and a drive it has mounted is
+refused. The <strong>CI</strong>’s MAAS jobs and benchmarks boot their guests this way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">up</span> <span class="n">DEVENV_GUEST</span><span class="o">=</span><span class="n">debian</span><span class="o">-</span><span class="n">trixie</span><span class="o">-</span><span class="n">iommu_enabled</span> <span class="n">PASSTHRU</span><span class="o">=</span><span class="mi">0000</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">00.0</span>
+</pre></div>
+</div>
+</section>
+<section id="developing-in-a-guest">
+<span id="sec-tutorials-devs-linux-reproduce-ci"></span><h2>Developing in a guest<a class="headerlink" href="#developing-in-a-guest" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">devenv-*</span></code> make targets keep one host container running, with this tree
+mounted, so a guest boots once and stays up while you change, rebuild and test
+against it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">up</span> <span class="n">DEVENV_GUEST</span><span class="o">=</span><span class="n">debian</span><span class="o">-</span><span class="n">trixie</span><span class="o">-</span><span class="n">iommu_disabled</span>
+<span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">sync</span>
+<span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">test</span> <span class="n">TESTS</span><span class="o">=</span><span class="s1">'-k test_verify tests/logic/test_xnvme_tests_ioworker.py'</span>
+<span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">down</span>
+</pre></div>
+</div>
 <ul class="simple">
-<li><p>An x86 64-bit CPU</p></li>
-<li><p>At least 8GB of memory</p></li>
-<li><p>A SATA SSD, 100GB will suffice, used for the</p>
-<ul>
-<li><p>Operating system</p></li>
-<li><p>User data (<code class="docutils literal notranslate"><span class="pre">$HOME</span></code>), repositories, workdirs, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-up</span></code> starts the container, unless it is running, then the guest on
+its rig, and provisions this tree into it: dependencies, a clean build, the
+Python bindings and fio. <code class="docutils literal notranslate"><span class="pre">DEVENV_GUEST</span></code> is one of the guests <code class="docutils literal notranslate"><span class="pre">make</span>
+<span class="pre">guest-select</span></code> lists, and defaults to the last selected; <code class="docutils literal notranslate"><span class="pre">RIG</span></code> defaults to
+the storage rig. The other targets use the rig the guest booted with, unless
+given <code class="docutils literal notranslate"><span class="pre">RIG</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-sync</span></code> updates the guest’s source with this tree and rebuilds only
+what changed, in the build directory the provision left, then installs; a
+change to one source file takes seconds. A file deleted from the tree stays
+in the guest; <code class="docutils literal notranslate"><span class="pre">devenv-provision</span></code> starts over from a clean build.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-test</span></code> runs the tests <code class="docutils literal notranslate"><span class="pre">TESTS</span></code> selects, as pytest arguments, or
+without it the guest’s test task, as <code class="docutils literal notranslate"><span class="pre">guest-test</span></code> does, with
+<code class="docutils literal notranslate"><span class="pre">TRANSPORT</span></code> and <code class="docutils literal notranslate"><span class="pre">TEST_STEPS</span></code> passed through. <code class="docutils literal notranslate"><span class="pre">TESTS</span></code> replaces the
+task’s own selection, so add what it leaves out for the guest, such as
+<code class="docutils literal notranslate"><span class="pre">-k</span> <span class="pre">&quot;not</span> <span class="pre">fabrics</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">libvfn&quot;</span></code> on a guest without an IOMMU. <code class="docutils literal notranslate"><span class="pre">TESTS</span></code>
+is for the Linux guests; on FreeBSD, run the guest’s test task.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-docgen</span></code> generates the documentation in the guest, as the
+<code class="docutils literal notranslate"><span class="pre">docgen</span></code> job does, from the source the guest has, so run <code class="docutils literal notranslate"><span class="pre">devenv-sync</span></code>
+first. It installs xNVMe’s documentation tooling in the container before it
+starts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-shell</span></code> opens a shell in the host container, and <code class="docutils literal notranslate"><span class="pre">devenv-ssh</span></code> an
+SSH session in the guest, as root, on the port the container publishes the
+guest’s SSH on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-down</span></code> stops the guest and removes the container.</p></li>
 </ul>
-</li>
-<li><p>One or more NVMe SSDs</p>
-<ul>
-<li><p>Utilized for testing</p></li>
-</ul>
-</li>
-</ul>
-<p>This physical machine will be referred to as <code class="docutils literal notranslate"><span class="pre">box01</span></code>.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Since, the devices utilized for testing a primarily NVMe devices, then it is
-convenient to have the operating system and user-data installed on a
-separate non-NVMe device, quite simply since SATA pops up as <code class="docutils literal notranslate"><span class="pre">/dev/sd*</span></code>
-and NVMe as <code class="docutils literal notranslate"><span class="pre">/dev/nvme*</span></code> / <code class="docutils literal notranslate"><span class="pre">/dev/ng*</span></code>. It avoids one accidentally wiping
-the OS device when the devices are entirely separate.</p>
-</div>
+<p>The container’s home is <code class="docutils literal notranslate"><span class="pre">DEVENV_HOME</span></code> (default <code class="docutils literal notranslate"><span class="pre">.devenv</span></code> in this tree),
+which keeps <strong>CIJOE</strong> and the guest across <code class="docutils literal notranslate"><span class="pre">devenv-down</span></code>. The staged guest
+images are in <code class="docutils literal notranslate"><span class="pre">DEVENV_CACHE</span></code> (default <code class="docutils literal notranslate"><span class="pre">~/.cache/xnvme-devenv</span></code>), which every
+checkout’s environment shares, so point it at a disk that has the room.
+<code class="docutils literal notranslate"><span class="pre">DEVENV_ENGINE=podman</span></code> runs it with Podman instead of Docker, and
+<code class="docutils literal notranslate"><span class="pre">DEVENV_IMAGE</span></code> picks another host container, by default the one the <strong>CI</strong>
+jobs use. Each checkout gets an environment of its own, named for its
+directory (<code class="docutils literal notranslate"><span class="pre">DEVENV_NAME</span></code>), so several, such as one per worktree, run side by
+side on one machine.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">guest-*</span></code> targets the <code class="docutils literal notranslate"><span class="pre">devenv-*</span></code> ones run can also be run by hand in
+the container, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">devenv-shell</span></code>, for instance <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">verify-guest</span></code> for a
+whole provision and test run as a <strong>CI</strong> job does it, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docgen-guest</span></code>
+for the documentation, or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-bench</span> <span class="pre">BENCH=latency</span></code> (or <code class="docutils literal notranslate"><span class="pre">bdev</span></code>) on a
+guest with a drive passed through, for a benchmark as the benchmark jobs run
+it.</p>
 </section>
-<section id="operating-system">
-<span id="sec-tutorials-devs-linux-os"></span><h2>Operating System<a class="headerlink" href="#operating-system" title="Link to this heading">#</a></h2>
-<p>Here, the latest <strong>stable</strong> Debian Linux, currently <strong>bookworm</strong> is used
-throughout.</p>
-<ul class="simple">
-<li><p>Install it</p>
-<ul>
-<li><p>Un-select desktop environment</p></li>
-<li><p>Select OpenSSH</p></li>
-</ul>
-</li>
-<li><p>Add user <code class="docutils literal notranslate"><span class="pre">odus</span></code> with password as you see fit</p></li>
-<li><p>Partition using the entire device</p></li>
-<li><p>Setup networking</p></li>
-</ul>
-<p>And make sure it is accessible from your “main” development machine:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-copy-id<span class="w"> </span>odus@box01
+<section id="testing-on-a-machine-of-your-own">
+<h2>Testing on a machine of your own<a class="headerlink" href="#testing-on-a-machine-of-your-own" title="Link to this heading">#</a></h2>
+<p>To build and test <strong>xNVMe</strong> on a machine rather than in a guest, such as a
+lab machine with real NVMe drives, describe it in a <strong>CIJOE</strong> config: copy the
+one in <code class="docutils literal notranslate"><span class="pre">cijoe/configs/</span></code> that is closest, and change its SSH login, its
+<code class="docutils literal notranslate"><span class="pre">[[devices]]</span></code> and its paths. Then build the source archives and run the
+provisioning and a test task against it, as the <code class="docutils literal notranslate"><span class="pre">verify-physical</span></code> job
+does with its macOS machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">gen</span><span class="o">-</span><span class="n">artifacts</span> <span class="n">ALLOW_DIRTY</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">cd</span> <span class="n">cijoe</span>
+<span class="n">cijoe</span> <span class="n">tasks</span><span class="o">/</span><span class="n">provision</span><span class="o">-</span><span class="n">using</span><span class="o">-</span><span class="n">tgz</span><span class="o">.</span><span class="n">yaml</span> <span class="o">--</span><span class="n">config</span> <span class="n">mymachine</span><span class="o">.</span><span class="n">toml</span> \
+  <span class="o">--</span><span class="n">config</span> <span class="n">configs</span><span class="o">/</span><span class="n">fio</span><span class="o">.</span><span class="n">toml</span> <span class="o">--</span><span class="n">config</span> <span class="n">configs</span><span class="o">/</span><span class="n">xnvme</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">cijoe</span> <span class="n">tasks</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">debian</span><span class="o">-</span><span class="n">trixie</span><span class="o">-</span><span class="n">iommu_enabled</span><span class="o">-</span><span class="n">pcie</span><span class="o">.</span><span class="n">yaml</span> <span class="o">--</span><span class="n">config</span> <span class="n">mymachine</span><span class="o">.</span><span class="n">toml</span> \
+  <span class="o">--</span><span class="n">config</span> <span class="n">configs</span><span class="o">/</span><span class="n">fio</span><span class="o">.</span><span class="n">toml</span> <span class="o">--</span><span class="n">config</span> <span class="n">configs</span><span class="o">/</span><span class="n">xnvme</span><span class="o">.</span><span class="n">toml</span>
 </pre></div>
 </div>
-<p>Log into the machine:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>odus@box01
-</pre></div>
-</div>
-<p>And then install a couple of things:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Switch to root</span>
-su<span class="w"> </span>-
-apt-get<span class="w"> </span>-qy<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>git<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>htop<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>screen<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>pipx<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>sudo<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>vim
-
-<span class="c1"># Make sure that cli-tools installed with pipx are available</span>
-pipx<span class="w"> </span>ensurepath
-
-<span class="c1"># Add odus to sudoers (required to do various things as non-root)</span>
-usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>odus
-
-<span class="c1"># Add odus to kvm (required to run qemu as non-root)</span>
-usermod<span class="w"> </span>-aG<span class="w"> </span>kvm<span class="w"> </span>odus
-
-<span class="c1"># switch back out of root</span>
-<span class="nb">exit</span>
-
-<span class="c1"># log out of odus</span>
-<span class="nb">exit</span>
-</pre></div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Log out and back in again, to refresh credentials</p>
-</div>
-<p>Additionally, in order to prepare the system for user-space NVMe drivers, then
-vfio/iommu should be enabled along with a couple of user-limit tweaks.</p>
-<p>Have a look at the <a class="reference internal" href="../../background/backends/spdk/index.html#sec-backends-spdk-config"><span class="std std-ref">System Configuration</span></a> section for the details on
-this.</p>
-</section>
-<section id="homedir">
-<span id="sec-tutorials-devs-linux-homedir"></span><h2>Homedir<a class="headerlink" href="#homedir" title="Link to this heading">#</a></h2>
-<p>Regardless of whether you are using the <strong>box</strong> directly as <code class="docutils literal notranslate"><span class="pre">root</span></code>, or using the
-<code class="docutils literal notranslate"><span class="pre">odus</span></code> user, then setup the <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> directory like so:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span><span class="nv">$HOME</span>/<span class="o">{</span>artifacts,git,workdirs,guests,images<span class="o">}</span>
-</pre></div>
-</div>
-<p>The directories are used for the following:</p>
-<dl class="simple">
-<dt><strong>git</strong></dt><dd><p>A place to store source-repositories, usually these are git repositories for
-projects like: xnvme, fio, spdk, linux, and qemu.</p>
-</dd>
-<dt><strong>workdirs</strong></dt><dd><p>A place for auxilary files, when executing <strong>cijoe</strong> workflows, or doing
-misc. experiments and exploration.</p>
-</dd>
-<dt><strong>artifacts</strong></dt><dd><p>A place to store intermediate artifacts during development. Such as adhoc
-Linux kernel <code class="docutils literal notranslate"><span class="pre">.deb</span></code> packages, source-archives etc.</p>
-</dd>
-<dt><strong>guests</strong></dt><dd><p>A place where boot-images, pid-files, cloud-seeds and other files related to
-qemu guests live.</p>
-</dd>
-<dt><strong>images</strong></dt><dd><p>A place to store VM “boot-images”, such as cloud-init enabled images.</p>
-</dd>
-</dl>
-</section>
-<section id="screen-http-server">
-<span id="sec-tutorials-devs-linux-screen"></span><h2>Screen + http.server<a class="headerlink" href="#screen-http-server" title="Link to this heading">#</a></h2>
-<p>Regardless of whether your <strong>devbox</strong> is physical/virtual/local/remote or some
-combination thereof. Then having access to misc. files, and specifically, to
-things like <strong>cijoe</strong> output / reports. Is very convenient.</p>
-<p>With minimal fuss, then this is achievable with a combinaion of <code class="docutils literal notranslate"><span class="pre">screen</span></code> and
-Python:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/workdirs
-screen<span class="w"> </span>-d<span class="w"> </span>-m<span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>http.server
-</pre></div>
-</div>
-<p>The above starts a webserver, serving the content of the <code class="docutils literal notranslate"><span class="pre">cwd</span></code> where
-<code class="docutils literal notranslate"><span class="pre">python3</span></code> is executed and served up over <code class="docutils literal notranslate"><span class="pre">tcp/http</span></code> on port <strong>8000</strong>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">screen</span> <span class="pre">-d</span> <span class="pre">-m</span></code> part, creates a screen-session and detaches from it. Thus,
-it continues executing even if you disconnect.</p>
-<p>You can see the running screen-sessions with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>screen<span class="w"> </span>-list
-</pre></div>
-</div>
-<p>And attach to them using their <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>screen<span class="w"> </span>-r<span class="w"> </span>&lt;name&gt;
-</pre></div>
-</div>
-</section>
-<section id="xnvme">
-<span id="sec-tutorials-devs-linux-cijoe"></span><h2>xNVMe<a class="headerlink" href="#xnvme" title="Link to this heading">#</a></h2>
-<p>Clone, build, and install <strong>xNVMe</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/OpenMPDK/xNVMe.git<span class="w"> </span>xnvme
-<span class="nb">cd</span><span class="w"> </span>xnvme
-</pre></div>
-</div>
-<p>Install prerequisites:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>./toolbox/pkgs/debian-bookworm.sh
-</pre></div>
-</div>
-<p>Build and install <strong>xNVMe</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git/xnvme
-make
-sudo<span class="w"> </span>make<span class="w"> </span>install
-</pre></div>
-</div>
-<p>Check that it is functional:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>xnvme<span class="w"> </span>enum
-</pre></div>
-</div>
-<p>This should yield output similar to:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme_cli_enumeration:
--<span class="w"> </span><span class="o">{</span>uri:<span class="w"> </span><span class="s1">'/dev/nvme0n1'</span>,<span class="w"> </span>dtype:<span class="w"> </span>0x2,<span class="w"> </span>nsid:<span class="w"> </span>0x1,<span class="w"> </span>csi:<span class="w"> </span>0x0,<span class="w"> </span>subnqn:<span class="w"> </span><span class="s1">''</span><span class="o">}</span>
-</pre></div>
-</div>
-</section>
-<section id="cijoe">
-<h2>cijoe<a class="headerlink" href="#cijoe" title="Link to this heading">#</a></h2>
-<p>Setup by running the following in the root of the <strong>xNVMe</strong> repository:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git/xnvme
-make<span class="w"> </span>guest-env
-</pre></div>
-</div>
-<p>This will:</p>
-<ol class="arabic simple">
-<li><p>Install <strong>cijoe</strong> along with dependencies for Linux, qemu, and fio</p></li>
-<li><p>Check that QEMU and KVM are available</p></li>
-<li><p>Present an interactive menu to select a guest (e.g. <code class="docutils literal notranslate"><span class="pre">debian-trixie</span></code>,
-<code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code>)</p></li>
-</ol>
-<p>The selected guest is stored in <code class="docutils literal notranslate"><span class="pre">cijoe/current.guest</span></code> and used by all
-subsequent <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-*</span></code> targets.</p>
-<p>Then logout and back in to reload the environment, the addition of <code class="docutils literal notranslate"><span class="pre">pipx</span></code> and
-the <code class="docutils literal notranslate"><span class="pre">cijoe</span></code> into <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Make sure that <code class="docutils literal notranslate"><span class="pre">pytest</span></code> is not installed system-wide by running <code class="docutils literal notranslate"><span class="pre">which</span>
-<span class="pre">pytest</span></code>. In case it says <code class="docutils literal notranslate"><span class="pre">/usr/bin/pytest</span></code>, then it is not using the
-<code class="docutils literal notranslate"><span class="pre">pytest</span></code> provided with the <strong>CIJOE</strong> module. Thus, uninstall it using
-<code class="docutils literal notranslate"><span class="pre">apt-get</span> <span class="pre">remove</span> <span class="pre">python3-pytest</span></code>.</p>
-</div>
-<section id="artifacts">
-<h3>Artifacts<a class="headerlink" href="#artifacts" title="Link to this heading">#</a></h3>
-<p>Produce a set of <strong>artifacts</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git/xnvme
-make<span class="w"> </span>clobber<span class="w"> </span>gen-artifacts
-
-<span class="c1"># Keep them handy if need be</span>
-cp<span class="w"> </span>-r<span class="w"> </span>/tmp/artifacts<span class="w"> </span>~/artifacts/xnvme
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clobber</span></code> removes any unstaged changes and removes subprojects.
-This is done to ensure an entirely “clean” repository. Thus, make sure that
-you have commit your changes.
-The <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clobber</span></code> is required for <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gen-artifacts</span></code>, as it will
-otherwise include side-effects from previous builds.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The artifacts produces by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gen-artifacts</span></code> are output to
-<code class="docutils literal notranslate"><span class="pre">/tmp/artifacts</span></code>. There are <strong>cijoe</strong> workflows, expecting to be available
-at that location, specifically the <strong>provision</strong> workflow.</p>
-</div>
-</section>
-</section>
-<section id="linux-kernel">
-<span id="sec-tutorials-devs-linux-customkernel"></span><h2>Linux Kernel<a class="headerlink" href="#linux-kernel" title="Link to this heading">#</a></h2>
-<p>Install prerequisites:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Essentials for building the kernel</span>
-sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>bc<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>bison<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>build-essential<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>debhelper<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>flex<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>git<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libelf-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libssl-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>pahole<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>rsync
-
-<span class="c1"># A couple of extra libraries and tools</span>
-sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libncurses-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>linux-cpupower<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>python3-cpuinfo
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">libnurses-dev</span></code> is needed for <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">menuconfig</span></code>. <code class="docutils literal notranslate"><span class="pre">linux-cpupower</span></code>
-provides a cli-tool <code class="docutils literal notranslate"><span class="pre">cpupower</span></code> that let’s you control the Linux CPU
-governor, useful for performance evaluation.</p>
-</div>
-<p>Then run the <strong>cijoe</strong> workflow, compiling a custom kernel as a <code class="docutils literal notranslate"><span class="pre">.deb</span></code>
-package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a workdir for the workflow</span>
-mkdir<span class="w"> </span>-p<span class="w"> </span>~/workdirs/linux
-<span class="nb">cd</span><span class="w"> </span>~/workdirs/linux
-
-<span class="c1"># Grab the cijoe-example for linux</span>
-cijoe<span class="w"> </span>--example<span class="w"> </span>linux
-
-<span class="c1"># Run it with logging (-l)</span>
-cijoe<span class="w"> </span>-l
-</pre></div>
-</div>
-<p>Then re-run the command above. It should now succeed, after which you can
-collect the artifacts of interest:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>cijoe-output/artifacts/linux<span class="w"> </span>~/artifacts/
-</pre></div>
-</div>
-<p>You can install them by running:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>~/artifacts/linux/*.deb
-</pre></div>
-</div>
-</section>
-<section id="qemu">
-<span id="sec-tutorials-devs-linux-qemu"></span><h2>Qemu<a class="headerlink" href="#qemu" title="Link to this heading">#</a></h2>
-<p>Install prerequisites:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Packages for building qemu</span>
-sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>meson<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libattr1-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libcap-ng-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libglib2.0-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libpixman-1-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>libslirp-dev<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>pkg-config
-
-<span class="c1"># Packages for cloud-init</span>
-sudo<span class="w"> </span>apt-get<span class="w"> </span>-qy<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>cloud-image-utils
-</pre></div>
-</div>
-<p>Checkout qemu:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/git
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/qemu/qemu.git<span class="w"> </span>--recursive
-<span class="nb">cd</span><span class="w"> </span>qemu
-git<span class="w"> </span>checkout<span class="w"> </span>v10.2.1
-git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
-</pre></div>
-</div>
-<p>Create a work-directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/workdirs/qemu
-<span class="nb">cd</span><span class="w"> </span>~/workdirs/qemu
-</pre></div>
-</div>
-<p>Run the <strong>cijoe</strong> qemu workflow:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grab the config and workflow example for qemu</span>
-cijoe<span class="w"> </span>--example<span class="w"> </span>qemu
-
-<span class="c1"># Run it with log-level debug (-l)</span>
-cijoe<span class="w"> </span>-l
-</pre></div>
-</div>
-<p>With the packages installed, go back and run the <strong>cijoe</strong> workflow. Have a look
-at the report, it describes what it does, that is, build and install qemu, spin
-up a vm using a cloud-init-enabled Debian image, ssh into it.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>In case you get errors such as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Could</span> <span class="ow">not</span> <span class="n">access</span> <span class="n">KVM</span> <span class="n">kernel</span> <span class="n">module</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
-<span class="n">qemu</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">x86_64</span><span class="p">:</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">initialize</span> <span class="n">kvm</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
-</pre></div>
-</div>
-<p>Then this is usually a symptom of virtualization being
-disabled in the BIOS of the physical machine. Have a look
-at <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> it might proide messages supporting this.</p>
-</div>
-</section>
-<section id="setup-qemu-guest-virtual-machine-for-testing">
-<h2>Setup qemu-guest / virtual machine for testing<a class="headerlink" href="#setup-qemu-guest-virtual-machine-for-testing" title="Link to this heading">#</a></h2>
-<p>Now that you have qemu built and installed. You can use it to emulate NVMe
-devices in the guest for testing. The <strong>xNVMe</strong> <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> has a bunch of
-helper-targets to do this. That is, spinning up the guest, synchronizing your
-<strong>xNVMe</strong> git repository changes into the qemu-guest, building, installing, and
-running tests.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-env</span></code> target will present an interactive menu to select the
-guest OS (e.g. <code class="docutils literal notranslate"><span class="pre">debian-trixie</span></code>, <code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code>). The same workflow applies
-regardless of which guest you choose:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># One-time setup: install CIJOE and select a guest</span>
-make<span class="w"> </span>guest-env
-
-<span class="c1"># Build source artifacts and run the full test cycle</span>
-make<span class="w"> </span>gen-artifacts<span class="w"> </span><span class="nv">ALLOW_DIRTY</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>verify-guest
-
-<span class="c1"># Or run stages individually:</span>
-make<span class="w"> </span>guest-start<span class="w">          </span><span class="c1"># start the guest</span>
-make<span class="w"> </span>guest-provision<span class="w">   </span><span class="c1"># sync source, build, install</span>
-make<span class="w"> </span>guest-test<span class="w">        </span><span class="c1"># run the test suite</span>
-</pre></div>
-</div>
-<p>To switch to a different guest, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-select</span></code>.</p>
-<section id="generate-documentation">
-<h3>Generate documentation<a class="headerlink" href="#generate-documentation" title="Link to this heading">#</a></h3>
-<p>You can reuse the qemu-guest to generate the documentation. See the
-<a class="reference internal" href="#sec-tutorials-devs-linux-reproduce-ci"><span class="std std-ref">Reproduce GitHUB Actions locally</span></a> section for using
-<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docgen-guest</span></code> inside the Docker container.</p>
-</section>
-</section>
-<section id="reproduce-github-actions-locally">
-<span id="sec-tutorials-devs-linux-reproduce-ci"></span><h2>Reproduce GitHUB Actions locally<a class="headerlink" href="#reproduce-github-actions-locally" title="Link to this heading">#</a></h2>
-<p>The CI test suite can be reproduced locally using Docker. The
-<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docker</span></code> target provides a privileged container with a custom QEMU
-build that includes NVMe device emulation.</p>
-<ol class="arabic simple">
-<li><p>Build the source artifacts on your host:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>gen-artifacts<span class="w"> </span><span class="nv">ALLOW_DIRTY</span><span class="o">=</span><span class="m">1</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Drop into the Docker container:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>docker
-</pre></div>
-</div>
-<p>The container bind-mounts the repository at <code class="docutils literal notranslate"><span class="pre">/tmp/xnvme</span></code> and
-<code class="docutils literal notranslate"><span class="pre">/tmp/artifacts</span></code>, so the artifacts from step 1 are available inside.</p>
-<ol class="arabic simple" start="3">
-<li><p>Inside the container, set up CIJOE, select a guest, and run tests:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install CIJOE and select guest</span>
-<span class="nb">echo</span><span class="w"> </span>debian-trixie<span class="w"> </span><span class="p">|</span><span class="w"> </span>make<span class="w"> </span>guest-env
-
-<span class="c1"># Test</span>
-make<span class="w"> </span>verify-guest
-
-<span class="c1"># Or generate documentation</span>
-make<span class="w"> </span>docgen-guest
-</pre></div>
-</div>
-<p>In case you are setting up the test-target using other tools, or just want to
-run pytest directly, then the following two sections describe how to do that.</p>
-</section>
-<section id="running-pytest-from-the-repository">
-<h2>Running pytest from the repository<a class="headerlink" href="#running-pytest-from-the-repository" title="Link to this heading">#</a></h2>
-<p>Invoke pytest providing a configuration file and an output directory for
-artifacts and captured output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--config<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output<span class="w"> </span>/tmp/somewhere<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>tests
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">--config</span></code> is needed to inform pytest about the environment you are
-running in such as which devices it can use for testing. The information is
-utilized by pytest to, among other things, do parametrization for <strong>xNVMe</strong> backend
-configurations etc.</p>
-<section id="provision-a-qemu-guest">
-<h3>Provision a qemu-guest<a class="headerlink" href="#provision-a-qemu-guest" title="Link to this heading">#</a></h3>
-<p>Setup a virtual machine with <strong>xNVMe</strong> installed, and a bunch of NVMe devices
-configured:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cijoe<span class="w"> </span>-c<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span>provision.yaml
-</pre></div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>It will likely fail with the error:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="p">:</span> <span class="mi">1</span><span class="p">:</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">qemu</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">qemu</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">x86_64</span><span class="p">:</span> <span class="ow">not</span> <span class="n">found</span>
-</pre></div>
-</div>
-<p>This is because the default configuration is for running on Github. Thus,
-adjust the file <code class="docutils literal notranslate"><span class="pre">configs/debian-trixie.toml</span></code> such that qemu is
-pointing to <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>.</p>
-</div>
-</section>
-</section>
-<section id="remote-dev">
-<h2>Remote dev<a class="headerlink" href="#remote-dev" title="Link to this heading">#</a></h2>
-<p>Assuming your primary device for development is something like a Chromebook/
-Macbook, something light-weight and great for reading mail… but now you want
-to fire up your editor and do some development.</p>
-<p>Or, your primary system is simply separate from the dev-box for a myriad of
-reasons. Then, have a look at the existing <strong>cijoe</strong> configuration files in
-<code class="docutils literal notranslate"><span class="pre">cijoe/configs/*.toml</span></code>, copy one that mathes your intended system, e.g.
-use the configuration file for the qemu-guest as a starting point for a
-configuration file for another physical machine:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>configs/debian-trixie.toml<span class="w"> </span>~/.config/cijoe/cijoe-config.toml
-</pre></div>
-</div>
-<p>Open up <code class="docutils literal notranslate"><span class="pre">~/.config/cijoe/cijoe-config.toml</span></code> and adjust it to your physical
-machine. That is, change the ssh-login information, change the list of devices,
-paths to binaries etc. Once you have done that, then go ahead and run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sync source, build, and install xNVMe on the remote end</span>
-make<span class="w"> </span>guest-provision
-
-<span class="c1"># Run the test suite</span>
-make<span class="w"> </span>guest-test
-</pre></div>
-</div>
-<p>You can do any of the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-*</span></code> things like the above.</p>
+<p><code class="docutils literal notranslate"><span class="pre">provision-using-tgz.yaml</span></code> copies the archives over, then builds and
+installs <strong>xNVMe</strong> on the machine; it boots nothing, so it needs neither the
+host container nor a rig.</p>
 </section>
 </section>
 
@@ -975,27 +619,9 @@ make<span class="w"> </span>guest-test
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-machine">Physical Machine</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operating-system">Operating System</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#homedir">Homedir</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#screen-http-server">Screen + http.server</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme">xNVMe</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cijoe">cijoe</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#artifacts">Artifacts</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-kernel">Linux Kernel</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qemu">Qemu</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-qemu-guest-virtual-machine-for-testing">Setup qemu-guest / virtual machine for testing</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-documentation">Generate documentation</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproduce-github-actions-locally">Reproduce GitHUB Actions locally</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-pytest-from-the-repository">Running pytest from the repository</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#provision-a-qemu-guest">Provision a qemu-guest</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remote-dev">Remote dev</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#guests">Guests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developing-in-a-guest">Developing in a guest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-on-a-machine-of-your-own">Testing on a machine of your own</a></li>
 </ul>
   </nav></div>
 

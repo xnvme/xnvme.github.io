@@ -392,7 +392,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../fdp/index.html">Flexible Data Placement</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../devs/index.html">Linux Dev. Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devs/index.html">Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dynamic_loading/index.html">Dynamically loading xNVMe</a></li>
 <li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">NVMe Transports</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="spdk/index.html">SPDK Target</a></li>
@@ -509,8 +509,8 @@ two and is documented below.</p>
 <section id="script-configuration">
 <h2>Script configuration<a class="headerlink" href="#script-configuration" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">nvme_target_start.py</span></code>, <code class="docutils literal notranslate"><span class="pre">nvme_target_probe.py</span></code>, and <code class="docutils literal notranslate"><span class="pre">nvme_target_stop.py</span></code>
-each take their own set of arguments; <code class="docutils literal notranslate"><span class="pre">--transport-name</span></code> is the one all three
-share.</p>
+each take their own set of arguments, and run on the target their step
+names with <code class="docutils literal notranslate"><span class="pre">target:</span></code>, or on the default target when it names none.</p>
 <p><code class="docutils literal notranslate"><span class="pre">nvme_target_start.py</span></code> accepts the following arguments:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -532,10 +532,6 @@ share.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">ipv4</span></code></p></td>
 <td><p>Address family.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--transport-name</span></code></p></td>
-<td><p>None</p></td>
-<td><p>CIJOE Transport to use. Defaults to first-found, if not specified.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -552,10 +548,6 @@ share.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">tcp</span></code></p></td>
 <td><p>Transport type.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--transport-name</span></code></p></td>
-<td><p>None</p></td>
-<td><p>CIJOE Transport to use. Defaults to first-found, if not specified.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -571,10 +563,6 @@ share.</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--nvme-provider</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">spdk</span></code> or <code class="docutils literal notranslate"><span class="pre">linux</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--transport-name</span></code></p></td>
-<td><p>None</p></td>
-<td><p>CIJOE Transport to use. Defaults to first-found, if not specified.</p></td>
 </tr>
 </tbody>
 </table>
@@ -615,7 +603,7 @@ entries.</p>
 </section>
 <section id="initiator-usage">
 <h2>Initiator usage<a class="headerlink" href="#initiator-usage" title="Link to this heading">#</a></h2>
-<p>The probe step in each provider’s demo workflow exercises the initiator
+<p>The probe step in each provider’s demo task exercises the initiator
 side against the brought-up listener. The xNVMe commands it issues are
 extracted from the live cijoe run and shown below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>enum<span class="w"> </span>--uri<span class="w"> </span><span class="m">127</span>.0.0.1:4420

@@ -392,7 +392,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../fdp/index.html">Flexible Data Placement</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../devs/index.html">Linux Dev. Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devs/index.html">Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dynamic_loading/index.html">Dynamically loading xNVMe</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">NVMe Transports</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">SPDK Target</a></li>
@@ -471,16 +471,16 @@ by <code class="docutils literal notranslate"><span class="pre">xnvme-driver</sp
 published as a TCP subsystem. The <code class="docutils literal notranslate"><span class="pre">cijoe/scripts/nvme_target_start.py</span></code>,
 <code class="docutils literal notranslate"><span class="pre">nvme_target_probe.py</span></code>, and <code class="docutils literal notranslate"><span class="pre">nvme_target_stop.py</span></code> scripts drive this with
 <code class="docutils literal notranslate"><span class="pre">--nvme-provider</span> <span class="pre">spdk</span></code>. They are wired into the dedicated
-<code class="docutils literal notranslate"><span class="pre">workflows/transports-tcp-spdk.yaml</span></code> workflow whose three steps
+<code class="docutils literal notranslate"><span class="pre">tasks/transports-tcp-spdk.yaml</span></code> task whose three steps
 (<code class="docutils literal notranslate"><span class="pre">nvme_target_start</span></code>, <code class="docutils literal notranslate"><span class="pre">nvme_target_probe</span></code>, <code class="docutils literal notranslate"><span class="pre">nvme_target_stop</span></code>) can be
 selected individually.</p>
 <section id="dev-loop">
 <h2>Dev loop<a class="headerlink" href="#dev-loop" title="Link to this heading">#</a></h2>
-<p>Run the demo workflow end-to-end:</p>
+<p>Run the demo task end-to-end:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>cijoe
 cijoe<span class="w"> </span>--config<span class="w"> </span>configs/debian-trixie-iommu_enabled.toml<span class="w"> </span><span class="se">\</span>
 <span class="w">      </span>--output<span class="w"> </span>/tmp/spdk-up<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>workflows/transports-tcp-spdk.yaml
+<span class="w">      </span>tasks/transports-tcp-spdk.yaml
 </pre></div>
 </div>
 <p>This brings the target up, probes it from the initiator side, and tears
@@ -488,7 +488,7 @@ it down. The captured commands and output are what populates the
 embedded report below. See the parent page for
 <a class="reference internal" href="../index.html"><span class="std std-doc">shared configuration</span></a> and
 <a class="reference internal" href="../index.html#initiator-usage"><span class="std std-ref">initiator usage</span></a>.</p>
-<p>When you want to hold the target up between iterations, the workflow
+<p>When you want to hold the target up between iterations, the task
 can be driven a step at a time
 (<code class="docutils literal notranslate"><span class="pre">cijoe</span> <span class="pre">...</span> <span class="pre">transports-tcp-spdk.yaml</span> <span class="pre">nvme_target_start</span></code> and <code class="docutils literal notranslate"><span class="pre">...</span> <span class="pre">nvme_target_stop</span></code>), and the same logic is also reachable by invoking
 <code class="docutils literal notranslate"><span class="pre">cijoe/scripts/nvme_target_start.py</span></code> directly. Those are cijoe
