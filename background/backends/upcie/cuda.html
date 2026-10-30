@@ -50,9 +50,9 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '831/merge';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            false;
+            true;
         </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -635,14 +635,12 @@ granule the export works in.</p>
 <span id="sec-backends-upcie-cuda-kernel"></span><h2>Kernel Module<a class="headerlink" href="#kernel-module" title="Link to this heading">#</a></h2>
 <p>Physical address resolution for CUDA device memory relies on importing a
 <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> exported by the CUDA driver into the kernel’s DMA subsystem. The
-ioctls that do so are not upstream. They ship as <code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code>, a standalone
-out-of-tree module serving <code class="docutils literal notranslate"><span class="pre">/dev/dmabuf_import</span></code>, packaged for DKMS.</p>
-<p>This backend requires <strong>dmabuf-import 0.2.0</strong>, published as an asset of the
-uPCIe release the headers here are vendored from:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/safl/upcie/releases/tag/v0.8.0">safl/upcie v0.8.0</a></p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./dmabuf-import-dkms_0.2.0_all.deb
+ioctls that do so are not upstream. They ship as <code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code>, an
+out-of-tree module serving <code class="docutils literal notranslate"><span class="pre">/dev/dmabuf_import</span></code>, in <code class="docutils literal notranslate"><span class="pre">upcie-experimental-dkms</span></code>.
+That DKMS package is attached to every
+<a class="reference external" href="https://github.com/safl/upcie/releases">uPCIe release</a> and carries its version.
+Install it from the release that <code class="docutils literal notranslate"><span class="pre">subprojects/upcie.wrap</span></code> pins:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./upcie-experimental-dkms_&lt;version&gt;_all.deb
 </pre></div>
 </div>
 <p>These ioctls began as a patch to the in-tree <code class="docutils literal notranslate"><span class="pre">udmabuf</span></code> driver, which meant
@@ -658,15 +656,10 @@ since <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MA
 <p>Where the controller is on <code class="docutils literal notranslate"><span class="pre">vfio-cdev</span></code>, <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> is asked first: it maps the
 heap once for the whole process and needs no out-of-tree module. It cannot
 always, and what follows is what happens when it cannot.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">iommu-map-pa</span></code> module inserts the VRAM into the controller’s domain
-directly, and the registry’s table holds the resulting IOVAs. It is published as
-an asset of the same release as <code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code>, packaged for DKMS:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/safl/upcie/releases/tag/v0.8.0">safl/upcie v0.8.0</a></p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./iommu-map-pa-dkms_0.2.0_all.deb
-</pre></div>
-</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module inserts the VRAM into the controller’s domain
+directly, and the registry’s table holds the resulting IOVAs. It ships in the
+same <code class="docutils literal notranslate"><span class="pre">upcie-experimental-dkms</span></code> package as <code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code>, installed as
+<a class="reference internal" href="#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Module</span></a> describes.</p>
 <section id="iova-window">
 <h3>IOVA window<a class="headerlink" href="#iova-window" title="Link to this heading">#</a></h3>
 <p>The module maps at IOVAs of its own choosing without telling the domain’s owner,
@@ -719,7 +712,7 @@ that a GPU exported, or to memory that is not RAM. Three changes would retire
 it:</p>
 <ul class="simple">
 <li><p><strong>A way to resolve a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> to physical addresses.</strong> This is what
-<code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code> does, and what a driver already does internally when it maps
+<code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code> does, and what a driver already does internally when it maps
 one for DMA. Nothing equivalent is exposed to user space.</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> accepting a GPU <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code>.</strong> It refuses one today,
 which is why the mapping is installed from physical addresses instead.</p></li>

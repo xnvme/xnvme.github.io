@@ -50,9 +50,9 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '831/merge';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            false;
+            true;
         </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -556,6 +556,41 @@ integration of changes / contributions:</p>
 <p>These following sections provide system-setup notes and other details for the
 various <strong>CI</strong> jobs.</p>
 </section>
+<section id="when-the-jobs-run-and-what-is-published">
+<span id="sec-ci-when"></span><h2>When the jobs run, and what is published<a class="headerlink" href="#when-the-jobs-run-and-what-is-published" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow runs on pull-requests, and only there. What a
+pull-request needs to merge runs there once; the jobs on lab machines and the
+emulated RDMA and GPU guests run when it carries their label (see
+<a class="reference internal" href="../contributing-process.html#sec-contributing-labels"><span class="std std-ref">Labels that run jobs</span></a>), and the check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> says whether it
+may merge.
+Main and its tags run none of it again. The benchmarks also run weekly. A
+newer push or label on a pull-request cancels its running run.</p>
+<p>Each kind of job has a workflow file of its own, <code class="docutils literal notranslate"><span class="pre">build.yml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">verify-emulated.yml</span></code> for NVMe/PCIe and NVMe/TCP,
+<code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated.yml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-makefile.yml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">verify-packaging.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">perf.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">docgen-full.yml</span></code>.
+<code class="docutils literal notranslate"><span class="pre">verify</span></code> calls them, so they run as part of its run and use its artifacts,
+and its <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> checks them all but the benchmarks and the GPU guest,
+whose failures it does not count.</p>
+<p>A push to main runs the <code class="docutils literal notranslate"><span class="pre">publish</span></code> workflow instead. It finds the pull-request
+that was merged and the <code class="docutils literal notranslate"><span class="pre">verify</span></code> run of its head that <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>
+passed, and deploys the documentation that run built to
+<a class="reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme.io via GitHub-pages</a>. When the head
+commit is <code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code>, it also tags main <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and creates the
+release, with the source archives, the Python sdist and the test results of
+that run, and the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section of the version as its notes. The
+artifacts are used only when the pull-request’s head has the tree main now
+has, which branch protection makes the case by requiring it to be up to date
+with main. For a push to main that is not such a merge, the documentation is
+built by a manual <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run on main instead, and a release fails; see
+<a class="reference internal" href="../release-checklist.html#sec-contributing-release"><span class="std std-ref">Release Checklist</span></a>. A pull-request changing only documentation
+still runs <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code>, so its documentation is deployed from its run too.</p>
+<p>Any job can be run by hand: start the <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow from the Actions tab,
+on a branch, with <code class="docutils literal notranslate"><span class="pre">job</span></code> set to <code class="docutils literal notranslate"><span class="pre">all</span></code> for every job, or to <code class="docutils literal notranslate"><span class="pre">verify</span></code>,
+<code class="docutils literal notranslate"><span class="pre">perf</span></code> or <code class="docutils literal notranslate"><span class="pre">docgen</span></code>. A manual <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run deploys the
+documentation of its branch.</p>
+</section>
 <section id="where-the-devices-come-from-and-which-guest-runs-what">
 <span id="sec-ci-sources"></span><h2>Where the devices come from, and which guest runs what<a class="headerlink" href="#where-the-devices-come-from-and-which-guest-runs-what" title="Link to this heading">#</a></h2>
 <p>A verification job gets its NVMe devices from one of three sources:</p>
@@ -568,7 +603,11 @@ booted in the same host container, on the lab machine</p></li>
 </ul>
 <p>The guest follows what is verified. Debian 13 is kept upstream-pure, a stock
 kernel and in-tree drivers only, and verifies the transports on a kernel users
-run.</p>
+run.
+The xnvme-devenv Ubuntu 26.10 guest carries a patched kernel and the drivers
+built for it, matched to the device servers in the host container of the same
+release, and verifies what needs them; a driver and a server from different
+releases present as a wedged device rather than an error.</p>
 <div class="pst-scrollable-table-container"><table class="table" id="id2">
 <caption><span class="caption-text">What runs where</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
 <colgroup>
@@ -586,14 +625,26 @@ run.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>NVMe/PCIe</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">verify</span></code>: Debian 13 with the IOMMU on and off, FreeBSD 14; rig
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span></code>: Debian 13 with the IOMMU on and off, FreeBSD 14; rig
 <code class="docutils literal notranslate"><span class="pre">storage-node-emulated</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">verify-maas</span></code>: Debian 13 on the lab machine; rig
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">passthru</span></code>: Debian 13 on the lab machine; rig
 <code class="docutils literal notranslate"><span class="pre">storage-node-passthru</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">verify-physical</span></code>: macOS 14, through MacVFN</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">physical</span></code>: macOS 14, through MacVFN</p></td>
 </tr>
 <tr class="row-odd"><td><p>NVMe/TCP</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">verify</span></code>: Debian 13, the kernel and SPDK initiators</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-tcp-emulated</span></code>: Debian 13, the kernel and SPDK initiators</p></td>
+<td><p>none</p></td>
+<td><p>none</p></td>
+</tr>
+<tr class="row-even"><td><p>NVMe/RDMA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated</span></code>: the xnvme-devenv Ubuntu 26.10 guest; rig
+<code class="docutils literal notranslate"><span class="pre">rdma-node-emulated</span></code></p></td>
+<td><p>none</p></td>
+<td><p>none</p></td>
+</tr>
+<tr class="row-odd"><td><p>NVMe with buffers in GPU memory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated</span></code>: the xnvme-devenv Ubuntu 26.10 guest; rig
+<code class="docutils literal notranslate"><span class="pre">compute-node-emulated</span></code></p></td>
 <td><p>none</p></td>
 <td><p>none</p></td>
 </tr>
@@ -607,7 +658,7 @@ source.</p>
 </section>
 <section id="containers-and-guest-images">
 <span id="sec-ci-environments"></span><h2>Containers and guest images<a class="headerlink" href="#containers-and-guest-images" title="Link to this heading">#</a></h2>
-<p>The emulated <strong>CI</strong> jobs and <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run inside a Docker host container
+<p>The emulated <strong>CI</strong> jobs and <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code> run inside a Docker host container
 (set by <strong>GHA</strong>’s <code class="docutils literal notranslate"><span class="pre">container:</span></code> directive), and boot a <strong>QEMU</strong> guest as part
 of their work. The host container comes from <a class="reference external" href="https://github.com/xnvme/xnvme-devenv">xnvme-devenv</a>, which adds the
 vfio-user device servers to a <a class="reference external" href="https://github.com/safl/nosi">nosi</a> base; the guest images come from
@@ -647,39 +698,51 @@ root <strong>SSH</strong> so the rest of the <strong>CIJOE</strong> task continu
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">(debian,</span> <span class="pre">trixie)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span> <span class="pre">/</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_enabled,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">(debian,</span> <span class="pre">trixie-noiommu)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span> <span class="pre">/</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_disabled,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">(freebsd,</span> <span class="pre">14)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span> <span class="pre">/</span> <span class="pre">(freebsd,</span> <span class="pre">14,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/freebsd-14-headless</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-maas</span> <span class="pre">(debian,</span> <span class="pre">trixie)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-tcp-emulated</span> <span class="pre">/</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_enabled,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE, rocm-ernic server)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/guest-ubuntu-2610</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE, rocjitsu server)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/guest-ubuntu-2610</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">passthru</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_enabled,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-bdev_xnvme</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">bdev_xnvme</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-latency</span> <span class="pre">(linux)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">latency</span> <span class="pre">(linux,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-latency</span> <span class="pre">(freebsd)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">latency</span> <span class="pre">(freebsd,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/freebsd-14-headless</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark-latency</span> <span class="pre">(windows)</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">latency</span> <span class="pre">(windows,</span> <span class="pre">...)</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE, swtpm), on the MAAS runner</p></td>
 <td><p>Windows 11, from the Hetzner Storage Box, on the runner</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">docgen</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">docgen-full</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
 </tr>
@@ -688,7 +751,7 @@ root <strong>SSH</strong> so the rest of the <strong>CIJOE</strong> task continu
 </div>
 <p>All container-hosted jobs run in the <a class="reference external" href="https://github.com/xnvme/xnvme-devenv">xnvme-devenv</a> host container, with
 upstream <strong>QEMU</strong>; the NVMe KV command set is supplied by <a class="reference external" href="https://github.com/safl/vfio-user-kvssd">vfio-user-kvssd</a>
-over <strong>vfio-user</strong>, installed in the container. <code class="docutils literal notranslate"><span class="pre">verify-maas</span></code> and the
+over <strong>vfio-user</strong>, installed in the container. <code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">passthru</span></code> and the
 benchmarks run the container on the lab machine, and pass its drive through
 with <code class="docutils literal notranslate"><span class="pre">PASSTHRU=0000:02:00.0</span></code>; they mount the machine’s
 <code class="docutils literal notranslate"><span class="pre">/home/ghr/system_imaging</span></code>, so a guest image is staged once per machine, and
@@ -728,6 +791,7 @@ container; <a class="reference internal" href="../../tutorial/devs/index.html#se
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jobs">Jobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-jobs-run-and-what-is-published">When the jobs run, and what is published</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-devices-come-from-and-which-guest-runs-what">Where the devices come from, and which guest runs what</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers-and-guest-images">Containers and guest images</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproducing-a-job-and-developing-in-it">Reproducing a job, and developing in it</a></li>

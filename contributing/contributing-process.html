@@ -50,9 +50,9 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '831/merge';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            false;
+            true;
         </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -486,21 +486,64 @@
 <li><p>The documentation is built early, without a guest and so without running
 the commands, and the builds and the verification wait for it</p></li>
 <li><p>A pull-request changing only <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and top-level Markdown files skips
-the builds and the verification. Merged, it runs only what the website
-needs, and publishes it. A changed <code class="docutils literal notranslate"><span class="pre">.cmd</span></code> file runs everything, since only
+the builds and the verification, and its documentation is published from
+its run when merged. A changed <code class="docutils literal notranslate"><span class="pre">.cmd</span></code> file runs everything, since only
 the guest runs the commands</p></li>
 <li><p>Merging requires the check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>, which passes when every job did.
-A pull-request changing code also needs the verification on physical
-devices, which runs once the pull-request has the label <code class="docutils literal notranslate"><span class="pre">maas</span></code>; until
-then <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> fails</p></li>
-<li><p>The benchmarks run weekly, on a manual run with the job <code class="docutils literal notranslate"><span class="pre">bench</span></code>, and on
-a pull-request with the label <code class="docutils literal notranslate"><span class="pre">bench</span></code>; they are not part of
-<code class="docutils literal notranslate"><span class="pre">ci-result</span></code>, so they never block merging</p></li>
+The jobs that need hardware, or an emulated device that takes a while, run
+once the pull-request has their label; see <a class="reference internal" href="#sec-contributing-labels"><span class="std std-ref">Labels that run jobs</span></a></p></li>
 </ul>
 </li>
 <li><p>Go over the <a class="reference internal" href="#sec-contributing-process-pr-checklist"><span class="std std-ref">Pull-Request Checklist</span></a> and re-iterate on
 your pull-request / changes</p></li>
 </ul>
+<section id="labels-that-run-jobs">
+<span id="sec-contributing-labels"></span><h2>Labels that run jobs<a class="headerlink" href="#labels-that-run-jobs" title="Link to this heading">#</a></h2>
+<p>A label on a pull-request runs the jobs below, and a newer label or push
+cancels the run in progress for a new one. The colour of a label says
+whether it gates merging. A red or orange label gates: a pull-request
+changing code cannot merge until it has the label and the jobs pass, and
+<code class="docutils literal notranslate"><span class="pre">ci-result</span></code> names the missing label until then. A green or blue label
+does not: its jobs run, and their results are there to read, but
+<code class="docutils literal notranslate"><span class="pre">ci-result</span></code> does not count them.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Label</p></th>
+<th class="head"><p>Runs</p></th>
+<th class="head"><p>Merging</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hardware</span></code></p></td>
+<td><p>The verification on the lab machines: a real NVMe drive passed
+through to a guest, and the macOS machine</p></td>
+<td><p>gates (red)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rdma</span></code></p></td>
+<td><p>The verification over NVMe/RDMA, in a guest with an emulated RDMA NIC</p></td>
+<td><p>gates (orange)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gpu</span></code></p></td>
+<td><p>The upcie-hip backend, in a guest with an emulated GPU</p></td>
+<td><p>does not gate (blue)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span></code></p></td>
+<td><p>The benchmarks on the lab machines, which fail on a regression beyond
+their noise. They also run weekly</p></td>
+<td><p>does not gate (green)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Everything else, the builds, the QEMU verification and the documentation, runs
+on every pull-request without a label. A pull-request changing only
+documentation needs none of the labels.</p>
+</section>
 <section id="pull-request-checklist">
 <span id="sec-contributing-process-pr-checklist"></span><h2>Pull-Request Checklist<a class="headerlink" href="#pull-request-checklist" title="Link to this heading">#</a></h2>
 <p>Please check your pull-request for the following:</p>
@@ -599,6 +642,7 @@ there.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#labels-that-run-jobs">Labels that run jobs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request-checklist">Pull-Request Checklist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commit-messages">Commit Messages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references-to-github">References to GitHub</a></li>

@@ -50,9 +50,9 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '831/merge';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            false;
+            true;
         </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -479,7 +479,10 @@ and their NVMe backing images take tens of GiB more</p></li>
 <h2>Guests<a class="headerlink" href="#guests" title="Link to this heading">#</a></h2>
 <p>The guest to pick depends on what you work on. Debian 13 is kept
 upstream-pure, a stock kernel with in-tree drivers only, so plain NVMe work
-runs on a kernel users run, without bleeding-edge surprises.</p>
+runs on a kernel users run, without bleeding-edge surprises.
+The xnvme-devenv Ubuntu 26.10 guest carries what upstream does not have yet:
+a patched kernel, safl/linux 7.3.0-xnvme2, and drivers built for it, matched
+to the device servers in the host container of the same release.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
 <col style="width: 30.0%" />
@@ -501,6 +504,14 @@ runs on a kernel users run, without bleeding-edge surprises.</p>
 <tr class="row-odd"><td><p>NVMe/PCIe on a drive of your machine</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">debian-trixie-iommu_enabled</span></code>, <code class="docutils literal notranslate"><span class="pre">freebsd-14</span></code> or <code class="docutils literal notranslate"><span class="pre">windows-11</span></code></p></td>
 <td><p>none; <code class="docutils literal notranslate"><span class="pre">PASSTHRU=&lt;bdf&gt;</span></code> names the drive</p></td>
+</tr>
+<tr class="row-even"><td><p>NVMe/RDMA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ubuntu-2610-rocm</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rdma-node-emulated</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>NVMe with buffers in GPU memory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ubuntu-2610-gpu</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">compute-node-emulated</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -548,9 +559,11 @@ without it the guest’s test task, as <code class="docutils literal notranslate
 <code class="docutils literal notranslate"><span class="pre">TRANSPORT</span></code> and <code class="docutils literal notranslate"><span class="pre">TEST_STEPS</span></code> passed through. <code class="docutils literal notranslate"><span class="pre">TESTS</span></code> replaces the
 task’s own selection, so add what it leaves out for the guest, such as
 <code class="docutils literal notranslate"><span class="pre">-k</span> <span class="pre">&quot;not</span> <span class="pre">fabrics</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">libvfn&quot;</span></code> on a guest without an IOMMU. <code class="docutils literal notranslate"><span class="pre">TESTS</span></code>
-is for the Linux guests; on FreeBSD, run the guest’s test task.</p></li>
+is for the Linux guests; on FreeBSD, run the guest’s test task.
+On the GPU guest, only the task plugs the GPU in, so a <code class="docutils literal notranslate"><span class="pre">TESTS</span></code>
+selection runs without it.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">devenv-docgen</span></code> generates the documentation in the guest, as the
-<code class="docutils literal notranslate"><span class="pre">docgen</span></code> job does, from the source the guest has, so run <code class="docutils literal notranslate"><span class="pre">devenv-sync</span></code>
+<code class="docutils literal notranslate"><span class="pre">docgen-full</span></code> job does, from the source the guest has, so run <code class="docutils literal notranslate"><span class="pre">devenv-sync</span></code>
 first. It installs xNVMe’s documentation tooling in the container before it
 starts.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">devenv-shell</span></code> opens a shell in the host container, and <code class="docutils literal notranslate"><span class="pre">devenv-ssh</span></code> an
@@ -580,7 +593,7 @@ it.</p>
 lab machine with real NVMe drives, describe it in a <strong>CIJOE</strong> config: copy the
 one in <code class="docutils literal notranslate"><span class="pre">cijoe/configs/</span></code> that is closest, and change its SSH login, its
 <code class="docutils literal notranslate"><span class="pre">[[devices]]</span></code> and its paths. Then build the source archives and run the
-provisioning and a test task against it, as the <code class="docutils literal notranslate"><span class="pre">verify-physical</span></code> job
+provisioning and a test task against it, as the <code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">physical</span></code> job
 does with its macOS machine:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">gen</span><span class="o">-</span><span class="n">artifacts</span> <span class="n">ALLOW_DIRTY</span><span class="o">=</span><span class="mi">1</span>
 <span class="n">cd</span> <span class="n">cijoe</span>

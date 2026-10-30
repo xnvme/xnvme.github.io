@@ -23,6 +23,9 @@ Guests
 The guest to pick depends on what you work on. Debian 13 is kept
 upstream-pure, a stock kernel with in-tree drivers only, so plain NVMe work
 runs on a kernel users run, without bleeding-edge surprises.
+The xnvme-devenv Ubuntu 26.10 guest carries what upstream does not have yet:
+a patched kernel, safl/linux 7.3.0-xnvme2, and drivers built for it, matched
+to the device servers in the host container of the same release.
 
 .. list-table::
    :header-rows: 1
@@ -38,6 +41,12 @@ runs on a kernel users run, without bleeding-edge surprises.
    * - NVMe/PCIe on a drive of your machine
      - ``debian-trixie-iommu_enabled``, ``freebsd-14`` or ``windows-11``
      - none; ``PASSTHRU=<bdf>`` names the drive
+   * - NVMe/RDMA
+     - ``ubuntu-2610-rocm``
+     - ``rdma-node-emulated``
+   * - NVMe with buffers in GPU memory
+     - ``ubuntu-2610-gpu``
+     - ``compute-node-emulated``
 
 A rig is named for the machine it stands in for and where its devices come
 from. ``RIG`` takes a list of rig names or files, each one more **CIJOE**
@@ -87,9 +96,11 @@ against it::
   task's own selection, so add what it leaves out for the guest, such as
   ``-k "not fabrics and not libvfn"`` on a guest without an IOMMU. ``TESTS``
   is for the Linux guests; on FreeBSD, run the guest's test task.
+  On the GPU guest, only the task plugs the GPU in, so a ``TESTS``
+  selection runs without it.
 
 * ``devenv-docgen`` generates the documentation in the guest, as the
-  ``docgen`` job does, from the source the guest has, so run ``devenv-sync``
+  ``docgen-full`` job does, from the source the guest has, so run ``devenv-sync``
   first. It installs xNVMe's documentation tooling in the container before it
   starts.
 
@@ -123,7 +134,7 @@ To build and test **xNVMe** on a machine rather than in a guest, such as a
 lab machine with real NVMe drives, describe it in a **CIJOE** config: copy the
 one in ``cijoe/configs/`` that is closest, and change its SSH login, its
 ``[[devices]]`` and its paths. Then build the source archives and run the
-provisioning and a test task against it, as the ``verify-physical`` job
+provisioning and a test task against it, as the ``verify-nvme-pcie-hardware / physical`` job
 does with its macOS machine::
 
   make gen-artifacts ALLOW_DIRTY=1
