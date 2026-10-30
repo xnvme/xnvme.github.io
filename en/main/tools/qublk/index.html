@@ -50,7 +50,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '831/merge';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '822/merge';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -496,7 +496,7 @@ Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span clas
 See<span class="w"> </span><span class="s1">'qublk &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 See<span class="w"> </span><span class="s1">'qublk --version'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>library<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>revision<span class="w"> </span>it<span class="w"> </span>was<span class="w"> </span>built<span class="w"> </span>from
 
-qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3021165'</span><span class="o">}</span>
+qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'1be958a'</span><span class="o">}</span>
 </pre></div>
 </div>
 <section id="requirements">
@@ -527,6 +527,10 @@ until <code class="docutils literal notranslate"><span class="pre">SIGINT</span>
 when given, the devices are numbered consecutively from it.
 When <code class="docutils literal notranslate"><span class="pre">--max-io-bytes</span></code> is not given, the per-IO buffer size defaults to the
 smaller of 1MiB and the controller <code class="docutils literal notranslate"><span class="pre">MDTS</span></code>.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">--user-copy</span></code> the server moves the request data itself, with
+<code class="docutils literal notranslate"><span class="pre">pread()</span></code> / <code class="docutils literal notranslate"><span class="pre">pwrite()</span></code> on <code class="docutils literal notranslate"><span class="pre">/dev/ublkc&lt;N&gt;</span></code> (<code class="docutils literal notranslate"><span class="pre">UBLK_F_USER_COPY</span></code>, kernel
+6.5+), instead of the kernel reading and writing the server’s buffers.
+Zoned namespaces always use it.</p>
 <p>By default, each queue is served by a thread of its own. With <code class="docutils literal notranslate"><span class="pre">--cpumask</span></code> or
 <code class="docutils literal notranslate"><span class="pre">--cpulist</span></code>, a thread is pinned to each given CPU and the queues are spread
 evenly across them.</p>
@@ -547,6 +551,7 @@ Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--cpumask<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">          </span><span class="p">;</span><span class="w"> </span>Hex<span class="w"> </span>CPU<span class="w"> </span>bitmask<span class="w"> </span><span class="k">for</span><span class="w"> </span>thread<span class="w"> </span>pinning<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span>0x3<span class="o">)</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--cpulist<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">          </span><span class="p">;</span><span class="w"> </span>Comma-separated<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>CPU<span class="w"> </span>ids<span class="w"> </span>or<span class="w"> </span>CPU<span class="w"> </span>id<span class="w"> </span>ranges<span class="w"> </span><span class="k">for</span><span class="w"> </span>thread<span class="w"> </span>pinning<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span><span class="m">0</span>-3,4,6<span class="o">)</span>
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--no-cuse<span class="w"> </span><span class="o">]</span><span class="w">                 </span><span class="p">;</span><span class="w"> </span>Disable<span class="w"> </span>the<span class="w"> </span>NVMe-driver<span class="w"> </span>ioctl<span class="o">()</span><span class="w"> </span>CUSE<span class="w"> </span>mimic
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>--user-copy<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>Move<span class="w"> </span>ublk<span class="w"> </span>request<span class="w"> </span>data<span class="w"> </span>with<span class="w"> </span>pread<span class="o">()</span>/pwrite<span class="o">()</span><span class="w"> </span>on<span class="w"> </span>/dev/ublkc&lt;N&gt;<span class="w"> </span><span class="o">(</span>UBLK_F_USER_COPY<span class="o">)</span>
 <span class="w">  </span>
 With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
 
@@ -556,7 +561,7 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 
 See<span class="w"> </span><span class="s1">'qublk --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3021165'</span><span class="o">}</span>
+qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'1be958a'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Example — NVMe block device via io_uring:</p>
@@ -592,6 +597,37 @@ both the fetch and the scatter-back list, and the kernel’s own
 <code class="docutils literal notranslate"><span class="pre">FUSE_IOCTL_MAX_IOV</span></code> (256) bounds their combined count, well below the
 real driver’s <code class="docutils literal notranslate"><span class="pre">UIO_MAXIOV</span></code>.</p>
 </section>
+<section id="zoned-namespaces">
+<h2>Zoned namespaces<a class="headerlink" href="#zoned-namespaces" title="Link to this heading">#</a></h2>
+<p>A ZNS namespace is served as a host-managed zoned block device, so <code class="docutils literal notranslate"><span class="pre">blkzone</span></code>,
+<code class="docutils literal notranslate"><span class="pre">zonefs</span></code>, zoned <code class="docutils literal notranslate"><span class="pre">btrfs</span></code> and <code class="docutils literal notranslate"><span class="pre">fio</span> <span class="pre">--zonemode=zbd</span></code> work on
+<code class="docutils literal notranslate"><span class="pre">/dev/ublkb&lt;N&gt;</span></code>. Report, open, close, finish, reset and zone append are
+mapped to the matching NVMe commands. It needs:</p>
+<ul class="simple">
+<li><p>a backend that passes NVMe commands through: <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code>, <code class="docutils literal notranslate"><span class="pre">spdk</span></code>,
+<code class="docutils literal notranslate"><span class="pre">libvfn</span></code> or <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, or <code class="docutils literal notranslate"><span class="pre">emu</span></code> / <code class="docutils literal notranslate"><span class="pre">thrpool</span></code> over the <code class="docutils literal notranslate"><span class="pre">nvme</span></code>, <code class="docutils literal notranslate"><span class="pre">spdk</span></code>,
+<code class="docutils literal notranslate"><span class="pre">libvfn</span></code> or <code class="docutils literal notranslate"><span class="pre">upcie</span></code> sync path. Others are refused.</p></li>
+<li><p>a kernel with <code class="docutils literal notranslate"><span class="pre">CONFIG_BLK_DEV_ZONED</span></code> and <code class="docutils literal notranslate"><span class="pre">UBLK_F_ZONED</span></code> (6.6+), and
+matching <code class="docutils literal notranslate"><span class="pre">&lt;linux/ublk_cmd.h&gt;</span></code> at build time; the kernel ties it to user copy.</p></li>
+<li><p>a power-of-two zone size and a capacity of whole zones.</p></li>
+</ul>
+<p>The open and active limits are <code class="docutils literal notranslate"><span class="pre">MOR</span> <span class="pre">+</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">MAR</span> <span class="pre">+</span> <span class="pre">1</span></code>, and the append limit
+is <code class="docutils literal notranslate"><span class="pre">ZASL</span></code> capped by the per-IO buffer and the zone size. The kernel may
+publish other values in <code class="docutils literal notranslate"><span class="pre">/sys/block/ublkb&lt;N&gt;/queue</span></code>.</p>
+<p>A zone report must fit one request, or <code class="docutils literal notranslate"><span class="pre">ublk_drv</span></code> (6.6 to 6.18) returns it
+scrambled. The per-IO buffer holds 64 bytes per zone, so <code class="docutils literal notranslate"><span class="pre">--max-io-bytes</span></code>
+should be at least 64 times the zone count, rounded up to a page; <strong>qublk</strong>
+warns at start-up when it is not, and when <code class="docutils literal notranslate"><span class="pre">MDTS</span></code> rules it out.</p>
+<p>Zone management or append through the <code class="docutils literal notranslate"><span class="pre">/dev/ublkb&lt;N&gt;-nvme</span></code> character device
+bypasses the block layer’s write pointer tracking, and the next write to that
+zone may fail with <code class="docutils literal notranslate"><span class="pre">EIO</span></code>. Use it for read-only commands only.</p>
+<p>Example — ZNS namespace via the NVMe character device:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qublk</span> <span class="n">serve</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ng1n1</span> <span class="o">--</span><span class="n">be</span> <span class="n">io_uring_cmd</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">nqueues</span> <span class="mi">4</span>
+<span class="n">blkzone</span> <span class="n">report</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ublkb0</span>
+<span class="n">mkfs</span><span class="o">.</span><span class="n">btrfs</span> <span class="o">-</span><span class="n">O</span> <span class="n">zoned</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ublkb0</span>
+</pre></div>
+</div>
+</section>
 <section id="del-delete-a-leftover-device">
 <h2><code class="docutils literal notranslate"><span class="pre">del</span></code> — Delete a leftover device<a class="headerlink" href="#del-delete-a-leftover-device" title="Link to this heading">#</a></h2>
 <p>A <code class="docutils literal notranslate"><span class="pre">qublk</span> <span class="pre">serve</span></code> that is killed rather than signalled cleanly leaves its ublk
@@ -610,7 +646,7 @@ Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
 
 See<span class="w"> </span><span class="s1">'qublk --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3021165'</span><span class="o">}</span>
+qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'1be958a'</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>
@@ -641,6 +677,7 @@ qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </spa
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#serve-serve-a-block-device"><code class="docutils literal notranslate"><span class="pre">serve</span></code> — Serve a block-device</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#zoned-namespaces">Zoned namespaces</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#del-delete-a-leftover-device"><code class="docutils literal notranslate"><span class="pre">del</span></code> — Delete a leftover device</a></li>
 </ul>
   </nav></div>
