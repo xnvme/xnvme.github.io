@@ -50,7 +50,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '822/merge';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '780/merge';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -398,6 +398,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../platforms/linux/libaio.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../platforms/linux/io_uring.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../platforms/linux/io_uring_cmd.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/linux/io_uring_dmabuf.html">Async. I/O on GPU memory via <code class="docutils literal notranslate"><span class="pre">io_uring_dmabuf</span></code></a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../platforms/freebsd/index.html">FreeBSD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1039,79 +1040,85 @@ determines default priority – the first matching config wins.</p>
 <td><p>block</p></td>
 <td><p>NVME_BDEV, BDEV</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">libaio</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_dmabuf</span></code></p></td>
+<td><p>io_uring_dmabuf</p></td>
+<td><p>nvme</p></td>
+<td><p>nvme</p></td>
+<td><p>NVME_BDEV</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libaio</span></code></p></td>
 <td><p>libaio</p></td>
 <td><p>nvme</p></td>
 <td><p>nvme</p></td>
 <td><p>NVME_CDEV, NVME_BDEV</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libaio_bdev</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">libaio_bdev</span></code></p></td>
 <td><p>libaio</p></td>
 <td><p>block</p></td>
 <td><p>block</p></td>
 <td><p>NVME_BDEV, BDEV</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">posix</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">posix</span></code></p></td>
 <td><p>posix</p></td>
 <td><p>nvme</p></td>
 <td><p>nvme</p></td>
 <td><p>NVME_CDEV, NVME_BDEV</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool</span></code></p></td>
 <td><p>thrpool</p></td>
 <td><p>nvme</p></td>
 <td><p>nvme</p></td>
 <td><p>NVME_CDEV, NVME_BDEV</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool_bdev</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool_bdev</span></code></p></td>
 <td><p>thrpool</p></td>
 <td><p>block</p></td>
 <td><p>block</p></td>
 <td><p>NVME_BDEV, BDEV</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nil</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nil</span></code></p></td>
 <td><p>nil</p></td>
 <td><p>nvme</p></td>
 <td><p>nvme</p></td>
 <td><p>NVME_CDEV, NVME_BDEV</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emu_file</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emu_file</span></code></p></td>
 <td><p>emu</p></td>
 <td><p>psync</p></td>
 <td><p>shim</p></td>
 <td><p>FILE</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thrpool_file</span></code></p></td>
 <td><p>thrpool</p></td>
 <td><p>psync</p></td>
 <td><p>shim</p></td>
 <td><p>FILE</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_file</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">io_uring_file</span></code></p></td>
 <td><p>io_uring</p></td>
 <td><p>psync</p></td>
 <td><p>shim</p></td>
 <td><p>FILE</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">libaio_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">libaio_file</span></code></p></td>
 <td><p>libaio</p></td>
 <td><p>psync</p></td>
 <td><p>shim</p></td>
 <td><p>FILE</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk</span></code></p></td>
 <td><p>nil</p></td>
 <td><p>ramdisk</p></td>
 <td><p>ramdisk</p></td>
 <td><p>RAMDISK</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk_thrpool</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk_thrpool</span></code></p></td>
 <td><p>thrpool</p></td>
 <td><p>ramdisk</p></td>
 <td><p>ramdisk</p></td>
 <td><p>RAMDISK</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk_emu</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ramdisk_emu</span></code></p></td>
 <td><p>emu</p></td>
 <td><p>ramdisk</p></td>
 <td><p>ramdisk</p></td>
@@ -1120,8 +1127,9 @@ determines default priority – the first matching config wins.</p>
 </tbody>
 </table>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">mem</span></code> on all Linux configs defaults to <code class="docutils literal notranslate"><span class="pre">posix</span></code> with <code class="docutils literal notranslate"><span class="pre">hugepage</span></code> available
-as an override via <code class="docutils literal notranslate"><span class="pre">opts.mem</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mem</span></code> on the Linux configs defaults to <code class="docutils literal notranslate"><span class="pre">posix</span></code> with <code class="docutils literal notranslate"><span class="pre">hugepage</span></code> available
+as an override via <code class="docutils literal notranslate"><span class="pre">opts.mem</span></code>. The exception is <code class="docutils literal notranslate"><span class="pre">io_uring_dmabuf</span></code>, whose <code class="docutils literal notranslate"><span class="pre">mem</span></code>
+registers GPU memory with <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> on <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>.</p>
 </section>
 <section id="uri-format">
 <h3>URI Format<a class="headerlink" href="#uri-format" title="Link to this heading">#</a></h3>
