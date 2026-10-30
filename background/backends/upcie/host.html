@@ -50,9 +50,9 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '780/merge';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
-            true;
+            false;
         </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -526,6 +526,20 @@ manually:</p>
 <p>Each hugepage is 2 MiB by default. The number required depends on the total
 DMA buffer space needed by the application.</p>
 </section>
+<section id="iova-of-the-heap">
+<h3>IOVA of the heap<a class="headerlink" href="#iova-of-the-heap" title="Link to this heading">#</a></h3>
+<p>With the controller on <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, the heap is mapped before the controller is
+attached, and has to stay clear of the IOVAs the platform reserves for it, listed
+in <code class="docutils literal notranslate"><span class="pre">/sys/bus/pci/devices/&lt;bdf&gt;/iommu_group/reserved_regions</span></code>. Where it does not,
+opening the controller fails, with <code class="docutils literal notranslate"><span class="pre">EADDRINUSE</span></code> through iommufd and <code class="docutils literal notranslate"><span class="pre">EINVAL</span></code>
+through type1. The heap starts at 4 GiB by default, above the regions commonly
+reserved low, and has to end below the device-memory window (see
+<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_IOVA_BASE</span></code>). Override where a controller reserves IOVAs there:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XNVME_UPCIE_HOST_IOVA_BASE</span><span class="o">=</span>0x1000000000<span class="w">  </span><span class="c1"># 64 GiB</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> is unaffected, as its DMA addresses are physical.</p>
+</section>
 </section>
 <section id="limitations">
 <span id="sec-backends-upcie-host-limitations"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
@@ -567,6 +581,7 @@ Both pseudo commands return <code class="docutils literal notranslate"><span cla
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepages">Hugepages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-of-the-heap">IOVA of the heap</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
