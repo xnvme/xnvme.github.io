@@ -471,78 +471,153 @@
                   
   <section id="contribution-process">
 <span id="sec-contributing-process"></span><h1>Contribution Process<a class="headerlink" href="#contribution-process" title="Link to this heading">#</a></h1>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/xnvme/xnvme/fork">Fork</a> the <strong>xNVMe</strong> repository on <a class="reference external" href="https://github.com/xnvme/xnvme/issues">GitHUB</a></p></li>
-<li><p>Make your changes, push them to your fork and create a <a class="reference external" href="https://github.com/xnvme/xnvme/pulls">pull-request</a></p>
-<ul>
-<li><p>The <cite>pull-request</cite> should target the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch</p></li>
-<li><p>For feedback/RFC then set up the <a class="reference external" href="https://github.com/xnvme/xnvme/pulls">pull-request</a> as a <strong>Draft</strong></p></li>
-</ul>
-</li>
-<li><p>The CI will trigger as you create the PR and re-triggered upon update</p>
-<ul>
-<li><p>The default CI-jobs consists of running style/linters and building <strong>xNVMe</strong></p></li>
-<li><p>Average time for a full functional verification run is about 40min</p></li>
-<li><p>The documentation is built early, without a guest and so without running
-the commands, and the builds and the verification wait for it</p></li>
-<li><p>A pull-request changing only <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and top-level Markdown files skips
-the builds and the verification, and its documentation is published from
-its run when merged. A changed <code class="docutils literal notranslate"><span class="pre">.cmd</span></code> file runs everything, since only
-the guest runs the commands</p></li>
-<li><p>Merging requires the check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>, which passes when every job did.
-The jobs that need hardware, or an emulated device that takes a while, run
-once the pull-request has their label; see <a class="reference internal" href="#sec-contributing-labels"><span class="std std-ref">Labels that run jobs</span></a></p></li>
-</ul>
-</li>
-<li><p>Go over the <a class="reference internal" href="#sec-contributing-process-pr-checklist"><span class="std std-ref">Pull-Request Checklist</span></a> and re-iterate on
-your pull-request / changes</p></li>
-</ul>
-<section id="labels-that-run-jobs">
-<span id="sec-contributing-labels"></span><h2>Labels that run jobs<a class="headerlink" href="#labels-that-run-jobs" title="Link to this heading">#</a></h2>
-<p>A label on a pull-request runs the jobs below, and a newer label or push
-cancels the run in progress for a new one. The colour of a label says
-whether it gates merging. A red or orange label gates: a pull-request
-changing code cannot merge until it has the label and the jobs pass, and
-<code class="docutils literal notranslate"><span class="pre">ci-result</span></code> names the missing label until then. A green or blue label
-does not: its jobs run, and their results are there to read, but
-<code class="docutils literal notranslate"><span class="pre">ci-result</span></code> does not count them.</p>
+<p>A change goes from a fork to <code class="docutils literal notranslate"><span class="pre">main</span></code> through a pull-request, in these steps.
+What CI runs at each is described in <a class="reference internal" href="#sec-contributing-labels"><span class="std std-ref">What CI runs: always, and behind a gate</span></a>.</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/xnvme/xnvme/fork">Fork</a> the <strong>xNVMe</strong> repository on <a class="reference external" href="https://github.com/xnvme/xnvme/issues">GitHUB</a>, make your changes, and push
+them to your fork.</p></li>
+<li><p>Open a <a class="reference external" href="https://github.com/xnvme/xnvme/pulls">pull-request</a> against <code class="docutils literal notranslate"><span class="pre">main</span></code> as a <strong>Draft</strong>. A draft runs no
+CI, so iterate on it freely, and ask for early feedback there.</p></li>
+<li><p>Go over the <a class="reference internal" href="#sec-contributing-process-pr-checklist"><span class="std std-ref">Pull-Request Checklist</span></a>, then mark the
+pull-request <strong>Ready for review</strong>. That starts its first CI run, and the
+<code class="docutils literal notranslate"><span class="pre">labeler</span></code> adds the <code class="docutils literal notranslate"><span class="pre">gate:</span></code> labels its changed files suggest. The first
+run already counts those gates, without waiting for the labels.</p></li>
+<li><p>A maintainer reviews the pull-request, and with it the gates: they add a
+<code class="docutils literal notranslate"><span class="pre">gate:</span></code> label the change needs and the rules missed, and remove one it
+does not need, then re-run only the <code class="docutils literal notranslate"><span class="pre">gates</span></code> job of the latest run, so the
+change takes effect without a new run of everything.</p></li>
+<li><p>Push fixes for the review as they come. Each push starts a new run and
+cancels the one in progress. The labels stay, so each run opens the same
+gates. A gate can be added at any point, as the change grows into code it
+did not touch at first; the rules do not add it then, so the maintainer
+does.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> passes, whose summary says which gates passed, and the
+review approves, a maintainer merges the pull-request by rebase.</p></li>
+</ol>
+<p>A full run of the fixed jobs takes about 40 minutes. The documentation is
+built first, without a guest and so without running its commands, and the
+builds and the verification wait for it.</p>
+<section id="what-ci-runs-always-and-behind-a-gate">
+<span id="sec-contributing-labels"></span><h2>What CI runs: always, and behind a gate<a class="headerlink" href="#what-ci-runs-always-and-behind-a-gate" title="Link to this heading">#</a></h2>
+<p>CI runs two kinds of jobs on a pull-request. The fixed set runs on every
+run, and nobody can turn it off. The gated jobs run only when the
+pull-request carries their <code class="docutils literal notranslate"><span class="pre">gate:</span></code> label, so a maintainer decides, change
+by change, whether it needs lab machines, emulated RDMA or GPU guests, or the
+benchmarks.</p>
+<p>A draft runs no CI at all, and marking it ready for review starts its first
+run. A newer run of a pull-request, whatever started it, cancels the one in
+progress, so none runs superseded.</p>
+<section id="the-fixed-set">
+<h3>The fixed set<a class="headerlink" href="#the-fixed-set" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
-<col style="width: 10.0%" />
+<col style="width: 30.0%" />
 <col style="width: 70.0%" />
-<col style="width: 20.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Label</p></th>
+<tr class="row-odd"><th class="head"><p>Job</p></th>
 <th class="head"><p>Runs</p></th>
-<th class="head"><p>Merging</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hardware</span></code></p></td>
-<td><p>The verification on the lab machines: a real NVMe drive passed
-through to a guest, and the macOS machine</p></td>
-<td><p>gates (red)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source-format-check</span></code></p></td>
+<td><p>pre-commit over the whole tree, the tests of the cijoe scripts and the
+toolbox, and the version files of a bump</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rdma</span></code></p></td>
-<td><p>The verification over NVMe/RDMA, in a guest with an emulated RDMA NIC</p></td>
-<td><p>gates (orange)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source-archive</span></code>, <code class="docutils literal notranslate"><span class="pre">build</span></code></p></td>
+<td><p>The source archives, and the builds on Linux, macOS and Windows</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gpu</span></code></p></td>
-<td><p>The upcie-hip backend, in a guest with an emulated GPU</p></td>
-<td><p>does not gate (blue)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ffi-python</span></code>, <code class="docutils literal notranslate"><span class="pre">ffi-rust</span></code></p></td>
+<td><p>The Python and Rust bindings</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span></code></p></td>
-<td><p>The benchmarks on the lab machines, which fail on a regression beyond
-their noise. They also run weekly</p></td>
-<td><p>does not gate (green)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-makefile</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-packaging</span></code></p></td>
+<td><p>The Makefile’s targets that generate files, and the RPM and DEB
+packages of a checkout and of the source archive</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">docgen-shallow</span></code></p></td>
+<td><p>The documentation, without a guest and so without running its commands</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Everything else, the builds, the QEMU verification and the documentation, runs
-on every pull-request without a label. A pull-request changing only
-documentation needs none of the labels.</p>
+<p>A pull-request changing only <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and top-level Markdown files skips the
+builds, the bindings, <code class="docutils literal notranslate"><span class="pre">verify-makefile</span></code> and <code class="docutils literal notranslate"><span class="pre">verify-packaging</span></code>; a gate
+opened on it runs as on any other. A changed <code class="docutils literal notranslate"><span class="pre">.cmd</span></code> file counts as code,
+since only the guest runs the commands.</p>
+</section>
+<section id="the-gates">
+<h3>The gates<a class="headerlink" href="#the-gates" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Label</p></th>
+<th class="head"><p>Runs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gate:emulated</span></code></p></td>
+<td><p>The verification in QEMU guests with emulated NVMe, over PCIe and TCP</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gate:hardware</span></code></p></td>
+<td><p>The verification on the lab machines: a real NVMe drive passed
+through to a guest, and the macOS machine</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gate:rdma</span></code></p></td>
+<td><p>The verification over NVMe/RDMA, in a guest with an emulated RDMA NIC</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gate:gpu</span></code></p></td>
+<td><p>The upcie-hip and io_uring_dmabuf backends, in a guest with an emulated
+GPU</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gate:perf</span></code></p></td>
+<td><p>The benchmarks on the lab machines, which fail on a regression beyond
+their noise. They also run weekly</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gate:docgen</span></code></p></td>
+<td><p>The documentation with its commands run in a guest, to catch a change
+that breaks it. What is published is built after the merge, by a run
+on <code class="docutils literal notranslate"><span class="pre">main</span></code> that <code class="docutils literal notranslate"><span class="pre">publish-docs</span></code> starts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gate:all</span></code></p></td>
+<td><p>Every gate above, as for a release</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The files a pull-request changes suggest gates, by the rules in
+<code class="docutils literal notranslate"><span class="pre">.github/labeler.yml</span></code> on <code class="docutils literal notranslate"><span class="pre">main</span></code>. The <code class="docutils literal notranslate"><span class="pre">labeler</span></code> workflow adds their
+labels once, when the pull-request is opened ready for review or leaves draft,
+and the run that starts then counts them before they are added. From then on
+the labels alone decide: the rules do not add them again, on a push, a re-run
+or a reopening, so a gate a maintainer removed stays closed. A rule only adds a
+label; one set by hand stays. Most changes to code open <code class="docutils literal notranslate"><span class="pre">gate:emulated</span></code>, and
+changes to <code class="docutils literal notranslate"><span class="pre">docs/</span></code> open <code class="docutils literal notranslate"><span class="pre">gate:docgen</span></code>, so what the fixed set leaves out is
+suggested where it matters.</p>
+<p>The rules are a starting point, and maintainers adjust them per pull-request.
+Add a gate the rules missed, for a change whose effect reaches further than
+its paths suggest. Remove one the rules opened needlessly, such as
+<code class="docutils literal notranslate"><span class="pre">gate:hardware</span></code> for a change to a comment in a header, which spends lab
+time on nothing. Rules that keep missing or keep opening too much are fixed in
+<code class="docutils literal notranslate"><span class="pre">.github/labeler.yml</span></code>.</p>
+<p>Adding or removing a label starts no run. The <code class="docutils literal notranslate"><span class="pre">gates</span></code> job reads the labels
+when a run starts, so to act on a label changed since, re-run only <code class="docutils literal notranslate"><span class="pre">gates</span></code>
+on the latest run: GitHub then re-runs the jobs that need it, the gated jobs
+and <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>, and nothing else.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ci-result</span></code> counts every job that ran, gated or fixed, and requires no
+gate. So a green <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> covers the fixed set and the gates that were
+open, and no more: a pull-request without <code class="docutils literal notranslate"><span class="pre">gate:hardware</span></code> has not been on a
+drive, and which gates a change needs before it merges is the reviewers’
+judgement.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ci-result</span></code> lists each gate and what its jobs gave, telling a gate that was
+not opened from one that was opened but did not run, as when a job it needs
+failed. Its notice says how many gates passed, as in <code class="docutils literal notranslate"><span class="pre">2/6</span> <span class="pre">gates</span> <span class="pre">passed:</span>
+<span class="pre">emulated,</span> <span class="pre">hardware</span></code>. The <code class="docutils literal notranslate"><span class="pre">gates-report</span></code> workflow keeps that table as one
+comment on the pull-request, updated after every run of its head, so it can
+be read there rather than in the run.</p>
+</section>
 </section>
 <section id="pull-request-checklist">
 <span id="sec-contributing-process-pr-checklist"></span><h2>Pull-Request Checklist<a class="headerlink" href="#pull-request-checklist" title="Link to this heading">#</a></h2>
@@ -642,7 +717,11 @@ there.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#labels-that-run-jobs">Labels that run jobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-ci-runs-always-and-behind-a-gate">What CI runs: always, and behind a gate</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fixed-set">The fixed set</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gates">The gates</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request-checklist">Pull-Request Checklist</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commit-messages">Commit Messages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references-to-github">References to GitHub</a></li>

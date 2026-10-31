@@ -559,33 +559,33 @@ various <strong>CI</strong> jobs.</p>
 <section id="when-the-jobs-run-and-what-is-published">
 <span id="sec-ci-when"></span><h2>When the jobs run, and what is published<a class="headerlink" href="#when-the-jobs-run-and-what-is-published" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow runs on pull-requests, and only there. What a
-pull-request needs to merge runs there once; the jobs on lab machines and the
-emulated RDMA and GPU guests run when it carries their label (see
-<a class="reference internal" href="../contributing-process.html#sec-contributing-labels"><span class="std std-ref">Labels that run jobs</span></a>), and the check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> says whether it
-may merge.
-Main and its tags run none of it again. The benchmarks also run weekly. A
-newer push or label on a pull-request cancels its running run.</p>
+pull-request needs to merge runs there once: a fixed set of jobs on every run,
+and behind a <code class="docutils literal notranslate"><span class="pre">gate:</span></code> label, read when the run starts, the jobs in QEMU
+guests, on lab machines, the benchmarks and the documentation with its
+commands run (see <a class="reference internal" href="../contributing-process.html#sec-contributing-labels"><span class="std std-ref">What CI runs: always, and behind a gate</span></a>). The check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>
+says whether what ran passed. Main and its tags run none of it again. The
+benchmarks also run weekly. A newer run of a pull-request cancels the one in
+progress, as does a newer run of a branch started the same way, by the
+schedule or by hand for the same <code class="docutils literal notranslate"><span class="pre">job</span></code>.</p>
 <p>Each kind of job has a workflow file of its own, <code class="docutils literal notranslate"><span class="pre">build.yml</span></code>,
 <code class="docutils literal notranslate"><span class="pre">verify-emulated.yml</span></code> for NVMe/PCIe and NVMe/TCP,
 <code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated.yml</span></code>,
 <code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-makefile.yml</span></code>,
 <code class="docutils literal notranslate"><span class="pre">verify-packaging.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">perf.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">docgen-full.yml</span></code>.
 <code class="docutils literal notranslate"><span class="pre">verify</span></code> calls them, so they run as part of its run and use its artifacts,
-and its <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> checks them all but the benchmarks and the GPU guest,
-whose failures it does not count.</p>
-<p>A push to main runs the <code class="docutils literal notranslate"><span class="pre">publish</span></code> workflow instead. It finds the pull-request
-that was merged and the <code class="docutils literal notranslate"><span class="pre">verify</span></code> run of its head that <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>
-passed, and deploys the documentation that run built to
-<a class="reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme.io via GitHub-pages</a>. When the head
-commit is <code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code>, it also tags main <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and creates the
-release, with the source archives, the Python sdist and the test results of
-that run, and the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section of the version as its notes. The
-artifacts are used only when the pull-request’s head has the tree main now
-has, which branch protection makes the case by requiring it to be up to date
-with main. For a push to main that is not such a merge, the documentation is
-built by a manual <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run on main instead, and a release fails; see
-<a class="reference internal" href="../release-checklist.html#sec-contributing-release"><span class="std std-ref">Release Checklist</span></a>. A pull-request changing only documentation
-still runs <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code>, so its documentation is deployed from its run too.</p>
+and its <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> checks every one that ran.</p>
+<p>A push to main runs two workflows instead. <code class="docutils literal notranslate"><span class="pre">publish-docs</span></code> starts a
+<code class="docutils literal notranslate"><span class="pre">docgen</span></code> run of <code class="docutils literal notranslate"><span class="pre">verify</span></code> on main, which builds the documentation of main’s
+tree and deploys it to <a class="reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme.io via GitHub-pages</a>. When the head commit is
+<code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code>, <code class="docutils literal notranslate"><span class="pre">publish-release</span></code> finds the pull-request that was
+merged and the <code class="docutils literal notranslate"><span class="pre">verify</span></code> run of its head that <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> passed, tags main
+<code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and creates the release, with the source archives, the Python sdist and the test
+results of that run, and the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section of the version as its
+notes, and starts a <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run on the tag for the documentation of the
+release. The artifacts are used only when the pull-request’s head has the tree
+main now has, which branch protection makes the case by requiring it to be up
+to date with main; otherwise the release fails, see
+<a class="reference internal" href="../release-checklist.html#sec-contributing-release"><span class="std std-ref">Release Checklist</span></a>.</p>
 <p>Any job can be run by hand: start the <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow from the Actions tab,
 on a branch, with <code class="docutils literal notranslate"><span class="pre">job</span></code> set to <code class="docutils literal notranslate"><span class="pre">all</span></code> for every job, or to <code class="docutils literal notranslate"><span class="pre">verify</span></code>,
 <code class="docutils literal notranslate"><span class="pre">perf</span></code> or <code class="docutils literal notranslate"><span class="pre">docgen</span></code>. A manual <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run deploys the
@@ -653,8 +653,8 @@ releases present as a wedged device rather than an error.</p>
 </div>
 <p>A cell that says none has no job: that subject is not verified from that
 source.</p>
-<p>The benchmarks run on the passthru machines, weekly and on request, outside
-<code class="docutils literal notranslate"><span class="pre">ci-result</span></code>.</p>
+<p>The benchmarks run on the passthru machines, weekly, on request, and on a
+pull-request labelled <code class="docutils literal notranslate"><span class="pre">gate:perf</span></code>, where <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> counts them.</p>
 </section>
 <section id="containers-and-guest-images">
 <span id="sec-ci-environments"></span><h2>Containers and guest images<a class="headerlink" href="#containers-and-guest-images" title="Link to this heading">#</a></h2>
@@ -683,6 +683,15 @@ The nosi guests ship with root locked and an operator account <code class="docut
 root <strong>SSH</strong> so the rest of the <strong>CIJOE</strong> task continues as root unchanged
 (Linux uses <code class="docutils literal notranslate"><span class="pre">chpasswd</span></code> + <code class="docutils literal notranslate"><span class="pre">systemctl</span></code>, FreeBSD uses <code class="docutils literal notranslate"><span class="pre">pw</span> <span class="pre">usermod</span></code> +
 <code class="docutils literal notranslate"><span class="pre">service</span> <span class="pre">sshd</span> <span class="pre">reload</span></code>).</p></li>
+<li><p><strong>Deps containers</strong> are an image per Linux distribution with xNVMe’s
+dependencies, as its <code class="docutils literal notranslate"><span class="pre">toolbox/pkgs</span></code> script installs them, for the build
+jobs to run in and for anyone to try a distribution in. The
+<code class="docutils literal notranslate"><span class="pre">distro-deps</span></code> workflow builds them from <code class="docutils literal notranslate"><span class="pre">toolbox/pkgs/Dockerfile</span></code> as
+<code class="docutils literal notranslate"><span class="pre">ghcr.io/xnvme/xnvme/distro-deps-&lt;os&gt;-&lt;ver&gt;:main</span></code>: on a pull-request changing the
+scripts without pushing, and on <code class="docutils literal notranslate"><span class="pre">main</span></code>, when a script changes and every 12
+hours, pushing them. The build jobs still use the images of
+xnvme-docker, <code class="docutils literal notranslate"><span class="pre">ghcr.io/xnvme/xnvme-deps-&lt;os&gt;-&lt;ver&gt;:main</span></code>, until they
+move to these.</p></li>
 </ul>
 <div class="pst-scrollable-table-container"><table class="table" id="id3">
 <caption><span class="caption-text">Per-job container + guest-image inventory</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>

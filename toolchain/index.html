@@ -466,26 +466,41 @@ and <a class="reference internal" href="../background/platforms/linux/io_uring_c
 <p>The following sections describe how to install the recommended toolchain for
 each platform and the libraries necessary for all backends on various popular
 operating systems, including Linux distributions, FreeBSD, macOS, and Windows.</p>
+<p>The package installation scripts in <code class="docutils literal notranslate"><span class="pre">toolbox/pkgs</span></code> upgrade the installed
+system packages before installing the dependencies, on the platforms whose
+package manager is <code class="docutils literal notranslate"><span class="pre">apt</span></code> (Debian, Ubuntu) or <code class="docutils literal notranslate"><span class="pre">pkg</span></code> (FreeBSD). Where that
+upgrade is unwanted, for example on a machine with held driver packages whose
+userspace libraries must not move, set <code class="docutils literal notranslate"><span class="pre">XNVME_PKGS_NO_UPGRADE=1</span></code>. The
+scripts then refresh the package index and install the dependencies, but skip
+the upgrade. Installing can still upgrade an installed package that a
+dependency requires a newer version of, such as the C library that a
+development package is built against, but packages outside the dependencies
+of <strong>xNVMe</strong> are left alone. Note that <code class="docutils literal notranslate"><span class="pre">sudo</span></code> drops the environment, so pass
+the variable through it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span><span class="nv">XNVME_PKGS_NO_UPGRADE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>./xnvme/toolbox/pkgs/debian-trixie.sh
+</pre></div>
+</div>
+<p>The scripts for the other package managers do not run a system upgrade, so
+the variable makes no difference there. The exception is Arch Linux, where the
+script always runs <code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-Syyu</span></code>, since installing packages against a
+refreshed package database without upgrading is a partial upgrade, which Arch
+does not support.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="linux/index.html">Linux</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#alpine-linux-latest">Alpine Linux (latest)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#arch-linux-latest">Arch Linux (latest)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linux/index.html#oracle-linux-10-10">Oracle Linux 10 (10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linux/index.html#oracle-linux-9-9">Oracle Linux 9 (9)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#rocky-linux-9-9-7">Rocky Linux 9 (9.7)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#rocky-linux-10-10-1">Rocky Linux 10 (10.1)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#centos-stream-10-stream10">CentOS Stream 10 (stream10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linux/index.html#centos-stream-9-stream9">CentOS Stream 9 (stream9)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#debian-stable-trixie">Debian Stable (trixie)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linux/index.html#debian-oldstable-bookworm">Debian Oldstable (bookworm)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#debian-testing-forky">Debian Testing (forky)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linux/index.html#fedora-44">Fedora (44)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#fedora-43">Fedora (43)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linux/index.html#fedora-42">Fedora (42)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="linux/index.html#ubuntu-latest-questing">Ubuntu Latest (questing)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#ubuntu-latest-stonking">Ubuntu Latest (stonking)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#ubuntu-lts-resolute">Ubuntu LTS (resolute)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#ubuntu-lts-old-noble">Ubuntu LTS (Old) (noble)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linux/index.html#nixos-latest">NixOS (latest)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#gentoo-latest">Gentoo (latest)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linux/index.html#opensuse-tumbleweed-latest">openSUSE (tumbleweed-latest)</a></li>
 </ul>
