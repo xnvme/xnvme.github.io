@@ -536,11 +536,11 @@ size used by NVMe for PRP construction and sector alignment.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Data buffers (<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc</span></code>)</p></td>
-<td><p>GPU device memory (CUDA heap, 1 GiB)</p></td>
+<td><p>GPU device memory (device heap, 1 GiB by default)</p></td>
 <td><p>Transferred directly by the NVMe controller via PCIe P2P, bypassing host DRAM</p></td>
 </tr>
 <tr class="row-odd"><td><p>SQ, CQ, PRP lists</p></td>
-<td><p>Host hugepage memory (host heap, 256 MiB)</p></td>
+<td><p>Host hugepage memory (host heap, 1 GiB by default)</p></td>
 <td><p>The CPU writes and the NVMe controller DMA-reads these structures; host-accessible memory is required</p></td>
 </tr>
 <tr class="row-even"><td><p>CQ, with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code></p></td>
@@ -556,8 +556,8 @@ size used by NVMe for PRP construction and sector alignment.</p>
 </div>
 <p>The NVMe <strong>data</strong> path goes GPU ↔ NVMe without touching host DRAM. The
 <strong>control</strong> path (submission queue entries, completion queue entries, PRP lists)
-still flows through host memory. As a result, both the CUDA heap and the host
-hugepage runtime are initialized when the first <strong>upcie-cuda</strong> device is opened.</p>
+still flows through host memory. As a result, both the device heap and the
+host heap are initialized when the first <strong>upcie-cuda</strong> device is opened.</p>
 <p>The heap is allocated in the CUDA context current on the thread opening that
 first device, or, when none is current, in the device’s primary context, which
 the backend retains and makes current. An application on the runtime API thus
@@ -631,6 +631,44 @@ comes back is adopted into the same table; that is a socket round trip per
 call, so a client registers its buffers before it submits, not per command.
 Either way the range is whole device pages, 64 KiB on CUDA, since that is the
 granule the export works in.</p>
+</section>
+<section id="choosing-the-gpu-and-heap-sizes">
+<span id="sec-backends-upcie-cuda-opts"></span><h2>Choosing the GPU and Heap Sizes<a class="headerlink" href="#choosing-the-gpu-and-heap-sizes" title="Link to this heading">#</a></h2>
+<p>Three fields of <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_opts</span></code> control where the heaps live and how large
+they are:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>CLI</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gpu_id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--gpu-id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">device_heap_size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--device-heap-size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, meaning 1 GiB</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host_heap_size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--host-heap-size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, meaning 1 GiB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">gpu_id</span></code> is the CUDA device ordinal the device heap is allocated on. When a
+CUDA context is current on the opening thread, it must belong to that GPU, or
+the open fails with <code class="docutils literal notranslate"><span class="pre">EINVAL</span></code>.</p>
+<p>The device heap is rounded up to 64 KiB and the host heap to the hugepage size.</p>
+<p>Each heap is allocated once per process, on the first open, so the values given
+to that open are the ones that take effect, and later opens leave the heaps as
+they are.</p>
+<p>Not every tool takes these options on its command line. <strong>xnvmeperf</strong> takes
+<code class="docutils literal notranslate"><span class="pre">--gpu-id</span></code> and sizes both heaps from the workload it is given, and <strong>homi</strong>
+takes all three.</p>
 </section>
 <section id="kernel-module">
 <span id="sec-backends-upcie-cuda-kernel"></span><h2>Kernel Module<a class="headerlink" href="#kernel-module" title="Link to this heading">#</a></h2>
@@ -732,20 +770,21 @@ work out from a virtual address.</p></li>
 <span id="sec-backends-upcie-cuda-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
 <section id="hardware-requirements">
 <h3>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Link to this heading">#</a></h3>
-<p>P2P transfers require a GPU with a sufficiently large <strong>BAR1</strong> window. BAR1
-maps GPU device memory into the host PCIe address space and must be large
-enough to cover the CUDA heap (1 GiB by default). To check the available BAR1
-size:</p>
+<p>P2P transfers require a GPU whose <strong>BAR1</strong> window maps all of its device
+memory into the host PCIe address space, which in practice means resizable BAR
+enabled in the firmware. The window must be at least as large as the GPU’s
+total memory, whatever the size of the device heap. To compare the two:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvidia-smi<span class="w"> </span>-q<span class="w"> </span>-d<span class="w"> </span>memory
 </pre></div>
 </div>
-<p>Look for the <code class="docutils literal notranslate"><span class="pre">BAR1</span> <span class="pre">Memory</span> <span class="pre">Usage</span></code> section. If <code class="docutils literal notranslate"><span class="pre">Total</span></code> BAR1 is smaller than the
-heap size, initialization will fail.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">Total</span></code> under <code class="docutils literal notranslate"><span class="pre">BAR1</span> <span class="pre">Memory</span> <span class="pre">Usage</span></code> is smaller than <code class="docutils literal notranslate"><span class="pre">Total</span></code> under
+<code class="docutils literal notranslate"><span class="pre">FB</span> <span class="pre">Memory</span> <span class="pre">Usage</span></code>, opening a device fails with <code class="docutils literal notranslate"><span class="pre">EOPNOTSUPP</span></code>.</p>
 </section>
 <section id="hugepages">
 <h3>Hugepages<a class="headerlink" href="#hugepages" title="Link to this heading">#</a></h3>
-<p>In addition to the CUDA heap, opening an <strong>upcie-cuda</strong> device also initializes
-the host hugepage runtime (256 MiB) used to hold NVMe control structures. Follow
+<p>In addition to the device heap, opening an <strong>upcie-cuda</strong> device also
+initializes the host heap (1 GiB by default) used to hold NVMe control
+structures. Follow
 the hugepage setup steps in <a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> before opening an
 <strong>upcie-cuda</strong> device.</p>
 </section>
@@ -931,10 +970,8 @@ the mapping itself rather than being given one.</p></li>
 <li><p><strong>I/O the GPU issues behind a translating IOMMU needs the mapper module.</strong> See
 <a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a>. What a client submits from the host
 works either way.</p></li>
-<li><p><strong>GPU 0 only.</strong> The heap is always created on CUDA device 0. Multiple GPU
-support is not implemented.</p></li>
-<li><p><strong>1 GiB heap.</strong> The CUDA heap is fixed at 1 GiB. Allocations beyond this
-limit return <code class="docutils literal notranslate"><span class="pre">ENOMEM</span></code>.</p></li>
+<li><p><strong>One GPU per process.</strong> The device heap lives on the GPU chosen by the
+first open. See <a class="reference internal" href="#sec-backends-upcie-cuda-opts"><span class="std std-ref">Choosing the GPU and Heap Sizes</span></a>.</p></li>
 <li><p><strong>No PRP list chaining.</strong> Each request has a single 4 KiB PRP list page
 (512 entries). Combined with PRP1, the maximum transfer size per command
 is 513 × 4 KiB ≈ 2 MiB.</p></li>
@@ -971,6 +1008,7 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-architecture">Memory Architecture</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#completions-in-device-memory">Completions in device memory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-the-gpu-and-heap-sizes">Choosing the GPU and Heap Sizes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-module">Kernel Module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#enforcing-iommu">Enforcing IOMMU</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-window">IOVA window</a></li>
