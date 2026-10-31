@@ -28,7 +28,6 @@ repositories:
 
 * https://github.com/xnvme/xnvme/
 * https://github.com/xnvme/xnvme.github.io
-* https://github.com/xnvme/xnvme-docker
 * https://github.com/xnvme/dpdk-windows-drivers
 
 And decides what to execute and where. In other words **GHA** is utilized as a
@@ -95,13 +94,15 @@ various **CI** jobs.
 When the jobs run, and what is published
 ########################################
 
-The ``verify`` workflow runs on pull-requests, and only there. What a
-pull-request needs to merge runs there once: a fixed set of jobs on every run,
+The ``verify`` workflow runs on pull-requests, and otherwise weekly for the
+benchmarks, when started by hand, and for the documentation, which
+``publish-docs`` and ``publish-release`` start. What a pull-request needs to
+merge runs there once: a fixed set of jobs on every run,
 and behind a ``gate:`` label, read when the run starts, the jobs in QEMU
 guests, on lab machines, the benchmarks and the documentation with its
 commands run (see :ref:`sec-contributing-labels`). The check ``ci-result``
-says whether what ran passed. Main and its tags run none of it again. The
-benchmarks also run weekly. A newer run of a pull-request cancels the one in
+says whether what ran passed. Main and its tags run none of it again but the
+documentation. A newer run of a pull-request cancels the one in
 progress, as does a newer run of a branch started the same way, by the
 schedule or by hand for the same ``job``.
 
@@ -219,15 +220,14 @@ Both publish **OCI** artifacts on **GHCR**.
   (Linux uses ``chpasswd`` + ``systemctl``, FreeBSD uses ``pw usermod`` +
   ``service sshd reload``).
 
-* **Deps containers** are an image per Linux distribution with xNVMe's
-  dependencies, as its ``toolbox/pkgs`` script installs them, for the build
-  jobs to run in and for anyone to try a distribution in. The
-  ``distro-deps`` workflow builds them from ``toolbox/pkgs/Dockerfile`` as
-  ``ghcr.io/xnvme/xnvme/distro-deps-<os>-<ver>:main``: on a pull-request changing the
-  scripts without pushing, and on ``main``, when a script changes and every 12
-  hours, pushing them. The build jobs still use the images of
-  xnvme-docker, ``ghcr.io/xnvme/xnvme-deps-<os>-<ver>:main``, until they
-  move to these.
+* **Distro-deps containers** are an image per Linux distribution with
+  xNVMe's dependencies, as its ``toolbox/pkgs`` script installs them, for the
+  build jobs and the source and binding jobs to run in, and for anyone to try a
+  distribution in. The ``distro-deps`` workflow builds them from
+  ``toolbox/pkgs/Dockerfile`` as
+  ``ghcr.io/xnvme/xnvme/distro-deps-<os>-<ver>:main``: on a pull-request
+  changing the scripts without pushing, and on ``main``, when a script changes
+  and every 12 hours, pushing them.
 
 .. list-table:: Per-job container + guest-image inventory
    :header-rows: 1
@@ -273,7 +273,7 @@ Both publish **OCI** artifacts on **GHCR**.
      - ``xnvme/xnvme-devenv/host`` (upstream QEMU + CIJOE + vfu_kvssd)
      - ``safl/nosi/debian-13-headless``
 
-All container-hosted jobs run in the `xnvme-devenv`_ host container, with
+The emulated jobs and ``docgen-full`` run in the `xnvme-devenv`_ host container, with
 upstream **QEMU**; the NVMe KV command set is supplied by `vfio-user-kvssd`_
 over **vfio-user**, installed in the container. ``verify-nvme-pcie-hardware / passthru`` and the
 benchmarks run the container on the lab machine, and pass its drive through
