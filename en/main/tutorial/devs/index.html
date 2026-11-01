@@ -543,7 +543,7 @@ against it:</p>
 <span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">down</span>
 </pre></div>
 </div>
-<ul class="simple">
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">devenv-up</span></code> starts the container, unless it is running, then the guest on
 its rig, and provisions this tree into it: dependencies, a clean build, the
 Python bindings and fio. <code class="docutils literal notranslate"><span class="pre">DEVENV_GUEST</span></code> is one of the guests <code class="docutils literal notranslate"><span class="pre">make</span>
@@ -569,6 +569,15 @@ starts.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">devenv-shell</span></code> opens a shell in the host container, and <code class="docutils literal notranslate"><span class="pre">devenv-ssh</span></code> an
 SSH session in the guest, as root, on the port the container publishes the
 guest’s SSH on.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devenv-run</span></code> runs <code class="docutils literal notranslate"><span class="pre">CMD</span></code> in the host container, starting it unless it is
+running, and boots no guest. It is for what the <strong>CI</strong> runs in the container
+itself, such as generating the man pages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">devenv</span><span class="o">-</span><span class="n">run</span> <span class="n">CMD</span><span class="o">=</span><span class="s1">'bash toolbox/pkgs/ubuntu-resolute.sh &amp;&amp; make common install gen-man-pages'</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">devenv-host</span></code> only starts the container, as <code class="docutils literal notranslate"><span class="pre">devenv-up</span></code> does before it
+boots the guest.</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">devenv-down</span></code> stops the guest and removes the container.</p></li>
 </ul>
 <p>The container’s home is <code class="docutils literal notranslate"><span class="pre">DEVENV_HOME</span></code> (default <code class="docutils literal notranslate"><span class="pre">.devenv</span></code> in this tree),
