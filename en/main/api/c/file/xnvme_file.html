@@ -423,7 +423,7 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../util/index.html">Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_be.html">libxnvme_be.h</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_lba.html">libxnvme_lba.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_compat.html">libxnvme_compat.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_libconf.html">libxnvme_libconf.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_pp.html">libxnvme_pp.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_util.html">libxnvme_util.h</a></li>
@@ -532,19 +532,6 @@
 </dd></dl>
 
 </section>
-<section id="xnvme-file-get-cmd-ctx">
-<span id="sec-api-c-xnvme-file-func-xnvme-file-get-cmd-ctx"></span><h3>xnvme_file_get_cmd_ctx<a class="headerlink" href="#xnvme-file-get-cmd-ctx" title="Link to this heading">#</a></h3>
-<dl class="c function">
-<dt class="sig sig-object c" id="c.xnvme_file_get_cmd_ctx">
-<span class="target" id="libxnvme__file_8h_1af880c8486bb9439c44830f7442c470c5"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../core/xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_file_get_cmd_ctx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_get_cmd_ctx" title="Link to this definition">#</a><br /></dt>
-<dd><p>Returns a synchronous command-context for the given file-handle. </p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For asynchronous I/O, see the xnvme_queue interface and <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1a8b4750cb2c68f0cdedfc0bdf5c943638"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a></p>
-</div>
-</dd></dl>
-
-</section>
 <section id="xnvme-file-open">
 <span id="sec-api-c-xnvme-file-func-xnvme-file-open"></span><h3>xnvme_file_open<a class="headerlink" href="#xnvme-file-open" title="Link to this heading">#</a></h3>
 <dl class="c function">
@@ -571,7 +558,7 @@
 <dt class="sig sig-object c" id="c.xnvme_file_pread">
 <span class="target" id="libxnvme__file_8h_1a95db494316cf192edc2f17df92993e06"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_file_pread</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../core/xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="n"><span class="pre">off_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_pread" title="Link to this definition">#</a><br /></dt>
 <dd><p>Perform a stateless read to the file or device encapsulated by ‘ctx’. </p>
-<p>Retrieve a synchronous context using <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev</span></a> and an asynchronous context using <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1a8b4750cb2c68f0cdedfc0bdf5c943638"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a>.</p>
+<p>Retrieve a synchronous context using <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1ad8e8dbf6e9fb74296efd00d5aac7d301"><span class="std std-ref">xnvme_dev_get_cmd_ctx</span></a> and an asynchronous context using <a class="reference internal" href="../core/xnvme_queue.html#libxnvme__queue_8h_1a8a94129b14520613784136499c6dfa88"><span class="std std-ref">xnvme_queue_get_cmd_ctx</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Unlike, the pread() syscall, then this function does not return the number of bytes written. To retrieve that information, then inspect the completion-result: ‘ctx-&gt;cpl.result’.</p>
@@ -598,7 +585,7 @@
 <dt class="sig sig-object c" id="c.xnvme_file_pwrite">
 <span class="target" id="libxnvme__file_8h_1a1bcccc0432ffae7a90e74c17d2a4aa1e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_file_pwrite</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../core/xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="n"><span class="pre">off_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_file_pwrite" title="Link to this definition">#</a><br /></dt>
 <dd><p>Perform a stateless write to the file or device encapsulated by ‘ctx’. </p>
-<p>Retrieve a synchronous context using <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1a1ec4b3a340abed82f1f9c837890c54f8"><span class="std std-ref">xnvme_cmd_ctx_from_dev</span></a> and an asynchronous context using <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1a8b4750cb2c68f0cdedfc0bdf5c943638"><span class="std std-ref">xnvme_cmd_ctx_from_queue</span></a></p>
+<p>Retrieve a synchronous context using <a class="reference internal" href="../core/xnvme_cmd.html#libxnvme__cmd_8h_1ad8e8dbf6e9fb74296efd00d5aac7d301"><span class="std std-ref">xnvme_dev_get_cmd_ctx</span></a> and an asynchronous context using <a class="reference internal" href="../core/xnvme_queue.html#libxnvme__queue_8h_1a8a94129b14520613784136499c6dfa88"><span class="std std-ref">xnvme_queue_get_cmd_ctx</span></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Unlike, the pwrite() syscall, then this function does not return the number of bytes read. To retrieve that information, then inspect the completion-result: ‘ctx-&gt;cpl.result’.</p>
@@ -674,8 +661,8 @@
 <span class="cm">/**</span>
 <span class="cm"> * Perform a stateless read to the file or device encapsulated by 'ctx'</span>
 <span class="cm"> *</span>
-<span class="cm"> * Retrieve a synchronous context using ::xnvme_cmd_ctx_from_dev and an asynchronous context using</span>
-<span class="cm"> * ::xnvme_cmd_ctx_from_queue.</span>
+<span class="cm"> * Retrieve a synchronous context using ::xnvme_dev_get_cmd_ctx and an asynchronous context using</span>
+<span class="cm"> * ::xnvme_queue_get_cmd_ctx.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @note Unlike, the pread() syscall, then this function does not return the number of bytes</span>
 <span class="cm"> * written. To retrieve that information, then inspect the completion-result: 'ctx-&gt;cpl.result'.</span>
@@ -693,8 +680,8 @@
 <span class="cm">/**</span>
 <span class="cm"> * Perform a stateless write to the file or device encapsulated by 'ctx'</span>
 <span class="cm"> *</span>
-<span class="cm"> * Retrieve a synchronous context using ::xnvme_cmd_ctx_from_dev and an asynchronous context using</span>
-<span class="cm"> * ::xnvme_cmd_ctx_from_queue</span>
+<span class="cm"> * Retrieve a synchronous context using ::xnvme_dev_get_cmd_ctx and an asynchronous context using</span>
+<span class="cm"> * ::xnvme_queue_get_cmd_ctx</span>
 <span class="cm"> *</span>
 <span class="cm"> * @note Unlike, the pwrite() syscall, then this function does not return the number of bytes read.</span>
 <span class="cm"> * To retrieve that information, then inspect the completion-result: 'ctx-&gt;cpl.result'.</span>
@@ -720,14 +707,6 @@
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="nf">xnvme_file_sync</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">fh</span><span class="p">);</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Returns a synchronous command-context for the given file-handle</span>
-<span class="cm"> *</span>
-<span class="cm"> * @note For asynchronous I/O, see the ::xnvme_queue interface and ::xnvme_cmd_ctx_from_queue</span>
-<span class="cm"> */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span>
-<span class="n">xnvme_file_get_cmd_ctx</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">fh</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -759,10 +738,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-file-close">xnvme_file_close</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_file_close"><code class="docutils literal notranslate"><span class="pre">xnvme_file_close()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-file-get-cmd-ctx">xnvme_file_get_cmd_ctx</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_file_get_cmd_ctx"><code class="docutils literal notranslate"><span class="pre">xnvme_file_get_cmd_ctx()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-file-open">xnvme_file_open</a><ul class="nav section-nav flex-column">

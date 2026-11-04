@@ -534,8 +534,21 @@ only available on the platform that the backend services</p></li>
 <li><p>Pass pointers to “objects” e.g. <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_pass(*ctx,</span> <span class="pre">...);</span></code></p></li>
 <li><p>Pass double-pointers for “object-initialization” e.g. <code class="docutils literal notranslate"><span class="pre">xnvme_queue(...,</span> <span class="pre">**queue);</span></code></p></li>
 <li><p>On success, return 0. On error, Return negative <code class="docutils literal notranslate"><span class="pre">errno</span></code>.</p></li>
-<li><p>Exceptions: API-calls mimicking legacy interfaces, such as the
-<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> which is operating similar to <code class="docutils literal notranslate"><span class="pre">malloc()/free()</span></code>.</p></li>
+<li><p>Never pass or return a structure by value; pass a pointer, and fill an
+output argument rather than returning one, as
+<code class="docutils literal notranslate"><span class="pre">xnvme_opts_set_defaults(&amp;opts)</span></code> does: a structure by value is
+simple in C, but not over FFI</p></li>
+<li><p>A function replaced for any of these keeps working, as a <code class="docutils literal notranslate"><span class="pre">static</span>
+<span class="pre">inline</span></code> in <code class="docutils literal notranslate"><span class="pre">libxnvme_compat.h</span></code> calling its replacement, and in a
+debug build warning that it is deprecated, until a later release
+removes it</p></li>
+<li><p>Who owns the memory decides the signature. Memory the caller owns is
+filled through an output argument, with 0 or negative <code class="docutils literal notranslate"><span class="pre">errno</span></code>
+returned, as <code class="docutils literal notranslate"><span class="pre">xnvme_dev_get_cmd_ctx(dev,</span> <span class="pre">&amp;ctx)</span></code> does. Memory the
+library owns and lends out is returned as a pointer, NULL with
+<code class="docutils literal notranslate"><span class="pre">errno</span></code> set on error, and given back with a matching call, as
+<code class="docutils literal notranslate"><span class="pre">xnvme_queue_get_cmd_ctx()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_queue_put_cmd_ctx()</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_buf_free()</span></code></p></li>
 </ul>
 </li>
 <li><p>The library is not thread-safe. Only the following control-plane calls may
@@ -578,6 +591,30 @@ instrumentation of not just the logic of the tool but also the library
 backend</p></li>
 </ul>
 </li>
+</ul>
+</section>
+<section id="c-fields-of-bits">
+<h2>C: Fields of bits<a class="headerlink" href="#c-fields-of-bits" title="Link to this heading">#</a></h2>
+<p>A field of bits in a structure of the specification, such as <code class="docutils literal notranslate"><span class="pre">flbas</span></code> of
+the Identify Namespace data, is an integer of the width the specification
+gives it, not a C bit-field, whose layout is the compiler’s choice.</p>
+<ul class="simple">
+<li><p>Each of its fields is named by a mask, a <code class="docutils literal notranslate"><span class="pre">#define</span></code> of the bits in their
+place, read and written with <code class="docutils literal notranslate"><span class="pre">xnvme_bits_get()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_bits_set()</span></code></p></li>
+<li><p>The mask is named <code class="docutils literal notranslate"><span class="pre">XNVME_SPEC_&lt;STRUCT&gt;_&lt;FIELD&gt;_&lt;NAME&gt;</span></code>: the structure
+without its <code class="docutils literal notranslate"><span class="pre">xnvme_spec_</span></code> prefix, the integer, and the name the
+specification gives the bits, such as
+<code class="docutils literal notranslate"><span class="pre">XNVME_SPEC_IDFY_NS_FLBAS_FORMAT</span></code> for bits 3:0 of <code class="docutils literal notranslate"><span class="pre">flbas</span></code></p></li>
+<li><p>The masks follow the structure they belong to, in the order of its
+integers, and of the bits within each</p></li>
+<li><p>Each mask has a doc comment saying what the bits are, then where they
+are: <code class="docutils literal notranslate"><span class="pre">/**</span> <span class="pre">&lt;what&gt;;</span> <span class="pre">bits</span> <span class="pre">&lt;hi&gt;:&lt;lo&gt;</span> <span class="pre">of</span> <span class="pre">'&lt;field&gt;'</span> <span class="pre">*/</span></code>, or <code class="docutils literal notranslate"><span class="pre">bit</span> <span class="pre">&lt;n&gt;</span></code> for
+one bit</p></li>
+<li><p>The integer’s own doc comment names them: <code class="docutils literal notranslate"><span class="pre">///&lt;</span> <span class="pre">&lt;what&gt;,</span> <span class="pre">see</span>
+<span class="pre">XNVME_SPEC_&lt;STRUCT&gt;_&lt;FIELD&gt;_*</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/spec.c</span></code> checks, for each integer, that the structure still has it
+and that its masks fit its width, so a field renamed or narrowed without its
+masks fails the build; a new field of bits gets a line there</p></li>
 </ul>
 </section>
 <section id="c-code-organisation">
@@ -815,6 +852,7 @@ declared in <code class="docutils literal notranslate"><span class="pre">xnvme_b
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-format">C: format</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-style">C: style</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-api">C: API</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-fields-of-bits">C: Fields of bits</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-code-organisation">C: Code organisation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#layout">Layout</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-backend-interface">The backend interface</a></li>

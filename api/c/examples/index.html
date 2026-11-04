@@ -423,7 +423,7 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../util/index.html">Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_be.html">libxnvme_be.h</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_lba.html">libxnvme_lba.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_compat.html">libxnvme_compat.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_libconf.html">libxnvme_libconf.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_pp.html">libxnvme_pp.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_util.html">libxnvme_util.h</a></li>
@@ -531,8 +531,10 @@ specify the desired backend, sync/async/admin command interface, etc.</p>
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_opts_default</span><span class="p">();</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span>
+
+<span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;identifer&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
@@ -560,7 +562,7 @@ specify the desired backend, sync/async/admin command interface, etc.</p>
 <span id="sec-api-c-examples-sync"></span><h2>Synchronous I/O<a class="headerlink" href="#synchronous-i-o" title="Link to this heading">#</a></h2>
 <p>In this example we open a device and send a single synchronous read command.
 Note, when doing synchronous IO, there is no need for a command-queue.
-Instead, you get the command-context directly from the device with <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx_from_dev()</span></code>.
+Instead, you get the command-context directly from the device with <code class="docutils literal notranslate"><span class="pre">xnvme_dev_get_cmd_ctx()</span></code>.
 The example is intended to be easily extended by adding a for-loop and submitting multiple commands.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
 <span class="c1">//</span>
@@ -580,12 +582,14 @@ The example is intended to be easily extended by adding a for-loop and submittin
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_opts_default</span><span class="p">();</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">size_t</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;ident&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
@@ -616,7 +620,9 @@ The example is intended to be easily extended by adding a for-loop and submittin
 
 <span class="w">	</span><span class="c1">// This block would typically be a loop as more than a single command would be submitted</span>
 <span class="w">	</span><span class="p">{</span>
-<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_cmd_ctx_from_dev</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="w">		</span><span class="n">xnvme_dev_get_cmd_ctx</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
 
 <span class="w">		</span><span class="c1">// Submit and wait for the completion of a read command</span>
 <span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_nvm_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
@@ -700,7 +706,7 @@ submitting multiple commands.</p>
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_opts_default</span><span class="p">();</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
@@ -708,6 +714,8 @@ submitting multiple commands.</p>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 <span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">qdepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;ident&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>

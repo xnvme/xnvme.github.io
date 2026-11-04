@@ -423,7 +423,7 @@
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../util/index.html">Utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_be.html">libxnvme_be.h</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_lba.html">libxnvme_lba.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../util/xnvme_compat.html">libxnvme_compat.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_libconf.html">libxnvme_libconf.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_pp.html">libxnvme_pp.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../util/xnvme_util.html">libxnvme_util.h</a></li>
@@ -767,20 +767,6 @@
 </section>
 <section id="functions">
 <span id="sec-api-c-xnvme-opts-func"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
-<section id="xnvme-opts-default">
-<span id="sec-api-c-xnvme-opts-func-xnvme-opts-default"></span><h3>xnvme_opts_default<a class="headerlink" href="#xnvme-opts-default" title="Link to this heading">#</a></h3>
-<dl class="c function">
-<dt class="sig sig-object c" id="c.xnvme_opts_default">
-<span class="target" id="libxnvme__opts_8h_1a1acf626fc901d20fb2220aa097b17f40"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_opts" title="xnvme_opts"><span class="n"><span class="pre">xnvme_opts</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_opts_default</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_opts_default" title="Link to this definition">#</a><br /></dt>
-<dd><p>Returns an initialized option-struct with default values. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Zero-initialized and with default values where applicable </p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="xnvme-opts-pr">
 <span id="sec-api-c-xnvme-opts-func-xnvme-opts-pr"></span><h3>xnvme_opts_pr<a class="headerlink" href="#xnvme-opts-pr" title="Link to this heading">#</a></h3>
 <dl class="c function">
@@ -805,8 +791,19 @@
 <span id="sec-api-c-xnvme-opts-func-xnvme-opts-set-defaults"></span><h3>xnvme_opts_set_defaults<a class="headerlink" href="#xnvme-opts-set-defaults" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_opts_set_defaults">
-<span class="target" id="libxnvme__opts_8h_1afbac180bff6c387b33547203d0ac6625"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_opts_set_defaults</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_opts" title="xnvme_opts"><span class="n"><span class="pre">xnvme_opts</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_opts_set_defaults" title="Link to this definition">#</a><br /></dt>
-<dd><p>Initialize the given ‘opts’ with default values. </p>
+<span class="target" id="libxnvme__opts_8h_1aa9087f58906b2213fc38f1fa368a4858"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_opts_set_defaults</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_opts" title="xnvme_opts"><span class="n"><span class="pre">xnvme_opts</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">opts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_opts_set_defaults" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the defaults of the given ‘opts’. </p>
+<p>Fields without a default are left as they are; zero-initialize ‘opts’ first, as in ‘struct <a class="reference internal" href="#structxnvme__opts"><span class="std std-ref">xnvme_opts</span></a> opts = {0};’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opts</strong> – The options to set the defaults of</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned: -EINVAL when <code class="docutils literal notranslate"><span class="pre">opts</span></code> is NULL. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -875,18 +872,18 @@
 <span class="p">};</span>
 
 <span class="cm">/**</span>
-<span class="cm"> * Initialize the given 'opts' with default values</span>
-<span class="cm"> */</span>
-<span class="kt">void</span>
-<span class="nf">xnvme_opts_set_defaults</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Returns an initialized option-struct with default values</span>
+<span class="cm"> * Set the defaults of the given 'opts'</span>
 <span class="cm"> *</span>
-<span class="cm"> * @return Zero-initialized and with default values where applicable</span>
+<span class="cm"> * Fields without a default are left as they are; zero-initialize 'opts' first, as in</span>
+<span class="cm"> * 'struct xnvme_opts opts = {0};'.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param opts The options to set the defaults of</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned: -EINVAL when</span>
+<span class="cm"> * `opts` is NULL.</span>
 <span class="cm"> */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span>
-<span class="n">xnvme_opts_default</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_opts_set_defaults</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Prints a humanly readable representation of the given ::xnvme_opts</span>
@@ -979,10 +976,6 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-opts-default">xnvme_opts_default</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_opts_default"><code class="docutils literal notranslate"><span class="pre">xnvme_opts_default()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-opts-pr">xnvme_opts_pr</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_opts_pr"><code class="docutils literal notranslate"><span class="pre">xnvme_opts_pr()</span></code></a></li>
 </ul>

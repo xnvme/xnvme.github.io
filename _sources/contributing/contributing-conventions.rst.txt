@@ -58,8 +58,21 @@ C: API
   - Pass pointers to "objects" e.g. ``xnvme_cmd_pass(*ctx, ...);``
   - Pass double-pointers for "object-initialization" e.g. ``xnvme_queue(..., **queue);``
   - On success, return 0. On error, Return negative ``errno``.
-  - Exceptions: API-calls mimicking legacy interfaces, such as the
-    ``xnvme_buf_alloc()`` which is operating similar to ``malloc()/free()``.
+  - Never pass or return a structure by value; pass a pointer, and fill an
+    output argument rather than returning one, as
+    ``xnvme_opts_set_defaults(&opts)`` does: a structure by value is
+    simple in C, but not over FFI
+  - A function replaced for any of these keeps working, as a ``static
+    inline`` in ``libxnvme_compat.h`` calling its replacement, and in a
+    debug build warning that it is deprecated, until a later release
+    removes it
+  - Who owns the memory decides the signature. Memory the caller owns is
+    filled through an output argument, with 0 or negative ``errno``
+    returned, as ``xnvme_dev_get_cmd_ctx(dev, &ctx)`` does. Memory the
+    library owns and lends out is returned as a pointer, NULL with
+    ``errno`` set on error, and given back with a matching call, as
+    ``xnvme_queue_get_cmd_ctx()`` and ``xnvme_queue_put_cmd_ctx()``, or
+    ``xnvme_buf_alloc()`` and ``xnvme_buf_free()``
 
 * The library is not thread-safe. Only the following control-plane calls may
   be made concurrently, on every backend, and only with respect to each other:
@@ -97,6 +110,30 @@ C: API
     such that all cli-tools use the same arguments, it is also essential for
     instrumentation of not just the logic of the tool but also the library
     backend
+
+C: Fields of bits
+-----------------
+
+A field of bits in a structure of the specification, such as ``flbas`` of
+the Identify Namespace data, is an integer of the width the specification
+gives it, not a C bit-field, whose layout is the compiler's choice.
+
+* Each of its fields is named by a mask, a ``#define`` of the bits in their
+  place, read and written with ``xnvme_bits_get()`` and ``xnvme_bits_set()``
+* The mask is named ``XNVME_SPEC_<STRUCT>_<FIELD>_<NAME>``: the structure
+  without its ``xnvme_spec_`` prefix, the integer, and the name the
+  specification gives the bits, such as
+  ``XNVME_SPEC_IDFY_NS_FLBAS_FORMAT`` for bits 3:0 of ``flbas``
+* The masks follow the structure they belong to, in the order of its
+  integers, and of the bits within each
+* Each mask has a doc comment saying what the bits are, then where they
+  are: ``/** <what>; bits <hi>:<lo> of '<field>' */``, or ``bit <n>`` for
+  one bit
+* The integer's own doc comment names them: ``///< <what>, see
+  XNVME_SPEC_<STRUCT>_<FIELD>_*``
+* ``tests/spec.c`` checks, for each integer, that the structure still has it
+  and that its masks fit its width, so a field renamed or narrowed without its
+  masks fails the build; a new field of bits gets a line there
 
 C: Code organisation
 --------------------
