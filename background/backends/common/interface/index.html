@@ -427,7 +427,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../xnvme_be_macos.html">macOS</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../index.html">Common Backend Impl (CBI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../index.html">Cross-platform implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../psync.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">psync</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aio.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">posix</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../emu.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">emu</span></code></a></li>
@@ -561,13 +561,17 @@ interface consists of implementations of the following.</p>
 complete recipe combining async, sync, admin, dev, and mem implementations.</p>
 <p>Have a look at the existing implementations:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">lib/xnvme_platform_*.c</span></code> — platform registration and config arrays</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lib/xnvme_be_*.c</span></code> — backend implementations</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">include/xnvme_be_registry.h</span></code> — extern declarations for all configs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/platform/&lt;os&gt;/xnvme_platform_&lt;os&gt;.c</span></code>: platform registration, scan,
+classify and the list of configs the OS offers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/platform/&lt;os&gt;/xnvme_platform_&lt;os&gt;_configs.c</span></code>: the configs that combine
+implementations from several directories</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/backend/&lt;dir&gt;/</span></code>: one directory per mechanism, such as <code class="docutils literal notranslate"><span class="pre">liburing</span></code>,
+<code class="docutils literal notranslate"><span class="pre">posix</span></code> or <code class="docutils literal notranslate"><span class="pre">spdk</span></code>, and one per OS for its own interfaces, such as <code class="docutils literal notranslate"><span class="pre">linux</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/backend/xnvme_be_registry.h</span></code>: extern declarations for all configs</p></li>
 </ul>
 <p>And the definition of the backend interface in:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">include/xnvme_be.h</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/backend/xnvme_be.h</span></code></p></li>
 </ul>
 </section>
 

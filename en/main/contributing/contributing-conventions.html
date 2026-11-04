@@ -549,7 +549,7 @@ I/O is not covered</p>
 variants, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_vtophys()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">xnvme_mem_unmap()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> and
 <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_destroy()</span></code>; one process-wide lock serialises them
-(<code class="docutils literal notranslate"><span class="pre">lib/xnvme_lock.c</span></code>)</p></li>
+(<code class="docutils literal notranslate"><span class="pre">lib/util/xnvme_lock.c</span></code>)</p></li>
 <li><p>A queue, and the command contexts drawn from it, belongs to one thread at a
 time, and so do a device’s synchronous and admin command paths</p></li>
 <li><p>The device getters that identify the device on first use, such as
@@ -580,12 +580,51 @@ backend</p></li>
 </li>
 </ul>
 </section>
-<section id="c-backend-implementations">
-<h2>C: Backend Implementations<a class="headerlink" href="#c-backend-implementations" title="Link to this heading">#</a></h2>
-<p>The backend interface is declared in the internal header <code class="docutils literal notranslate"><span class="pre">xnvme_be.h</span></code>. It
-consists of function-pointers for different tasks grouped together in structs.
-Those different set of tasks are referred to as the function-interfaces, they
-are labeled / grouped by:</p>
+<section id="c-code-organisation">
+<h2>C: Code organisation<a class="headerlink" href="#c-code-organisation" title="Link to this heading">#</a></h2>
+<p>Where code lives and what it is named follow from what it does, so new code
+has one place and one name. These rules are for people and coding agents
+alike: follow them rather than the nearest existing example, and where a case
+is not covered, raise it in review instead of inventing a convention.</p>
+<section id="layout">
+<h3>Layout<a class="headerlink" href="#layout" title="Link to this heading">#</a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">include/</span></code> holds the public headers, <code class="docutils literal notranslate"><span class="pre">libxnvme*.h</span></code>, and nothing else</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/&lt;group&gt;/</span></code> holds the implementation of the public API, where
+<code class="docutils literal notranslate"><span class="pre">lib/&lt;group&gt;/xnvme_&lt;topic&gt;.c</span></code> implements <code class="docutils literal notranslate"><span class="pre">include/libxnvme_&lt;topic&gt;.h</span></code>,
+next to the private headers it shares, <code class="docutils literal notranslate"><span class="pre">xnvme_&lt;topic&gt;.h</span></code>. The groups are
+the ones the API documentation uses, <code class="docutils literal notranslate"><span class="pre">NAMESPACES</span></code> in
+<code class="docutils literal notranslate"><span class="pre">docs/tooling/xnvme_docs/apigen.py</span></code>, so a new public header goes in both</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">util</span></code>: utilities the other groups use: the lock, CRCs, LBA helpers,
+the version and the build configuration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">core</span></code>: devices, buffers, commands, queues, geometry, identifiers and
+options</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nvme</span></code>: the NVMe command sets, the spec and its printers, topology and
+protection information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>: the file API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cli</span></code>: the command-line library the tools share</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">lib/meson.build</span></code> lists <code class="docutils literal notranslate"><span class="pre">util</span></code> first, then <code class="docutils literal notranslate"><span class="pre">backend</span></code> and
+<code class="docutils literal notranslate"><span class="pre">platform</span></code>, which the public API is built on, then <code class="docutils literal notranslate"><span class="pre">core</span></code>, <code class="docutils literal notranslate"><span class="pre">nvme</span></code>,
+<code class="docutils literal notranslate"><span class="pre">file</span></code> and <code class="docutils literal notranslate"><span class="pre">cli</span></code></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/cuse/</span></code> is a static library of its own for the tools, not part of
+<code class="docutils literal notranslate"><span class="pre">libxnvme</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/platform/</span></code> holds what selects among the backend configs:
+<code class="docutils literal notranslate"><span class="pre">xnvme_platform.c</span></code>, the device-open loop, and per OS
+<code class="docutils literal notranslate"><span class="pre">lib/platform/&lt;os&gt;/xnvme_platform_&lt;os&gt;.c</span></code>, the scan, the classify and the
+list of configs the OS offers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib/backend/</span></code> holds the backend interface, <code class="docutils literal notranslate"><span class="pre">xnvme_be.h</span></code>, its shared
+code, <code class="docutils literal notranslate"><span class="pre">xnvme_be.c</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_be_cref.c</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_be_nosys.c</span></code>, the
+declarations of every config, <code class="docutils literal notranslate"><span class="pre">xnvme_be_registry.h</span></code>, the state union,
+<code class="docutils literal notranslate"><span class="pre">xnvme_be_state.h</span></code>, and one directory per mechanism or OS</p></li>
+</ul>
+</section>
+<section id="the-backend-interface">
+<h3>The backend interface<a class="headerlink" href="#the-backend-interface" title="Link to this heading">#</a></h3>
+<p>A backend config, <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_be_config</span></code>, combines one implementation of
+each backend interface:</p>
 <ul class="simple">
 <li><p><strong>dev</strong> : device handles and device enumeration</p></li>
 <li><p><strong>mem</strong> : memory allocation for command-payloads aka buffers</p></li>
@@ -593,44 +632,160 @@ are labeled / grouped by:</p>
 <li><p><strong>sync</strong> : synchronous I/O command processing</p></li>
 <li><p><strong>async</strong> : asynchronous I/O command submission/completion via queues</p></li>
 </ul>
-<p>Additionally, a backend-state is available for specialization to a given
-backend and its function-interface implementations.</p>
+</section>
+<section id="directories-in-lib-backend">
+<h3>Directories in <code class="docutils literal notranslate"><span class="pre">lib/backend/</span></code><a class="headerlink" href="#directories-in-lib-backend" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Should have a header-file defining the backend and what it exposes</p>
+<li><p>A directory is either one mechanism, named after the library or interface it
+uses, such as <code class="docutils literal notranslate"><span class="pre">liburing</span></code>, <code class="docutils literal notranslate"><span class="pre">libaio</span></code>, <code class="docutils literal notranslate"><span class="pre">spdk</span></code>, <code class="docutils literal notranslate"><span class="pre">upcie</span></code>, <code class="docutils literal notranslate"><span class="pre">iocp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">posix</span></code> or <code class="docutils literal notranslate"><span class="pre">thrpool</span></code>, or one OS’s own interfaces, <code class="docutils literal notranslate"><span class="pre">linux</span></code>,
+<code class="docutils literal notranslate"><span class="pre">freebsd</span></code>, <code class="docutils literal notranslate"><span class="pre">macos</span></code> and <code class="docutils literal notranslate"><span class="pre">windows</span></code></p></li>
+<li><p>A mechanism gets its own directory even when only one OS has it, as
+<code class="docutils literal notranslate"><span class="pre">liburing</span></code> and <code class="docutils literal notranslate"><span class="pre">iocp</span></code> do</p></li>
+<li><p>What an OS provides itself, such as its NVMe-driver ioctls, stays in that
+OS’s directory even when every OS has an equivalent, since the equivalents
+share no code</p></li>
+</ul>
+</section>
+<section id="names">
+<h3>Names<a class="headerlink" href="#names" title="Link to this heading">#</a></h3>
+<p>The prefix names what a file or symbol implements, and the rest names which
+one. Basenames are unique across <code class="docutils literal notranslate"><span class="pre">lib/</span></code>, so every private header shares one
+include path.</p>
 <ul>
-<li><p>Located in <code class="docutils literal notranslate"><span class="pre">include/xnvme_be_&lt;backend_name&gt;.h</span></code></p></li>
-<li><p>Have a state-struct named <code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;backend_name&gt;_state</span></code></p></li>
-<li><p>Provide <code class="docutils literal notranslate"><span class="pre">extern</span> <span class="pre">struct</span> <span class="pre">xnvme_be_&lt;interface&gt;</span> <span class="pre">*</span></code> definitions for the
-interface implementations, these are used when “mixing-in” the
-implementations into the backend</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g_xnvme_be_&lt;dir&gt;_&lt;interface&gt;[_&lt;ident&gt;]</span></code> is an implementation of a backend
+interface, in <code class="docutils literal notranslate"><span class="pre">lib/backend/&lt;dir&gt;/xnvme_be_&lt;dir&gt;_&lt;interface&gt;[_&lt;ident&gt;].c</span></code>,
+one implementation per file. The <code class="docutils literal notranslate"><span class="pre">&lt;ident&gt;</span></code> comes after the interface and
+says what sets an implementation apart from the directory’s own. The
+directory’s own implementation of an interface carries none, such as
+<code class="docutils literal notranslate"><span class="pre">g_xnvme_be_liburing_async</span></code>, and neither does an only implementation that
+is plainly the directory’s, as FreeBSD’s <code class="docutils literal notranslate"><span class="pre">admin</span></code> and <code class="docutils literal notranslate"><span class="pre">sync</span></code> are. Another
+implementation of the same interface carries one, such as
+<code class="docutils literal notranslate"><span class="pre">g_xnvme_be_liburing_async_ucmd</span></code> beside it, and so does an only
+implementation that is not the plain one, such as <code class="docutils literal notranslate"><span class="pre">mem_hugepage</span></code> or
+<code class="docutils literal notranslate"><span class="pre">dev_dmabuf</span></code></p>
+<ul class="simple">
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">g_xnvme_be_liburing_async_ucmd</span></code>, in
+<code class="docutils literal notranslate"><span class="pre">lib/backend/liburing/xnvme_be_liburing_async_ucmd.c</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">g_xnvme_be_upcie_dev_cuda</span></code>, in
+<code class="docutils literal notranslate"><span class="pre">lib/backend/upcie/xnvme_be_upcie_dev_cuda.c</span></code></p></li>
 </ul>
 </li>
-<li><p>Should be implemented in a file named <code class="docutils literal notranslate"><span class="pre">lib/xnvme_be_&lt;backend_name&gt;_&lt;interface&gt;_&lt;ident&gt;.c</span></code></p>
-<ul>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">&lt;ident&gt;</span></code> is a name uniquely identifying the interface-implementation</p></li>
-<li><p>Example: the Linux backend, named <strong>linux</strong>, has the <strong>async</strong>
-implementation of the <strong>async</strong> interface utilizing <strong>io_uring</strong> in a file
-named: * <code class="docutils literal notranslate"><span class="pre">xnvme_be_linux_async_liburing.c</span></code></p></li>
-<li><p>Example: The SPDK backend, named <strong>spdk</strong>, has the <strong>async</strong> implementation
-using the SPDK NVMe driver in a file named:
-* <code class="docutils literal notranslate"><span class="pre">xnvme_be_spdk_async_nvme.c</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_&lt;topic&gt;.c</span></code> holds, and defines no <code class="docutils literal notranslate"><span class="pre">struct</span>
+<span class="pre">xnvme_be_&lt;interface&gt;</span></code>:</p>
+<ul class="simple">
+<li><p>code that more than one file of the directory uses, such as
+<code class="docutils literal notranslate"><span class="pre">xnvme_be_linux_nvme.c</span></code> for the NVMe-driver ioctl wrapper</p></li>
+<li><p>code a file outside the directory uses, so the headers it needs stay in
+the directory, such as <code class="docutils literal notranslate"><span class="pre">xnvme_be_linux_uapi.c</span></code> for <code class="docutils literal notranslate"><span class="pre">xnvme_libconf.c</span></code></p></li>
+<li><p>a part of one implementation of a hundred lines or more, such as
+<code class="docutils literal notranslate"><span class="pre">xnvme_be_upcie_cplane_serve_conn.c</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_be_upcie_cplane_share.c</span></code>
+of the cplane server</p></li>
+<li><p>the functions of the public API a backend implements, such as
+<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> in <code class="docutils literal notranslate"><span class="pre">xnvme_be_upcie_cuda_gpu.c</span></code></p></li>
+</ul>
+<p>Code that only one file uses, and that is shorter than that, is <code class="docutils literal notranslate"><span class="pre">static</span></code>
+in that file</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;.h</span></code> is the directory’s header: the <code class="docutils literal notranslate"><span class="pre">extern</span></code> declarations
+of its implementations and of its shared functions. A header that configs
+outside the directory include, such as <code class="docutils literal notranslate"><span class="pre">xnvme_be_liburing.h</span></code>, keeps what
+needs the directory’s external library behind its
+<code class="docutils literal notranslate"><span class="pre">XNVME_BE_&lt;DIR&gt;_ENABLED</span></code>, so it builds where the library is absent</p>
+<ul class="simple">
+<li><p>A topic whose declarations need headers the rest of the directory must
+not see, such as a GPU runtime, gets <code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_&lt;topic&gt;.h</span></code></p></li>
 </ul>
 </li>
-<li><p>Should use static function declarations to avoid symbol-leak</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_state.h</span></code> holds the directory’s state, <code class="docutils literal notranslate"><span class="pre">struct</span>
+<span class="pre">xnvme_be_&lt;dir&gt;_state</span></code>. It needs no headers beyond the C library and
+<code class="docutils literal notranslate"><span class="pre">xnvme_be.h</span></code>: a type from a library or SDK is held behind a pointer or
+an integer of its size, so <code class="docutils literal notranslate"><span class="pre">lib/backend/xnvme_be_state.h</span></code> can include
+every one of them</p></li>
+<li><p>A function is <code class="docutils literal notranslate"><span class="pre">static</span></code> unless another file needs it, and is then named
+<code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_&lt;function&gt;()</span></code> and declared in <code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;.h</span></code>, such
+as <code class="docutils literal notranslate"><span class="pre">xnvme_be_posix_sync_cmd_io()</span></code>. The exception is a function of the
+public API that a backend implements, such as <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code></p></li>
+<li><p>A config is named after the name <code class="docutils literal notranslate"><span class="pre">--be</span></code> selects it by, with <code class="docutils literal notranslate"><span class="pre">-</span></code> as
+<code class="docutils literal notranslate"><span class="pre">_</span></code>. One whose parts all come from one directory lives in
+<code class="docutils literal notranslate"><span class="pre">lib/backend/&lt;dir&gt;/xnvme_be_&lt;dir&gt;_configs.c</span></code> as <code class="docutils literal notranslate"><span class="pre">g_xnvme_be_&lt;name&gt;</span></code>,
+such as <code class="docutils literal notranslate"><span class="pre">g_xnvme_be_spdk</span></code> and <code class="docutils literal notranslate"><span class="pre">g_xnvme_be_upcie_cuda</span></code>. One that combines
+directories lives with the platform that offers it, in
+<code class="docutils literal notranslate"><span class="pre">lib/platform/&lt;os&gt;/xnvme_platform_&lt;os&gt;_configs.c</span></code>, as
+<code class="docutils literal notranslate"><span class="pre">g_xnvme_platform_&lt;os&gt;_&lt;name&gt;</span></code>, such as
+<code class="docutils literal notranslate"><span class="pre">g_xnvme_platform_linux_libaio_bdev</span></code>. Every config is declared in
+<code class="docutils literal notranslate"><span class="pre">lib/backend/xnvme_be_registry.h</span></code></p></li>
+<li><p>A platform’s files are <code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;.c</span></code> and
+<code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;_configs.c</span></code></p></li>
+<li><p>A mechanism directory has one build option, <code class="docutils literal notranslate"><span class="pre">with-&lt;dir&gt;</span></code>, and one macro,
+<code class="docutils literal notranslate"><span class="pre">XNVME_BE_&lt;DIR&gt;_ENABLED</span></code>, which <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">library-info</span></code> lists. An OS
+directory is built with its platform, <code class="docutils literal notranslate"><span class="pre">XNVME_PLATFORM_&lt;OS&gt;_ENABLED</span></code>. A
+feature within a directory is <code class="docutils literal notranslate"><span class="pre">XNVME_BE_&lt;DIR&gt;_&lt;FEATURE&gt;_ENABLED</span></code>, such as
+<code class="docutils literal notranslate"><span class="pre">XNVME_BE_LINUX_BLOCK_ENABLED</span></code>; one outside the backend is
+<code class="docutils literal notranslate"><span class="pre">XNVME_&lt;FEATURE&gt;_ENABLED</span></code>, such as <code class="docutils literal notranslate"><span class="pre">XNVME_LIBISAL_ENABLED</span></code></p></li>
+</ul>
+</section>
+<section id="the-backend-state">
+<h3>The backend state<a class="headerlink" href="#the-backend-state" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>All implementations in a config share one state, <code class="docutils literal notranslate"><span class="pre">dev-&gt;be.state</span></code>, and the
+config’s dev implementation decides its layout.
+<code class="docutils literal notranslate"><span class="pre">lib/backend/xnvme_be_state.h</span></code> lists every layout as a member of <code class="docutils literal notranslate"><span class="pre">union</span>
+<span class="pre">xnvme_be_state</span></code>, and implementations reach it through
+<code class="docutils literal notranslate"><span class="pre">xnvme_be_state(dev)</span></code>, as in <code class="docutils literal notranslate"><span class="pre">&amp;xnvme_be_state(dev)-&gt;linux_state</span></code>.
+Nothing casts <code class="docutils literal notranslate"><span class="pre">dev-&gt;be.state</span></code></p></li>
+<li><p>Where implementations from another directory read the state, the layouts
+share a first member, so the read is defined by C’s rule on common initial
+sequences, and the state header asserts it</p>
 <ul>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">cmd_io()</span></code> backend interface function should be declared <code class="docutils literal notranslate"><span class="pre">static</span> <span class="pre">int</span>
-<span class="pre">cmd_io(...)</span></code></p></li>
+<li><p>The posix and shim implementations read <code class="docutils literal notranslate"><span class="pre">posix_state</span></code>, so the Linux,
+FreeBSD and macOS states embed <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_be_posix_state</span></code> as their
+first member, <code class="docutils literal notranslate"><span class="pre">posix</span></code>, asserted with <code class="docutils literal notranslate"><span class="pre">XNVME_BE_POSIX_STATE_FIRST()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xnvme_platform_dev_open()</span></code> stores a shared controller in <code class="docutils literal notranslate"><span class="pre">ctrlr</span></code>, so
+the states of the dev implementations that share controllers start with
+<code class="docutils literal notranslate"><span class="pre">ctrlr</span></code>, asserted with <code class="docutils literal notranslate"><span class="pre">XNVME_BE_CTRLR_STATE_FIRST()</span></code></p></li>
 </ul>
 </li>
-<li><p>In case an interface-function should be shared by other backends, then
-provide the full “name”, backend/interface/ident/function</p>
-<ul>
-<li><p>Example: for the Common Backend Implementations (CBI), the <strong>sync</strong>
-implementation using <strong>psync</strong> for the <strong>cmd_iov()</strong> interface function,
-then the function is named: <code class="docutils literal notranslate"><span class="pre">xnvme_be_cbi_sync_psync_cmd_io()</span></code></p></li>
 </ul>
-</li>
+</section>
+<section id="dependencies">
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>A directory bound to an OS, such as liburing, libaio, libvfn or iocp, is
+built only there, and its option is off elsewhere rather than an error,
+since a distribution build turns every auto feature on. posix cannot be
+disabled on Linux, FreeBSD and macOS, whose directories take their memory
+and psync from it, and the configure step fails when it is</p></li>
+<li><p>A disabled directory keeps its implementations, compiled to the functions
+of <code class="docutils literal notranslate"><span class="pre">xnvme_be_nosys.h</span></code>. A config using a disabled <code class="docutils literal notranslate"><span class="pre">emu</span></code>, <code class="docutils literal notranslate"><span class="pre">nil</span></code>,
+<code class="docutils literal notranslate"><span class="pre">thrpool</span></code> or <code class="docutils literal notranslate"><span class="pre">shim</span></code> stays and reports <code class="docutils literal notranslate"><span class="pre">-ENOSYS</span></code>; one using any other
+disabled directory is left out of the platform’s list. <code class="docutils literal notranslate"><span class="pre">nosys</span></code> is for a
+directory that is switched off, never a way to leave a broken dependency to
+fail at runtime</p></li>
+<li><p>A directory includes another directory’s header only for what it uses</p></li>
 </ul>
+</section>
+<section id="where-new-code-goes">
+<h3>Where new code goes<a class="headerlink" href="#where-new-code-goes" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Part of the public API: <code class="docutils literal notranslate"><span class="pre">lib/&lt;group&gt;/xnvme_&lt;topic&gt;.c</span></code>, declared in
+<code class="docutils literal notranslate"><span class="pre">include/libxnvme_&lt;topic&gt;.h</span></code>, with <code class="docutils literal notranslate"><span class="pre">xnvme_&lt;topic&gt;</span></code> added to the same
+group in <code class="docutils literal notranslate"><span class="pre">NAMESPACES</span></code></p></li>
+<li><p>A new library or mechanism: a new directory, <code class="docutils literal notranslate"><span class="pre">lib/backend/&lt;name&gt;/</span></code>, with
+its header, its state header, one file per implementation, a
+<code class="docutils literal notranslate"><span class="pre">meson.build</span></code> adding its sources and include directory, its option
+<code class="docutils literal notranslate"><span class="pre">with-&lt;name&gt;</span></code> and macro <code class="docutils literal notranslate"><span class="pre">XNVME_BE_&lt;NAME&gt;_ENABLED</span></code>, its entry in
+<code class="docutils literal notranslate"><span class="pre">g_libconf_parts</span></code> in <code class="docutils literal notranslate"><span class="pre">lib/util/xnvme_libconf.c</span></code>, which <code class="docutils literal notranslate"><span class="pre">xnvme</span>
+<span class="pre">library-info</span></code> prints, and its configs if they need nothing from other
+directories</p></li>
+<li><p>Something an OS provides itself: that OS’s directory,
+<code class="docutils literal notranslate"><span class="pre">lib/backend/&lt;os&gt;/</span></code></p></li>
+<li><p>A config combining directories: the platform’s
+<code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;_configs.c</span></code>, listed in <code class="docutils literal notranslate"><span class="pre">.backends</span></code> of the
+platform’s <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_platform</span></code> in <code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;.c</span></code> and
+declared in <code class="docutils literal notranslate"><span class="pre">xnvme_be_registry.h</span></code></p></li>
+</ol>
+</section>
 </section>
 </section>
 
@@ -660,7 +815,16 @@ then the function is named: <code class="docutils literal notranslate"><span cla
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-format">C: format</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-style">C: style</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-api">C: API</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-backend-implementations">C: Backend Implementations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-code-organisation">C: Code organisation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#layout">Layout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-backend-interface">The backend interface</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directories-in-lib-backend">Directories in <code class="docutils literal notranslate"><span class="pre">lib/backend/</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#names">Names</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-backend-state">The backend state</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dependencies">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#where-new-code-goes">Where new code goes</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

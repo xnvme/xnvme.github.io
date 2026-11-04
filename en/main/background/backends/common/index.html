@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Common Backend Impl (CBI) &#8212; xNVMe v0.7.5 documentation</title>
+    <title>Cross-platform implementations &#8212; xNVMe v0.7.5 documentation</title>
   
   
   
@@ -427,7 +427,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../xnvme_be_macos.html">macOS</a></li>
-<li class="toctree-l2 current active has-children"><a aria-current="page" class="current reference internal" href="#">Common Backend Impl (CBI)</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a aria-current="page" class="current reference internal" href="#">Cross-platform implementations</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="psync.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">psync</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="aio.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">posix</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="emu.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">emu</span></code></a></li>
@@ -487,7 +487,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Backend Configs</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Common Backend Impl (CBI)</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Cross-platform implementations</span></li>
   </ul>
 </nav>
 </div>
@@ -504,26 +504,28 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="common-backend-impl-cbi">
-<span id="sec-backends-common"></span><h1>Common Backend Impl (CBI)<a class="headerlink" href="#common-backend-impl-cbi" title="Link to this heading">#</a></h1>
-<p>The common backend implementations are implementations for re-use by other
-platforms. For example, instead of the Linux, FreeBSD, and macOS platforms all
-implementing the same POSIX asynchronous I/O interface, it is instead provided
-here, and they can all include it in their backend configs.</p>
+  <section id="cross-platform-implementations">
+<span id="sec-backends-common"></span><h1>Cross-platform implementations<a class="headerlink" href="#cross-platform-implementations" title="Link to this heading">#</a></h1>
+<p>These implementations are shared by several platforms, each in a directory of
+its own under <code class="docutils literal notranslate"><span class="pre">lib/backend/</span></code>. For example, instead of the Linux, FreeBSD, and
+macOS platforms each implementing POSIX asynchronous I/O, <code class="docutils literal notranslate"><span class="pre">lib/backend/posix</span></code>
+provides it once, and they all include it in their backend configs.</p>
 <p>Similarly, <strong>xNVMe</strong> provides several software-only implementations of the
-<strong>xNVMe</strong> API, such as the <strong>thrpool</strong> which implements the asynchronous parts
-of the <strong>xNVMe</strong> API by using a thread-pool.</p>
-<p>Each platform composes these CBI components into predefined backend configs
-(<code class="docutils literal notranslate"><span class="pre">xnvme_be_config</span></code>), providing tested and validated combinations. In addition to
-common implementations and interface emulation, <strong>xNVMe</strong> also provides simple
-device emulation via the <strong>ramdisk</strong> backend implementation.</p>
+<strong>xNVMe</strong> API, such as <code class="docutils literal notranslate"><span class="pre">lib/backend/thrpool</span></code>, which implements the
+asynchronous parts of the <strong>xNVMe</strong> API with a thread pool, and
+<code class="docutils literal notranslate"><span class="pre">lib/backend/emu</span></code> and <code class="docutils literal notranslate"><span class="pre">lib/backend/nil</span></code>.</p>
+<p>Each platform combines these with its own implementations into predefined
+backend configs (<code class="docutils literal notranslate"><span class="pre">xnvme_be_config</span></code>), providing tested and validated
+combinations. In addition, <code class="docutils literal notranslate"><span class="pre">lib/backend/ramdisk</span></code> provides simple device
+emulation, and <code class="docutils literal notranslate"><span class="pre">lib/backend/shim</span></code> emulates the NVMe admin commands for
+regular files.</p>
 <section id="instrumentation">
 <h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Memory Allocators</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">posix</span></code>, Use <strong>libc</strong> <code class="docutils literal notranslate"><span class="pre">malloc()/free()</span></code> with <code class="docutils literal notranslate"><span class="pre">sysconf()</span></code> for
-alignment, add link to CBI</p></li>
+alignment</p></li>
 </ul>
 </li>
 <li><p>Asynchronous Interfaces</p>

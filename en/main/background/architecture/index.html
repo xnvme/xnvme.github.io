@@ -427,7 +427,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../backends/xnvme_be_macos.html">macOS</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../backends/common/index.html">Common Backend Impl (CBI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../backends/common/index.html">Cross-platform implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../backends/common/psync.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">psync</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../backends/common/aio.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">posix</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../backends/common/emu.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">emu</span></code></a></li>
@@ -752,7 +752,7 @@ for this model - the daemon must own the controller while clients hold queue ref
 ├─────────────────────────────────────────────────────────────┤
 │  Cross-platform components                                  │
 │                                                             │
-│  CBI: emu, thrpool, nil, posix mem, psync                   │
+│  posix, emu, thrpool, nil, shim: shared by the platforms    │
 │  Ramdisk: virtual device driver (reusable by any platform)  │
 │  cref: controller reference counting                        │
 └─────────────────────────────────────────────────────────────┘
@@ -948,12 +948,12 @@ URI-based automatic selection.</p>
 </div>
 <p><strong>Example configs (Linux):</strong></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// NVMe passthrough via io_uring_cmd</span>
-<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_be_linux_ucmd_nvme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_async_ucmd</span><span class="p">,</span>
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_platform_linux_io_uring_cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_liburing_async_ucmd</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_sync_nvme</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_admin_nvme</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_dev_linux</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_mem_posix</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_dev</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_posix_mem</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">mem_overrides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
 <span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_mem_hugepage</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
 <span class="w">	</span><span class="p">},</span>
@@ -964,12 +964,12 @@ URI-based automatic selection.</p>
 <span class="p">};</span>
 
 <span class="c1">// File I/O via io_uring</span>
-<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_be_linux_iou_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_async_liburing</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_sync_psync</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_admin_shim</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_dev_linux</span><span class="p">,</span>
-<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_cbi_mem_posix</span><span class="p">,</span>
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_config</span><span class="w"> </span><span class="n">g_xnvme_platform_linux_io_uring_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">async</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_liburing_async</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_posix_sync</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_shim_admin</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_dev</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">g_xnvme_be_posix_mem</span><span class="p">,</span>
 <span class="w">	</span><span class="p">.</span><span class="n">mem_overrides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_be_mem</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="p">[]){</span>
 <span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_mem_hugepage</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
 <span class="w">	</span><span class="p">},</span>
@@ -1289,8 +1289,8 @@ users to force specific interface combinations regardless of URI classification.
 </section>
 <section id="ramdisk">
 <h3>Ramdisk<a class="headerlink" href="#ramdisk" title="Link to this heading">#</a></h3>
-<p>Ramdisk is a cross-platform virtual device driver - not a backend, not formally
-CBI, but reusable like CBI.</p>
+<p>Ramdisk is a cross-platform virtual device driver in <code class="docutils literal notranslate"><span class="pre">lib/backend/ramdisk</span></code>,
+reusable by every platform like the other cross-platform implementations.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Ramdisk via URI pattern</span>
 <span class="n">xnvme_dev_open</span><span class="p">(</span><span class="s">"1GB"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
 
@@ -1300,7 +1300,7 @@ CBI, but reusable like CBI.</p>
 </div>
 <ul class="simple">
 <li><p>Memory-backed NVMe device emulation</p></li>
-<li><p>Uses CBI async wrappers (thrpool, emu, nil)</p></li>
+<li><p>Uses the cross-platform async implementations (thrpool, emu, nil)</p></li>
 <li><p>Available on all platforms</p></li>
 <li><p>Config provides its own sync/admin/dev</p></li>
 </ul>
@@ -1386,9 +1386,9 @@ bypassed – the user is explicitly choosing their config.</p>
 </table>
 </div>
 </section>
-<section id="cbi-virtual-components">
-<h3>CBI / Virtual Components<a class="headerlink" href="#cbi-virtual-components" title="Link to this heading">#</a></h3>
-<p>Cross-platform common backend implementations:</p>
+<section id="cross-platform-and-virtual-components">
+<h3>Cross-platform and Virtual Components<a class="headerlink" href="#cross-platform-and-virtual-components" title="Link to this heading">#</a></h3>
+<p>The implementations shared by the platforms, each in <code class="docutils literal notranslate"><span class="pre">lib/backend/&lt;dir&gt;</span></code>:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
@@ -2075,18 +2075,18 @@ definitions.</p></li>
 <span class="cp">#ifdef XNVME_BE_VFIO_ENABLED</span>
 <span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_vfio</span><span class="p">,</span>
 <span class="cp">#endif</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_emu_nvme</span><span class="p">,</span>
-<span class="cp">#ifdef XNVME_BE_LINUX_LIBURING_ENABLED</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_ucmd_nvme</span><span class="p">,</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_iou_nvme</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_emu</span><span class="p">,</span>
+<span class="cp">#ifdef XNVME_BE_LIBURING_ENABLED</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_io_uring_cmd</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_io_uring</span><span class="p">,</span>
 <span class="cp">#endif</span>
 <span class="w">		</span><span class="c1">// ... more configs ...</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_emu_file</span><span class="p">,</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_linux_thrpool_file</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_emu_file</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_thrpool_file</span><span class="p">,</span>
 <span class="cp">#ifdef XNVME_BE_RAMDISK_ENABLED</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_ramdisk_emu</span><span class="p">,</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_ramdisk_thrpool</span><span class="p">,</span>
-<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_be_ramdisk_nil</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_ramdisk_emu</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_ramdisk_thrpool</span><span class="p">,</span>
+<span class="w">		</span><span class="o">&amp;</span><span class="n">g_xnvme_platform_linux_ramdisk</span><span class="p">,</span>
 <span class="cp">#endif</span>
 <span class="w">		</span><span class="nb">NULL</span><span class="p">,</span>
 <span class="w">	</span><span class="p">},</span>
@@ -2305,63 +2305,68 @@ refcounting - drivers provide open/close logic but are unaware of refcounting.</
 </section>
 <section id="file-organization">
 <h2>File Organization<a class="headerlink" href="#file-organization" title="Link to this heading">#</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>lib/
-├── xnvme_platform.c              # Shared dev_open, enumerate
-├── xnvme_platform_linux.c        # Linux: scan, classify
-├── xnvme_platform_freebsd.c      # FreeBSD: scan, classify
-├── xnvme_platform_macos.c        # macOS: scan, classify
-├── xnvme_platform_windows.c      # Windows: scan, classify
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>include/                          # Public headers only
+lib/
+├── core/                       # dev, buf, cmd, queue, geo, ident, opts
+├── nvme/                       # adm, nvm, znd, kvs, spec, topology, pi
+├── util/                       # lock, crc, lba, libconf, ver
+├── file/  cli/                 # the file API and the CLI library
 │
-├── xnvme_be_linux.c              # Linux configs + helpers
-├── xnvme_be_linux_dev.c          # Linux: dev_open, dev_close
-├── xnvme_be_linux_sync_nvme.c    # Linux: NVMe ioctl sync
-├── xnvme_be_linux_sync_block.c   # Linux: block layer sync
-├── xnvme_be_linux_admin_nvme.c   # Linux: NVMe ioctl admin
-├── xnvme_be_linux_admin_block.c  # Linux: block layer admin
-├── xnvme_be_linux_async_*.c      # Linux: io_uring, libaio, etc.
-├── xnvme_be_linux_mem_hugepage.c # Linux: hugepage memory
+├── platform/
+│   ├── xnvme_platform.c          # Shared dev_open, enumerate
+│   └── &lt;os&gt;/                     # linux, freebsd, macos, windows
+│       ├── xnvme_platform_&lt;os&gt;.c # Scan, classify, the configs the OS offers
+│       └── xnvme_platform_&lt;os&gt;_configs.c  # Configs combining directories
 │
-├── xnvme_be_fbsd*.c              # FreeBSD configs + implementations
-├── xnvme_be_macos*.c             # macOS configs + implementations
-├── xnvme_be_macos_driverkit*.c   # macOS DriverKit configs + implementations
-├── xnvme_be_windows*.c           # Windows configs + implementations
-│
-├── xnvme_be_spdk*.c              # SPDK userspace driver
-├── xnvme_be_vfio*.c              # libvfn userspace driver
-│
-├── xnvme_be_cbi_*.c              # Cross-platform components (emu, thrpool, psync, etc.)
-├── xnvme_be_cref.c               # Controller reference counting
-├── xnvme_be_ramdisk*.c           # Ramdisk virtual device driver
-└── xnvme_be_nosys.c              # Stubs for disabled features
+└── backend/
+    ├── xnvme_be.c                # Backend printers
+    ├── xnvme_be_cref.c           # Controller reference counting
+    ├── xnvme_be_nosys.c          # Stubs for what an implementation lacks
+    ├── xnvme_be_registry.h       # Extern declarations for all configs
+    ├── xnvme_be_state.h          # The union of the backend states
+    │
+    └── &lt;dir&gt;/                    # One mechanism: posix, emu, thrpool, nil,
+        │                         # shim, liburing, libaio, iocp, ioring,
+        │                         # spdk, libvfn, upcie, driverkit, ramdisk;
+        │                         # or an OS's own: linux, freebsd, macos,
+        │                         # windows
+        ├── xnvme_be_&lt;dir&gt;_configs.c  # Configs from this directory alone
+        ├── xnvme_be_&lt;dir&gt;_&lt;intf&gt;.c   # dev, mem, admin, sync or async
+        └── xnvme_be_&lt;dir&gt;_&lt;topic&gt;.c  # Code shared within the directory
 </pre></div>
 </div>
 </section>
 <section id="naming-convention">
 <h2>Naming Convention<a class="headerlink" href="#naming-convention" title="Link to this heading">#</a></h2>
+<p>The prefix names what a file implements, and the rest which one. A backend
+file is named <code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_&lt;intf&gt;[_&lt;ident&gt;].c</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code> is the
+directory it lives in, <code class="docutils literal notranslate"><span class="pre">&lt;intf&gt;</span></code> the backend interface it implements, and
+<code class="docutils literal notranslate"><span class="pre">&lt;ident&gt;</span></code> tells implementations of the same interface apart. A directory’s
+private header is <code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;.h</span></code>.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
-<tr class="row-odd"><th class="head"><p>Prefix</p></th>
+<tr class="row-odd"><th class="head"><p>File</p></th>
 <th class="head"><p>Meaning</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;.c</span></code></p></td>
 <td><p>Platform (OS-specific scan, classify)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;os&gt;_</span></code></p></td>
-<td><p>Backend implementation (configs, sync, admin, async, mem)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_configs.c</span></code></p></td>
+<td><p>Backend configs from one directory alone</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;name&gt;</span></code></p></td>
-<td><p>Userspace driver (spdk, vfio)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_platform_&lt;os&gt;_configs.c</span></code></p></td>
+<td><p>Backend configs combining directories</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_cbi_</span></code></p></td>
-<td><p>Cross-platform backend implementation</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_&lt;dir&gt;_&lt;intf&gt;.c</span></code></p></td>
+<td><p>Implementation of one backend interface</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_ramdisk</span></code></p></td>
-<td><p>Ramdisk virtual device</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_cref</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_cref</span></code></p></td>
 <td><p>Controller reference counting</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xnvme_be_nosys</span></code></p></td>
+<td><p>Stubs for what an implementation lacks</p></td>
 </tr>
 </tbody>
 </table>
@@ -2586,7 +2591,7 @@ without losing existing content.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-config-compatibility">Backend Config Compatibility</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#userspace-managed-configs">Userspace-Managed Configs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cbi-virtual-components">CBI / Virtual Components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-platform-and-virtual-components">Cross-platform and Virtual Components</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-specific-details">Platform-Specific Details</a><ul class="nav section-nav flex-column">
