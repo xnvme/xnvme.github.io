@@ -398,7 +398,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_dev.html">libxnvme_dev.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_geo.html">libxnvme_geo.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_ident.html">libxnvme_ident.h</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_mem.html">libxnvme_mem.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_opts.html">libxnvme_opts.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_queue.html">libxnvme_queue.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_scan.html">libxnvme_scan.h</a></li>
@@ -558,7 +557,7 @@ is prepared on the host and must be copied to device memory with
 <section id="host-side-setup">
 <h2>Host-Side Setup<a class="headerlink" href="#host-side-setup" title="Link to this heading">#</a></h2>
 <p>Open a device on the <code class="docutils literal notranslate"><span class="pre">upcie-cuda</span></code> backend, allocate a data buffer, and
-prepare one <code class="docutils literal notranslate"><span class="pre">xnvme_spec_cmd</span></code> per thread on the host. PRP entries require
+prepare one <code class="docutils literal notranslate"><span class="pre">xnvme_spec_sqe</span></code> per thread on the host. PRP entries require
 physical addresses, so use <a class="reference internal" href="../core/xnvme_buf.html#sec-api-c-xnvme-buf-func-xnvme-buf-vtophys"><span class="std std-ref">xnvme_buf_vtophys</span></a>
 to resolve them before copying the commands to device memory and launching the
 kernel:</p>
@@ -567,7 +566,7 @@ kernel:</p>
 <span class="p">{</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="o">*</span><span class="n">h_cmds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_cmds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">	</span><span class="k">union</span><span class="w"> </span><span class="nc">xnvme_spec_sqe</span><span class="w"> </span><span class="o">*</span><span class="n">h_cmds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_cmds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cuda_queue</span><span class="w"> </span><span class="o">*</span><span class="n">gpu_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">phys</span><span class="p">;</span>
 <span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span>
@@ -612,7 +611,7 @@ kernel:</p>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="cm">/* Prepare one command per thread with physical PRP addresses */</span>
-<span class="w">	</span><span class="n">h_cmds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">h_cmds</span><span class="p">));</span>
+<span class="w">	</span><span class="n">h_cmds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">union</span><span class="w"> </span><span class="nc">xnvme_spec_sqe</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">h_cmds</span><span class="p">));</span>
 <span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">h_cmds</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">errno</span><span class="p">;</span>
 <span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"calloc(h_cmds)"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
@@ -707,7 +706,7 @@ kernel:</p>
 per active thread. The commands are fully prepared on the host, so the kernel
 only needs to index into the command array and call the helper.</p>
 <div class="highlight-cuda notranslate"><div class="highlight"><pre><span></span><span class="kr">__global__</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span>
-<span class="n">xnvme_cuda_io_kernel</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cuda_queue</span><span class="w"> </span><span class="o">*</span><span class="n">qp</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="o">*</span><span class="n">cmds</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">batch_size</span><span class="p">,</span>
+<span class="n">xnvme_cuda_io_kernel</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cuda_queue</span><span class="w"> </span><span class="o">*</span><span class="n">qp</span><span class="p">,</span><span class="w"> </span><span class="k">union</span><span class="w"> </span><span class="nc">xnvme_spec_sqe</span><span class="w"> </span><span class="o">*</span><span class="n">cmds</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">batch_size</span><span class="p">,</span>
 <span class="w">		     </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">errors</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">	</span><span class="kt">size_t</span><span class="w"> </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>

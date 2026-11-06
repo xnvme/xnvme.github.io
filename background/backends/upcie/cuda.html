@@ -622,7 +622,7 @@ queue at the client’s address. What comes back names a completion queue in the
 server’s heap that the controller never writes, and the resident kernel keeps
 that one a copy of the queue it placed, so the submitting side is unchanged.</p>
 <p>A caller can hand over device memory it allocated itself with
-<code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>, which registers the range through the same registry the
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>, which registers the range through the same registry the
 heap uses, so such a buffer is usable exactly as one from
 <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code>. Registering a range twice is cheap, since what it
 covers is refcounted. On a controller a server holds, the range is exported as
@@ -715,8 +715,8 @@ usable IOVA except that. Override where it does not fit:</p>
 <p>The window holds one set of addresses for the process. The first controller
 opened claims it and the heap is installed in it; every controller opened after
 that is attached to the same range, so all of them reach the heap, and anything
-registered with <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>, at the same IOVAs through one translation
-table. Two limits follow, on the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path only:</p>
+registered with <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>, at the same IOVAs through one
+translation table. Two limits follow, on the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path only:</p>
 <ul class="simple">
 <li><p>The heap and every registered buffer have to fit in the window. A full window
 fails the registration with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
@@ -733,11 +733,11 @@ controller, so one table serves them all.</p>
 <h3>Registering buffers<a class="headerlink" href="#registering-buffers" title="Link to this heading">#</a></h3>
 <p>A buffer from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> comes off the heap, which every controller
 maps, so it works on any of them.</p>
-<p>A buffer handed to <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> is registered against the device passed to
-the call, so behind an IOMMU it resolves for that controller only. Register it
-with each device it is used from, and unmap it against each:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme_mem_map</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
-<span class="n">xnvme_mem_map</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<p>A buffer handed to <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> is registered against the device
+passed to the call, so behind an IOMMU it resolves for that controller only.
+Register it with each device it is used from, and unregister it against each:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> one table serves every controller, so a single

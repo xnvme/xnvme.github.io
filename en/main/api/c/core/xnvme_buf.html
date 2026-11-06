@@ -398,7 +398,6 @@
 <li class="toctree-l3"><a class="reference internal" href="xnvme_dev.html">libxnvme_dev.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_geo.html">libxnvme_geo.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_ident.html">libxnvme_ident.h</a></li>
-<li class="toctree-l3"><a class="reference internal" href="xnvme_mem.html">libxnvme_mem.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_opts.html">libxnvme_opts.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_queue.html">libxnvme_queue.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_scan.html">libxnvme_scan.h</a></li>
@@ -677,6 +676,27 @@
 </dd></dl>
 
 </section>
+<section id="xnvme-buf-get-alignment">
+<span id="sec-api-c-xnvme-buf-func-xnvme-buf-get-alignment"></span><h3>xnvme_buf_get_alignment<a class="headerlink" href="#xnvme-buf-get-alignment" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_buf_get_alignment">
+<span class="target" id="libxnvme__buf_8h_1a9354e452abc574466a76ed997c830348"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_get_alignment</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">align</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_get_alignment" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieve the alignment of memory to register with the given device. </p>
+<p>The alignment is a power of two, and at least <code class="docutils literal notranslate"><span class="pre">sizeof(void</span> <span class="pre">*)</span></code>. It is the larger of what the device needs to register memory, of any kind it takes, and what its I/O path needs of command payloads. Retrieve it before allocating memory that is to be registered, to allocate it suitably.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>align</strong> – Set to the alignment on success</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned and <code class="docutils literal notranslate"><span class="pre">align</span></code> is left untouched; <code class="docutils literal notranslate"><span class="pre">-ENOSYS</span></code> when the device does not register memory. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="xnvme-buf-memcpy">
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-memcpy"></span><h3>xnvme_buf_memcpy<a class="headerlink" href="#xnvme-buf-memcpy" title="Link to this heading">#</a></h3>
 <dl class="c function">
@@ -820,6 +840,41 @@
 </dd></dl>
 
 </section>
+<section id="xnvme-buf-register">
+<span id="sec-api-c-xnvme-buf-func-xnvme-buf-register"></span><h3>xnvme_buf_register<a class="headerlink" href="#xnvme-buf-register" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_buf_register">
+<span class="target" id="libxnvme__buf_8h_1ad3ccf1f556f7561bd84620f014f7754b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vaddr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_register" title="Link to this definition">#</a><br /></dt>
+<dd><p>Register memory of the caller’s for use as command payload with the given device. </p>
+<p>Registering makes memory the caller allocated itself, rather than with <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a>, usable as the payload of commands to the device.</p>
+<p>Each registration is given back by one call to <a class="reference internal" href="#libxnvme__buf_8h_1a4f450688eae60c33d4d1fd4d884655e1"><span class="std std-ref">xnvme_buf_unregister()</span></a>. Registering a range that is registered already, or a range within one, is counted on that registration rather than registered again; a range that overlaps a registration otherwise is refused with <code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code>. Memory from <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a> is usable already, and registering and unregistering it does nothing.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unregister the memory with <a class="reference internal" href="#libxnvme__buf_8h_1a4f450688eae60c33d4d1fd4d884655e1"><span class="std std-ref">xnvme_buf_unregister()</span></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>vaddr and nbytes must be multiples of the alignment given by <a class="reference internal" href="#libxnvme__buf_8h_1a9354e452abc574466a76ed997c830348"><span class="std std-ref">xnvme_buf_get_alignment()</span></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>vaddr</strong> – The address the caller accesses the memory at </p></li>
+<li><p><strong>nbytes</strong> – The number of bytes to register, starting at vaddr</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="xnvme-buf-to-file">
 <span id="sec-api-c-xnvme-buf-func-xnvme-buf-to-file"></span><h3>xnvme_buf_to_file<a class="headerlink" href="#xnvme-buf-to-file" title="Link to this heading">#</a></h3>
 <dl class="c function">
@@ -838,6 +893,30 @@
 <li><p><strong>buf</strong> – Pointer to the buffer </p></li>
 <li><p><strong>nbytes</strong> – Size of buf </p></li>
 <li><p><strong>path</strong> – Destination where buffer will be dumped to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="xnvme-buf-unregister">
+<span id="sec-api-c-xnvme-buf-func-xnvme-buf-unregister"></span><h3>xnvme_buf_unregister<a class="headerlink" href="#xnvme-buf-unregister" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_buf_unregister">
+<span class="target" id="libxnvme__buf_8h_1a4f450688eae60c33d4d1fd4d884655e1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vaddr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_unregister" title="Link to this definition">#</a><br /></dt>
+<dd><p>Unregister memory registered with <a class="reference internal" href="#libxnvme__buf_8h_1ad3ccf1f556f7561bd84620f014f7754b"><span class="std std-ref">xnvme_buf_register()</span></a>. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev</strong> – Device handle obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
+<li><p><strong>vaddr</strong> – The address the memory was registered at</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1048,6 +1127,63 @@
 <span class="nf">xnvme_buf_vtophys</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="o">*</span><span class="n">phys</span><span class="p">);</span>
 
 <span class="cm">/**</span>
+<span class="cm"> * Register memory of the caller's for use as command payload with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * Registering makes memory the caller allocated itself, rather than with xnvme_buf_alloc(),</span>
+<span class="cm"> * usable as the payload of commands to the device.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Each registration is given back by one call to xnvme_buf_unregister(). Registering a range</span>
+<span class="cm"> * that is registered already, or a range within one, is counted on that registration rather than</span>
+<span class="cm"> * registered again; a range that overlaps a registration otherwise is refused with `-EBUSY`.</span>
+<span class="cm"> * Memory from xnvme_buf_alloc() is usable already, and registering and unregistering it does</span>
+<span class="cm"> * nothing.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Unregister the memory with xnvme_buf_unregister()</span>
+<span class="cm"> * @note vaddr and nbytes must be multiples of the alignment given by xnvme_buf_get_alignment()</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param vaddr The address the caller accesses the memory at</span>
+<span class="cm"> * @param nbytes The number of bytes to register, starting at vaddr</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_register</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">vaddr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Unregister memory registered with xnvme_buf_register()</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
+<span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param vaddr The address the memory was registered at</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_unregister</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">vaddr</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve the alignment of memory to register with the given device</span>
+<span class="cm"> *</span>
+<span class="cm"> * The alignment is a power of two, and at least `sizeof(void *)`. It is the larger of what the</span>
+<span class="cm"> * device needs to register memory, of any kind it takes, and what its I/O path needs of command</span>
+<span class="cm"> * payloads. Retrieve it before allocating memory that is to be registered, to allocate it</span>
+<span class="cm"> * suitably.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param dev Device handle obtained with xnvme_dev_open()</span>
+<span class="cm"> * @param align Set to the alignment on success</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned and `align` is left</span>
+<span class="cm"> * untouched; `-ENOSYS` when the device does not register memory.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_buf_get_alignment</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="o">*</span><span class="n">align</span><span class="p">);</span>
+
+<span class="cm">/**</span>
 <span class="cm"> * Allocate a buffer of virtual memory of the given `alignment` and `nbytes`</span>
 <span class="cm"> *</span>
 <span class="cm"> * @note You must use xnvme_buf_virt_free() to de-allocate the buffer</span>
@@ -1231,6 +1367,10 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_from_file"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_from_file()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-buf-get-alignment">xnvme_buf_get_alignment</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_get_alignment"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_get_alignment()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-buf-memcpy">xnvme_buf_memcpy</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_memcpy"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_memcpy()</span></code></a></li>
 </ul>
@@ -1251,8 +1391,16 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_realloc"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_realloc()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-buf-register">xnvme_buf_register</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_register"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-buf-to-file">xnvme_buf_to_file</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_to_file"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-buf-unregister">xnvme_buf_unregister</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_buf_unregister"><code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-buf-virt-alloc">xnvme_buf_virt_alloc</a><ul class="nav section-nav flex-column">

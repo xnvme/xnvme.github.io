@@ -541,7 +541,9 @@ simple in C, but not over FFI</p></li>
 <li><p>A function replaced for any of these keeps working, as a <code class="docutils literal notranslate"><span class="pre">static</span>
 <span class="pre">inline</span></code> in <code class="docutils literal notranslate"><span class="pre">libxnvme_compat.h</span></code> calling its replacement, and in a
 debug build warning that it is deprecated, until a later release
-removes it</p></li>
+removes it; a renamed type keeps its old name there as a <code class="docutils literal notranslate"><span class="pre">#define</span></code>,
+unless the rename turns a <code class="docutils literal notranslate"><span class="pre">struct</span></code> into a <code class="docutils literal notranslate"><span class="pre">union</span></code>, which no alias
+can bridge</p></li>
 <li><p>Who owns the memory decides the signature. Memory the caller owns is
 filled through an output argument, with 0 or negative <code class="docutils literal notranslate"><span class="pre">errno</span></code>
 returned, as <code class="docutils literal notranslate"><span class="pre">xnvme_dev_get_cmd_ctx(dev,</span> <span class="pre">&amp;ctx)</span></code> does. Memory the
@@ -559,8 +561,8 @@ I/O is not covered</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_dev_close()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_enumerate()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">xnvme_queue_init()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_queue_term()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">xnvme_buf_realloc()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_free()</span></code>, their <code class="docutils literal notranslate"><span class="pre">xnvme_buf_phys_*()</span></code>
-variants, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_vtophys()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code>,
-<code class="docutils literal notranslate"><span class="pre">xnvme_mem_unmap()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> and
+variants, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_vtophys()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> and
 <code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_destroy()</span></code>; one process-wide lock serialises them
 (<code class="docutils literal notranslate"><span class="pre">lib/util/xnvme_lock.c</span></code>)</p></li>
 <li><p>A queue, and the command contexts drawn from it, belongs to one thread at a
@@ -597,7 +599,18 @@ backend</p></li>
 <h2>C: Fields of bits<a class="headerlink" href="#c-fields-of-bits" title="Link to this heading">#</a></h2>
 <p>A field of bits in a structure of the specification, such as <code class="docutils literal notranslate"><span class="pre">flbas</span></code> of
 the Identify Namespace data, is an integer of the width the specification
-gives it, not a C bit-field, whose layout is the compiler’s choice.</p>
+gives it, not a C bit-field, whose layout is the compiler’s choice. The
+integer is named as the specification names the field, such as <code class="docutils literal notranslate"><span class="pre">status</span></code>
+of the Completion Queue Entry, not by a placeholder such as <code class="docutils literal notranslate"><span class="pre">val</span></code>.</p>
+<p>Where the specification names only the fields within an integer, each
+narrower than a byte and reached through a mask, the integer is named
+<code class="docutils literal notranslate"><span class="pre">bits</span></code>, such as <code class="docutils literal notranslate"><span class="pre">bits</span></code> of the Extended LBA Format. A structure holding
+more than one such integer names each after the fields it holds, such as
+<code class="docutils literal notranslate"><span class="pre">mxps_nops</span></code> of the power state descriptor, and a byte with a name in common
+use keeps it, such as <code class="docutils literal notranslate"><span class="pre">flags</span></code> of a command, as the Linux NVMe driver names
+it. The integer is not wrapped in a structure of its own, unless it is the
+element of an array, which needs a type for its masks to belong to, as
+<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_spec_elbaf</span></code> is.</p>
 <ul class="simple">
 <li><p>Each of its fields is named by a mask, a <code class="docutils literal notranslate"><span class="pre">#define</span></code> of the bits in their
 place, read and written with <code class="docutils literal notranslate"><span class="pre">xnvme_bits_get()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_bits_set()</span></code></p></li>

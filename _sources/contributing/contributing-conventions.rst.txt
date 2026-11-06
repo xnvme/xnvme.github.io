@@ -65,7 +65,9 @@ C: API
   - A function replaced for any of these keeps working, as a ``static
     inline`` in ``libxnvme_compat.h`` calling its replacement, and in a
     debug build warning that it is deprecated, until a later release
-    removes it
+    removes it; a renamed type keeps its old name there as a ``#define``,
+    unless the rename turns a ``struct`` into a ``union``, which no alias
+    can bridge
   - Who owns the memory decides the signature. Memory the caller owns is
     filled through an output argument, with 0 or negative ``errno``
     returned, as ``xnvme_dev_get_cmd_ctx(dev, &ctx)`` does. Memory the
@@ -82,8 +84,8 @@ C: API
   - ``xnvme_dev_open()``, ``xnvme_dev_close()``, ``xnvme_enumerate()``,
     ``xnvme_queue_init()``, ``xnvme_queue_term()``, ``xnvme_buf_alloc()``,
     ``xnvme_buf_realloc()``, ``xnvme_buf_free()``, their ``xnvme_buf_phys_*()``
-    variants, ``xnvme_buf_vtophys()``, ``xnvme_mem_map()``,
-    ``xnvme_mem_unmap()``, ``xnvme_cuda_queue_create()`` and
+    variants, ``xnvme_buf_vtophys()``, ``xnvme_buf_register()``,
+    ``xnvme_buf_unregister()``, ``xnvme_cuda_queue_create()`` and
     ``xnvme_cuda_queue_destroy()``; one process-wide lock serialises them
     (``lib/util/xnvme_lock.c``)
   - A queue, and the command contexts drawn from it, belongs to one thread at a
@@ -116,7 +118,19 @@ C: Fields of bits
 
 A field of bits in a structure of the specification, such as ``flbas`` of
 the Identify Namespace data, is an integer of the width the specification
-gives it, not a C bit-field, whose layout is the compiler's choice.
+gives it, not a C bit-field, whose layout is the compiler's choice. The
+integer is named as the specification names the field, such as ``status``
+of the Completion Queue Entry, not by a placeholder such as ``val``.
+
+Where the specification names only the fields within an integer, each
+narrower than a byte and reached through a mask, the integer is named
+``bits``, such as ``bits`` of the Extended LBA Format. A structure holding
+more than one such integer names each after the fields it holds, such as
+``mxps_nops`` of the power state descriptor, and a byte with a name in common
+use keeps it, such as ``flags`` of a command, as the Linux NVMe driver names
+it. The integer is not wrapped in a structure of its own, unless it is the
+element of an array, which needs a type for its masks to belong to, as
+``struct xnvme_spec_elbaf`` is.
 
 * Each of its fields is named by a mask, a ``#define`` of the bits in their
   place, read and written with ``xnvme_bits_get()`` and ``xnvme_bits_set()``

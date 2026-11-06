@@ -527,16 +527,17 @@ device is e.g. <code class="docutils literal notranslate"><span class="pre">/dev
 <span class="w">    </span>--iopattern<span class="w"> </span>randread<span class="w"> </span>--iosize<span class="w"> </span><span class="m">4096</span><span class="w"> </span>--qdepth<span class="w"> </span><span class="m">32</span><span class="w"> </span>--runtime<span class="w"> </span><span class="m">10</span><span class="w"> </span>--cpumask<span class="w"> </span>0x1
 </pre></div>
 </div>
-<p>Map GPU memory with <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> and release it with <code class="docutils literal notranslate"><span class="pre">xnvme_mem_unmap()</span></code>.
+<p>Register GPU memory with <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> and release it with
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code>.
 Buffers from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> are in host memory, IO on them is regular
 <code class="docutils literal notranslate"><span class="pre">io_uring</span></code> IO.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
-<span class="n">xnvme_mem_map</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> registers the allocation with the ring of every queue of the
-device, and a new queue registers the allocations already mapped. IO on a
-mapped buffer is submitted as <code class="docutils literal notranslate"><span class="pre">IORING_OP_READ_FIXED</span></code> / <code class="docutils literal notranslate"><span class="pre">IORING_OP_WRITE_FIXED</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> registers the allocation with the ring of every queue of
+the device, and a new queue registers the allocations already registered. IO on
+a registered buffer is submitted as <code class="docutils literal notranslate"><span class="pre">IORING_OP_READ_FIXED</span></code> / <code class="docutils literal notranslate"><span class="pre">IORING_OP_WRITE_FIXED</span></code>.</p>
 </section>
 <section id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
@@ -563,7 +564,7 @@ mapped buffer is submitted as <code class="docutils literal notranslate"><span c
 <td><p>At most 256 mapped allocations per device</p></td>
 </tr>
 <tr class="row-odd"><td><p>Threads</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_mem_unmap()</span></code> must not run while IO is in flight on the device</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code> must not run while IO is in flight on the device</p></td>
 </tr>
 </tbody>
 </table>
@@ -586,15 +587,15 @@ the series, and the CI runs the backend there, on an emulated AMD GPU.</p>
 <section id="iommu">
 <span id="sec-platforms-linux-async-io-uring-dmabuf-iommu"></span><h2>IOMMU<a class="headerlink" href="#iommu" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> exported by CUDA and HIP holds physical addresses. When an IOMMU
-translates for the NVMe device, <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> maps those addresses into the
-IOMMU domain of the device at IOVA == physical address.</p>
+translates for the NVMe device, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> maps those addresses into
+the IOMMU domain of the device at IOVA == physical address.</p>
 <p>This needs the <code class="docutils literal notranslate"><span class="pre">dmabuf-import</span></code> and <code class="docutils literal notranslate"><span class="pre">iommu-map-pa</span></code> kernel modules, see
 <a class="reference internal" href="../../backends/upcie/cuda.html#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Module</span></a> and <a class="reference internal" href="../../backends/upcie/cuda.html#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.
-Without them <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> fails. Alternatively, boot with <code class="docutils literal notranslate"><span class="pre">iommu=pt</span></code>,
+Without them <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> fails. Alternatively, boot with <code class="docutils literal notranslate"><span class="pre">iommu=pt</span></code>,
 <code class="docutils literal notranslate"><span class="pre">amd_iommu=off</span></code> or <code class="docutils literal notranslate"><span class="pre">intel_iommu=off</span></code>. The IOMMU group is read from the
 controller of the namespace; where it cannot be found, as for the head of a
-native-multipath namespace, while IOMMU groups exist, <code class="docutils literal notranslate"><span class="pre">xnvme_mem_map()</span></code> fails
-with <code class="docutils literal notranslate"><span class="pre">-ENODEV</span></code> rather than map without the IOMMU.</p>
+native-multipath namespace, while IOMMU groups exist, <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>
+fails with <code class="docutils literal notranslate"><span class="pre">-ENODEV</span></code> rather than map without the IOMMU.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> must be physically contiguous. See

@@ -398,7 +398,6 @@
 <li class="toctree-l3"><a class="reference internal" href="xnvme_dev.html">libxnvme_dev.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_geo.html">libxnvme_geo.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_ident.html">libxnvme_ident.h</a></li>
-<li class="toctree-l3"><a class="reference internal" href="xnvme_mem.html">libxnvme_mem.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_opts.html">libxnvme_opts.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_queue.html">libxnvme_queue.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_scan.html">libxnvme_scan.h</a></li>
@@ -523,13 +522,13 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_cmd_ctx.cmd">
-<span class="target" id="structxnvme__cmd__ctx_1aa41a4f40fc5630fa7f18f842a3b1bc2d"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../nvme/xnvme_spec.html#c.xnvme_spec_cmd" title="xnvme_spec_cmd"><span class="n"><span class="pre">xnvme_spec_cmd</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmd</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.cmd" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="structxnvme__cmd__ctx_1a80acb712790f8ebe334d9cfc1d012e06"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="../nvme/xnvme_spec.html#c.xnvme_spec_sqe" title="xnvme_spec_sqe"><span class="n"><span class="pre">xnvme_spec_sqe</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmd</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.cmd" title="Link to this definition">#</a><br /></dt>
 <dd><p>Command to be processed. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.xnvme_cmd_ctx.cpl">
-<span class="target" id="structxnvme__cmd__ctx_1aebf2ad82a75556ae7e5ce5df22791c21"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../nvme/xnvme_spec.html#c.xnvme_spec_cpl" title="xnvme_spec_cpl"><span class="n"><span class="pre">xnvme_spec_cpl</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cpl</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.cpl" title="Link to this definition">#</a><br /></dt>
+<span class="target" id="structxnvme__cmd__ctx_1a9652293a44c69501fb41c9533993b173"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../nvme/xnvme_spec.html#c.xnvme_spec_cqe" title="xnvme_spec_cqe"><span class="n"><span class="pre">xnvme_spec_cqe</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cpl</span></span></span><a class="headerlink" href="#c.xnvme_cmd_ctx.cpl" title="Link to this definition">#</a><br /></dt>
 <dd><p>Completion result from processing. </p>
 </dd></dl>
 
@@ -782,8 +781,8 @@
 <span class="cm"> * @struct xnvme_cmd_ctx</span>
 <span class="cm"> */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cmd</span><span class="w"> </span><span class="n">cmd</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Command to be processed</span>
-<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cpl</span><span class="w"> </span><span class="n">cpl</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Completion result from processing</span>
+<span class="w">	</span><span class="k">union</span><span class="w"> </span><span class="nc">xnvme_spec_sqe</span><span class="w"> </span><span class="n">cmd</span><span class="p">;</span><span class="w">         </span><span class="c1">///&lt; Command to be processed</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_cqe</span><span class="w"> </span><span class="n">cpl</span><span class="p">;</span><span class="w">        </span><span class="c1">///&lt; Completion result from processing</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">;</span><span class="w">            </span><span class="c1">///&lt; Device associated with the command</span>
 <span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx_async</span><span class="w"> </span><span class="n">async</span><span class="p">;</span><span class="w"> </span><span class="c1">///&lt; Fields for command option: XNVME_CMD_ASYNC</span>
 <span class="w">	</span><span class="c1">///&lt; Field containing command-options, the field is initialized by helper-functions</span>
@@ -847,7 +846,8 @@
 <span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span>
 <span class="nf">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">sc</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">sct</span><span class="p">;</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">xnvme_bits_get</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_SPEC_CQE_STATUS_SC</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">	       </span><span class="n">xnvme_bits_get</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cpl</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_SPEC_CQE_STATUS_SCT</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="cm">/**</span>
