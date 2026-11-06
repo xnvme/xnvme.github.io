@@ -734,32 +734,6 @@
 </dd></dl>
 
 </section>
-<section id="xnvme-cmd-passv">
-<span id="sec-api-c-xnvme-cmd-func-xnvme-cmd-passv"></span><h3>xnvme_cmd_passv<a class="headerlink" href="#xnvme-cmd-passv" title="Link to this heading">#</a></h3>
-<dl class="c function">
-<dt class="sig sig-object c" id="c.xnvme_cmd_passv">
-<span class="target" id="libxnvme__cmd_8h_1a96530cf3a73c7e0b0984f626575fc2cf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_cmd_passv</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iovec</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dvec</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dvec_cnt</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">dvec_nbytes</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iovec</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mvec</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mvec_cnt</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">mvec_nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_cmd_passv" title="Link to this definition">#</a><br /></dt>
-<dd><p>Pass a vectored NVMe IO Command through to the device via the given <a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. </p>
-<p>NOTE: This function will be deprecated in the future - use <a class="reference internal" href="#libxnvme__cmd_8h_1a952b7cc8df68229ed943ce2e4fcb9919"><span class="std std-ref">xnvme_cmd_pass_iov()</span></a> instead</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ctx</strong> – Pointer to command context (<a class="reference internal" href="#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>) </p></li>
-<li><p><strong>dvec</strong> – array of data iovecs </p></li>
-<li><p><strong>dvec_cnt</strong> – number of elements in dvec </p></li>
-<li><p><strong>dvec_nbytes</strong> – size of the meta-payload in bytes </p></li>
-<li><p><strong>mvec</strong> – array of metadata iovecs </p></li>
-<li><p><strong>mvec_cnt</strong> – number of elements in mvec </p></li>
-<li><p><strong>mvec_nbytes</strong> – size of the meta-payload in bytes</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="xnvme-dev-get-cmd-ctx">
 <span id="sec-api-c-xnvme-cmd-func-xnvme-dev-get-cmd-ctx"></span><h3>xnvme_dev_get_cmd_ctx<a class="headerlink" href="#xnvme-dev-get-cmd-ctx" title="Link to this heading">#</a></h3>
 <dl class="c function">
@@ -899,26 +873,6 @@
 
 <span class="cm">/**</span>
 <span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given</span>
-<span class="cm">::xnvme_cmd_ctx</span>
-<span class="cm"> *</span>
-<span class="cm"> * NOTE: This function will be deprecated in the future - use xnvme_cmd_pass_iov() instead</span>
-<span class="cm"> *</span>
-<span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
-<span class="cm"> * @param dvec array of data iovecs</span>
-<span class="cm"> * @param dvec_cnt number of elements in dvec</span>
-<span class="cm"> * @param dvec_nbytes size of the meta-payload in bytes</span>
-<span class="cm"> * @param mvec array of metadata iovecs</span>
-<span class="cm"> * @param mvec_cnt number of elements in mvec</span>
-<span class="cm"> * @param mvec_nbytes size of the meta-payload in bytes</span>
-<span class="cm"> *</span>
-<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
-<span class="cm"> */</span>
-<span class="kt">int</span>
-<span class="nf">xnvme_cmd_passv</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">dvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">dvec_nbytes</span><span class="p">,</span>
-<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">iovec</span><span class="w"> </span><span class="o">*</span><span class="n">mvec</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_cnt</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">mvec_nbytes</span><span class="p">);</span>
-
-<span class="cm">/**</span>
-<span class="cm"> * Pass a vectored NVMe IO Command through to the device via the given</span>
 <span class="cm"> * ::xnvme_cmd_ctx</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param ctx Pointer to command context (::xnvme_cmd_ctx)</span>
@@ -1027,10 +981,6 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cmd-pass-iov">xnvme_cmd_pass_iov</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cmd_pass_iov"><code class="docutils literal notranslate"><span class="pre">xnvme_cmd_pass_iov()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-cmd-passv">xnvme_cmd_passv</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_cmd_passv"><code class="docutils literal notranslate"><span class="pre">xnvme_cmd_passv()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xnvme-dev-get-cmd-ctx">xnvme_dev_get_cmd_ctx</a><ul class="nav section-nav flex-column">
