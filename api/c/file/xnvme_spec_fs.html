@@ -516,21 +516,25 @@
 <dl class="c enum">
 <dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs">
 <span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_spec_fs_opcs</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs" title="Link to this definition">#</a><br /></dt>
-<dd><p><em>Values:</em></p>
+<dd><p>Opcodes of the commands xNVMe passes to a file, or a block device, it opens through the operating system; the backend carries them out with system calls rather than send them on. </p>
+<p><em>Values:</em></p>
 <dl class="c enumerator">
 <dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_FLUSH">
 <span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945a2e1c01b5dabdfb15666e32d0e571d2ff"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_FS_OPC_FLUSH</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_FLUSH" title="Link to this definition">#</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Flush the file, as <a class="reference internal" href="xnvme_file.html#libxnvme__file_8h_1ac6d0fb51c78b4a1a1b0b2cb99802e157"><span class="std std-ref">xnvme_file_sync()</span></a> does. </p>
+</dd></dl>
 
 <dl class="c enumerator">
 <dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_WRITE">
 <span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945a913c04df445c5c9d3f8b92bb68a873c8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_FS_OPC_WRITE</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_WRITE" title="Link to this definition">#</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Write to the file, as <a class="reference internal" href="xnvme_file.html#libxnvme__file_8h_1a10a0b04e265c4efd6cbd22cc5fbce9f2"><span class="std std-ref">xnvme_file_pwrite()</span></a> does. </p>
+</dd></dl>
 
 <dl class="c enumerator">
 <dt class="sig sig-object c" id="c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_READ">
 <span class="target" id="libxnvme__spec__fs_8h_1a950c4d56e635f3c18cd618f7c4b48945afaa453907841dfa2829b6bff6e4aa499"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_SPEC_FS_OPC_READ</span></span></span><a class="headerlink" href="#c.xnvme_spec_fs_opcs.XNVME_SPEC_FS_OPC_READ" title="Link to this definition">#</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Read from the file, as <a class="reference internal" href="xnvme_file.html#libxnvme__file_8h_1aec029cd916ec1141f53685b92fa2b949"><span class="std std-ref">xnvme_file_pread()</span></a> does. </p>
+</dd></dl>
 
 </dd></dl>
 
@@ -729,12 +733,19 @@
 <span class="p">};</span>
 <span class="n">XNVME_STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_spec_fs_idfy_ns</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span><span class="w"> </span><span class="s">"Incorrect size"</span><span class="p">)</span>
 
+<span class="cm">/**</span>
+<span class="cm"> * Opcodes of the commands xNVMe passes to a file, or a block device, it opens through the</span>
+<span class="cm"> * operating system; the backend carries them out with system calls rather than send them on</span>
+<span class="cm"> *</span>
+<span class="cm"> * @enum xnvme_spec_fs_opcs</span>
+<span class="cm"> */</span>
 <span class="k">enum</span><span class="w"> </span><span class="n">xnvme_spec_fs_opcs</span><span class="w"> </span><span class="p">{</span>
-<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_FLUSH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAD</span><span class="p">,</span>
-<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_WRITE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAC</span><span class="p">,</span>
-<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_READ</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0xDC</span><span class="p">,</span>
+<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_FLUSH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAD</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; Flush the file, as xnvme_file_sync() does</span>
+<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_WRITE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAC</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; Write to the file, as xnvme_file_pwrite() does</span>
+<span class="w">	</span><span class="n">XNVME_SPEC_FS_OPC_READ</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0xDC</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; Read from the file, as xnvme_file_pread() does</span>
 <span class="p">};</span>
 
+<span class="cm">/** Command Set Identifier xNVMe gives a file, or block device, opened through the system */</span>
 <span class="cp">#define XNVME_SPEC_CSI_FS 0x1F</span>
 
 <span class="cp">#endif </span><span class="cm">/* __LIBXNVME_SPEC_FS_H */</span>

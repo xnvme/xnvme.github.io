@@ -728,6 +728,9 @@
 <dt class="sig sig-object c" id="c.xnvme_queue_set_cb">
 <span class="target" id="libxnvme__queue_8h_1a7b16efbcc5f83d914d93b9da9425b8e5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_set_cb</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span>, <span class="n"><span class="pre">xnvme_queue_cb</span></span><span class="w"> </span><span class="n"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb_arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_set_cb" title="Link to this definition">#</a><br /></dt>
 <dd><p>Assign a callback-function and argument to be used with the <a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> of the queue. </p>
+<p>The callback is kept in every command context of the queue, and invoked from <a class="reference internal" href="#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a> and <a class="reference internal" href="#libxnvme__queue_8h_1aad1259925c536a27e69488bc439dbeb1"><span class="std std-ref">xnvme_queue_drain()</span></a> for each command completed, until the queue is terminated or the callback is assigned again.</p>
+<p>
+&#64;lifetime cb handle </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -737,7 +740,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned. </p>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -915,11 +918,17 @@
 <span class="cm">/**</span>
 <span class="cm"> * Assign a callback-function and argument to be used with the ::xnvme_cmd_ctx of the queue</span>
 <span class="cm"> *</span>
+<span class="cm"> * The callback is kept in every command context of the queue, and invoked from</span>
+<span class="cm"> * xnvme_queue_poke() and xnvme_queue_drain() for each command completed, until the queue is</span>
+<span class="cm"> * terminated or the callback is assigned again.</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param queue The ::xnvme_queue to assign default callback function for</span>
 <span class="cm"> * @param cb The callback function to use</span>
 <span class="cm"> * @param cb_arg The callback argument to use</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @lifetime cb handle</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="nf">xnvme_queue_set_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">xnvme_queue_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_arg</span><span class="p">);</span>
