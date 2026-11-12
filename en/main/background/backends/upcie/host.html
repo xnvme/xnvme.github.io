@@ -507,19 +507,19 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="upcie-host-memory">
-<span id="sec-backends-upcie-host"></span><h1>uPCIe (host memory)<a class="headerlink" href="#upcie-host-memory" title="Link to this heading">#</a></h1>
+  <section id="sec-backends-upcie-host">
+<span id="upcie-host-memory"></span><h1>uPCIe (host memory)<a class="headerlink" href="#sec-backends-upcie-host" title="Link to this heading">#</a></h1>
 <p>The <strong>upcie</strong> backend allocates I/O buffers from a DMA heap backed by
 <strong>hugepages</strong> in host memory. Physical addresses are resolved via
 <code class="docutils literal notranslate"><span class="pre">/proc/self/pagemap</span></code> and cached at allocation time, so no address translation
 is needed on the I/O path.</p>
-<section id="system-configuration">
-<span id="sec-backends-upcie-host-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-host-config">
+<span id="system-configuration"></span><h2>System Configuration<a class="headerlink" href="#sec-backends-upcie-host-config" title="Link to this heading">#</a></h2>
 <section id="hugepages">
 <h3>Hugepages<a class="headerlink" href="#hugepages" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> configures hugepages as part of device setup. To allocate them
-manually:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="m">128</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/proc/sys/vm/nr_hugepages
+<p>Reserve them with the <code class="docutils literal notranslate"><span class="pre">hugepages</span></code> tool, <code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">hugepages</span></code>, and lift the
+memlock limit; <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span></code> reports both:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hugepages<span class="w"> </span>setup<span class="w"> </span>--count<span class="w"> </span><span class="m">128</span>
 <span class="nb">ulimit</span><span class="w"> </span>-l<span class="w"> </span>unlimited
 </pre></div>
 </div>
@@ -541,8 +541,8 @@ reserved low, and has to end below the device-memory window (see
 <p><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> is unaffected, as its DMA addresses are physical.</p>
 </section>
 </section>
-<section id="limitations">
-<span id="sec-backends-upcie-host-limitations"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-host-limitations">
+<span id="limitations"></span><h2>Limitations<a class="headerlink" href="#sec-backends-upcie-host-limitations" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>No <code class="docutils literal notranslate"><span class="pre">buf_realloc</span></code>.</strong> Buffer reallocation is not implemented and returns
 <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
@@ -580,12 +580,12 @@ Both pseudo commands return <code class="docutils literal notranslate"><span cla
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-host-config">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepages">Hugepages</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-of-the-heap">IOVA of the heap</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-host-limitations">Limitations</a></li>
 </ul>
   </nav></div>
 

@@ -561,6 +561,8 @@ in <strong>C</strong> to perform the following tasks with an NVMe device: open t
 probe and retrieve device information, print device information, and finally
 close the device.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;errno.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
 
 <span class="kt">int</span>
@@ -571,9 +573,9 @@ close the device.</p>
 
 <span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
-<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;identifer&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
-<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s">"--help"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;uri&gt;</span><span class="se">\n\n</span><span class="s">Open the device at &lt;uri&gt; and print it</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
@@ -661,18 +663,18 @@ chmod<span class="w"> </span>+x<span class="w"> </span>hello
 gcc<span class="w"> </span>../examples/xnvme_hello.c<span class="w">  </span><span class="k">$(</span>pkg-config<span class="w"> </span>--libs<span class="w"> </span>xnvme<span class="k">)</span><span class="w"> </span>-o<span class="w"> </span>hello
 chmod<span class="w"> </span>+x<span class="w"> </span>hello
 
-<span class="c1"># Detach NVMe-devices from OS NVMe driver and bind to vfio-pci / uio-generic</span>
-sudo<span class="w"> </span>xnvme-driver
+<span class="c1"># Reserve hugepages, and move the controller off the kernel NVMe driver</span>
+sudo<span class="w"> </span>hugepages<span class="w"> </span>setup<span class="w"> </span>--count<span class="w"> </span><span class="m">1024</span>
+sudo<span class="w"> </span>xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:05:00.0
 
 <span class="c1"># Run it</span>
-sudo<span class="w"> </span>./hello<span class="w"> </span><span class="m">0000</span>:03:00.0
+sudo<span class="w"> </span>./hello<span class="w"> </span><span class="m">0000</span>:05:00.0
 </pre></div>
 </div>
 <p>When doing so, it will print output equivalent to the following.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from "xnvme-driver"</span>
-<span class="nt">0000:01:00.0 (144d a80c)</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvme -&gt; vfio-pci</span>
-<span class="nt">0000:02:00.0 (144d a80c)</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Active mountpoints on /dev/nvme0n1, so not binding PCI dev</span>
-<span class="nt">0000:05:00.0 (144d a824)</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvme -&gt; vfio-pci</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Output from "sudo xnvme driver --be spdk 0000:05:00.0"</span>
+<span class="nt">devices</span><span class="p">:</span>
+<span class="w">  </span><span class="s">'0000:05:00.0'</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="s">'vfio-pci'</span><span class="p p-Indicator">,</span><span class="nt"> changed</span><span class="p">:</span><span class="w"> </span><span class="nv">true</span><span class="p p-Indicator">}</span>
 
 <span class="c1"># Output from "sudo ./hello 0000:05:00.0"</span>
 <span class="nt">xnvme_dev</span><span class="p">:</span>

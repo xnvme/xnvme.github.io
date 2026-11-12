@@ -504,15 +504,15 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="spdk">
-<span id="sec-backends-spdk"></span><h1>SPDK<a class="headerlink" href="#spdk" title="Link to this heading">#</a></h1>
+  <section id="sec-backends-spdk">
+<span id="spdk"></span><h1>SPDK<a class="headerlink" href="#sec-backends-spdk" title="Link to this heading">#</a></h1>
 <p><strong>xNVMe</strong> provides a kernel-bypassing backend implemented
 using <a class="extlink-xref-spdk reference external" href="https://spdk.io/">SPDK</a>. <strong>SPDK</strong> has a lot to offer, however, <strong>xNVMe</strong>
 only makes use of the <a class="extlink-xref-spdk reference external" href="https://spdk.io/">SPDK</a> user-space NVMe driver. That is, the
 reactor, threading-model, and application-framework of <strong>SPDK</strong> is not used
 by <strong>xNVMe</strong>.</p>
-<section id="device-identifiers">
-<span id="sec-backends-spdk-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
+<section id="sec-backends-spdk-identifiers">
+<span id="device-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#sec-backends-spdk-identifiers" title="Link to this heading">#</a></h2>
 <p>When using user-space NVMe-drivers, such as the SPDK NVMe PMD
 (poll-mode-driver), then the operating-system kernel NVMe driver is “detached”
 and the device bound to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> or <code class="docutils literal notranslate"><span class="pre">uio-generic</span></code>. Thus, the
@@ -529,7 +529,7 @@ identifier.</p>
 </pre></div>
 </div>
 <p>This information is usable via the the cli, such as here:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:03:00.0
 xnvme<span class="w"> </span>info<span class="w"> </span>pci:0000:03:00.0?nsid<span class="o">=</span><span class="m">1</span>
 </pre></div>
 </div>
@@ -543,12 +543,12 @@ xnvme<span class="w"> </span>info<span class="w"> </span>pci:0000:03:00.0?nsid<s
 <code class="docutils literal notranslate"><span class="pre">?opts=&lt;val&gt;</span></code>. This is provided as a means to tell <strong>xNVMe</strong> that you want to
 use the NVMe controller at <code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code> and the namespace identified by
 <code class="docutils literal notranslate"><span class="pre">nsid=1</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:03:00.0
 xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--dev-nsid<span class="o">=</span><span class="m">1</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>vfio-pci<span class="w"> </span>driver
-<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>devices:
+<span class="w">  </span><span class="s1">'0000:03:00.0'</span>:<span class="w"> </span><span class="o">{</span>driver:<span class="w"> </span><span class="s1">'vfio-pci'</span>,<span class="w"> </span>changed:<span class="w"> </span>false<span class="o">}</span>
 
 
 xnvme_dev:
@@ -586,12 +586,12 @@ xnvme_dev:
 </pre></div>
 </div>
 </section>
-<section id="instrumentation">
-<span id="sec-backends-spdk-instrumentation"></span><h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h2>
+<section id="sec-backends-spdk-instrumentation">
+<span id="instrumentation"></span><h2>Instrumentation<a class="headerlink" href="#sec-backends-spdk-instrumentation" title="Link to this heading">#</a></h2>
 <p>…</p>
 </section>
-<section id="system-configuration">
-<span id="sec-backends-spdk-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+<section id="sec-backends-spdk-config">
+<span id="system-configuration"></span><h2>System Configuration<a class="headerlink" href="#sec-backends-spdk-config" title="Link to this heading">#</a></h2>
 <p>…</p>
 <section id="driver-attachment-and-memory">
 <h3>Driver Attachment and memory<a class="headerlink" href="#driver-attachment-and-memory" title="Link to this heading">#</a></h3>
@@ -601,18 +601,20 @@ to the NVMe devices attached to your system. For a user-space driver to operate,
 then the operating system driver must be detached and bound to a driver such as
 <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> or <code class="docutils literal notranslate"><span class="pre">uio-generic-pci</span></code>, such that the NVMe driver can operate in
 user-space.</p>
-<p>By running the command below <strong>8GB</strong> of hugepages will be configured and the
-device detached from the Kernel NVMe driver:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>xnvme-driver
+<p>Reserve hugepages with <code class="docutils literal notranslate"><span class="pre">hugepages</span></code>, here 4 GiB of 2 MiB pages, and mount
+hugetlbfs, which SPDK needs; then move the controller to the driver the <code class="docutils literal notranslate"><span class="pre">spdk</span></code>
+backend needs with <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">spdk</span></code>, which binds only the controller
+named and refuses one whose namespaces are in use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hugepages<span class="w"> </span>setup<span class="w"> </span>--count<span class="w"> </span><span class="m">2048</span>
+hugepages<span class="w"> </span>mount
+xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:03:00.0
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script is a merge of the <strong>SPDK</strong> <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script and
-its dependencies.</p>
-<p>The command above should produce output similar to:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
-<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
-</pre></div>
-</div>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span></code> says whether the host is ready: the IOMMU, the modules, the
+hugepages and the memlock limit, with the fix for each that is not. The
+<code class="docutils literal notranslate"><span class="pre">hugepages</span></code> and <code class="docutils literal notranslate"><span class="pre">iommu</span></code> tools are installed with
+<code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">hugepages</span> <span class="pre">iommu</span></code>; <code class="docutils literal notranslate"><span class="pre">iommu</span> <span class="pre">show</span></code> prints the mode the kernel runs
+the IOMMU in.</p>
 <p>If anything else that the above is output from <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code>, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="p">(</span><span class="mi">1</span><span class="n">d1d</span> <span class="mi">2807</span><span class="p">):</span> <span class="n">nvme</span> <span class="o">-&gt;</span> <span class="n">uio_generic</span>
 </pre></div>
@@ -648,18 +650,14 @@ example, see <a class="reference internal" href="#sec-backends-spdk-config"><spa
 </section>
 <section id="re-binding-devices">
 <h3>Re-binding devices<a class="headerlink" href="#re-binding-devices" title="Link to this heading">#</a></h3>
-<p>Run the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver<span class="w"> </span>reset
-</pre></div>
-</div>
-<p>Should output similar to:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>vfio-pci<span class="w"> </span>-&gt;<span class="w"> </span>nvme
-<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>virtio-pci<span class="w"> </span>driver
+<p>Return the controller to the kernel NVMe driver by naming a backend that uses
+it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>io_uring<span class="w"> </span><span class="m">0000</span>:03:00.0
 </pre></div>
 </div>
 </section>
-<section id="enabling-vfio-without-limits">
-<span id="sec-backends-spdk-vfio"></span><h3>Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits<a class="headerlink" href="#enabling-vfio-without-limits" title="Link to this heading">#</a></h3>
+<section id="sec-backends-spdk-vfio">
+<span id="enabling-vfio-without-limits"></span><h3>Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits<a class="headerlink" href="#sec-backends-spdk-vfio" title="Link to this heading">#</a></h3>
 <p>If <code class="docutils literal notranslate"><span class="pre">nvme</span></code> is rebound to <code class="docutils literal notranslate"><span class="pre">uio_generic</span></code>, and not <code class="docutils literal notranslate"><span class="pre">vfio</span></code>, then VT-d is
 probably not supported or disabled. In either case try these two steps:</p>
 <ol class="arabic simple">
@@ -702,13 +700,8 @@ your CPU.</p></li>
 /sys/kernel/iommu_groups/0/devices/0000:00:00.0
 </pre></div>
 </div>
-<p>And user-space driver setup:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>xnvme-driver
-</pre></div>
-</div>
-<p>Should rebind the device to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, eg.:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
-<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
+<p>And user-space driver setup, which rebinds the device to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:03:00.0
 </pre></div>
 </div>
 </section>
@@ -763,8 +756,8 @@ connectivity of deviecs, e.g. move devices around.</p>
 done by disabling iommu by adding the kernel option: <code class="docutils literal notranslate"><span class="pre">iommu=off</span></code> to the
 kernel command-line and rebooting.</p>
 </section>
-<section id="user-space">
-<span id="sec-backends-spdk-config-userspace"></span><h3>User Space<a class="headerlink" href="#user-space" title="Link to this heading">#</a></h3>
+<section id="sec-backends-spdk-config-userspace">
+<span id="user-space"></span><h3>User Space<a class="headerlink" href="#sec-backends-spdk-config-userspace" title="Link to this heading">#</a></h3>
 <p>Linux provides the <strong>Userspace I/O</strong> ( <a class="extlink-xref-linux-uio reference external" href="https://www.kernel.org/doc/html/v4.14/driver-api/uio-howto.html">uio</a> ) and
 <strong>Virtual Function I/O</strong> <a class="extlink-xref-linux-vfio reference external" href="https://www.kernel.org/doc/Documentation/vfio.txt">vfio</a> frameworks to write user
 space I/ O drivers. Both interfaces work by binding a given device to an
@@ -786,8 +779,8 @@ Namely, the NVMe driver provided by the <strong>Storage Platform Development Kit
 how to bind and unbind drivers, and lastly how to utilize non-devfs device
 identifiers by enumerating the system and inspecting a device.</p>
 </section>
-<section id="config">
-<span id="sec-backends-spdk-config-userspace-config"></span><h3>Config<a class="headerlink" href="#config" title="Link to this heading">#</a></h3>
+<section id="sec-backends-spdk-config-userspace-config">
+<span id="config"></span><h3>Config<a class="headerlink" href="#sec-backends-spdk-config-userspace-config" title="Link to this heading">#</a></h3>
 <p>What remains is checking your system configuration, enabling IOMMU for use by
 the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> driver, and possibly falling back to the <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
 driver in case <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> is not working out.  <code class="docutils literal notranslate"><span class="pre">vfio</span></code> is preferred as
@@ -836,28 +829,16 @@ on enabling VT-d / IOMMU for your CPU.</p></li>
 </section>
 <section id="unbinding-and-binding">
 <h3>Unbinding and binding<a class="headerlink" href="#unbinding-and-binding" title="Link to this heading">#</a></h3>
-<p>With the system configured then you can use the <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script to bind
-and unbind devices. The <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script is a merge of the <strong>SPDK</strong>
-<code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script and its dependencies.</p>
-<p>By running the command below <strong>8GB</strong> of hugepages will be configured, the
-Kernel NVMe driver unbound, and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> bound to the device:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">HUGEMEM</span><span class="o">=</span><span class="m">4096</span><span class="w"> </span>xnvme-driver
+<p>With the system configured, <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">spdk</span></code> moves a controller off
+the kernel NVMe driver and onto <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, or <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> on a host
+without an IOMMU, and <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">io_uring</span></code> returns it; <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">list</span></code>
+shows each controller, its driver and its IOMMU group:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>list
+xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:03:00.0
+xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>io_uring<span class="w"> </span><span class="m">0000</span>:03:00.0
 </pre></div>
 </div>
-<p>The command above should produce output similar to:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>nvme<span class="w"> </span>-&gt;<span class="w"> </span>vfio-pci
-<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Active<span class="w"> </span>mountpoints<span class="w"> </span>on<span class="w"> </span>/dev/vda,<span class="w"> </span>so<span class="w"> </span>not<span class="w"> </span>binding
-</pre></div>
-</div>
-<p>To unbind from <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> and back to the Kernel NVMe driver, then run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver<span class="w"> </span>reset
-</pre></div>
-</div>
-<p>Should output similar to:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0000</span>:03:00.0<span class="w"> </span><span class="o">(</span>1b36<span class="w"> </span><span class="m">0010</span><span class="o">)</span>:<span class="w"> </span>vfio-pci<span class="w"> </span>-&gt;<span class="w"> </span>nvme
-<span class="m">0000</span>:00:02.0<span class="w"> </span><span class="o">(</span>1af4<span class="w"> </span><span class="m">1001</span><span class="o">)</span>:<span class="w"> </span>Already<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>virtio-pci<span class="w"> </span>driver
-</pre></div>
-</div>
+<p>Neither reserves hugepages; <code class="docutils literal notranslate"><span class="pre">hugepages</span> <span class="pre">setup</span> <span class="pre">--count</span> <span class="pre">&lt;pages&gt;</span></code> does.</p>
 </section>
 </section>
 </section>
@@ -885,17 +866,17 @@ Kernel NVMe driver unbound, and <code class="docutils literal notranslate"><span
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-spdk-identifiers">Device Identifiers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-spdk-instrumentation">Instrumentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-spdk-config">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-attachment-and-memory">Driver Attachment and memory</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-issues">Memory Issues</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#re-binding-devices">Re-binding devices</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enabling-vfio-without-limits">Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-spdk-vfio">Enabling <code class="docutils literal notranslate"><span class="pre">VFIO</span></code> without limits</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-and-manually-changing-memory-available-to-spdk-aka-hugepages">Inspecting and manually changing memory available to <code class="docutils literal notranslate"><span class="pre">SPDK</span></code> aka <code class="docutils literal notranslate"><span class="pre">HUGEPAGES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-devices-found">No devices found</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-space">User Space</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#config">Config</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-spdk-config-userspace">User Space</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-spdk-config-userspace-config">Config</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unbinding-and-binding">Unbinding and binding</a></li>
 </ul>
 </li>

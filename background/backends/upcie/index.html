@@ -504,8 +504,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="upcie">
-<span id="sec-backends-upcie"></span><h1>uPCIe<a class="headerlink" href="#upcie" title="Link to this heading">#</a></h1>
+  <section id="sec-backends-upcie">
+<span id="upcie"></span><h1>uPCIe<a class="headerlink" href="#sec-backends-upcie" title="Link to this heading">#</a></h1>
 <p><strong>xNVMe</strong> provides kernel-bypassing backends implemented using <strong>uPCIe</strong>, a
 minimal header-only <strong>user space</strong> NVMe driver. Unlike <strong>SPDK</strong>, <strong>uPCIe</strong> has
 no reactor, threading model, or application framework — just direct PCIe BAR
@@ -524,8 +524,8 @@ through HIP.</p></li>
 <p>Additionally, the host-memory backend supports a
 <strong><a class="reference internal" href="cplane.html#sec-backends-upcie-cplane"><span class="std std-ref">uPCIe (control plane)</span></a></strong> mode in which several processes share a
 single NVMe controller via a designated server process.</p>
-<section id="device-identifiers">
-<span id="sec-backends-upcie-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#device-identifiers" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-identifiers">
+<span id="device-identifiers"></span><h2>Device Identifiers<a class="headerlink" href="#sec-backends-upcie-identifiers" title="Link to this heading">#</a></h2>
 <p>When using <strong>user space</strong> NVMe drivers, the operating-system kernel NVMe
 driver is detached and the device is bound either to <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> for the
 legacy no-IOMMU path or to <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> for the IOMMU-backed path. Thus, the
@@ -533,21 +533,29 @@ device files in <code class="docutils literal notranslate"><span class="pre">/de
 are instead identified by their PCI id (<code class="docutils literal notranslate"><span class="pre">0000:03:00.0</span></code>), and namespace
 identifier via the <code class="docutils literal notranslate"><span class="pre">--nsid</span></code> option.</p>
 </section>
-<section id="system-configuration">
-<span id="sec-backends-upcie-config"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-config">
+<span id="system-configuration"></span><h2>System Configuration<a class="headerlink" href="#sec-backends-upcie-config" title="Link to this heading">#</a></h2>
 <section id="driver-attachment">
 <h3>Driver Attachment<a class="headerlink" href="#driver-attachment" title="Link to this heading">#</a></h3>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script to unbind the kernel NVMe driver and bind
-devices to uio_pci_generic or vfio-pci:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme-driver
+<p>Move a controller off the kernel NVMe driver and onto vfio-pci, or
+uio_pci_generic on a host without an IOMMU, with <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">upcie</span></code>; see
+which controllers there are, and the driver each is on, with <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">list</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>list
+xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span><span class="m">0000</span>:03:00.0
 </pre></div>
 </div>
+<p>It binds only the named controller, and refuses one whose namespaces are
+mounted, held, used as swap or open.
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">io_uring</span> <span class="pre">0000:03:00.0</span></code> returns it to the kernel driver. It reserves no hugepages; the <code class="docutils literal notranslate"><span class="pre">hugepages</span></code>
+tool does, <code class="docutils literal notranslate"><span class="pre">hugepages</span> <span class="pre">setup</span> <span class="pre">--count</span> <span class="pre">1024</span></code>, and <code class="docutils literal notranslate"><span class="pre">iommu</span> <span class="pre">show</span></code> prints the mode the
+kernel runs the IOMMU in; <code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">hugepages</span> <span class="pre">iommu</span></code> installs both, and
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span></code> says whether anything is missing.</p>
 <p><strong>upcie</strong>, <strong>upcie-cuda</strong> and <strong>upcie-hip</strong> all support <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
 (no-IOMMU path) and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> (IOMMU-backed path). For the GPU backends see
 <a class="reference internal" href="cuda.html#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.</p>
 </section>
-<section id="attachment-modes">
-<span id="sec-backends-upcie-attachment"></span><h3>Attachment Modes<a class="headerlink" href="#attachment-modes" title="Link to this heading">#</a></h3>
+<section id="sec-backends-upcie-attachment">
+<span id="attachment-modes"></span><h3>Attachment Modes<a class="headerlink" href="#sec-backends-upcie-attachment" title="Link to this heading">#</a></h3>
 <p>The attachment mode follows the driver bound to the device, and decides how
 DMA memory is wired up:</p>
 <dl class="simple myst">
@@ -576,8 +584,8 @@ enable Bus Master when needed.</p></li>
 </ol>
 </section>
 </section>
-<section id="dual-backend-operation">
-<span id="sec-backends-upcie-dual"></span><h2>Dual-Backend Operation<a class="headerlink" href="#dual-backend-operation" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-dual">
+<span id="dual-backend-operation"></span><h2>Dual-Backend Operation<a class="headerlink" href="#sec-backends-upcie-dual" title="Link to this heading">#</a></h2>
 <p>The same PCIe device can be opened simultaneously with both <strong>upcie</strong> and
 <strong>upcie-cuda</strong>. This lets one handle send I/O through host-memory buffers while
 another sends I/O through GPU device-memory buffers, both going to the same NVMe
@@ -630,14 +638,14 @@ requirements for <a class="reference internal" href="cuda.html#sec-backends-upci
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identifiers">Device Identifiers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-identifiers">Device Identifiers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-config">System Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-attachment">Driver Attachment</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attachment-modes">Attachment Modes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-attachment">Attachment Modes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#privileges">Privileges</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-backend-operation">Dual-Backend Operation</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-dual">Dual-Backend Operation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
 </ul>
 </li>

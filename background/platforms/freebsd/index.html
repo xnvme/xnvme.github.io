@@ -504,34 +504,43 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="freebsd">
-<span id="sec-platforms-freebsd"></span><h1>FreeBSD<a class="headerlink" href="#freebsd" title="Link to this heading">#</a></h1>
-<section id="system-configuration">
-<span id="sec-platforms-freebsd-configuration"></span><h2>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading">#</a></h2>
+  <section id="sec-platforms-freebsd">
+<span id="freebsd"></span><h1>FreeBSD<a class="headerlink" href="#sec-platforms-freebsd" title="Link to this heading">#</a></h1>
+<section id="sec-platforms-freebsd-configuration">
+<span id="system-configuration"></span><h2>System Configuration<a class="headerlink" href="#sec-platforms-freebsd-configuration" title="Link to this heading">#</a></h2>
 <p>FreeBSD is one of several supported platforms. <strong>xNVMe</strong> is likely to work on
 multiple versions of FreeBSD, however to ensure compatibility we recommend using
 a version listed in the <a class="reference internal" href="../../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a> section.</p>
-<section id="user-space-dma-memory-contigmem">
-<span id="sec-platforms-freebsd-contigmem"></span><h3>User-space DMA memory (<code class="docutils literal notranslate"><span class="pre">contigmem</span></code>)<a class="headerlink" href="#user-space-dma-memory-contigmem" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">spdk</span></code> backend gets its DMA memory from the <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> kernel module,
-which the <code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code> script loads. It pre-allocates a pool of
-physically-contiguous buffers, <code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> MB each (<code class="docutils literal notranslate"><span class="pre">256</span></code> by default), up
-to a total of <code class="docutils literal notranslate"><span class="pre">HUGEMEM</span></code> MB (<code class="docutils literal notranslate"><span class="pre">2048</span></code> by default). The pool holds at most 64
-buffers, so <code class="docutils literal notranslate"><span class="pre">HUGEMEM</span> <span class="pre">/</span> <span class="pre">CONTIGMEM_BUFSZ</span></code> must not exceed 64.</p>
-<p><code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> is a hard upper bound on a single DMA allocation: a buffer
-cannot span multiple <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> buffers, so <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> cannot return
-more than <code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> MB no matter how much of the pool is free.</p>
+<section id="sec-platforms-freebsd-contigmem">
+<span id="userspace-driver-and-dma-memory"></span><h3>Userspace driver and DMA memory<a class="headerlink" href="#sec-platforms-freebsd-contigmem" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">spdk</span></code> backend needs the controller on the <code class="docutils literal notranslate"><span class="pre">nic_uio</span></code> driver, and its DMA
+memory from the <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> kernel module. <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">spdk</span></code> moves a
+controller onto <code class="docutils literal notranslate"><span class="pre">nic_uio</span></code>, and <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">posix</span></code> returns it to <code class="docutils literal notranslate"><span class="pre">nvme</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>driver<span class="w"> </span>--be<span class="w"> </span>spdk<span class="w"> </span><span class="m">0000</span>:01:00.0
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">contigmem</span></code> pre-allocates a pool of physically-contiguous buffers when it
+loads, sized by two tunables, and holds at most 64 buffers. The buffer size is a
+hard upper bound on a single DMA allocation: a buffer cannot span multiple
+<code class="docutils literal notranslate"><span class="pre">contigmem</span></code> buffers, so <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> cannot return more than one buffer
+no matter how much of the pool is free.</p>
 <p>On a fragmented heap, a large physically-contiguous buffer can be impossible to
 place even when plenty of memory is free, and loading <code class="docutils literal notranslate"><span class="pre">contigmem</span></code> then fails
 with <code class="docutils literal notranslate"><span class="pre">contigmalloc</span> <span class="pre">failed</span> <span class="pre">for</span> <span class="pre">buffer</span> <span class="pre">N</span></code> in <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>. Smaller buffers are easier
-to place, so lowering <code class="docutils literal notranslate"><span class="pre">CONTIGMEM_BUFSZ</span></code> avoids the failure:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CONTIGMEM_BUFSZ</span><span class="o">=</span><span class="m">64</span><span class="w"> </span>xnvme-driver
+to place. The <code class="docutils literal notranslate"><span class="pre">hugepages</span></code> tool, installed with <code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">hugepages</span></code>, sets
+the tunables and loads the module; this reserves 32 buffers of 64 MB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hugepages<span class="w"> </span>setup<span class="w"> </span>--size<span class="w"> </span><span class="m">65536</span><span class="w"> </span>--count<span class="w"> </span><span class="m">32</span>
 </pre></div>
 </div>
+<p>The tunables are read only when the module loads, so <code class="docutils literal notranslate"><span class="pre">hugepages</span> <span class="pre">setup</span></code>
+reloads it, which fails while a process still has buffers mapped.
+<code class="docutils literal notranslate"><span class="pre">hugepages</span> <span class="pre">setup</span> <span class="pre">--count</span> <span class="pre">0</span></code> unloads it, and <code class="docutils literal notranslate"><span class="pre">hugepages</span> <span class="pre">info</span></code> shows what is
+reserved. Without the tool, set <code class="docutils literal notranslate"><span class="pre">hw.contigmem.num_buffers</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hw.contigmem.buffer_size</span></code> with <code class="docutils literal notranslate"><span class="pre">kenv</span></code> and <code class="docutils literal notranslate"><span class="pre">kldload</span> <span class="pre">contigmem</span></code>.</p>
 </section>
 </section>
-<section id="device-identification">
-<span id="sec-platforms-freebsd-identification"></span><h2>Device Identification<a class="headerlink" href="#device-identification" title="Link to this heading">#</a></h2>
+<section id="sec-platforms-freebsd-identification">
+<span id="device-identification"></span><h2>Device Identification<a class="headerlink" href="#sec-platforms-freebsd-identification" title="Link to this heading">#</a></h2>
 <p>FreeBSD exposes NVMe devices as files using the following naming schemes:</p>
 <dl class="simple myst">
 <dt><code class="docutils literal notranslate"><span class="pre">/dev/nvme{ctrlr_id}</span></code></dt><dd><p><strong>NVMe</strong> Controller device node</p>
@@ -546,8 +555,8 @@ to place, so lowering <code class="docutils literal notranslate"><span class="pr
 <p>For details see the man-pages for <code class="docutils literal notranslate"><span class="pre">nvme</span></code>, <code class="docutils literal notranslate"><span class="pre">nda</span></code>, <code class="docutils literal notranslate"><span class="pre">nvd</span></code>, <code class="docutils literal notranslate"><span class="pre">pci</span></code>, <code class="docutils literal notranslate"><span class="pre">disk</span></code>,
 and <code class="docutils literal notranslate"><span class="pre">nvmecontrol</span></code>.</p>
 </section>
-<section id="backend-configs">
-<span id="sec-platforms-freebsd-instrumentation"></span><h2>Backend Configs<a class="headerlink" href="#backend-configs" title="Link to this heading">#</a></h2>
+<section id="sec-platforms-freebsd-instrumentation">
+<span id="backend-configs"></span><h2>Backend Configs<a class="headerlink" href="#sec-platforms-freebsd-instrumentation" title="Link to this heading">#</a></h2>
 <p>The FreeBSD platform provides the following backend configs. Some of these use
 <strong>cross-platform
 implementations</strong>, each in a directory of its own under <code class="docutils literal notranslate"><span class="pre">lib/backend/</span></code>. For
@@ -614,12 +623,12 @@ alignment, see <a class="reference internal" href="../../backends/common/index.h
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-configuration">System Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-space-dma-memory-contigmem">User-space DMA memory (<code class="docutils literal notranslate"><span class="pre">contigmem</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-platforms-freebsd-configuration">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-platforms-freebsd-contigmem">Userspace driver and DMA memory</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-identification">Device Identification</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-configs">Backend Configs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-platforms-freebsd-identification">Device Identification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-platforms-freebsd-instrumentation">Backend Configs</a></li>
 </ul>
   </nav></div>
 

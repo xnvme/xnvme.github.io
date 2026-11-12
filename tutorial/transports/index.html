@@ -460,8 +460,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="nvme-transports">
-<span id="sec-tutorials-transports"></span><h1>NVMe Transports<a class="headerlink" href="#nvme-transports" title="Link to this heading">#</a></h1>
+  <section id="sec-tutorials-transports">
+<span id="nvme-transports"></span><h1>NVMe Transports<a class="headerlink" href="#sec-tutorials-transports" title="Link to this heading">#</a></h1>
 <p>The NVMe specification defines several transports for issuing commands to a
 controller. <strong>PCIe</strong> is the local memory-mapped transport used by directly
 attached SSDs. <strong>TCP</strong> and <strong>RDMA</strong> (iWARP, InfiniBand, RoCE) are
@@ -493,7 +493,7 @@ documented on their own pages. A native target along with device
 emulation is on the roadmap, with no committed timeline.</p>
 <p><a class="reference internal" href="spdk/index.html"><span class="std std-doc"><strong>SPDK Target</strong></span></a> uses the user-space <code class="docutils literal notranslate"><span class="pre">nvmf_tgt</span></code>
 application. The PCIe device is bound to the userspace driver via
-<code class="docutils literal notranslate"><span class="pre">xnvme-driver</span></code>, attached to <code class="docutils literal notranslate"><span class="pre">nvmf_tgt</span></code> as <code class="docutils literal notranslate"><span class="pre">Nvme0</span></code>, and published as a TCP
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">spdk</span></code>, attached to <code class="docutils literal notranslate"><span class="pre">nvmf_tgt</span></code> as <code class="docutils literal notranslate"><span class="pre">Nvme0</span></code>, and published as a TCP
 subsystem through <code class="docutils literal notranslate"><span class="pre">rpc.py</span></code>.</p>
 <p><a class="reference internal" href="linux/index.html"><span class="std std-doc"><strong>Linux Target</strong></span></a> uses the in-tree <code class="docutils literal notranslate"><span class="pre">nvmet</span></code> driver
 configured through <code class="docutils literal notranslate"><span class="pre">configfs</span></code>. The PCIe device is rebound to the kernel
@@ -608,7 +608,7 @@ side against the brought-up listener. The xNVMe commands it issues are
 extracted from the live cijoe run and shown below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>enum<span class="w"> </span>--uri<span class="w"> </span><span class="m">127</span>.0.0.1:4420
 xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">127</span>.0.0.1:4420<span class="w"> </span>--subnqn<span class="w"> </span>nqn.2019-08.org.qemu:beef0003
-xnvmeperf<span class="w"> </span>run<span class="w"> </span><span class="m">127</span>.0.0.1:4420<span class="w"> </span>--subnqn<span class="w"> </span>nqn.2019-08.org.qemu:beef0003<span class="w"> </span>--iopattern<span class="w"> </span>randread<span class="w"> </span>--iosize<span class="w"> </span><span class="m">4096</span><span class="w"> </span>--qdepth<span class="w"> </span><span class="m">32</span><span class="w"> </span>--nqueues<span class="w"> </span><span class="m">1</span><span class="w"> </span>--runtime<span class="w"> </span><span class="m">5</span><span class="w"> </span>--cpumask<span class="w"> </span>0x4
+xnvme<span class="w"> </span>perf<span class="w"> </span>run<span class="w"> </span><span class="m">127</span>.0.0.1:4420<span class="w"> </span>--subnqn<span class="w"> </span>nqn.2019-08.org.qemu:beef0003<span class="w"> </span>--iopattern<span class="w"> </span>randread<span class="w"> </span>--iosize<span class="w"> </span><span class="m">4096</span><span class="w"> </span>--qdepth<span class="w"> </span><span class="m">32</span><span class="w"> </span>--nqueues<span class="w"> </span><span class="m">1</span><span class="w"> </span>--runtime<span class="w"> </span><span class="m">5</span><span class="w"> </span>--cpumask<span class="w"> </span>0x4
 </pre></div>
 </div>
 <p>The captured output for each command, along with the surrounding

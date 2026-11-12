@@ -392,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="xnvme_buf.html">libxnvme_buf.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_cmd.html">libxnvme_cmd.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xnvme_driver.html">libxnvme_driver.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_geo.html">libxnvme_geo.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_ident.html">libxnvme_ident.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xnvme_opts.html">libxnvme_opts.h</a></li>
@@ -524,6 +525,16 @@ controller property and a useful NVM namespace property, respectively.</p>
 retrievable via <a class="reference internal" href="xnvme_dev.html#sec-api-c-xnvme-dev-func-xnvme-dev-get-ident"><span class="std std-ref">xnvme_dev_get_ident</span></a>, contains,
 among other things, information such as the command-set-identifier, which
 tells you which NVMe command-set is available.</p>
+</dd>
+<dt>Controllers and Drivers</dt><dd><p><a class="reference internal" href="xnvme_scan.html#sec-api-c-xnvme-scan-func-xnvme-scan"><span class="std std-ref">xnvme_scan</span></a> lists the NVMe controller
+functions on the system without opening them, each with the kernel driver
+it is bound to and its IOMMU group. The <a class="reference internal" href="xnvme_driver.html#sec-api-c-xnvme-driver"><span class="std std-ref">libxnvme_driver.h</span></a>
+module moves a function between the kernel NVMe driver and a userspace one:
+<a class="reference internal" href="xnvme_driver.html#sec-api-c-xnvme-driver-func-xnvme-driver-attach"><span class="std std-ref">xnvme_driver_attach</span></a> and
+<a class="reference internal" href="xnvme_driver.html#sec-api-c-xnvme-driver-func-xnvme-driver-detach"><span class="std std-ref">xnvme_driver_detach</span></a>, with a dry run that
+says what holds a function before it is moved, and
+<a class="reference internal" href="xnvme_driver.html#sec-api-c-xnvme-driver-func-xnvme-driver-for-be"><span class="std std-ref">xnvme_driver_for_be</span></a> names the driver a
+backend needs. This is what <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">list</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span></code> are built on.</p>
 </dd>
 <dt>Commands</dt><dd><p>Commands are encapsulated in the <a class="reference internal" href="xnvme_cmd.html#sec-api-c-xnvme-cmd"><span class="std std-ref">libxnvme_cmd.h</span></a> module
 and <a class="reference internal" href="xnvme_cmd.html#sec-api-c-xnvme-cmd-struct-xnvme-cmd-ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a>. The <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx</span></code>,

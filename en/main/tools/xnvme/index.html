@@ -57,7 +57,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="enum: enumerate devices" href="enum/index.html" />
+    <link rel="next" title="list: controllers and their drivers" href="list/index.html" />
     <link rel="prev" title="Tools" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
@@ -392,26 +392,14 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">xnvme</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="enum/index.html">enum: enumerate devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="feature-get/index.html">feature-get: Device feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="feature-set/index.html">feature-set: Device feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="format/index.html">format: Format a NVM namespace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="idfy-ctrlr/index.html">idfy-ctrlr: Controller Identification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="idfy-ns/index.html">idfy-ns: Namespace Identification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="idfy/index.html">idfy: User-defined Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list/index.html">list: controllers and their drivers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="info/index.html">info: Device Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log-erri/index.html">log-erri: Error-Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log-health/index.html">log-health: Health-Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="log/index.html">log: User-Defined Log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="padc/index.html">padc: Pass an admin-command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pioc/index.html">pioc: Pass an IO-command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sanitize/index.html">sanitize: …</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum/index.html">enum: enumerate devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="env/index.html">env: system and library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver/index.html">driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd/index.html">cmd: raw commands</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../file/index.html">file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homi/index.html">homi</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fio/index.html">fio IO Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../xnvmeperf/index.html">xnvmeperf</a></li>
@@ -478,66 +466,160 @@
                   
   <section id="xnvme">
 <span id="sec-tools-xnvme"></span><h1>xnvme<a class="headerlink" href="#xnvme" title="Link to this heading">#</a></h1>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvme<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
-
-Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:
-
-<span class="w">  </span>list<span class="w">             </span><span class="p">|</span><span class="w"> </span>List<span class="w"> </span>devices<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>system
-<span class="w">  </span>enum<span class="w">             </span><span class="p">|</span><span class="w"> </span>Enumerate<span class="w"> </span>devices<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>system
-<span class="w">  </span>scan<span class="w">             </span><span class="p">|</span><span class="w"> </span>Scan<span class="w"> </span><span class="k">for</span><span class="w"> </span>devices<span class="w"> </span>without<span class="w"> </span>opening<span class="w"> </span>them
-<span class="w">  </span>info<span class="w">             </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>derived<span class="w"> </span>information<span class="w"> </span><span class="k">for</span><span class="w"> </span>given<span class="w"> </span>device
-<span class="w">  </span>idfy<span class="w">             </span><span class="p">|</span><span class="w"> </span>Execute<span class="w"> </span>an<span class="w"> </span>User-defined<span class="w"> </span>Identify<span class="w"> </span>Command
-<span class="w">  </span>idfy-ns<span class="w">          </span><span class="p">|</span><span class="w"> </span>Identify<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>Namespace
-<span class="w">  </span>idfy-ctrlr<span class="w">       </span><span class="p">|</span><span class="w"> </span>Identify<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>Controller
-<span class="w">  </span>idfy-cs<span class="w">          </span><span class="p">|</span><span class="w"> </span>Identify<span class="w"> </span>the<span class="w"> </span>Command<span class="w"> </span>Sets<span class="w"> </span>supported<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>controller
-<span class="w">  </span>log<span class="w">              </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>a<span class="w"> </span>User-defined<span class="w"> </span>Log
-<span class="w">  </span>log-erri<span class="w">         </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>error-information<span class="w"> </span>log
-<span class="w">  </span>log-health<span class="w">       </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>S.M.A.R.T.<span class="w"> </span>/<span class="w"> </span>Health<span class="w"> </span>information<span class="w"> </span>log
-<span class="w">  </span>log-sanitize<span class="w">     </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>Sanitize<span class="w"> </span>Status<span class="w"> </span>log
-<span class="w">  </span>log-fdp-config<span class="w">   </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>FDP<span class="w"> </span>configurations<span class="w"> </span>log
-<span class="w">  </span>log-ruhu<span class="w">         </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>reclaim<span class="w"> </span>unit<span class="w"> </span>handle<span class="w"> </span>usage<span class="w"> </span>log
-<span class="w">  </span>log-fdp-stats<span class="w">    </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>FDP<span class="w"> </span>statistics<span class="w"> </span>log
-<span class="w">  </span>log-fdp-events<span class="w">   </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>fdp-events<span class="w"> </span>log
-<span class="w">  </span>feature-get<span class="w">      </span><span class="p">|</span><span class="w"> </span>Execute<span class="w"> </span>a<span class="w"> </span>Get-Features<span class="w"> </span>Command
-<span class="w">  </span>feature-set<span class="w">      </span><span class="p">|</span><span class="w"> </span>Execute<span class="w"> </span>a<span class="w"> </span>Set-Features<span class="w"> </span>Command
-<span class="w">  </span>set-fdp-events<span class="w">   </span><span class="p">|</span><span class="w"> </span>Enable<span class="w"> </span>or<span class="w"> </span>disable<span class="w"> </span>all<span class="w"> </span>events
-<span class="w">  </span>format<span class="w">           </span><span class="p">|</span><span class="w"> </span>Format<span class="w"> </span>a<span class="w"> </span>NVM<span class="w"> </span>namespace
-<span class="w">  </span>sanitize<span class="w">         </span><span class="p">|</span><span class="w"> </span>Start<span class="w"> </span>a<span class="w"> </span>Sanitize<span class="w"> </span>Operation
-<span class="w">  </span>fdp-ruhs<span class="w">         </span><span class="p">|</span><span class="w"> </span>Retrieve<span class="w"> </span>the<span class="w"> </span>Reclaim<span class="w"> </span>Unit<span class="w"> </span>Handle<span class="w"> </span>Status
-<span class="w">  </span>fdp-ruhu<span class="w">         </span><span class="p">|</span><span class="w"> </span>Reclaim<span class="w"> </span>Unit<span class="w"> </span>Handle<span class="w"> </span>Update<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>Placement<span class="w"> </span>Identifier
-<span class="w">  </span>pioc<span class="w">             </span><span class="p">|</span><span class="w"> </span>Pass<span class="w"> </span>a<span class="w"> </span>used-defined<span class="w"> </span>IO<span class="w"> </span>Command<span class="w"> </span>through
-<span class="w">  </span>padc<span class="w">             </span><span class="p">|</span><span class="w"> </span>Pass<span class="w"> </span>a<span class="w"> </span>user-defined<span class="w"> </span>ADmin<span class="w"> </span>Command<span class="w"> </span>through
-<span class="w">  </span>library-info<span class="w">     </span><span class="p">|</span><span class="w"> </span>Produce<span class="w"> </span>information<span class="w"> </span>about<span class="w"> </span>the<span class="w"> </span>library
-<span class="w">  </span>dsm<span class="w">              </span><span class="p">|</span><span class="w"> </span>Dataset<span class="w"> </span>Management
-<span class="w">  </span>subsystem-reset<span class="w">  </span><span class="p">|</span><span class="w"> </span>Resets<span class="w"> </span>the<span class="w"> </span>subsystem
-<span class="w">  </span>show-regs<span class="w">        </span><span class="p">|</span><span class="w"> </span>Show<span class="w"> </span>controller-registers
-<span class="w">  </span>ctrlr-reset<span class="w">      </span><span class="p">|</span><span class="w"> </span>Resets<span class="w"> </span>the<span class="w"> </span>controller
-<span class="w">  </span>ns-rescan<span class="w">        </span><span class="p">|</span><span class="w"> </span>Rescans<span class="w"> </span>the<span class="w"> </span>nvme<span class="w"> </span>namespaces
-
-See<span class="w"> </span><span class="s1">'xnvme &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
-See<span class="w"> </span><span class="s1">'xnvme --version'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>library<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>revision<span class="w"> </span>it<span class="w"> </span>was<span class="w"> </span>built<span class="w"> </span>from
-
-xNVMe<span class="w"> </span>-<span class="w"> </span>Cross-platform<span class="w"> </span>NVMe<span class="w"> </span>utility<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3842d1d'</span><span class="o">}</span>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme</span></code> is the entry point to the <strong>xNVMe</strong> command line. Run it without
+arguments for the commands to start with and the groups the rest are in:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme
 </pre></div>
 </div>
-<section id="subcommands">
-<h2>Subcommands<a class="headerlink" href="#subcommands" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvme<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--help<span class="o">]</span>
+
+Find<span class="w"> </span>NVMe<span class="w"> </span>devices,<span class="w"> </span>inspect<span class="w"> </span>and<span class="w"> </span>benchmark<span class="w"> </span>them,<span class="w"> </span>and<span class="w"> </span>manage<span class="w"> </span>userspace<span class="w"> </span>drivers
+
+Start<span class="w"> </span>here:
+<span class="w">  </span>xnvme<span class="w"> </span>list<span class="w">               </span>NVMe<span class="w"> </span>controller<span class="w"> </span>functions<span class="w"> </span>and<span class="w"> </span>their<span class="w"> </span>driver
+<span class="w">  </span>xnvme<span class="w"> </span>info<span class="w"> </span>&lt;uri&gt;<span class="w">         </span>Retrieve<span class="w"> </span>derived<span class="w"> </span>information<span class="w"> </span><span class="k">for</span><span class="w"> </span>given<span class="w"> </span>device
+<span class="w">  </span>xnvme<span class="w"> </span>enum<span class="w">               </span>Enumerate<span class="w"> </span>devices<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>system
+<span class="w">  </span>xnvme<span class="w"> </span>perf<span class="w">               </span>Run<span class="w"> </span>IO<span class="w"> </span>benchmarks<span class="w"> </span>against<span class="w"> </span>xNVMe<span class="w"> </span>devices
+
+Set<span class="w"> </span>up<span class="w"> </span>the<span class="w"> </span>host:
+<span class="w">  </span>xnvme<span class="w"> </span>env<span class="w">                </span>Relevant<span class="w"> </span>system<span class="w"> </span>config<span class="w"> </span>and<span class="w"> </span>library<span class="w"> </span>introspection
+<span class="w">  </span>xnvme<span class="w"> </span>driver<span class="w">             </span>Bind<span class="w"> </span>the<span class="w"> </span>driver<span class="w"> </span>a<span class="w"> </span>backend<span class="w"> </span>needs,<span class="w"> </span>or<span class="w"> </span>show<span class="w"> </span>them
+
+Serve<span class="w"> </span>devices:
+<span class="w">  </span>xnvme<span class="w"> </span>homi<span class="w">               </span>Share<span class="w"> </span>NVMe<span class="w"> </span>controllers<span class="w"> </span>between<span class="w"> </span>processes
+<span class="w">  </span>xnvme<span class="w"> </span>qublk<span class="w">              </span>Serve<span class="w"> </span>an<span class="w"> </span>xNVMe<span class="w"> </span>device<span class="w"> </span>as<span class="w"> </span>a<span class="w"> </span>Linux<span class="w"> </span>block<span class="w"> </span>device
+
+Command<span class="w"> </span>passthru:
+<span class="w">  </span>xnvme<span class="w"> </span>cmd-admin<span class="w">          </span>An<span class="w"> </span>admin<span class="w"> </span>command,<span class="w"> </span>as<span class="w"> </span><span class="s1">'nvme admin-passthru'</span><span class="w"> </span>takes<span class="w"> </span>it
+<span class="w">  </span>xnvme<span class="w"> </span>cmd-io<span class="w">             </span>An<span class="w"> </span>I/O<span class="w"> </span>command,<span class="w"> </span>as<span class="w"> </span><span class="s1">'nvme io-passthru'</span><span class="w"> </span>takes<span class="w"> </span>it
+<span class="w">  </span>xnvme<span class="w"> </span>cmd-iov<span class="w">            </span>An<span class="w"> </span>I/O<span class="w"> </span><span class="nb">command</span><span class="w"> </span>with<span class="w"> </span>its<span class="w"> </span>data<span class="w"> </span><span class="k">in</span><span class="w"> </span>--vec-cnt<span class="w"> </span>segments
+
+Groups,<span class="w"> </span>run<span class="w"> </span>one<span class="w"> </span>to<span class="w"> </span>list<span class="w"> </span>its<span class="w"> </span>commands:
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w">               </span>installed<span class="w"> </span><span class="nb">test</span><span class="w"> </span>programs
+<span class="w">  </span>xnvme<span class="w"> </span>example<span class="w">            </span>installed<span class="w"> </span>example<span class="w"> </span>programs
+</pre></div>
+</div>
+<p>Run a group to list its commands, and append <code class="docutils literal notranslate"><span class="pre">--help</span></code> to any command for its
+arguments. Commands such as <code class="docutils literal notranslate"><span class="pre">perf</span></code>, <code class="docutils literal notranslate"><span class="pre">homi</span></code> and <code class="docutils literal notranslate"><span class="pre">qublk</span></code>
+are separate programs, which <code class="docutils literal notranslate"><span class="pre">xnvme</span></code> looks up on its exec path,
+the install directory unless <code class="docutils literal notranslate"><span class="pre">XNVME_EXEC_PATH</span></code> names others;
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span> <span class="pre">library</span></code> shows it as <code class="docutils literal notranslate"><span class="pre">exec_path</span></code>, and <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">--exec-path</span></code>
+prints it alone, for scripts.</p>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span></code> says, as YAML, whether the host is ready for the userspace
+drivers: the IOMMU groups, whether each kernel module is available, built in
+and loaded, the hugepages of each size and NUMA node, where hugetlbfs is
+mounted, memlock, the device nodes, the NVMe controllers by driver, and the
+queues of the kernel <code class="docutils literal notranslate"><span class="pre">nvme</span></code> driver, each with a <code class="docutils literal notranslate"><span class="pre">fix</span></code> where something is
+missing. For the kernel driver that is <code class="docutils literal notranslate"><span class="pre">poll_queues</span></code>: polled I/O through
+<code class="docutils literal notranslate"><span class="pre">io_uring</span></code> needs it above zero, which takes a module option and a reload of
+<code class="docutils literal notranslate"><span class="pre">nvme</span></code>, and a reload drops every NVMe device on the host, so <code class="docutils literal notranslate"><span class="pre">xnvme</span></code> says
+how rather than doing it. It then prints the library: the
+version, the build configuration and the backends. <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span> <span class="pre">system</span></code> and
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span> <span class="pre">library</span></code> print one of the two. It changes nothing.
+The fixes name the <code class="docutils literal notranslate"><span class="pre">hugepages</span></code> and <code class="docutils literal notranslate"><span class="pre">iommu</span></code> tools, installed with
+<code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">hugepages</span> <span class="pre">iommu</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">list</span></code> shows the NVMe controller functions on the PCI bus, found with
+<code class="docutils literal notranslate"><span class="pre">xnvme_scan()</span></code>, as YAML: the driver each is on and its IOMMU group, read from
+sysfs without opening anything. <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span> <span class="pre">--be</span> <span class="pre">&lt;backend&gt;</span> <span class="pre">&lt;bdf&gt;</span></code> moves a
+controller to the driver the backend needs, and prints the outcome as YAML,
+each controller with the driver it is on, whether that changed, and why not.
+A backend driving the controller itself, <code class="docutils literal notranslate"><span class="pre">spdk</span></code>, <code class="docutils literal notranslate"><span class="pre">libvfn</span></code> or <code class="docutils literal notranslate"><span class="pre">upcie</span></code>,
+needs a userspace driver: on Linux <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, or <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>
+without an IOMMU, and <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> alone for <code class="docutils literal notranslate"><span class="pre">libvfn</span></code>; on FreeBSD,
+<code class="docutils literal notranslate"><span class="pre">nic_uio</span></code>. Every other backend needs the kernel <code class="docutils literal notranslate"><span class="pre">nvme</span></code> driver, so
+<code class="docutils literal notranslate"><span class="pre">--be</span> <span class="pre">io_uring</span></code> returns a controller to it. Only the named controller is
+rebound, and <code class="docutils literal notranslate"><span class="pre">--all</span></code> takes every one not in use. Bare <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">driver</span></code>
+prints <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">list</span></code> and then <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">env</span></code>. One whose
+namespaces are mounted, held by device-mapper, md or LVM, used as swap or open
+in a process is refused, as is one sharing its IOMMU group with a device on
+another driver; one whose namespace carries a filesystem or partition table is
+refused unless <code class="docutils literal notranslate"><span class="pre">--force</span></code>. The binding is done by the platform, through
+<code class="docutils literal notranslate"><span class="pre">xnvme_driver_for_be()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_driver_attach()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">xnvme_driver_detach()</span></code> in libxnvme, and is not
+supported on macOS and Windows. Nothing is recorded on the side: what is
+shown is what sysfs says, and whether a controller is in use is checked when
+it is to move, which <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> does without moving it.</p>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">cmd-admin</span></code>, <code class="docutils literal notranslate"><span class="pre">cmd-io</span></code> and <code class="docutils literal notranslate"><span class="pre">cmd-iov</span></code> send a raw command, and take
+the options of <code class="docutils literal notranslate"><span class="pre">nvme</span> <span class="pre">admin-passthru</span></code> and <code class="docutils literal notranslate"><span class="pre">nvme</span> <span class="pre">io-passthru</span></code>, the same long
+names and the same letters, so a command line moves between the two by
+changing the program and the subcommand. The device is any <strong>xNVMe</strong> URI, so
+the same command reaches a controller on a userspace driver, which
+<code class="docutils literal notranslate"><span class="pre">nvme-cli</span></code> cannot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvme<span class="w">  </span>admin-passthru<span class="w"> </span>/dev/nvme0<span class="w">    </span>--opcode<span class="o">=</span>0x06<span class="w"> </span>--cdw10<span class="o">=</span><span class="m">1</span><span class="w"> </span>--data-len<span class="o">=</span><span class="m">4096</span><span class="w"> </span>-r
+xnvme<span class="w"> </span>cmd-admin<span class="w">      </span>/dev/nvme0n1<span class="w">  </span>--opcode<span class="o">=</span>0x06<span class="w"> </span>--cdw10<span class="o">=</span><span class="m">1</span><span class="w"> </span>--data-len<span class="o">=</span><span class="m">4096</span><span class="w"> </span>-r
+xnvme<span class="w"> </span>cmd-admin<span class="w">      </span><span class="m">0000</span>:03:00.0<span class="w">  </span>--opcode<span class="o">=</span>0x06<span class="w"> </span>--cdw10<span class="o">=</span><span class="m">1</span><span class="w"> </span>--data-len<span class="o">=</span><span class="m">4096</span><span class="w"> </span>-r<span class="w"> </span>--be<span class="w"> </span>upcie
+</pre></div>
+</div>
+<p>The options choosing the path, <code class="docutils literal notranslate"><span class="pre">--be</span></code>, <code class="docutils literal notranslate"><span class="pre">--admin</span></code>, <code class="docutils literal notranslate"><span class="pre">--sync</span></code>, <code class="docutils literal notranslate"><span class="pre">--async</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--dev-nsid</span></code> and <code class="docutils literal notranslate"><span class="pre">--homi-id</span></code>, are long options only. <code class="docutils literal notranslate"><span class="pre">cmd-iov</span></code> sends the
+data in <code class="docutils literal notranslate"><span class="pre">--vec-cnt</span></code> equal segments. <code class="docutils literal notranslate"><span class="pre">--timeout</span></code> and <code class="docutils literal notranslate"><span class="pre">--output-format</span> <span class="pre">json</span></code>
+are refused rather than ignored.</p>
+<p>The admin commands with their output decoded, Identify, the log pages,
+features, format, sanitize, FDP and the resets, are <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">test</span> <span class="pre">adm</span></code>, which
+the tests run through every backend. For a controller on the kernel driver,
+<code class="docutils literal notranslate"><span class="pre">nvme-cli</span></code> is the tool for these; <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">cmd-admin</span></code> sends any of them raw,
+on any backend.</p>
+<p>The installed test programs are listed and run the same way:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>The<span class="w"> </span><span class="nb">test</span><span class="w"> </span>programs:
+
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>adm
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>async-intf
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>async-limbo
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>be
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>bits
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>buf
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>cli
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>compare
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>compat
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>copy
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>ctrlr
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>cuse-admin64-identify
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>dd
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>delay-identification
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>dual-be
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>enum
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>file
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>ioworker
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>kv
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>kvs
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>lblk
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>map
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>multi-ctrlr
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>nvm
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>scc
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>spec
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>threads
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>xnvme-cli
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>xnvme-file
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>znd-append
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>znd-explicit-open
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>znd-state
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>znd-zrwa
+<span class="w">  </span>xnvme<span class="w"> </span><span class="nb">test</span><span class="w"> </span>zns
+
+See<span class="w"> </span><span class="s1">'xnvme test &lt;name&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>usage<span class="w"> </span>of<span class="w"> </span>one
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">--help</span></code> prints the same overview.</p>
+<p>The bash completion, installed with <code class="docutils literal notranslate"><span class="pre">xnvme</span></code>, asks it what to complete:
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">--list-cmds</span></code> prints the commands and the installed programs,
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">--list-cmds=&lt;group&gt;</span></code> those of a group such as <code class="docutils literal notranslate"><span class="pre">test</span></code>, and each
+program prints its subcommands with <code class="docutils literal notranslate"><span class="pre">--list-cmds</span></code>. It therefore completes what
+is installed, and the man pages, <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">xnvme</span></code> and <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">xnvme-&lt;command&gt;</span></code>, are
+generated from the same <code class="docutils literal notranslate"><span class="pre">--help</span></code> output shown here.</p>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="enum/index.html">enum: enumerate devices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="feature-get/index.html">feature-get: Device feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="feature-set/index.html">feature-set: Device feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="format/index.html">format: Format a NVM namespace</a></li>
-<li class="toctree-l1"><a class="reference internal" href="idfy-ctrlr/index.html">idfy-ctrlr: Controller Identification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="idfy-ns/index.html">idfy-ns: Namespace Identification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="idfy/index.html">idfy: User-defined Identification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="list/index.html">list: controllers and their drivers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="info/index.html">info: Device Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="log-erri/index.html">log-erri: Error-Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="log-health/index.html">log-health: Health-Information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="log/index.html">log: User-Defined Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="padc/index.html">padc: Pass an admin-command</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pioc/index.html">pioc: Pass an IO-command</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sanitize/index.html">sanitize: …</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enum/index.html">enum: enumerate devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env/index.html">env: system and library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/index.html">driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmd/index.html">cmd: raw commands</a></li>
 </ul>
 </div>
 </section>
@@ -566,7 +648,7 @@ xNVMe<span class="w"> </span>-<span class="w"> </span>Cross-platform<span class=
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommands">Subcommands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a></li>
 </ul>
   </nav></div>
 

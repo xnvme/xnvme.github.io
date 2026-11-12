@@ -392,26 +392,14 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../xnvme/index.html">xnvme</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/enum/index.html">enum: enumerate devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/feature-get/index.html">feature-get: Device feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/feature-set/index.html">feature-set: Device feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/format/index.html">format: Format a NVM namespace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/idfy-ctrlr/index.html">idfy-ctrlr: Controller Identification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/idfy-ns/index.html">idfy-ns: Namespace Identification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/idfy/index.html">idfy: User-defined Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/list/index.html">list: controllers and their drivers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xnvme/info/index.html">info: Device Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/log-erri/index.html">log-erri: Error-Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/log-health/index.html">log-health: Health-Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/log/index.html">log: User-Defined Log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/padc/index.html">padc: Pass an admin-command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/pioc/index.html">pioc: Pass an IO-command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../xnvme/sanitize/index.html">sanitize: …</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/enum/index.html">enum: enumerate devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/env/index.html">env: system and library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/driver/index.html">driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme/cmd/index.html">cmd: raw commands</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../lblk/index.html">lblk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../zoned/index.html">zoned</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../xdd/index.html">xdd</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../file/index.html">file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../homi/index.html">homi</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fio/index.html">fio IO Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../xnvmeperf/index.html">xnvmeperf</a></li>
@@ -486,17 +474,19 @@ asynchronous command interface. Thus, any <strong>xNVMe</strong> backend, such a
 device.</p>
 <p><code class="docutils literal notranslate"><span class="pre">REQ_FUA</span></code> and <code class="docutils literal notranslate"><span class="pre">REQ_PREFLUSH</span></code> are supported, as are multiple ublk hardware
 queues via <code class="docutils literal notranslate"><span class="pre">--nqueues</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>qublk<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvme<span class="w"> </span>qublk<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+
+Expose<span class="w"> </span>an<span class="w"> </span>xNVMe<span class="w"> </span>device<span class="w"> </span>as<span class="w"> </span>a<span class="w"> </span>ublk<span class="w"> </span>block-device
 
 Where<span class="w"> </span>&lt;command&gt;<span class="w"> </span>is<span class="w"> </span>one<span class="w"> </span>of:
 
 <span class="w">  </span>serve<span class="w">            </span><span class="p">|</span><span class="w"> </span>Serve<span class="w"> </span>a<span class="w"> </span>ublk<span class="w"> </span>block-device<span class="w"> </span><span class="k">for</span><span class="w"> </span>each<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>xNVMe<span class="w"> </span>devices
 <span class="w">  </span>del<span class="w">              </span><span class="p">|</span><span class="w"> </span>Delete<span class="w"> </span>a<span class="w"> </span>ublk<span class="w"> </span>device<span class="w"> </span>left<span class="w"> </span>behind<span class="w"> </span>by<span class="w"> </span>a<span class="w"> </span>killed<span class="w"> </span>server
 
-See<span class="w"> </span><span class="s1">'qublk &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
-See<span class="w"> </span><span class="s1">'qublk --version'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>library<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>revision<span class="w"> </span>it<span class="w"> </span>was<span class="w"> </span>built<span class="w"> </span>from
+See<span class="w"> </span><span class="s1">'xnvme qublk &lt;command&gt; --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>description<span class="w"> </span>of<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+See<span class="w"> </span><span class="s1">'xnvme qublk --version'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>library<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>revision<span class="w"> </span>it<span class="w"> </span>was<span class="w"> </span>built<span class="w"> </span>from
 
-qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3842d1d'</span><span class="o">}</span>
+qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4dff21d'</span><span class="o">}</span>
 </pre></div>
 </div>
 <section id="requirements">
@@ -534,7 +524,7 @@ Zoned namespaces always use it.</p>
 <p>By default, each queue is served by a thread of its own. With <code class="docutils literal notranslate"><span class="pre">--cpumask</span></code> or
 <code class="docutils literal notranslate"><span class="pre">--cpulist</span></code>, a thread is pinned to each given CPU and the queues are spread
 evenly across them.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>qublk<span class="w"> </span>serve<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvme<span class="w"> </span>qublk<span class="w"> </span>serve<span class="w"> </span><span class="o">[</span>&lt;uri&gt;...<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
 Serve<span class="w"> </span>a<span class="w"> </span>ublk<span class="w"> </span>block-device<span class="w"> </span><span class="k">for</span><span class="w"> </span>each<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>given<span class="w"> </span>xNVMe<span class="w"> </span>devices
 <span class="w">  </span>
@@ -559,21 +549,21 @@ With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--homi-id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">             </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>HOMI<span class="w"> </span>identifier<span class="w"> </span>to<span class="w"> </span>share<span class="w"> </span>controllers<span class="w"> </span>under
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
-See<span class="w"> </span><span class="s1">'qublk --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+See<span class="w"> </span><span class="s1">'xnvme qublk --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3842d1d'</span><span class="o">}</span>
+qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4dff21d'</span><span class="o">}</span>
 </pre></div>
 </div>
 <p>Example — NVMe block device via io_uring:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qublk</span> <span class="n">serve</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span> <span class="o">--</span><span class="n">be</span> <span class="n">io_uring</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme</span> <span class="n">qublk</span> <span class="n">serve</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">nvme0n1</span> <span class="o">--</span><span class="n">be</span> <span class="n">io_uring</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span>
 </pre></div>
 </div>
 <p>Example — user space NVMe via uPCIe, with multiple hardware queues:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qublk</span> <span class="n">serve</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">nqueues</span> <span class="mi">4</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme</span> <span class="n">qublk</span> <span class="n">serve</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">nqueues</span> <span class="mi">4</span>
 </pre></div>
 </div>
 <p>Example — four devices via uPCIe, served by two CPUs:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qublk</span> <span class="n">serve</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mf">00.0</span> \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme</span> <span class="n">qublk</span> <span class="n">serve</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">0000</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mf">00.0</span> \
   <span class="o">--</span><span class="n">be</span> <span class="n">upcie</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">cpulist</span> <span class="mi">0</span><span class="o">-</span><span class="mi">1</span>
 </pre></div>
 </div>
@@ -622,7 +612,7 @@ warns at start-up when it is not, and when <code class="docutils literal notrans
 bypasses the block layer’s write pointer tracking, and the next write to that
 zone may fail with <code class="docutils literal notranslate"><span class="pre">EIO</span></code>. Use it for read-only commands only.</p>
 <p>Example — ZNS namespace via the NVMe character device:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qublk</span> <span class="n">serve</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ng1n1</span> <span class="o">--</span><span class="n">be</span> <span class="n">io_uring_cmd</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">nqueues</span> <span class="mi">4</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme</span> <span class="n">qublk</span> <span class="n">serve</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ng1n1</span> <span class="o">--</span><span class="n">be</span> <span class="n">io_uring_cmd</span> <span class="o">--</span><span class="n">qdepth</span> <span class="mi">64</span> <span class="o">--</span><span class="n">nqueues</span> <span class="mi">4</span>
 <span class="n">blkzone</span> <span class="n">report</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ublkb0</span>
 <span class="n">mkfs</span><span class="o">.</span><span class="n">btrfs</span> <span class="o">-</span><span class="n">O</span> <span class="n">zoned</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ublkb0</span>
 </pre></div>
@@ -630,12 +620,12 @@ zone may fail with <code class="docutils literal notranslate"><span class="pre">
 </section>
 <section id="del-delete-a-leftover-device">
 <h2><code class="docutils literal notranslate"><span class="pre">del</span></code> — Delete a leftover device<a class="headerlink" href="#del-delete-a-leftover-device" title="Link to this heading">#</a></h2>
-<p>A <code class="docutils literal notranslate"><span class="pre">qublk</span> <span class="pre">serve</span></code> that is killed rather than signalled cleanly leaves its ublk
+<p>An <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">qublk</span> <span class="pre">serve</span></code> that is killed rather than signalled cleanly leaves its ublk
 device behind. <code class="docutils literal notranslate"><span class="pre">del</span></code> stops and deletes such a device by identifier:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qublk</span> <span class="k">del</span> <span class="o">--</span><span class="n">dev</span><span class="o">-</span><span class="nb">id</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme</span> <span class="n">qublk</span> <span class="k">del</span> <span class="o">--</span><span class="n">dev</span><span class="o">-</span><span class="nb">id</span> <span class="mi">0</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>qublk<span class="w"> </span>del<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvme<span class="w"> </span>qublk<span class="w"> </span>del<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
 
 Delete<span class="w"> </span>a<span class="w"> </span>ublk<span class="w"> </span>device<span class="w"> </span>left<span class="w"> </span>behind<span class="w"> </span>by<span class="w"> </span>a<span class="w"> </span>killed<span class="w"> </span>server
 <span class="w">  </span>
@@ -644,9 +634,9 @@ Where<span class="w"> </span>&lt;args&gt;<span class="w"> </span>include:
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--dev-id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>Use<span class="w"> </span>given<span class="w"> </span><span class="s1">'NUM'</span><span class="w"> </span>as<span class="w"> </span>device<span class="w"> </span>identifier
 <span class="w">  </span><span class="o">[</span><span class="w"> </span>--help<span class="w"> </span><span class="o">]</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span>Show<span class="w"> </span>usage<span class="w"> </span>/<span class="w"> </span><span class="nb">help</span>
 
-See<span class="w"> </span><span class="s1">'qublk --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
+See<span class="w"> </span><span class="s1">'xnvme qublk --help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>other<span class="w"> </span>commands
 
-qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'3842d1d'</span><span class="o">}</span>
+qublk<span class="w"> </span>-<span class="w"> </span>ublk<span class="w"> </span>server<span class="w"> </span>backed<span class="w"> </span>by<span class="w"> </span>xNVMe<span class="w"> </span>--<span class="w"> </span>ver:<span class="w"> </span><span class="o">{</span>major:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span>minor:<span class="w"> </span><span class="m">7</span>,<span class="w"> </span>patch:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>vcs:<span class="w"> </span><span class="s1">'4dff21d'</span><span class="o">}</span>
 </pre></div>
 </div>
 </section>

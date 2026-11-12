@@ -396,6 +396,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_buf.html">libxnvme_buf.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_cmd.html">libxnvme_cmd.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_driver.html">libxnvme_driver.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_geo.html">libxnvme_geo.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_ident.html">libxnvme_ident.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_opts.html">libxnvme_opts.h</a></li>
@@ -519,61 +520,111 @@ pages.</p>
 the <a class="extlink-xref-github-xnvme reference external" href="https://github.com/xnvme/xnvme/blob/main/tools/xnvme.c">xnvme</a> CLI tool. Notice how the
 sub-command (<code class="docutils literal notranslate"><span class="pre">sub_info</span></code>) is implemented as a function, added to the <code class="docutils literal notranslate"><span class="pre">g_subs</span></code>
 array, integrated into the CLI setup in <code class="docutils literal notranslate"><span class="pre">g_cli</span></code>, and utilized when running the
-CLI with <code class="docutils literal notranslate"><span class="pre">xnvme_cli_run()</span></code>.</p>
+CLI with <code class="docutils literal notranslate"><span class="pre">xnvme_cli_run()</span></code>. The <code class="docutils literal notranslate"><span class="pre">xnvme</span></code> front-end handles its own commands
+in <code class="docutils literal notranslate"><span class="pre">cli_main()</span></code> first, and leaves the rest to <code class="docutils literal notranslate"><span class="pre">xnvme_cli_run()</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Setting the <code class="docutils literal notranslate"><span class="pre">XNVME_CLI_INIT_DEV_OPEN</span></code> option will automatically open a device handle.</p>
 </div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;xnvme_vcs.h&gt;</span>
-
-<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
-<span class="nf">scan_cb</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_ident</span><span class="w"> </span><span class="o">*</span><span class="n">ident</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cb_args</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span>
+<span class="nf">sub_info</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">count_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_args</span><span class="p">;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
 
-<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">count_ref</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_derive_geo</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">XNVME_DEBUG</span><span class="p">(</span><span class="s">"FAILED: xnvme_dev_derive_geo(), err: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
-<span class="w">	</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s">"  - {"</span><span class="p">);</span>
-<span class="w">	</span><span class="n">xnvme_ident_yaml</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">ident</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">", "</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="w">	</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s">"}</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="w">	</span><span class="n">xnvme_dev_pr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
 
-<span class="w">	</span><span class="o">*</span><span class="n">count_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">count_ref</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-
-<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_nbytes</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">verbose</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">			</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Dumping data-output(%s)"</span><span class="p">,</span><span class="w"> </span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">);</span>
-<span class="w">		</span><span class="p">}</span>
-<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_to_file</span><span class="p">(</span><span class="n">data_buf</span><span class="p">,</span><span class="w"> </span><span class="n">data_nbytes</span><span class="p">,</span><span class="w"> </span><span class="n">cli</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">.</span><span class="n">data_output</span><span class="p">);</span>
-
-<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
-<span class="n">sub_padc</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">cli</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">sub_pass</span><span class="p">(</span><span class="n">cli</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">static</span><span class="w"> </span><span class="kt">int</span>
-<span class="n">sub_library_info</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="o">*</span><span class="n">XNVME_UNUSED</span><span class="p">(</span><span class="n">cli</span><span class="p">))</span>
-<span class="p">{</span>
-<span class="w">	</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"xNVMe Library Information"</span><span class="p">);</span>
-<span class="w">	</span><span class="n">xnvme_ver_pr</span><span class="p">(</span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli_sub</span><span class="w"> </span><span class="n">g_subs</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">{</span>
+<span class="w">		</span><span class="s">"list"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"List devices on the system"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"List devices on the system"</span><span class="p">,</span>
+<span class="w">		</span><span class="n">sub_listing</span><span class="p">,</span>
+<span class="w">		</span><span class="p">{</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_NON_POSA_TITLE</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_SKIP</span><span class="p">},</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_SYS_URI</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_FLAGS</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
 
-<span class="w">			</span><span class="n">XNVME_CLI_ADMIN_OPTS</span><span class="p">,</span>
+<span class="w">			</span><span class="n">XNVME_CLI_CORE_OPTS</span><span class="p">,</span>
 <span class="w">		</span><span class="p">},</span>
 <span class="w">	</span><span class="p">},</span>
 <span class="w">	</span><span class="p">{</span>
-<span class="w">		</span><span class="s">"fdp-ruhs"</span><span class="p">,</span>
-<span class="w">		</span><span class="s">"Retrieve the Reclaim Unit Handle Status"</span><span class="p">,</span>
-<span class="w">		</span><span class="s">"Retrieve and print log"</span><span class="p">,</span>
-<span class="w">		</span><span class="n">sub_ruhs</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"enum"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"Enumerate devices on the system"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"Enumerate devices on the system"</span><span class="p">,</span>
+<span class="w">		</span><span class="n">sub_enumerate</span><span class="p">,</span>
+<span class="w">		</span><span class="p">{</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_NON_POSA_TITLE</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_SKIP</span><span class="p">},</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_SYS_URI</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_FLAGS</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
+
+<span class="w">			</span><span class="n">XNVME_CLI_CORE_OPTS</span><span class="p">,</span>
+<span class="w">		</span><span class="p">},</span>
+<span class="w">	</span><span class="p">},</span>
+<span class="w">	</span><span class="p">{</span>
+<span class="w">		</span><span class="s">"scan"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"Scan for devices without opening them"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"Scan for devices without opening them"</span><span class="p">,</span>
+<span class="w">		</span><span class="n">sub_scan</span><span class="p">,</span>
+<span class="w">		</span><span class="p">{</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_NON_POSA_TITLE</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_SKIP</span><span class="p">},</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_SYS_URI</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
+<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_FLAGS</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
+
+<span class="w">			</span><span class="n">XNVME_CLI_CORE_OPTS</span><span class="p">,</span>
+<span class="w">		</span><span class="p">},</span>
+<span class="w">	</span><span class="p">},</span>
+<span class="w">	</span><span class="p">{</span>
+<span class="w">		</span><span class="s">"info"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"Retrieve derived information for given device"</span><span class="p">,</span>
+<span class="w">		</span><span class="s">"Retrieve derived information for given device"</span><span class="p">,</span>
+<span class="w">		</span><span class="n">sub_info</span><span class="p">,</span>
 <span class="w">		</span><span class="p">{</span>
 <span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_POSA_TITLE</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_SKIP</span><span class="p">},</span>
 <span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_URI</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_POSA</span><span class="p">},</span>
 
-<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_NON_POSA_TITLE</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_SKIP</span><span class="p">},</span>
-<span class="w">			</span><span class="p">{</span><span class="n">XNVME_CLI_OPT_NSID</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_LOPT</span><span class="p">},</span>
+<span class="w">			</span><span class="n">XNVME_CLI_ASYNC_OPTS</span><span class="p">,</span>
+<span class="w">		</span><span class="p">},</span>
+<span class="w">	</span><span class="p">},</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cli</span><span class="w"> </span><span class="n">g_cli</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">	</span><span class="p">.</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"xNVMe - Cross-platform NVMe utility"</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">vcs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">XNVME_VCS_TAG</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">descr_short</span><span class="w"> </span><span class="o">=</span>
+<span class="w">		</span><span class="s">"Find NVMe devices, inspect and benchmark them, and manage userspace drivers"</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">descr_long</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">subs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_subs</span><span class="p">,</span>
+<span class="w">	</span><span class="p">.</span><span class="n">nsubs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="w"> </span><span class="n">g_subs</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">g_subs</span><span class="p">),</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cli_main</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_cli</span><span class="p">,</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">xnvme_cli_run</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_cli</span><span class="p">,</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_CLI_INIT_DEV_OPEN</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">

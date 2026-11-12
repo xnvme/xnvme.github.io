@@ -396,6 +396,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_buf.html">libxnvme_buf.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_cmd.html">libxnvme_cmd.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_dev.html">libxnvme_dev.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/xnvme_driver.html">libxnvme_driver.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_geo.html">libxnvme_geo.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_ident.html">libxnvme_ident.h</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../core/xnvme_opts.html">libxnvme_opts.h</a></li>
@@ -524,6 +525,8 @@ specify the desired backend, sync/async/admin command interface, etc.</p>
 <span class="c1">// SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;errno.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
 
 <span class="kt">int</span>
@@ -534,9 +537,9 @@ specify the desired backend, sync/async/admin command interface, etc.</p>
 
 <span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
-<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;identifer&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
-<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s">"--help"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;uri&gt;</span><span class="se">\n\n</span><span class="s">Open the device at &lt;uri&gt; and print it</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
@@ -567,6 +570,8 @@ The example is intended to be easily extended by adding a for-loop and submittin
 <span class="c1">// SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;errno.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
 
 <span class="cm">/**</span>
@@ -589,9 +594,11 @@ The example is intended to be easily extended by adding a for-loop and submittin
 
 <span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
-<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;ident&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
-<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s">"--help"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;uri&gt;</span><span class="se">\n\n</span><span class="s">Read the first block of the device at &lt;uri&gt; with one "</span>
+<span class="w">		       </span><span class="s">"synchronous command</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">		       </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
@@ -674,6 +681,8 @@ submitting multiple commands.</p>
 <span class="c1">// SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;errno.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
 
 <span class="k">static</span><span class="w"> </span><span class="kt">void</span>
@@ -715,9 +724,11 @@ submitting multiple commands.</p>
 
 <span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
 
-<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"Usage: %s &lt;ident&gt;"</span><span class="p">,</span><span class="w"> </span><span class="n">EINVAL</span><span class="p">);</span>
-<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s">"--help"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;uri&gt;</span><span class="se">\n\n</span><span class="s">Read the first block of the device at &lt;uri&gt; with one "</span>
+<span class="w">		       </span><span class="s">"asynchronous command</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">		       </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 <span class="w">	</span><span class="p">}</span>
 
 <span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>

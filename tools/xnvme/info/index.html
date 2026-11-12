@@ -57,8 +57,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="log-erri: Error-Information" href="../log-erri/index.html" />
-    <link rel="prev" title="idfy: User-defined Identification" href="../idfy/index.html" />
+    <link rel="next" title="enum: enumerate devices" href="../enum/index.html" />
+    <link rel="prev" title="list: controllers and their drivers" href="../list/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
@@ -388,26 +388,14 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">xnvme</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../enum/index.html">enum: enumerate devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../feature-get/index.html">feature-get: Device feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../feature-set/index.html">feature-set: Device feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../format/index.html">format: Format a NVM namespace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../idfy-ctrlr/index.html">idfy-ctrlr: Controller Identification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../idfy-ns/index.html">idfy-ns: Namespace Identification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../idfy/index.html">idfy: User-defined Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../list/index.html">list: controllers and their drivers</a></li>
 <li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">info: Device Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../log-erri/index.html">log-erri: Error-Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../log-health/index.html">log-health: Health-Information</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../log/index.html">log: User-Defined Log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../padc/index.html">padc: Pass an admin-command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pioc/index.html">pioc: Pass an IO-command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sanitize/index.html">sanitize: …</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../enum/index.html">enum: enumerate devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../env/index.html">env: system and library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../driver/index.html">driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cmd/index.html">cmd: raw commands</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../lblk/index.html">lblk</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../zoned/index.html">zoned</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../xdd/index.html">xdd</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../file/index.html">file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../homi/index.html">homi</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fio/index.html">fio IO Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../xnvmeperf/index.html">xnvmeperf</a></li>
@@ -481,32 +469,32 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xnvme<span class="w"> </span>info<span class="w"> </span>--help
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:<span class="w"> </span>xnvme<span class="w"> </span>info<span class="w"> </span>&lt;uri&gt;<span class="w"> </span><span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: xnvme info &lt;uri&gt; [&lt;args&gt;]
 
-Retrieve<span class="w"> </span>derived<span class="w"> </span>information<span class="w"> </span><span class="k">for</span><span class="w"> </span>given<span class="w"> </span>device
-<span class="w">  </span>
-Positional<span class="w"> </span>arguments:
+Retrieve derived information for given device
+  
+Positional arguments:
 
-<span class="w">  </span>uri<span class="w">                           </span><span class="p">;</span><span class="w"> </span>Device<span class="w"> </span>URI<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'/dev/nvme0n1'</span>,<span class="w"> </span><span class="s1">'0000:01:00.1'</span>,<span class="w"> </span><span class="s1">'10.9.8.1:8888'</span>,<span class="w"> </span><span class="s1">'\\.\PhysicalDrive1'</span>
-<span class="w">  </span>
-With<span class="w"> </span>&lt;args&gt;<span class="w"> </span><span class="k">for</span><span class="w"> </span>backend:
+  uri                           ; Device URI e.g. '/dev/nvme0n1', '0000:01:00.1', '10.9.8.1:8888', '\\.\PhysicalDrive1'
+  
+With &lt;args&gt; for backend:
 
-<span class="w">  </span><span class="o">[</span><span class="w"> </span>--subnqn<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">           </span><span class="p">;</span><span class="w"> </span>Subsystem<span class="w"> </span>NQN<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>NVMe<span class="w"> </span>over<span class="w"> </span>Fabrics<span class="w"> </span>endpoint<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'nqn.2022-06.io.xnvme:ctrlnode1'</span>
-<span class="w">  </span><span class="o">[</span><span class="w"> </span>--hostnqn<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">          </span><span class="p">;</span><span class="w"> </span>The<span class="w"> </span>host<span class="w"> </span>NQN<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>when<span class="w"> </span>connecting<span class="w"> </span>to<span class="w"> </span>NVMe<span class="w"> </span>over<span class="w"> </span>Fabrics<span class="w"> </span>controllers
-<span class="w">  </span><span class="o">[</span><span class="w"> </span>--be<span class="w"> </span>STRING<span class="w"> </span><span class="o">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span>xNVMe<span class="w"> </span>backend,<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">'spdk'</span>,<span class="w"> </span><span class="s1">'libvfn'</span>,<span class="w"> </span><span class="s1">'upcie'</span>
-<span class="w">  </span><span class="o">[</span><span class="w"> </span>--shm_id<span class="w"> </span>NUM<span class="w"> </span><span class="o">]</span><span class="w">              </span><span class="p">;</span><span class="w"> </span>SPDK<span class="s1">'s spelling of --homi-id; the DPDK shared-memory-id</span>
-<span class="s1">  [ --homi-id NUM ]             ; The HOMI identifier to share controllers under</span>
-<span class="s1">  [ --dev-nsid 0xNUM ]          ; Namespace Identifier for Device Handle</span>
-<span class="s1">  [ --admin STRING ]            ; xNVMe admin. command-interface, e.g. '</span>nvme<span class="s1">', '</span>block<span class="s1">'</span>
-<span class="s1">  [ --mem STRING ]              ; xNVMe buffer/memory manager</span>
-<span class="s1">  [ --direct NUM ]              ; Bypass layers</span>
-<span class="s1">  [ --sync STRING ]             ; xNVMe sync. command-interface, e.g. '</span>nvme<span class="s1">', '</span>block<span class="s1">'</span>
-<span class="s1">  [ --async STRING ]            ; xNVMe async. command-interface, e.g. '</span>io_uring<span class="s1">', '</span>emu<span class="s1">'</span>
-<span class="s1">  [ --help ]                    ; Show usage / help</span>
+  [ --subnqn STRING ]           ; Subsystem NQN of the NVMe over Fabrics endpoint e.g. 'nqn.2022-06.io.xnvme:ctrlnode1'
+  [ --hostnqn STRING ]          ; The host NQN to use when connecting to NVMe over Fabrics controllers
+  [ --be STRING ]               ; xNVMe backend, e.g. 'spdk', 'libvfn', 'upcie'
+  [ --shm_id NUM ]              ; SPDK's spelling of --homi-id; the DPDK shared-memory-id
+  [ --homi-id NUM ]             ; The HOMI identifier to share controllers under
+  [ --dev-nsid 0xNUM ]          ; Namespace Identifier for Device Handle
+  [ --admin STRING ]            ; xNVMe admin. command-interface, e.g. 'nvme', 'block'
+  [ --mem STRING ]              ; xNVMe buffer/memory manager
+  [ --direct NUM ]              ; Bypass layers
+  [ --sync STRING ]             ; xNVMe sync. command-interface, e.g. 'nvme', 'block'
+  [ --async STRING ]            ; xNVMe async. command-interface, e.g. 'io_uring', 'emu'
+  [ --help ]                    ; Show usage / help
 
-<span class="s1">See '</span>xnvme<span class="w"> </span>--help<span class="s1">' for other commands</span>
+See 'xnvme --help' for other commands
 
-<span class="s1">xNVMe - Cross-platform NVMe utility -- ver: {major: 0, minor: 7, patch: 5, vcs: '</span>3842d1d<span class="err">'</span><span class="o">}</span>
+xNVMe - Cross-platform NVMe utility -- ver: {major: 0, minor: 7, patch: 5, vcs: '4dff21d'}
 </pre></div>
 </div>
 </section>

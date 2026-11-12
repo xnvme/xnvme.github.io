@@ -507,8 +507,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="upcie-control-plane">
-<span id="sec-backends-upcie-cplane"></span><h1>uPCIe (control plane)<a class="headerlink" href="#upcie-control-plane" title="Link to this heading">#</a></h1>
+  <section id="sec-backends-upcie-cplane">
+<span id="upcie-control-plane"></span><h1>uPCIe (control plane)<a class="headerlink" href="#sec-backends-upcie-cplane" title="Link to this heading">#</a></h1>
 <p>The <strong>upcie</strong> backend offers a <strong>control plane</strong> through which several
 independent processes share NVMe controllers. One process <strong>owns</strong> a
 controller: it opened the device, allocated the DMA memory, and holds the
@@ -519,7 +519,7 @@ their own I/O without re-initializing anything.</p>
 runs on its own, and one that names a server nobody runs fails to open with
 <code class="docutils literal notranslate"><span class="pre">ENOENT</span></code> rather than falling back.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The server holds the controller for as long as it runs</span>
-homi<span class="w"> </span>serve<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span><span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span><span class="m">0000</span>:03:00.0
+xnvme<span class="w"> </span>homi<span class="w"> </span>serve<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span><span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span><span class="m">0000</span>:03:00.0
 
 <span class="c1"># Clients name the same id and connect to it</span>
 xnvme<span class="w"> </span>info<span class="w"> </span><span class="m">0000</span>:03:00.0<span class="w"> </span>--be<span class="w"> </span>upcie<span class="w"> </span>--homi-id<span class="w"> </span><span class="m">1</span>
@@ -531,8 +531,8 @@ that are not about sharing still accept <code class="docutils literal notranslat
 there was a control plane, and it goes on meaning a segment identifier for
 <a class="reference internal" href="../spdk/index.html#sec-backends-spdk"><span class="std std-ref">SPDK</span></a>, which hands the value to DPDK. Either spelling sets
 both, so a value given once reaches whichever backend reads it.</p>
-<section id="process-model">
-<span id="sec-backends-upcie-cplane-model"></span><h2>Process model<a class="headerlink" href="#process-model" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-cplane-model">
+<span id="process-model"></span><h2>Process model<a class="headerlink" href="#sec-backends-upcie-cplane-model" title="Link to this heading">#</a></h2>
 <section id="rendezvous">
 <h3>Rendezvous<a class="headerlink" href="#rendezvous" title="Link to this heading">#</a></h3>
 <p>A server listens on a unix socket named for the identifier clients pass,
@@ -667,8 +667,8 @@ command timeout has passed. Without that a client drains forever, holding the
 heap it maps and the hugepages behind it.</p>
 </section>
 </section>
-<section id="limitations">
-<span id="sec-backends-upcie-cplane-vulns"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
+<section id="sec-backends-upcie-cplane-vulns">
+<span id="limitations"></span><h2>Limitations<a class="headerlink" href="#sec-backends-upcie-cplane-vulns" title="Link to this heading">#</a></h2>
 <section id="no-isolation-between-processes">
 <h3>No isolation between processes<a class="headerlink" href="#no-isolation-between-processes" title="Link to this heading">#</a></h3>
 <p>A client maps BAR0 and can therefore ring any doorbell and write <code class="docutils literal notranslate"><span class="pre">CC</span></code>, which
@@ -777,7 +777,7 @@ the CUDA backend page.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#process-model">Process model</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cplane-model">Process model</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rendezvous">Rendezvous</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-crosses-when-a-connection-is-initialised">What crosses when a connection is initialised</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-a-client-does-for-itself-and-what-it-asks-for">What a client does for itself, and what it asks for</a></li>
@@ -786,7 +786,7 @@ the CUDA backend page.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#properties-worth-preserving">Properties worth preserving</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cplane-vulns">Limitations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-isolation-between-processes">No isolation between processes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-message-names-the-controller-so-the-socket-does-not-have-to">The message names the controller, so the socket does not have to</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-server-has-to-be-answering">The server has to be answering</a></li>
