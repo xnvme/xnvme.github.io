@@ -507,7 +507,7 @@
                   
   <section id="api-code-examples">
 <span id="sec-api-c-examples"></span><h1>API Code Examples<a class="headerlink" href="#api-code-examples" title="Link to this heading">#</a></h1>
-<p>This section includes three examples of using the <strong>xNVMe</strong> library. These are
+<p>This section includes four examples of using the <strong>xNVMe</strong> library. These are
 gradually increasing in complexity, and are meant to complement the description
 of the <a class="reference internal" href="../core/index.html#sec-api-c-core"><span class="std std-ref">Core</span></a> API.</p>
 <p>All of these examples can be run even without having an NVMe device. If you give
@@ -809,6 +809,198 @@ submitting multiple commands.</p>
 </pre></div>
 </div>
 </section>
+<section id="asynchronous-i-o-reaping-completions">
+<span id="sec-api-c-examples-async-reap"></span><h2>Asynchronous I/O, reaping completions<a class="headerlink" href="#asynchronous-i-o-reaping-completions" title="Link to this heading">#</a></h2>
+<p>Instead of having a callback function called for each completed command, the
+completed commands can be reaped from the command queue. Reaping suits a
+caller for which a callback from the library is costly or not possible, such
+as a language binding. Reaping also keeps the processing of completions in one
+loop. The flow differs from the callback flow in these steps:</p>
+<ul class="simple">
+<li><p>The command queue is initialized with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_REAP</span></code>, and no callback
+is set on it</p></li>
+<li><p>Before submitting, data of your own can be attached to the command context
+with <code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx_set_data()</span></code>; it is read back with
+<code class="docutils literal notranslate"><span class="pre">xnvme_cmd_ctx_get_data()</span></code> once the command is reaped</p></li>
+<li><p>Completed commands are retrieved with <code class="docutils literal notranslate"><span class="pre">xnvme_queue_reap()</span></code>, which stores
+their command contexts in an array you provide and how many it stored in
+<code class="docutils literal notranslate"><span class="pre">ncompleted</span></code>, which is zero when none have completed. Each carries the
+completion in <code class="docutils literal notranslate"><span class="pre">cpl</span></code>, also a command that failed. When done with a command
+context, return it to the command queue, or submit the next command with it.
+Submitting the next command with the reaped command context saves the calls
+to <code class="docutils literal notranslate"><span class="pre">xnvme_queue_put_cmd_ctx()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_queue_get_cmd_ctx()</span></code>.</p></li>
+<li><p>An error of <code class="docutils literal notranslate"><span class="pre">xnvme_queue_reap()</span></code> reports the state of the queue. It
+assigns <code class="docutils literal notranslate"><span class="pre">ncompleted</span></code> then as well, and the commands it counts are handled
+as those of a successful call. After <code class="docutils literal notranslate"><span class="pre">-EINTR</span></code>, <code class="docutils literal notranslate"><span class="pre">-EAGAIN</span></code> and <code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code>
+the queue is intact and <code class="docutils literal notranslate"><span class="pre">xnvme_queue_reap()</span></code> is called again; after any
+other error the queue has failed and is torn down with
+<code class="docutils literal notranslate"><span class="pre">xnvme_queue_term()</span></code>.</p></li>
+</ul>
+<p>How a command queue delivers its completions is fixed when it is initialized:
+<code class="docutils literal notranslate"><span class="pre">xnvme_queue_poke()</span></code>, <code class="docutils literal notranslate"><span class="pre">xnvme_queue_drain()</span></code> and <code class="docutils literal notranslate"><span class="pre">xnvme_queue_set_cb()</span></code>
+return <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code> for a queue initialized with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_REAP</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">xnvme_queue_reap()</span></code> returns <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code> for one that was not.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-FileCopyrightText: Samsung Electronics Co., Ltd</span>
+<span class="c1">//</span>
+<span class="c1">// SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;errno.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libxnvme.h&gt;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * This example shows how to send a single asynchronous command and reap its completion</span>
+<span class="cm"> *</span>
+<span class="cm"> * - Allocate a buffer for the command payload</span>
+<span class="cm"> * - Setup a Command Queue for reaping, with XNVME_QUEUE_REAP</span>
+<span class="cm"> *   | Using command-contexts, attaching data of your own to each</span>
+<span class="cm"> * - Submit the asynchronous command</span>
+<span class="cm"> *   | Re-submission when busy</span>
+<span class="cm"> * - Reap the completed command with xnvme_queue_reap(), until none is outstanding</span>
+<span class="cm"> * - Teardown</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_opts</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nsid</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">size_t</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">qdepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+<span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">completions</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+<span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ncompleted</span><span class="p">;</span>
+<span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"the first read"</span><span class="p">;</span>
+<span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">	</span><span class="n">xnvme_opts_set_defaults</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="s">"--help"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;uri&gt;</span><span class="se">\n\n</span><span class="s">Read the first block of the device at &lt;uri&gt; with one "</span>
+<span class="w">		       </span><span class="s">"asynchronous command, reaping its completion</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">		       </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">dev</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_dev_open()"</span><span class="p">,</span><span class="w"> </span><span class="n">errno</span><span class="p">);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+<span class="w">	</span><span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_get_nsid</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="w">	</span><span class="c1">// Initialize a command-queue for reaping. Completed commands are reaped and no callback is</span>
+<span class="w">	</span><span class="c1">// called, so no callback is set</span>
+<span class="w">	</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_init</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_QUEUE_REAP</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">queue</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_queue_init()"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">		</span><span class="n">xnvme_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+<span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="n">buf_nbytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_dev_get_geo</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">lba_nbytes</span><span class="p">;</span>
+
+<span class="w">	</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Allocate a payload-buffer of nbytes: %zu"</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
+<span class="w">	</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_alloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">buf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">errno</span><span class="p">;</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_buf_alloc()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_buf_clear</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">buf_nbytes</span><span class="p">);</span>
+<span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_buf_clear()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="c1">// This block would typically be a loop as more than a single command would be submitted</span>
+<span class="w">	</span><span class="p">{</span>
+<span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_get_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="w">		</span><span class="c1">// Attach data of your own to the command; it comes back with the command-context</span>
+<span class="w">		</span><span class="c1">// when the command is reaped, here a string, typically a pointer to a struct</span>
+<span class="w">		</span><span class="n">xnvme_cmd_ctx_set_data</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">tag</span><span class="p">);</span>
+
+<span class="nl">submit</span><span class="p">:</span>
+<span class="w">		</span><span class="c1">// Submit a read command</span>
+<span class="w">		</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_nvm_read</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">nsid</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">		</span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span>
+<span class="w">			</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Submission succeeded"</span><span class="p">);</span>
+<span class="w">			</span><span class="k">break</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// Submission failed: queue is full =&gt; reap completions and try again</span>
+<span class="w">		</span><span class="k">case</span><span class="w"> </span><span class="o">-</span><span class="no">EBUSY</span><span class="p">:</span>
+<span class="w">		</span><span class="k">case</span><span class="w"> </span><span class="o">-</span><span class="no">EAGAIN</span><span class="p">:</span>
+<span class="w">			</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_reap</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">completions</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ncompleted</span><span class="p">);</span>
+<span class="w">			</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ncompleted</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">				</span><span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">completions</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">			</span><span class="p">}</span>
+<span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EINTR</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EAGAIN</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EBUSY</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">				</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">			</span><span class="p">}</span>
+<span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">				</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_queue_reap()"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">				</span><span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<span class="w">				</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">			</span><span class="p">}</span>
+<span class="w">			</span><span class="k">goto</span><span class="w"> </span><span class="n">submit</span><span class="p">;</span>
+
+<span class="w">		</span><span class="c1">// Submission failed: unexpected error, put the command-context back in the queue</span>
+<span class="w">		</span><span class="k">default</span><span class="o">:</span>
+<span class="w">			</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_nvm_read()"</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span>
+<span class="w">			</span><span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<span class="w">			</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">		</span><span class="p">}</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="w">	</span><span class="c1">// Done submitting, reap until no command is outstanding as we are about to exit</span>
+<span class="w">	</span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_queue_get_outstanding</span><span class="p">(</span><span class="n">queue</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">		</span><span class="c1">// An error reports the state of the queue, never that a command failed.</span>
+<span class="w">		</span><span class="c1">// 'ncompleted' is assigned on every return, so the commands it counts are handled</span>
+<span class="w">		</span><span class="c1">// before the error is looked at</span>
+<span class="w">		</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xnvme_queue_reap</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">completions</span><span class="p">,</span><span class="w"> </span><span class="n">qdepth</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ncompleted</span><span class="p">);</span>
+
+<span class="w">		</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ncompleted</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">			</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">completions</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+
+<span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">xnvme_cmd_ctx_cpl_status</span><span class="p">(</span><span class="n">ctx</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">				</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Command did not complete successfully"</span><span class="p">);</span>
+<span class="w">				</span><span class="n">xnvme_cmd_ctx_pr</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">XNVME_PR_DEF</span><span class="p">);</span>
+<span class="w">				</span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">EIO</span><span class="p">;</span>
+<span class="w">			</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">				</span><span class="n">xnvme_cli_pinf</span><span class="p">(</span><span class="s">"Command completed successfully: '%s'"</span><span class="p">,</span>
+<span class="w">					       </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">xnvme_cmd_ctx_get_data</span><span class="p">(</span><span class="n">ctx</span><span class="p">));</span>
+<span class="w">			</span><span class="p">}</span>
+
+<span class="w">			</span><span class="c1">// Completed: Put the command-context back in the queue</span>
+<span class="w">			</span><span class="n">xnvme_queue_put_cmd_ctx</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<span class="w">		</span><span class="p">}</span>
+
+<span class="w">		</span><span class="c1">// -EINTR, -EAGAIN and -EBUSY leave the queue intact, so reap again. With any</span>
+<span class="w">		</span><span class="c1">// other error the queue failed, and is torn down</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EINTR</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EAGAIN</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EBUSY</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">			</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">		</span><span class="p">}</span>
+<span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">			</span><span class="n">xnvme_cli_perr</span><span class="p">(</span><span class="s">"xnvme_queue_reap()"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">			</span><span class="k">goto</span><span class="w"> </span><span class="n">exit</span><span class="p">;</span>
+<span class="w">		</span><span class="p">}</span>
+<span class="w">	</span><span class="p">}</span>
+
+<span class="nl">exit</span><span class="p">:</span>
+<span class="w">	</span><span class="n">xnvme_queue_term</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+<span class="w">	</span><span class="n">xnvme_buf_free</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">);</span>
+<span class="w">	</span><span class="n">xnvme_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+
+<span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">err</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -837,6 +1029,7 @@ submitting multiple commands.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hello-world">Hello World</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synchronous-i-o">Synchronous I/O</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-i-o">Asynchronous I/O</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-i-o-reaping-completions">Asynchronous I/O, reaping completions</a></li>
 </ul>
   </nav></div>
 

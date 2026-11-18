@@ -542,6 +542,12 @@
 <dd><p>XNVME_QUEUE_SQ_HOSTMEM: a GPU-issued queue submits from host memory. </p>
 </dd></dl>
 
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.xnvme_queue_opts.XNVME_QUEUE_REAP">
+<span class="target" id="libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XNVME_QUEUE_REAP</span></span></span><a class="headerlink" href="#c.xnvme_queue_opts.XNVME_QUEUE_REAP" title="Link to this definition">#</a><br /></dt>
+<dd><p>XNVME_QUEUE_REAP: completions are reaped with <a class="reference internal" href="#libxnvme__queue_8h_1aa77435707006b3402b84ecefdc632be0"><span class="std std-ref">xnvme_queue_reap()</span></a>, no callback is called. </p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -554,6 +560,7 @@
 <dt class="sig sig-object c" id="c.xnvme_queue_drain">
 <span class="target" id="libxnvme__queue_8h_1aad1259925c536a27e69488bc439dbeb1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_drain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_drain" title="Link to this definition">#</a><br /></dt>
 <dd><p>Process outstanding commands on the given xnvme_queue until it is empty. </p>
+<p>Calls <a class="reference internal" href="#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a> until no command is outstanding. On a queue initialized with <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"><span class="std std-ref">XNVME_QUEUE_REAP</span></a> it returns -EINVAL, as <a class="reference internal" href="#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a> does.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -658,6 +665,7 @@
 <dt class="sig sig-object c" id="c.xnvme_queue_init">
 <span class="target" id="libxnvme__queue_8h_1a7dbb9f0cc2f52394b97af2f043758cb0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">capacity</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">opts</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_init" title="Link to this definition">#</a><br /></dt>
 <dd><p>Allocate a Command Queue for asynchronous command submission and completion. </p>
+<p>How the queue delivers completions is fixed here. With <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"><span class="std std-ref">XNVME_QUEUE_REAP</span></a> in ‘opts’, completed commands are retrieved with <a class="reference internal" href="#libxnvme__queue_8h_1aa77435707006b3402b84ecefdc632be0"><span class="std std-ref">xnvme_queue_reap()</span></a>. Without it, <a class="reference internal" href="#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a> calls the callback assigned with <a class="reference internal" href="#libxnvme__queue_8h_1a7b16efbcc5f83d914d93b9da9425b8e5"><span class="std std-ref">xnvme_queue_set_cb()</span></a> for each of them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Control plane: serialised with the other control-plane calls, not with I/O on the same device, queue or buffer; see Thread Safety in the API documentation</p>
@@ -666,9 +674,9 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dev</strong> – Device handle (xnvme_dev) obtained with <a class="reference internal" href="xnvme_dev.html#libxnvme__dev_8h_1a8f64e654908cb781fc0c2a5bbb39a12f"><span class="std std-ref">xnvme_dev_open()</span></a></p></li>
-<li><p><strong>capacity</strong> – Maximum number of outstanding commands on the initialized queue, note that it must be a power of 2 within the range [1,4096] </p></li>
-<li><p><strong>opts</strong> – Queue options </p></li>
-<li><p><strong>queue</strong> – Pointer-pointer to the xnvme_queue to initialize</p></li>
+<li><p><strong>capacity</strong> – Maximum number of outstanding commands on the initialized queue, note that it must be a power of 2 within the range [1,2048] </p></li>
+<li><p><strong>opts</strong> – Queue options, see <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6"><span class="std std-ref">xnvme_queue_opts</span></a></p></li>
+<li><p><strong>queue</strong> – <strong>[out]</strong> Pointer-pointer to the xnvme_queue to initialize</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -684,7 +692,7 @@
 <dt class="sig sig-object c" id="c.xnvme_queue_poke">
 <span class="target" id="libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_poke</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_poke" title="Link to this definition">#</a><br /></dt>
 <dd><p>Process completions of commands on the given xnvme_queue. </p>
-<p>Set process ‘max’ to limit number of completions, 0 means no max.</p>
+<p>Calls the callback of each completed command, see <a class="reference internal" href="#libxnvme__queue_8h_1a7b16efbcc5f83d914d93b9da9425b8e5"><span class="std std-ref">xnvme_queue_set_cb()</span></a>. Set ‘max’ to limit number of completions, 0 means no max. On a queue initialized with <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"><span class="std std-ref">XNVME_QUEUE_REAP</span></a> it returns -EINVAL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -723,13 +731,45 @@
 </dd></dl>
 
 </section>
+<section id="sec-api-c-xnvme-queue-func-xnvme-queue-reap">
+<span id="xnvme-queue-reap"></span><span id="xnvme_queue_reap"></span><h3>xnvme_queue_reap<a class="headerlink" href="#sec-api-c-xnvme-queue-func-xnvme-queue-reap" title="Link to this heading">#</a></h3>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.xnvme_queue_reap">
+<span class="target" id="libxnvme__queue_8h_1aa77435707006b3402b84ecefdc632be0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_reap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="xnvme_cmd.html#c.xnvme_cmd_ctx" title="xnvme_cmd_ctx"><span class="n"><span class="pre">xnvme_cmd_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">completions</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ncompleted</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_reap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieve completed commands of the given xnvme_queue. </p>
+<p>Stores a pointer to the command-context of each completed command in ‘completions’, up to ‘max’ of them, and the number it stored in ‘ncompleted’, which is 0 when none have completed. Each command-context carries the completion in <code class="docutils literal notranslate"><span class="pre">cpl</span></code> and the pointer assigned with <a class="reference internal" href="xnvme_cmd.html#libxnvme__cmd_8h_1a8e0575bbd9739669bddd48cbc673965b"><span class="std std-ref">xnvme_cmd_ctx_set_data()</span></a>, and is returned to the queue with <a class="reference internal" href="#libxnvme__queue_8h_1ade86028b3e7be7f5dd935f50f6a36121"><span class="std std-ref">xnvme_queue_put_cmd_ctx()</span></a> or submitted again. A command that failed is a completion like any other, with its status in <code class="docutils literal notranslate"><span class="pre">cpl</span></code>.</p>
+<p>‘ncompleted’ is assigned on every return, and the command-contexts it counts are handled as those of a successful call, also when an error is returned. An error reports the state of the queue, never the status of a command. Three errors leave the queue intact, and the caller calls <a class="reference internal" href="#libxnvme__queue_8h_1aa77435707006b3402b84ecefdc632be0"><span class="std std-ref">xnvme_queue_reap()</span></a> again:</p>
+<p><ul class="simple">
+<li><p>-EINTR: a signal interrupted the call</p></li>
+<li><p>-EAGAIN: the backend lacked the resources to submit or retrieve at the time</p></li>
+<li><p>-EBUSY: the device is busy, such as a controller being reset</p></li>
+</ul>
+</p>
+<p>Any other error means the queue failed, and the queue is torn down with <a class="reference internal" href="#libxnvme__queue_8h_1aaadd62c08f500eb40e872373e0579bbf"><span class="std std-ref">xnvme_queue_term()</span></a>. The commands not handed back by then are indeterminate: they may or may not have been carried out.</p>
+<p>Only a queue initialized with <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"><span class="std std-ref">XNVME_QUEUE_REAP</span></a> delivers completions this way, and no callback is called on such a queue. For any other queue, and for a ‘max’ of 0, <a class="reference internal" href="#libxnvme__queue_8h_1aa77435707006b3402b84ecefdc632be0"><span class="std std-ref">xnvme_queue_reap()</span></a> returns -EINVAL with ‘ncompleted’ 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queue</strong> – Pointer to the xnvme_queue to retrieve completed commands of </p></li>
+<li><p><strong>completions</strong> – <strong>[out]</strong> Array of at least ‘max’ pointers, receiving the command-contexts </p></li>
+<li><p><strong>max</strong> – The most command-contexts to retrieve; must be above zero </p></li>
+<li><p><strong>ncompleted</strong> – <strong>[out]</strong> The number of command-contexts stored in ‘completions’, may be 0; assigned on every return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>On success, 0 is returned. On error, negative <code class="docutils literal notranslate"><span class="pre">errno</span></code> is returned: -EINTR, -EAGAIN or -EBUSY when the queue is intact and the call is to be repeated, -EINVAL for a queue without <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"><span class="std std-ref">XNVME_QUEUE_REAP</span></a> or a ‘max’ of 0, and any other when the queue failed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="sec-api-c-xnvme-queue-func-xnvme-queue-set-cb">
 <span id="xnvme-queue-set-cb"></span><span id="xnvme_queue_set_cb"></span><h3>xnvme_queue_set_cb<a class="headerlink" href="#sec-api-c-xnvme-queue-func-xnvme-queue-set-cb" title="Link to this heading">#</a></h3>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.xnvme_queue_set_cb">
 <span class="target" id="libxnvme__queue_8h_1a7b16efbcc5f83d914d93b9da9425b8e5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_queue_set_cb</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">queue</span></span>, <span class="n"><span class="pre">xnvme_queue_cb</span></span><span class="w"> </span><span class="n"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb_arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_queue_set_cb" title="Link to this definition">#</a><br /></dt>
 <dd><p>Assign a callback-function and argument to be used with the <a class="reference internal" href="xnvme_cmd.html#structxnvme__cmd__ctx"><span class="std std-ref">xnvme_cmd_ctx</span></a> of the queue. </p>
-<p>The callback is kept in every command context of the queue, and invoked from <a class="reference internal" href="#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a> and <a class="reference internal" href="#libxnvme__queue_8h_1aad1259925c536a27e69488bc439dbeb1"><span class="std std-ref">xnvme_queue_drain()</span></a> for each command completed, until the queue is terminated or the callback is assigned again.</p>
+<p>The callback is kept in every command context of the queue, and invoked from <a class="reference internal" href="#libxnvme__queue_8h_1ab354b24711b8c6038152a3c33764989d"><span class="std std-ref">xnvme_queue_poke()</span></a> and <a class="reference internal" href="#libxnvme__queue_8h_1aad1259925c536a27e69488bc439dbeb1"><span class="std std-ref">xnvme_queue_drain()</span></a> for each command completed, until the queue is terminated or the callback is assigned again. On a queue initialized with <a class="reference internal" href="#libxnvme__queue_8h_1a930ace187b1df1033efd50218c3144c6aecfa61b7331ab3dd25dc0da00be41ebe"><span class="std std-ref">XNVME_QUEUE_REAP</span></a> it returns -EINVAL, as no callback is called on such a queue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -789,6 +829,8 @@
 <span class="cm"> */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="p">;</span>
 
+<span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="p">;</span>
+
 <span class="cm">/**</span>
 <span class="cm"> * Command Queue initialization options</span>
 <span class="cm"> *</span>
@@ -801,19 +843,25 @@
 <span class="w">	</span><span class="n">XNVME_QUEUE_P2P_CQ_MIRROR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">	</span><span class="c1">/// XNVME_QUEUE_SQ_HOSTMEM: a GPU-issued queue submits from host memory</span>
 <span class="w">	</span><span class="n">XNVME_QUEUE_SQ_HOSTMEM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">	</span><span class="c1">/// XNVME_QUEUE_REAP: completions are reaped with xnvme_queue_reap(), no callback is called</span>
+<span class="w">	</span><span class="n">XNVME_QUEUE_REAP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Allocate a Command Queue for asynchronous command submission and completion</span>
+<span class="cm"> *</span>
+<span class="cm"> * How the queue delivers completions is fixed here. With ::XNVME_QUEUE_REAP in 'opts', completed</span>
+<span class="cm"> * commands are retrieved with xnvme_queue_reap(). Without it, xnvme_queue_poke() calls the</span>
+<span class="cm"> * callback assigned with xnvme_queue_set_cb() for each of them.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @note Control plane: serialised with the other control-plane calls, not with I/O on the</span>
 <span class="cm"> * same device, queue or buffer; see Thread Safety in the API documentation</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param dev Device handle (::xnvme_dev) obtained with xnvme_dev_open()</span>
 <span class="cm"> * @param capacity Maximum number of outstanding commands on the initialized queue, note that it</span>
-<span class="cm"> * must be a power of 2 within the range [1,4096]</span>
-<span class="cm"> * @param opts Queue options</span>
-<span class="cm"> * @param queue Pointer-pointer to the ::xnvme_queue to initialize</span>
+<span class="cm"> * must be a power of 2 within the range [1,2048]</span>
+<span class="cm"> * @param opts Queue options, see ::xnvme_queue_opts</span>
+<span class="cm"> * @param[out] queue Pointer-pointer to the ::xnvme_queue to initialize</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
 <span class="cm"> */</span>
@@ -851,6 +899,8 @@
 <span class="cm"> * @param queue Pointer to the ::xnvme_queue to tear down</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @destroys queue</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="nf">xnvme_queue_term</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
@@ -858,7 +908,9 @@
 <span class="cm">/**</span>
 <span class="cm"> * Process completions of commands on the given ::xnvme_queue</span>
 <span class="cm"> *</span>
-<span class="cm"> * Set process 'max' to limit number of completions, 0 means no max.</span>
+<span class="cm"> * Calls the callback of each completed command, see xnvme_queue_set_cb(). Set 'max' to limit</span>
+<span class="cm"> * number of completions, 0 means no max. On a queue initialized with ::XNVME_QUEUE_REAP it</span>
+<span class="cm"> * returns -EINVAL.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param queue Pointer to the ::xnvme_queue to poke for completions</span>
 <span class="cm"> * @param max The max number of completions to complete</span>
@@ -872,6 +924,9 @@
 <span class="cm">/**</span>
 <span class="cm"> * Process outstanding commands on the given ::xnvme_queue until it is empty</span>
 <span class="cm"> *</span>
+<span class="cm"> * Calls xnvme_queue_poke() until no command is outstanding. On a queue initialized with</span>
+<span class="cm"> * ::XNVME_QUEUE_REAP it returns -EINVAL, as xnvme_queue_poke() does.</span>
+<span class="cm"> *</span>
 <span class="cm"> * @param queue Pointer to the ::xnvme_queue to wait/process commands on</span>
 <span class="cm"> *</span>
 <span class="cm"> * @return On success, number of commands processed, may be 0. On error, negative `errno` is</span>
@@ -879,6 +934,51 @@
 <span class="cm"> */</span>
 <span class="kt">int</span>
 <span class="nf">xnvme_queue_drain</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Retrieve completed commands of the given ::xnvme_queue</span>
+<span class="cm"> *</span>
+<span class="cm"> * Stores a pointer to the command-context of each completed command in 'completions', up to</span>
+<span class="cm"> * 'max' of them, and the number it stored in 'ncompleted', which is 0 when none have completed.</span>
+<span class="cm"> * Each command-context carries the completion in `cpl` and the pointer assigned with</span>
+<span class="cm"> * xnvme_cmd_ctx_set_data(), and is returned to the queue with xnvme_queue_put_cmd_ctx() or</span>
+<span class="cm"> * submitted again. A command that failed is a completion like any other, with its status in</span>
+<span class="cm"> * `cpl`.</span>
+<span class="cm"> *</span>
+<span class="cm"> * 'ncompleted' is assigned on every return, and the command-contexts it counts are handled as</span>
+<span class="cm"> * those of a successful call, also when an error is returned. An error reports the state of the</span>
+<span class="cm"> * queue, never the status of a command. Three errors leave the queue intact, and the caller</span>
+<span class="cm"> * calls xnvme_queue_reap() again:</span>
+<span class="cm"> *</span>
+<span class="cm"> * - -EINTR: a signal interrupted the call</span>
+<span class="cm"> * - -EAGAIN: the backend lacked the resources to submit or retrieve at the time</span>
+<span class="cm"> * - -EBUSY: the device is busy, such as a controller being reset</span>
+<span class="cm"> *</span>
+<span class="cm"> * Any other error means the queue failed, and the queue is torn down with xnvme_queue_term().</span>
+<span class="cm"> * The commands not handed back by then are indeterminate: they may or may not have been carried</span>
+<span class="cm"> * out.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Only a queue initialized with ::XNVME_QUEUE_REAP delivers completions this way, and no</span>
+<span class="cm"> * callback is called on such a queue. For any other queue, and for a 'max' of 0,</span>
+<span class="cm"> * xnvme_queue_reap() returns -EINVAL with 'ncompleted' 0.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param queue Pointer to the ::xnvme_queue to retrieve completed commands of</span>
+<span class="cm"> * @param[out] completions Array of at least 'max' pointers, receiving the command-contexts</span>
+<span class="cm"> * @param max The most command-contexts to retrieve; must be above zero</span>
+<span class="cm"> * @param[out] ncompleted The number of command-contexts stored in 'completions', may be 0;</span>
+<span class="cm"> * assigned on every return</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return On success, 0 is returned. On error, negative `errno` is returned: -EINTR, -EAGAIN</span>
+<span class="cm"> * or -EBUSY when the queue is intact and the call is to be repeated, -EINVAL for a queue</span>
+<span class="cm"> * without ::XNVME_QUEUE_REAP or a 'max' of 0, and any other when the queue failed.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @len completions max</span>
+<span class="cm"> * @len completions ncompleted</span>
+<span class="cm"> * @errno partial</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">xnvme_queue_reap</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">xnvme_cmd_ctx</span><span class="w"> </span><span class="o">**</span><span class="n">completions</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">max</span><span class="p">,</span>
+<span class="w">		 </span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">ncompleted</span><span class="p">);</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Retrieve a command-context from the given queue for async. command execution with the queue</span>
@@ -919,7 +1019,8 @@
 <span class="cm"> *</span>
 <span class="cm"> * The callback is kept in every command context of the queue, and invoked from</span>
 <span class="cm"> * xnvme_queue_poke() and xnvme_queue_drain() for each command completed, until the queue is</span>
-<span class="cm"> * terminated or the callback is assigned again.</span>
+<span class="cm"> * terminated or the callback is assigned again. On a queue initialized with</span>
+<span class="cm"> * ::XNVME_QUEUE_REAP it returns -EINVAL, as no callback is called on such a queue.</span>
 <span class="cm"> *</span>
 <span class="cm"> * @param queue The ::xnvme_queue to assign default callback function for</span>
 <span class="cm"> * @param cb The callback function to use</span>
@@ -977,6 +1078,7 @@
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_queue_opts.XNVME_QUEUE_SQPOLL"><code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQPOLL</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_queue_opts.XNVME_QUEUE_P2P_CQ_MIRROR"><code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_queue_opts.XNVME_QUEUE_SQ_HOSTMEM"><code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_queue_opts.XNVME_QUEUE_REAP"><code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_REAP</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1014,6 +1116,10 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-api-c-xnvme-queue-func-xnvme-queue-put-cmd-ctx">xnvme_queue_put_cmd_ctx</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_queue_put_cmd_ctx"><code class="docutils literal notranslate"><span class="pre">xnvme_queue_put_cmd_ctx()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-api-c-xnvme-queue-func-xnvme-queue-reap">xnvme_queue_reap</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.xnvme_queue_reap"><code class="docutils literal notranslate"><span class="pre">xnvme_queue_reap()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-api-c-xnvme-queue-func-xnvme-queue-set-cb">xnvme_queue_set_cb</a><ul class="nav section-nav flex-column">
