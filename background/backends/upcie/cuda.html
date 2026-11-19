@@ -440,6 +440,7 @@
 
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory.html">Registering memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">xNVMe Backend Architecture Refactor</a></li>
 </ul>
 </div>
@@ -621,6 +622,9 @@ as for any served queue, and the server creates the pair with the completion
 queue at the client’s address. What comes back names a completion queue in the
 server’s heap that the controller never writes, and the resident kernel keeps
 that one a copy of the queue it placed, so the submitting side is unchanged.</p>
+</section>
+<section id="sec-backends-upcie-cuda-memory-register">
+<span id="registering-memory"></span><h2>Registering memory<a class="headerlink" href="#sec-backends-upcie-cuda-memory-register" title="Link to this heading">#</a></h2>
 <p>A caller can hand over device memory it allocated itself with
 <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>, which registers the range through the same registry the
 heap uses, so such a buffer is usable exactly as one from
@@ -631,6 +635,20 @@ comes back is adopted into the same table; that is a socket round trip per
 call, so a client registers its buffers before it submits, not per command.
 Either way the range is whole device pages, 64 KiB on CUDA, since that is the
 granule the export works in.</p>
+<p>A registration does not outlive the devices: closing the last device drops
+every registration. Served, closing a controller drops the registrations made
+only through it, whatever their count, so a later <code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code> of
+such a buffer returns <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code>; a buffer also registered through a controller
+that stays open keeps its registration.</p>
+<p>Memory from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> lies in the heap and is left as it is. Host
+memory is not taken. Were the heap mapped through iommufd, the device would
+translate by offset into the heap only and registering would be refused with
+<code class="docutils literal notranslate"><span class="pre">-EOPNOTSUPP</span></code>, but current kernels do not map it that way, see
+<a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>. Behind an enforcing IOMMU, which
+controllers reach a registration differs between a process that drives them
+itself and a served client, see <a class="reference internal" href="#sec-backends-upcie-cuda-iommu-register"><span class="std std-ref">Registering buffers</span></a>.
+See <a class="reference internal" href="../../memory.html#sec-background-memory"><span class="std std-ref">Registering memory</span></a> for what registering does on the other
+backends.</p>
 </section>
 <section id="sec-backends-upcie-cuda-opts">
 <span id="choosing-the-gpu-and-heap-sizes"></span><h2>Choosing the GPU and Heap Sizes<a class="headerlink" href="#sec-backends-upcie-cuda-opts" title="Link to this heading">#</a></h2>
@@ -692,9 +710,10 @@ supersedes the <code class="docutils literal notranslate"><span class="pre">udma
 registry hands it those. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> an IOMMU translates, so every address
 it sees is an IOVA. Device memory cannot get one the way host memory does,
 since <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> rejects the dma-bufs the CUDA driver exports.</p>
-<p>Where the controller is on <code class="docutils literal notranslate"><span class="pre">vfio-cdev</span></code>, <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> is asked first: it maps the
-heap once for the whole process and needs no out-of-tree module. It cannot
-always, and what follows is what happens when it cannot.</p>
+<p>Where the controller is on <code class="docutils literal notranslate"><span class="pre">vfio-cdev</span></code>, <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> is asked first, since it would
+map the heap once for the whole process and need no out-of-tree module. Current
+kernels refuse the dma-buf in <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code>, so
+<code class="docutils literal notranslate"><span class="pre">dmamem_from_cuda_iommufd()</span></code> fails, and what follows is what happens instead.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module inserts the VRAM into the controller’s domain
 directly, and the registry’s table holds the resulting IOVAs. It ships in the
 same <code class="docutils literal notranslate"><span class="pre">upcie-experimental-dkms</span></code> package as <code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code>, installed as
@@ -729,17 +748,28 @@ the window with <code class="docutils literal notranslate"><span class="pre">XNV
 <p><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> is unaffected. Physical addresses read the same from every
 controller, so one table serves them all.</p>
 </section>
-<section id="registering-buffers">
-<h3>Registering buffers<a class="headerlink" href="#registering-buffers" title="Link to this heading">#</a></h3>
+<section id="sec-backends-upcie-cuda-iommu-register">
+<span id="registering-buffers"></span><h3>Registering buffers<a class="headerlink" href="#sec-backends-upcie-cuda-iommu-register" title="Link to this heading">#</a></h3>
 <p>A buffer from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> comes off the heap, which every controller
 maps, so it works on any of them.</p>
-<p>A buffer handed to <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> is registered against the device
-passed to the call, so behind an IOMMU it resolves for that controller only.
-Register it with each device it is used from, and unregister it against each:</p>
+<p>A process that drives the controllers itself installs a buffer handed to
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> in the domain of every controller of the window, and
+back-fills it into each controller attached later, so one registration serves
+them all. Registering it again through another device only counts it.</p>
+<p>A served client has the server install the buffer in the domain of the
+controller it was registered through. Register it with each device it is used
+from: the first registration through a device asks the server for that
+controller, at the IOVA the buffer already has, and the last unregister, through
+any of them, gives back all of them.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
 <span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="cm">/* ... commands on buf through dev_a and dev_b ... */</span>
+<span class="n">xnvme_buf_unregister</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">);</span>
+<span class="n">xnvme_buf_unregister</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>Driving the controllers itself, this costs a count, so code that registers with
+each device works either way.</p>
 <p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> one table serves every controller, so a single
 registration covers them all.</p>
 </section>
@@ -953,7 +983,7 @@ the heap and every registered buffer must also fit in the IOVA window, see
 <a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> may need the mapping installed by hand.</strong> Describing the GPU heap
 by mapping its <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> is what <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> would do, and it
-refuses one a GPU runtime exported. Where <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> cannot map it, the mapping
+refuses one a GPU runtime exported. As <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> cannot map it, the mapping
 goes in from the physical addresses behind it instead. That happens either
 way: a server does it for a client, and a process holding the controller does
 it for itself. See <a class="reference internal" href="#sec-backends-upcie-cuda-upstream"><span class="std std-ref">What upstream would have to change</span></a>.</p></li>
@@ -1008,12 +1038,13 @@ and namespace rescan all return <code class="docutils literal notranslate"><span
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-memory">Memory Architecture</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-p2p-cq-mirror">Completions in device memory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-memory-register">Registering memory</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-opts">Choosing the GPU and Heap Sizes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-kernel">Kernel Module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-iommu">Enforcing IOMMU</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-window">IOVA window</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#several-controllers">Several controllers</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#registering-buffers">Registering buffers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-iommu-register">Registering buffers</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-upstream">What upstream would have to change</a></li>
 </ul>
 </li>

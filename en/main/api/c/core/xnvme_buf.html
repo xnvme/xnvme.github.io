@@ -824,7 +824,7 @@
 <dt class="sig sig-object c" id="c.xnvme_buf_register">
 <span class="target" id="libxnvme__buf_8h_1ad3ccf1f556f7561bd84620f014f7754b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xnvme_buf_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xnvme_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vaddr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xnvme_buf_register" title="Link to this definition">#</a><br /></dt>
 <dd><p>Register memory of the caller’s for use as command payload with the given device. </p>
-<p>Registering makes memory the caller allocated itself, rather than with <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a>, usable as the payload of commands to the device.</p>
+<p>Registering makes memory the caller allocated itself, rather than with <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a>, usable as the payload of commands to the device. What it does differs per backend, from programming an IOMMU on the caller’s behalf, to a dma-buf export, to nothing at all. With SPDK, a registration is the process’s, for every device.</p>
 <p>Each registration is given back by one call to <a class="reference internal" href="#libxnvme__buf_8h_1a4f450688eae60c33d4d1fd4d884655e1"><span class="std std-ref">xnvme_buf_unregister()</span></a>. Registering a range that is registered already, or a range within one, is counted on that registration rather than registered again; a range that overlaps a registration otherwise is refused with <code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code>. Memory from <a class="reference internal" href="#libxnvme__buf_8h_1af9e041abbb8bb79c853a3907acfabb43"><span class="std std-ref">xnvme_buf_alloc()</span></a> is usable already, and registering and unregistering it does nothing.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1109,6 +1109,8 @@
 <span class="cm"> *</span>
 <span class="cm"> * Registering makes memory the caller allocated itself, rather than with xnvme_buf_alloc(),</span>
 <span class="cm"> * usable as the payload of commands to the device.</span>
+<span class="cm"> * What it does differs per backend, from programming an IOMMU on the caller's behalf, to a</span>
+<span class="cm"> * dma-buf export, to nothing at all. With SPDK, a registration is the process's, for every device.</span>
 <span class="cm"> *</span>
 <span class="cm"> * Each registration is given back by one call to xnvme_buf_unregister(). Registering a range</span>
 <span class="cm"> * that is registered already, or a range within one, is counted on that registration rather than</span>

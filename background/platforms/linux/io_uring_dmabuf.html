@@ -440,6 +440,7 @@
 
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory.html">Registering memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">xNVMe Backend Architecture Refactor</a></li>
 </ul>
 </div>
@@ -537,7 +538,13 @@ Buffers from <code class="docutils literal notranslate"><span class="pre">xnvme_
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> registers the allocation with the ring of every queue of
 the device, and a new queue registers the allocations already registered. IO on
-a registered buffer is submitted as <code class="docutils literal notranslate"><span class="pre">IORING_OP_READ_FIXED</span></code> / <code class="docutils literal notranslate"><span class="pre">IORING_OP_WRITE_FIXED</span></code>.</p>
+a registered buffer is submitted as <code class="docutils literal notranslate"><span class="pre">IORING_OP_READ_FIXED</span></code> / <code class="docutils literal notranslate"><span class="pre">IORING_OP_WRITE_FIXED</span></code>.
+The allocation is exported whole, as the CUDA or HIP allocation holding the
+range, and registered in whole pages, with the form of
+<code class="docutils literal notranslate"><span class="pre">IORING_REGISTER_BUFFERS_UPDATE</span></code> that takes a dma-buf, which the series under
+<a class="reference internal" href="#sec-platforms-linux-async-io-uring-dmabuf-kernel"><span class="std std-ref">Kernel</span></a> adds. Registering host
+memory does nothing. See <a class="reference internal" href="../../memory.html#sec-background-memory"><span class="std std-ref">Registering memory</span></a> for what registering does
+on the other backends.</p>
 </section>
 <section id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
