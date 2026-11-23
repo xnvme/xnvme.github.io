@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Release Checklist &#8212; xNVMe v0.7.5 documentation</title>
+    <title>Release Checklist &#8212; xNVMe v0.8.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../_static/documentation_options.js?v=5dc08821"></script>
+    <script src="../_static/documentation_options.js?v=b3dab91b"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="v0.7.5" />
+  <meta name="docsearch:version" content="v0.8.0" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -132,8 +132,8 @@
     
     
     
-    <img src="../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.7.5 documentation - Home"/>
-    <img src="../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.7.5 documentation - Home"/>
+    <img src="../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.8.0 documentation - Home"/>
+    <img src="../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.8.0 documentation - Home"/>
   
   
 </a></div>
@@ -509,7 +509,8 @@ once the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.
 <li><p>Update man-pages</p>
 <ul>
 <li><p>Build and install the version-bumped <strong>xNVMe</strong></p></li>
-<li><p>Then run: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gen-man-pages</span></code></p></li>
+<li><p>Then run: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gen-man-pages</span></code>; each page names <code class="docutils literal notranslate"><span class="pre">xNVMe</span> <span class="pre">vX.Y.Z</span></code> in its
+header, from <code class="docutils literal notranslate"><span class="pre">meson.build</span></code>, so every page changes</p></li>
 <li><p>Commit the man-pages with message: <code class="docutils literal notranslate"><span class="pre">docs(man):</span> <span class="pre">update</span> <span class="pre">for</span> <span class="pre">vX.Y.Z</span></code></p></li>
 <li><p>The Bash completion, <code class="docutils literal notranslate"><span class="pre">toolbox/bash_completion.d/xnvme</span></code>, asks <code class="docutils literal notranslate"><span class="pre">xnvme</span></code> what
 to complete, so it needs no update</p></li>
@@ -537,9 +538,9 @@ named <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span>
 <ul>
 <li><p>The release-prep commits (man-pages, CONTRIBUTORS, CHANGELOG, version
 bump) go through PR review like any other change</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">source-format-check</span></code> fails the pull-request when its last commit is a
-bump that does not match the version files or has no <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>
-section</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source-checks</span></code> fails the pull-request when its last commit is a
+bump that does not match the version files, has a man page that names
+another release, or has no <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section</p></li>
 <li><p>As its last commit is the bump, the pull-request runs every CI job, also
 those that otherwise need a <code class="docutils literal notranslate"><span class="pre">gate:</span></code> label, and <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> fails it
 unless every job passed. The <code class="docutils literal notranslate"><span class="pre">gates</span></code> job fails it when <code class="docutils literal notranslate"><span class="pre">meson.build</span></code>
@@ -677,7 +678,7 @@ version by a patch that moves the submodule to the tag, with any change
 <h2>Files of the release<a class="headerlink" href="#files-of-the-release" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.github/workflows/verify.yml</span></code>: on a pull-request whose last commit is the
-bump, <code class="docutils literal notranslate"><span class="pre">gates</span></code> enables every gated job, <code class="docutils literal notranslate"><span class="pre">source-format-check</span></code> checks the
+bump, <code class="docutils literal notranslate"><span class="pre">gates</span></code> enables every gated job, <code class="docutils literal notranslate"><span class="pre">source-checks</span></code> checks the
 bump, <code class="docutils literal notranslate"><span class="pre">release-checklist</span></code> checks the source archives and
 <code class="docutils literal notranslate"><span class="pre">CONTRIBUTORS.md</span></code>, and <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> fails unless every job passed</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.github/workflows/publish-release.yml</span></code>: on the bump’s push to <code class="docutils literal notranslate"><span class="pre">main</span></code>,
@@ -690,12 +691,15 @@ does not release</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/gha_gates.py</span></code>: the jobs each <code class="docutils literal notranslate"><span class="pre">gate:</span></code> label enables, and
 <code class="docutils literal notranslate"><span class="pre">verdict</span></code>, the reasons <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> fails a run</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/xnvme_release.py</span></code>: checks that every file carrying the version
-carries X.Y.Z and that <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> has its section, and writes the
-release notes; <code class="docutils literal notranslate"><span class="pre">--archive</span></code> checks a source archive, with <code class="docutils literal notranslate"><span class="pre">--release</span></code>
-that its <code class="docutils literal notranslate"><span class="pre">.vcs_tag</span></code> records <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code>, and <code class="docutils literal notranslate"><span class="pre">--contributors</span></code> lists the
-authors <code class="docutils literal notranslate"><span class="pre">CONTRIBUTORS.md</span></code> lacks</p></li>
+carries X.Y.Z, that every man page names <code class="docutils literal notranslate"><span class="pre">xNVMe</span> <span class="pre">vX.Y.Z</span></code> and that
+<code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> has its section, and writes the release notes;
+<code class="docutils literal notranslate"><span class="pre">--archive</span></code> checks a source archive, with <code class="docutils literal notranslate"><span class="pre">--release</span></code> that its
+<code class="docutils literal notranslate"><span class="pre">.vcs_tag</span></code> records <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code>, and <code class="docutils literal notranslate"><span class="pre">--contributors</span></code> lists the authors
+<code class="docutils literal notranslate"><span class="pre">CONTRIBUTORS.md</span></code> lacks</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/vcs_tag.py</span></code>: with <code class="docutils literal notranslate"><span class="pre">--dist</span></code>, writes <code class="docutils literal notranslate"><span class="pre">.vcs_tag</span></code> into the source
 archive, the tag <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> for the bump commit</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">toolbox/xnvmec_generator.py</span></code>: run by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gen-man-pages</span></code>, writes the
+man pages, each naming <code class="docutils literal notranslate"><span class="pre">xNVMe</span> <span class="pre">vX.Y.Z</span></code> of <code class="docutils literal notranslate"><span class="pre">meson.build</span></code> in its header</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/meson_dist_archive_fixer.py</span></code>: removes the <code class="docutils literal notranslate"><span class="pre">.git</span></code> directories and
 files and SPDK’s build artifacts from the subprojects in a source archive</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">toolbox/xnvme_publish.py</span></code>: fetches and verifies the assets of a release,
