@@ -586,8 +586,14 @@ their noise. They also run weekly</p></td>
 that breaks it. What is published is built after the merge, by a run
 on <code class="docutils literal notranslate"><span class="pre">main</span></code> that <code class="docutils literal notranslate"><span class="pre">publish-docs</span></code> starts</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gate:all</span></code></p></td>
-<td><p>Every gate above, as for a release</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gate:release</span></code></p></td>
+<td><p>The release checklist: the source archives against the version of the
+tree, and <code class="docutils literal notranslate"><span class="pre">CONTRIBUTORS.md</span></code> against the authors since the previous
+release, see <a class="reference internal" href="release-checklist.html#sec-contributing-release"><span class="std std-ref">Release Checklist</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gate:all</span></code></p></td>
+<td><p>Every gate above. A pull-request whose last commit is the version bump
+runs every gated job without a label</p></td>
 </tr>
 </tbody>
 </table>
@@ -615,10 +621,12 @@ and <code class="docutils literal notranslate"><span class="pre">ci-result</span
 gate. So a green <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> covers the fixed set and the gates that were
 open, and no more: a pull-request without <code class="docutils literal notranslate"><span class="pre">gate:hardware</span></code> has not been on a
 drive, and which gates a change needs before it merges is the reviewers’
-judgement.</p>
+judgement. A pull-request whose last commit is <code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code> is
+the exception: it runs every job, gated or fixed, and <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> fails it
+unless every one of them passed.</p>
 <p><code class="docutils literal notranslate"><span class="pre">ci-result</span></code> lists each gate and what its jobs gave, telling a gate that was
 not opened from one that was opened but did not run, as when a job it needs
-failed. Its notice says how many gates passed, as in <code class="docutils literal notranslate"><span class="pre">2/6</span> <span class="pre">gates</span> <span class="pre">passed:</span>
+failed. Its notice says how many gates passed, as in <code class="docutils literal notranslate"><span class="pre">2/7</span> <span class="pre">gates</span> <span class="pre">passed:</span>
 <span class="pre">emulated,</span> <span class="pre">hardware</span></code>. The <code class="docutils literal notranslate"><span class="pre">gates-report</span></code> workflow keeps that table as one
 comment on the pull-request, updated after every run of its head, so it can
 be read there rather than in the run.</p>

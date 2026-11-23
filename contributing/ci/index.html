@@ -579,13 +579,16 @@ and its <code class="docutils literal notranslate"><span class="pre">ci-result</
 <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run of <code class="docutils literal notranslate"><span class="pre">verify</span></code> on main, which builds the documentation of main’s
 tree and deploys it to <a class="reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme.io via GitHub-pages</a>. When the head commit is
 <code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code>, <code class="docutils literal notranslate"><span class="pre">publish-release</span></code> finds the pull-request that was
-merged and the <code class="docutils literal notranslate"><span class="pre">verify</span></code> run of its head that <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> passed, tags main
-<code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and creates the release, with the source archives, the Python sdist and the test
-results of that run, and the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section of the version as its
-notes, and starts a <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run on the tag for the documentation of the
-release. The artifacts are used only when the pull-request’s head has the tree
-main now has, which branch protection makes the case by requiring it to be up
-to date with main; otherwise the release fails, see
+merged and the <code class="docutils literal notranslate"><span class="pre">verify</span></code> run the pull-request started on its head, in which
+<code class="docutils literal notranslate"><span class="pre">ci-result</span></code> and every gated job passed. It tags main <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and creates
+the release, with the source archives, the Python sdist and the test results
+of that run, and the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section of the version as its notes,
+and deploys the documentation that the run’s <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code> built as that of
+the tag.
+The artifacts are used only when the pull-request’s head has the tree main
+now has, which branch protection ensures by requiring it to be up to
+date with main; otherwise the release fails. <code class="docutils literal notranslate"><span class="pre">publish-release</span></code> uploads
+nothing to PyPI or crates.io; a maintainer does that after the release, see
 <a class="reference internal" href="../release-checklist.html#sec-contributing-release"><span class="std std-ref">Release Checklist</span></a>.</p>
 <p>Any job can be run by hand: start the <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow from the Actions tab,
 on a branch, with <code class="docutils literal notranslate"><span class="pre">job</span></code> set to <code class="docutils literal notranslate"><span class="pre">all</span></code> for every job, or to <code class="docutils literal notranslate"><span class="pre">verify</span></code>,
