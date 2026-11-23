@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CI &#8212; xNVMe v0.8.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/theme_overrides.css?v=cf061042" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=b3dab91b"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing/ci/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.8.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="On Hetzner" href="runners/hetzner-setup/index.html" />
+    <link rel="prev" title="Branches" href="../contributing-branches.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.8.0" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.8.0 documentation - Home"/>
+    <img src="../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.8.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../background/index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../background/index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing-process.html">Contribution Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-toolbox.html">Toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-branches.html">Branches</a></li>
+<li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">CI</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="runners/hetzner-setup/index.html">On Hetzner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runners/onpremise/index.html">On Premise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc/index.html">Misc.</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../packaging/index.html">Packaging</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../packaging/aur/index.html">Arch Linux (AUR - <code class="docutils literal notranslate"><span class="pre">pacman</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../packaging/brew/index.html">macOS (<code class="docutils literal notranslate"><span class="pre">brew</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../packaging/windows/index.html">Windows (<code class="docutils literal notranslate"><span class="pre">choco</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-checklist.html">Release Checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../assumptions.html">Code Assumptions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Contributing</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">CI</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ci">
+<span id="sec-ci"></span><h1>CI<a class="headerlink" href="#ci" title="Link to this heading">#</a></h1>
+<p>An overview of the environments and the virtual, and physical resources
+utilized for the <strong>xNVMe</strong> <strong>CI</strong> is illustrated below.</p>
+<figure class="align-center" id="id1">
+<img alt="**xNVMe** CI Resource Overview" src="../../_images/xnvme-ci-overview.png" />
+<figcaption>
+<p><span class="caption-text"><strong>xNVMe</strong> <strong>CI</strong> environments and resources</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The above figure is outdated, as <strong>bench</strong> and <strong>verify</strong> have been migrated
+to a MaaS provider and are no longer on-premises. However, one system remains
+on-prem because no MaaS provider currently offers a suitable replacement.</p>
+<section id="infrastructure">
+<span id="sec-ci-infrastructure"></span><h2>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h2>
+<p>The main logical infrastructure component for the <strong>xNVMe</strong> <strong>CI</strong> is <a class="reference external" href="https://github.com/features/actions">GitHub
+Actions</a> (<strong>GHA</strong>). <strong>GHA</strong> handles <strong>events</strong> occuring on the following
+repositories:</p>
+<ul class="simple">
+<li><p><a class="github reference external" href="https://github.com/xnvme/xnvme/">xnvme/xnvme</a></p></li>
+<li><p><a class="github reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme/xnvme.github.io</a></p></li>
+<li><p><a class="github reference external" href="https://github.com/xnvme/dpdk-windows-drivers">xnvme/dpdk-windows-drivers</a></p></li>
+</ul>
+<p>And decides what to execute and where. In other words <strong>GHA</strong> is utilized as a
+<strong>resource-scheduler</strong> and <strong>pipeline-engine</strong>. The <strong>executor</strong> role is
+delegated to <a class="reference external" href="https://cijoe.readthedocs.io">CIJOE</a> for details, then have a look at <a class="reference external" href="https://github.com/xnvme/xnvme/tree/main/cijoe">CIJOE in xNVMe</a>.</p>
+<p>The motivation for this separation is to make it simpler to reproduce build,
+test, and verfication issues occuring during a <strong>CI</strong> run, using locally
+available resources, by executing the <a class="reference external" href="https://github.com/xnvme/xnvme/tree/main/cijoe">CIJOE in xNVMe</a> tasks and scripts.</p>
+</section>
+<section id="jobs">
+<span id="sec-ci-jobs"></span><h2>Jobs<a class="headerlink" href="#jobs" title="Link to this heading">#</a></h2>
+<p>The jobs performed by the <strong>xNVMe</strong> <strong>CI</strong> catch the following issues during
+integration of changes / contributions:</p>
+<ul class="simple">
+<li><p>Code format issues</p>
+<ul>
+<li><p>Linting and code-formating</p></li>
+<li><p>clang-format for C</p></li>
+<li><p>clippy for Rust</p></li>
+<li><p>black / ruff for Python</p></li>
+</ul>
+</li>
+<li><p>Build issues</p>
+<ul>
+<li><p>Build with debug enabled and disabled</p></li>
+<li><p>Detect linking issues with both the static and shared library</p></li>
+<li><p>Tested on every OS listed in the <a class="reference internal" href="../../toolchain/index.html#sec-toolchain"><span class="std std-ref">Toolchain</span></a> section</p></li>
+</ul>
+</li>
+<li><p>Functional regressions</p>
+<ul>
+<li><p>Running logical tests exercising all code-paths</p></li>
+<li><p>Using a naive “ramdisk” backend</p></li>
+<li><p>Using emulated NVMe devices via qemu</p></li>
+<li><p>Using physical machines</p></li>
+</ul>
+</li>
+</ul>
+<p>In addition to cathing issues, then the CI is also utilized for:</p>
+<ul class="simple">
+<li><p>Benchmarking of <strong>xNVMe</strong></p>
+<ul>
+<li><p>Using physical machines</p></li>
+<li><p>Measure peak IOPS for a single physical CPU core</p></li>
+<li><p>Specifically for the integration of <strong>xNVMe</strong> in SPDK (<code class="docutils literal notranslate"><span class="pre">bdev_xnvme</span></code>)</p></li>
+</ul>
+</li>
+<li><p>Statically Analyze the C code-base</p>
+<ul>
+<li><p>CodeQL via GitHub</p></li>
+<li><p>Coverity</p></li>
+</ul>
+</li>
+<li><p>Produce and deploy documentation</p>
+<ul>
+<li><p>Run all example commands (<code class="docutils literal notranslate"><span class="pre">.cmd</span></code> files) and collect their output in
+<code class="docutils literal notranslate"><span class="pre">.out</span></code> files</p></li>
+<li><p>Render the Sphinx-doc documentation as <strong>HTML</strong></p></li>
+<li><p>Upload rendered documentation to <a class="reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme.io via GitHub-pages</a></p></li>
+</ul>
+</li>
+</ul>
+<p>These following sections provide system-setup notes and other details for the
+various <strong>CI</strong> jobs.</p>
+</section>
+<section id="when-the-jobs-run-and-what-is-published">
+<span id="sec-ci-when"></span><h2>When the jobs run, and what is published<a class="headerlink" href="#when-the-jobs-run-and-what-is-published" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow runs on pull-requests, and otherwise weekly for the
+benchmarks, when started by hand, and for the documentation, which
+<code class="docutils literal notranslate"><span class="pre">publish-docs</span></code> and <code class="docutils literal notranslate"><span class="pre">publish-release</span></code> start. What a pull-request needs to
+merge runs there once: a fixed set of jobs on every run,
+and behind a <code class="docutils literal notranslate"><span class="pre">gate:</span></code> label, read when the run starts, the jobs in QEMU
+guests, on lab machines, the benchmarks and the documentation with its
+commands run (see <a class="reference internal" href="../contributing-process.html#sec-contributing-labels"><span class="std std-ref">What CI runs: always, and behind a gate</span></a>). The check <code class="docutils literal notranslate"><span class="pre">ci-result</span></code>
+says whether what ran passed. Main and its tags run none of it again but the
+documentation. A newer run of a pull-request cancels the one in
+progress, as does a newer run of a branch started the same way, by the
+schedule or by hand for the same <code class="docutils literal notranslate"><span class="pre">job</span></code>.</p>
+<p>Each kind of job has a workflow file of its own, <code class="docutils literal notranslate"><span class="pre">build.yml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">verify-emulated.yml</span></code> for NVMe/PCIe and NVMe/TCP,
+<code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated.yml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">verify-makefile.yml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">verify-packaging.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">perf.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">docgen-full.yml</span></code>.
+<code class="docutils literal notranslate"><span class="pre">verify</span></code> calls them, so they run as part of its run and use its artifacts,
+and its <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> checks every one that ran.</p>
+<p>A push to main runs two workflows instead. <code class="docutils literal notranslate"><span class="pre">publish-docs</span></code> starts a
+<code class="docutils literal notranslate"><span class="pre">docgen</span></code> run of <code class="docutils literal notranslate"><span class="pre">verify</span></code> on main, which builds the documentation of main’s
+tree and deploys it to <a class="reference external" href="https://github.com/xnvme/xnvme.github.io">xnvme.io via GitHub-pages</a>. When the head commit is
+<code class="docutils literal notranslate"><span class="pre">ver:</span> <span class="pre">bump</span> <span class="pre">to</span> <span class="pre">vX.Y.Z</span></code>, <code class="docutils literal notranslate"><span class="pre">publish-release</span></code> finds the pull-request that was
+merged and the <code class="docutils literal notranslate"><span class="pre">verify</span></code> run the pull-request started on its head, in which
+<code class="docutils literal notranslate"><span class="pre">ci-result</span></code> and every gated job passed. It tags main <code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code> and creates
+the release, with the source archives, the Python sdist and the test results
+of that run, and the <code class="docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> section of the version as its notes,
+and deploys the documentation that the run’s <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code> built as that of
+the tag.
+The artifacts are used only when the pull-request’s head has the tree main
+now has, which branch protection ensures by requiring it to be up to
+date with main; otherwise the release fails. <code class="docutils literal notranslate"><span class="pre">publish-release</span></code> uploads
+nothing to PyPI or crates.io; a maintainer does that after the release, see
+<a class="reference internal" href="../release-checklist.html#sec-contributing-release"><span class="std std-ref">Release Checklist</span></a>.</p>
+<p>Any job can be run by hand: start the <code class="docutils literal notranslate"><span class="pre">verify</span></code> workflow from the Actions tab,
+on a branch, with <code class="docutils literal notranslate"><span class="pre">job</span></code> set to <code class="docutils literal notranslate"><span class="pre">all</span></code> for every job, or to <code class="docutils literal notranslate"><span class="pre">verify</span></code>,
+<code class="docutils literal notranslate"><span class="pre">perf</span></code> or <code class="docutils literal notranslate"><span class="pre">docgen</span></code>. A manual <code class="docutils literal notranslate"><span class="pre">docgen</span></code> run deploys the
+documentation of its branch.</p>
+</section>
+<section id="where-the-devices-come-from-and-which-guest-runs-what">
+<span id="sec-ci-sources"></span><h2>Where the devices come from, and which guest runs what<a class="headerlink" href="#where-the-devices-come-from-and-which-guest-runs-what" title="Link to this heading">#</a></h2>
+<p>A verification job gets its NVMe devices from one of three sources:</p>
+<ul class="simple">
+<li><p><strong>emulated</strong>: <strong>QEMU</strong> and the vfio-user device servers in <a class="reference external" href="https://github.com/xnvme/xnvme-devenv">xnvme-devenv</a>’s
+host container, on a GitHub-hosted runner, with the guest booted on a rig</p></li>
+<li><p><strong>passthru</strong>: a lab machine’s real drive, passed by vfio-pci to a guest
+booted in the same host container, on the lab machine</p></li>
+<li><p><strong>physical</strong>: the machine’s own OS, with no guest (the macOS machine)</p></li>
+</ul>
+<p>The guest follows what is verified. Debian 13 is kept upstream-pure, a stock
+kernel and in-tree drivers only, and verifies the transports on a kernel users
+run.
+The xnvme-devenv Ubuntu 26.10 guest carries a patched kernel and the drivers
+built for it, matched to the device servers in the host container of the same
+release, and verifies what needs them; a driver and a server from different
+releases present as a wedged device rather than an error.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-text">What runs where</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 30.0%" />
+<col style="width: 26.0%" />
+<col style="width: 22.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Verifies</p></th>
+<th class="head"><p>Emulated</p></th>
+<th class="head"><p>Passthru</p></th>
+<th class="head"><p>Physical</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NVMe/PCIe</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span></code>: Debian 13 with the IOMMU on and off, FreeBSD 14; rig
+<code class="docutils literal notranslate"><span class="pre">storage-node-emulated</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">passthru</span></code>: Debian 13 on the lab machine; rig
+<code class="docutils literal notranslate"><span class="pre">storage-node-passthru</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">physical</span></code>: macOS 14, through MacVFN</p></td>
+</tr>
+<tr class="row-odd"><td><p>NVMe/TCP</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-tcp-emulated</span></code>: Debian 13, the kernel and SPDK initiators</p></td>
+<td><p>none</p></td>
+<td><p>none</p></td>
+</tr>
+<tr class="row-even"><td><p>NVMe/RDMA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated</span></code>: the xnvme-devenv Ubuntu 26.10 guest; rig
+<code class="docutils literal notranslate"><span class="pre">rdma-node-emulated</span></code></p></td>
+<td><p>none</p></td>
+<td><p>none</p></td>
+</tr>
+<tr class="row-odd"><td><p>NVMe with buffers in GPU memory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated</span></code>: the xnvme-devenv Ubuntu 26.10 guest; rig
+<code class="docutils literal notranslate"><span class="pre">compute-node-emulated</span></code></p></td>
+<td><p>none</p></td>
+<td><p>none</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A cell that says none has no job: that subject is not verified from that
+source.</p>
+<p>The benchmarks run on the passthru machines, weekly, on request, and on a
+pull-request labelled <code class="docutils literal notranslate"><span class="pre">gate:perf</span></code>, where <code class="docutils literal notranslate"><span class="pre">ci-result</span></code> counts them.</p>
+</section>
+<section id="containers-and-guest-images">
+<span id="sec-ci-environments"></span><h2>Containers and guest images<a class="headerlink" href="#containers-and-guest-images" title="Link to this heading">#</a></h2>
+<p>The emulated <strong>CI</strong> jobs and <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code> run inside a Docker host container
+(set by <strong>GHA</strong>’s <code class="docutils literal notranslate"><span class="pre">container:</span></code> directive), and boot a <strong>QEMU</strong> guest as part
+of their work. The host container comes from <a class="reference external" href="https://github.com/xnvme/xnvme-devenv">xnvme-devenv</a>, which adds the
+vfio-user device servers to a <a class="reference external" href="https://github.com/safl/nosi">nosi</a> base; the guest images come from
+<a class="reference external" href="https://github.com/safl/nosi">nosi</a> itself.
+Both publish <strong>OCI</strong> artifacts on <strong>GHCR</strong>.</p>
+<ul class="simple">
+<li><p><strong>Host containers</strong> carry the toolchain the <strong>GHA</strong> job itself uses: <strong>QEMU</strong>
+binaries, <strong>CIJOE</strong>, devbind / hugepages helpers, and <code class="docutils literal notranslate"><span class="pre">vfu_kvssd</span></code>. They
+also carry the rigs a guest boots with, its PCIe topology and NVMe
+controllers, and the scripts that boot them. The <strong>QEMU</strong> jobs boot
+<code class="docutils literal notranslate"><span class="pre">storage-node-emulated</span></code>; <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">guest-start</span> <span class="pre">RIG=&lt;rig&gt;</span> <span class="pre">...</span></code> takes others,
+rig names or files, each layered over the one before.</p></li>
+<li><p><strong>Guest disk images</strong> are the qcow2 boot disk the in-job <strong>QEMU</strong> instance
+runs. They are pulled in-job by the <code class="docutils literal notranslate"><span class="pre">stage_nosi_guest</span></code> <strong>CIJOE</strong> script
+(invoked from <code class="docutils literal notranslate"><span class="pre">guest.yaml</span></code> right before <code class="docutils literal notranslate"><span class="pre">guest_initialize</span></code>), which
+talks directly to the
+<strong>OCI</strong> Distribution API via stdlib <code class="docutils literal notranslate"><span class="pre">urllib</span></code> (no <code class="docutils literal notranslate"><span class="pre">oras</span></code> CLI dependency);
+the blob digest is pinned as <code class="docutils literal notranslate"><span class="pre">oras.url</span></code> under
+<code class="docutils literal notranslate"><span class="pre">[system-imaging.images.&lt;name&gt;]</span></code> in <code class="docutils literal notranslate"><span class="pre">cijoe/configs/system_imaging.toml</span></code>.
+The nosi guests ship with root locked and an operator account <code class="docutils literal notranslate"><span class="pre">odus</span></code>;
+<code class="docutils literal notranslate"><span class="pre">cijoe/scripts/root_unlock.py</span></code> runs right after <code class="docutils literal notranslate"><span class="pre">guest_start</span></code> to open
+root <strong>SSH</strong> so the rest of the <strong>CIJOE</strong> task continues as root unchanged
+(Linux uses <code class="docutils literal notranslate"><span class="pre">chpasswd</span></code> + <code class="docutils literal notranslate"><span class="pre">systemctl</span></code>, FreeBSD uses <code class="docutils literal notranslate"><span class="pre">pw</span> <span class="pre">usermod</span></code> +
+<code class="docutils literal notranslate"><span class="pre">service</span> <span class="pre">sshd</span> <span class="pre">reload</span></code>).</p></li>
+<li><p><strong>Distro-deps containers</strong> are an image per Linux distribution with
+xNVMe’s dependencies, as its <code class="docutils literal notranslate"><span class="pre">toolbox/pkgs</span></code> script installs them, for the
+build jobs and the source and binding jobs to run in, and for anyone to try a
+distribution in. The <code class="docutils literal notranslate"><span class="pre">distro-deps</span></code> workflow builds them from
+<code class="docutils literal notranslate"><span class="pre">toolbox/pkgs/Dockerfile</span></code> as
+<code class="docutils literal notranslate"><span class="pre">ghcr.io/xnvme/xnvme/distro-deps-&lt;os&gt;-&lt;ver&gt;:main</span></code>: on a pull-request
+changing the scripts without pushing, and on <code class="docutils literal notranslate"><span class="pre">main</span></code>, when a script changes
+and every 12 hours, pushing them.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-text">Per-job container + guest-image inventory</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.4%" />
+<col style="width: 34.8%" />
+<col style="width: 34.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Job</p></th>
+<th class="head"><p>Host container</p></th>
+<th class="head"><p>Guest disk image</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span> <span class="pre">/</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_enabled,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span> <span class="pre">/</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_disabled,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-emulated</span> <span class="pre">/</span> <span class="pre">(freebsd,</span> <span class="pre">14,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/freebsd-14-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-tcp-emulated</span> <span class="pre">/</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_enabled,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-rdma-emulated</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE, rocm-ernic server)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/guest-ubuntu-2610</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify-gpu-emulated</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE, rocjitsu server)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/guest-ubuntu-2610</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">passthru</span> <span class="pre">(debian,</span> <span class="pre">trixie-iommu_enabled,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">bdev_xnvme</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">latency</span> <span class="pre">(linux,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">latency</span> <span class="pre">(freebsd,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE), on the MAAS runner</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/freebsd-14-headless</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">/</span> <span class="pre">latency</span> <span class="pre">(windows,</span> <span class="pre">...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (QEMU, CIJOE, swtpm), on the MAAS runner</p></td>
+<td><p>Windows 11, from the Hetzner Storage Box, on the runner</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">docgen-full</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xnvme/xnvme-devenv/host</span></code> (upstream QEMU + CIJOE + vfu_kvssd)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">safl/nosi/debian-13-headless</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The emulated jobs and <code class="docutils literal notranslate"><span class="pre">docgen-full</span></code> run in the <a class="reference external" href="https://github.com/xnvme/xnvme-devenv">xnvme-devenv</a> host container, with
+upstream <strong>QEMU</strong>; the NVMe KV command set is supplied by <a class="reference external" href="https://github.com/safl/vfio-user-kvssd">vfio-user-kvssd</a>
+over <strong>vfio-user</strong>, installed in the container. <code class="docutils literal notranslate"><span class="pre">verify-nvme-pcie-hardware</span> <span class="pre">/</span> <span class="pre">passthru</span></code> and the
+benchmarks run the container on the lab machine, and pass its drive through
+with <code class="docutils literal notranslate"><span class="pre">PASSTHRU=0000:02:00.0</span></code>; they mount the machine’s
+<code class="docutils literal notranslate"><span class="pre">/home/ghr/system_imaging</span></code>, so a guest image is staged once per machine, and
+the Windows image, which cannot be distributed, is there.</p>
+</section>
+<section id="reproducing-a-job-and-developing-in-it">
+<span id="sec-ci-devenv"></span><h2>Reproducing a job, and developing in it<a class="headerlink" href="#reproducing-a-job-and-developing-in-it" title="Link to this heading">#</a></h2>
+<p>The emulated jobs run the same make targets you run locally, in the same host
+container; <a class="reference internal" href="../../tutorial/devs/index.html#sec-tutorials-devs-linux-reproduce-ci"><span class="std std-ref">Developing in a guest</span></a> describes them.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jobs">Jobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-jobs-run-and-what-is-published">When the jobs run, and what is published</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-devices-come-from-and-which-guest-runs-what">Where the devices come from, and which guest runs what</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#containers-and-guest-images">Containers and guest images</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reproducing-a-job-and-developing-in-it">Reproducing a job, and developing in it</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
