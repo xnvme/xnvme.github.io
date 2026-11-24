@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>uPCIe CUDA &#8212; xNVMe v0.8.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=cf061042" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=17a23d02"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'background/backends/upcie/cuda';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://xnvme.io/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.8.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="uPCIe HIP" href="hip.html" />
+    <link rel="prev" title="uPCIe (host memory)" href="host.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.8.1" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="light">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../_static/xnvme.svg" class="logo__image only-light" alt="xNVMe v0.8.1 documentation - Home"/>
+    <img src="../../../_static/xnvme.svg" class="logo__image only-dark pst-js-only" alt="xNVMe v0.8.1 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../toolchain/index.html">
+    Toolchain
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tools/index.html">
+    Tools
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../material/index.html">
+    Material
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contributing/index.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../platforms/index.html">Platforms</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../platforms/linux/index.html">Linux</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/linux/ioctl.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">nvme</span></code> ioctl()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/linux/block.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">block</span></code> ioctl()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/linux/libaio.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">libaio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/linux/io_uring.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/linux/io_uring_cmd.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">io_uring_cmd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/linux/io_uring_dmabuf.html">Async. I/O on GPU memory via <code class="docutils literal notranslate"><span class="pre">io_uring_dmabuf</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../platforms/freebsd/index.html">FreeBSD</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/freebsd/ioctl.html">NVMe Driver IOCTL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/macos/index.html">macOS</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../platforms/windows/index.html">Windows</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/windows/files.html">NVMe Driver and Regular File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/windows/ioctl.html">NVMe Driver and IOCTLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/windows/iocp.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/windows/iocp_th.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">iocp_th</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/windows/io_ring.html">Async I/O via <code class="docutils literal notranslate"><span class="pre">io_ring</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Backend Configs</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../spdk/index.html">SPDK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libvfn/index.html">libvfn</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">uPCIe</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="host.html">uPCIe (host memory)</a></li>
+<li class="toctree-l3 current active"><a aria-current="page" class="current reference internal" href="#">uPCIe CUDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hip.html">uPCIe HIP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cplane.html">uPCIe (control plane)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../xnvme_be_macos.html">macOS</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/index.html">Cross-platform implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/psync.html">Sync. I/O via <code class="docutils literal notranslate"><span class="pre">psync</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/aio.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">posix</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/emu.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">emu</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/thrpool.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">thrpool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/nil.html">Async. I/O via <code class="docutils literal notranslate"><span class="pre">nil</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/ramdisk.html">Ramdisk</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../common/interface/index.html">Backend Interface</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory.html">Registering memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/index.html">xNVMe Backend Architecture Refactor</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Background</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Backend Configs</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">uPCIe</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">uPCIe CUDA</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sec-backends-upcie-cuda">
+<span id="upcie-cuda"></span><h1>uPCIe CUDA<a class="headerlink" href="#sec-backends-upcie-cuda" title="Link to this heading">#</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This backend requires an out-of-tree kernel module that is not yet upstream.
+See <a class="reference internal" href="#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Module</span></a> for details.</p>
+</div>
+<p>The <strong>upcie-cuda</strong> backend enables direct <strong>PCIe peer-to-peer (P2P)</strong> data
+transfers between the NVMe device and the GPU, with I/O buffers allocated from
+a heap backed by <strong>CUDA device memory</strong>.</p>
+<p>Physical addresses for GPU memory are resolved once at initialization through
+the Linux <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> interface. The CUDA driver exports memory at 64 KiB
+granularity (one dma-buf page per 64 KiB of GPU memory), and these physical
+addresses are stored in a lookup table (LUT) indexed by GPU page. At
+submission time, PRP entries are built at <strong>4 KiB granularity</strong> by computing
+sub-page offsets within each 64 KiB LUT entry. This matches the host page
+size used by NVMe for PRP construction and sector alignment.</p>
+<section id="sec-backends-upcie-cuda-memory">
+<span id="memory-architecture"></span><h2>Memory Architecture<a class="headerlink" href="#sec-backends-upcie-cuda-memory" title="Link to this heading">#</a></h2>
+<p>This backend uses a <strong>hybrid memory model</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Structure</p></th>
+<th class="head"><p>Location</p></th>
+<th class="head"><p>Reason</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Data buffers (<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc</span></code>)</p></td>
+<td><p>GPU device memory (device heap, 1 GiB by default)</p></td>
+<td><p>Transferred directly by the NVMe controller via PCIe P2P, bypassing host DRAM</p></td>
+</tr>
+<tr class="row-odd"><td><p>SQ, CQ, PRP lists</p></td>
+<td><p>Host hugepage memory (host heap, 1 GiB by default)</p></td>
+<td><p>The CPU writes and the NVMe controller DMA-reads these structures; host-accessible memory is required</p></td>
+</tr>
+<tr class="row-even"><td><p>CQ, with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code></p></td>
+<td><p>GPU device memory, mirrored into the host CQ by a resident kernel</p></td>
+<td><p>Keeps the controller’s completion writes behind its data writes on one path; see <a class="reference internal" href="#sec-backends-upcie-cuda-p2p-cq-mirror"><span class="std std-ref">Completions in device memory</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>SQ of a GPU-issued queue</p></td>
+<td><p>GPU device memory; host memory with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code></p></td>
+<td><p>The controller fetches entries; from DRAM that is faster than across the root complex, see <a class="reference internal" href="#sec-backends-upcie-cuda-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The NVMe <strong>data</strong> path goes GPU ↔ NVMe without touching host DRAM. The
+<strong>control</strong> path (submission queue entries, completion queue entries, PRP lists)
+still flows through host memory. As a result, both the device heap and the
+host heap are initialized when the first <strong>upcie-cuda</strong> device is opened.</p>
+<p>The heap is allocated in the CUDA context current on the thread opening that
+first device, or, when none is current, in the device’s primary context, which
+the backend retains and makes current. An application on the runtime API thus
+finds the heap in the context it already uses on every thread, and what it
+creates after the open is untouched by the last close.</p>
+</section>
+<section id="sec-backends-upcie-cuda-p2p-cq-mirror">
+<span id="completions-in-device-memory"></span><h2>Completions in device memory<a class="headerlink" href="#sec-backends-upcie-cuda-p2p-cq-mirror" title="Link to this heading">#</a></h2>
+<p>PCIe keeps a requester’s posted writes in order. With one destination that
+costs nothing; with two, the root complex holds each write until the one ahead
+of it has been accepted at the other. A controller that writes its payloads
+into the GPU and its completions into host memory changes destination at every
+command, and on a fast enough device that shows up as a ceiling on small I/O:
+on a drive that reaches 4.0M IOPS at 512 B with the buffers in host memory, the
+same run into device memory stops at 2.8M, from a queue depth of 64 upwards.
+Larger transfers are unaffected, and so are drives that never approach the
+rate. The other split, payloads in host memory and completions in the GPU, has
+not been measured; by this account it pays the same.</p>
+<p>Opening a queue with <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_P2P_CQ_MIRROR</span></code> places its completion queue in device
+memory as well, beside the data, so the controller has a single destination
+again. The CPU still owns the queue: it builds submissions, rings doorbells and
+polls for completions exactly as before, against the host-memory CQ the queue
+would have had anyway. What changes is who fills that CQ. A kernel resident on
+the GPU for as long as the process has such a queue watches each device-memory
+CQ with one warp, and copies completions into the host CQ as their phase bit
+turns. No command is issued from the GPU and the GPU never touches the
+controller’s registers, so this needs none of the setup that
+<a class="reference internal" href="#sec-backends-upcie-cuda-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> does and works behind a translating IOMMU.</p>
+<p>The mirror costs about a microsecond per completion, which is a loss below a
+queue depth of 32 and a gain above 64. On the drive above the ceiling is gone
+at every size measured, 512 B through 4 KiB, with host memory and device memory
+within a percent or two of each other. One kernel serves every queue in the
+process, up to 64 of them, and is launched with the first and retired with the
+last. It runs on a stream of its own, in the context that holds the heap: the
+caller’s, or the primary context as above. So while such a queue is open,
+<code class="docutils literal notranslate"><span class="pre">cudaDeviceSynchronize()</span></code> and <code class="docutils literal notranslate"><span class="pre">cudaFree()</span></code> in that context wait for the kernel
+and do not return: synchronize on streams instead, and free device memory once
+the last such queue is terminated. For the same reason a process does not
+hold such a queue and a GPU-issued one at once, since creating and destroying
+the latter synchronise the device: each is refused with <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code> while the other
+is open. The <code class="docutils literal notranslate"><span class="pre">--p2p-cq-mirror</span></code> flag of <a class="reference internal" href="../../../tools/xnvmeperf/index.html#sec-tools-xnvmeperf"><span class="std std-ref">xnvmeperf</span></a> and of the
+test tools sets the flag. <a class="reference internal" href="hip.html#sec-backends-upcie-hip"><span class="std std-ref">uPCIe HIP</span></a> implements it as
+well. The <strong>upcie</strong> backend rejects the flag with <code class="docutils literal notranslate"><span class="pre">ENOTSUP</span></code>, having no GPU to
+put the CQ in; the other backends ignore it, as they do the polling flags they
+do not implement.</p>
+<p>The host and the kernel share a table with a slot per queue: the addresses
+of the two completion queues, the depth, a generation and an
+acknowledgement. The host fills a slot and raises its generation to an odd
+value; the warp copies until the generation changes, then acknowledges the
+value it worked under, and the host frees nothing before it sees that. A
+warp finding an even generation acknowledges the odd value before it, since
+a queue detached before the warp took it up has nothing to drain. The
+kernel is the only CUDA device code in the library and is compiled by
+<code class="docutils literal notranslate"><span class="pre">nvcc</span></code> in a translation unit of its own; the rest of <strong>upcie-cuda</strong> is C
+against the driver API.</p>
+<p>A controller served by <a class="reference internal" href="../../../tools/homi/index.html#sec-tools-homi"><span class="std std-ref">homi</span></a> takes the flag as well. The
+client cannot create the queue itself there, so it asks the server for one
+whose completion queue alone lies in the heap the client registered, naming it
+by offset; the submission queue and the PRP scratch stay in the server’s heap,
+as for any served queue, and the server creates the pair with the completion
+queue at the client’s address. What comes back names a completion queue in the
+server’s heap that the controller never writes, and the resident kernel keeps
+that one a copy of the queue it placed, so the submitting side is unchanged.</p>
+</section>
+<section id="sec-backends-upcie-cuda-memory-register">
+<span id="registering-memory"></span><h2>Registering memory<a class="headerlink" href="#sec-backends-upcie-cuda-memory-register" title="Link to this heading">#</a></h2>
+<p>A caller can hand over device memory it allocated itself with
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>, which registers the range through the same registry the
+heap uses, so such a buffer is usable exactly as one from
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code>. Registering a range twice is cheap, since what it
+covers is refcounted. On a controller a server holds, the range is exported as
+a dma-buf and registered with the server instead, and the description that
+comes back is adopted into the same table; that is a socket round trip per
+call, so a client registers its buffers before it submits, not per command.
+Either way the range is whole device pages, 64 KiB on CUDA, since that is the
+granule the export works in.</p>
+<p>A registration does not outlive the devices: closing the last device drops
+every registration. Served, closing a controller drops the registrations made
+only through it, whatever their count, so a later <code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code> of
+such a buffer returns <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code>; a buffer also registered through a controller
+that stays open keeps its registration.</p>
+<p>Memory from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> lies in the heap and is left as it is. Host
+memory is not taken. Were the heap mapped through iommufd, the device would
+translate by offset into the heap only and registering would be refused with
+<code class="docutils literal notranslate"><span class="pre">-EOPNOTSUPP</span></code>, but current kernels do not map it that way, see
+<a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>. Behind an enforcing IOMMU, which
+controllers reach a registration differs between a process that drives them
+itself and a served client, see <a class="reference internal" href="#sec-backends-upcie-cuda-iommu-register"><span class="std std-ref">Registering buffers</span></a>.
+See <a class="reference internal" href="../../memory.html#sec-background-memory"><span class="std std-ref">Registering memory</span></a> for what registering does on the other
+backends.</p>
+</section>
+<section id="sec-backends-upcie-cuda-opts">
+<span id="choosing-the-gpu-and-heap-sizes"></span><h2>Choosing the GPU and Heap Sizes<a class="headerlink" href="#sec-backends-upcie-cuda-opts" title="Link to this heading">#</a></h2>
+<p>Three fields of <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xnvme_opts</span></code> control where the heaps live and how large
+they are:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>CLI</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gpu_id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--gpu-id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">device_heap_size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--device-heap-size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, meaning 1 GiB</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host_heap_size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--host-heap-size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, meaning 1 GiB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">gpu_id</span></code> is the CUDA device ordinal the device heap is allocated on. When a
+CUDA context is current on the opening thread, it must belong to that GPU, or
+the open fails with <code class="docutils literal notranslate"><span class="pre">EINVAL</span></code>.</p>
+<p>The device heap is rounded up to 64 KiB and the host heap to the hugepage size.</p>
+<p>Each heap is allocated once per process, on the first open, so the values given
+to that open are the ones that take effect, and later opens leave the heaps as
+they are.</p>
+<p>Not every tool takes these options on its command line. <strong>xnvmeperf</strong> takes
+<code class="docutils literal notranslate"><span class="pre">--gpu-id</span></code> and sizes both heaps from the workload it is given, and <strong>homi</strong>
+takes all three.</p>
+</section>
+<section id="sec-backends-upcie-cuda-kernel">
+<span id="kernel-module"></span><h2>Kernel Module<a class="headerlink" href="#sec-backends-upcie-cuda-kernel" title="Link to this heading">#</a></h2>
+<p>Physical address resolution for CUDA device memory relies on importing a
+<code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> exported by the CUDA driver into the kernel’s DMA subsystem. The
+ioctls that do so are not upstream. They ship as <code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code>, an
+out-of-tree module serving <code class="docutils literal notranslate"><span class="pre">/dev/dmabuf_import</span></code>, in <code class="docutils literal notranslate"><span class="pre">upcie-experimental-dkms</span></code>.
+That DKMS package is attached to every
+<a class="reference external" href="https://github.com/safl/upcie/releases">uPCIe release</a> and carries its version.
+Install it from the release that <code class="docutils literal notranslate"><span class="pre">subprojects/upcie.wrap</span></code> pins:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./upcie-experimental-dkms_&lt;version&gt;_all.deb
+</pre></div>
+</div>
+<p>These ioctls began as a patch to the in-tree <code class="docutils literal notranslate"><span class="pre">udmabuf</span></code> driver, which meant
+rebuilding the kernel to get them. That is no longer necessary, and the module
+supersedes the <code class="docutils literal notranslate"><span class="pre">udmabuf-import</span></code> package that carried the patched version.</p>
+</section>
+<section id="sec-backends-upcie-cuda-iommu">
+<span id="enforcing-iommu"></span><h2>Enforcing IOMMU<a class="headerlink" href="#sec-backends-upcie-cuda-iommu" title="Link to this heading">#</a></h2>
+<p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> the controller consumes physical addresses and the
+registry hands it those. Under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> an IOMMU translates, so every address
+it sees is an IOVA. Device memory cannot get one the way host memory does,
+since <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> rejects the dma-bufs the CUDA driver exports.</p>
+<p>Where the controller is on <code class="docutils literal notranslate"><span class="pre">vfio-cdev</span></code>, <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> is asked first, since it would
+map the heap once for the whole process and need no out-of-tree module. Current
+kernels refuse the dma-buf in <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code>, so
+<code class="docutils literal notranslate"><span class="pre">dmamem_from_cuda_iommufd()</span></code> fails, and what follows is what happens instead.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module inserts the VRAM into the controller’s domain
+directly, and the registry’s table holds the resulting IOVAs. It ships in the
+same <code class="docutils literal notranslate"><span class="pre">upcie-experimental-dkms</span></code> package as <code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code>, installed as
+<a class="reference internal" href="#sec-backends-upcie-cuda-kernel"><span class="std std-ref">Kernel Module</span></a> describes.</p>
+<section id="iova-window">
+<h3>IOVA window<a class="headerlink" href="#iova-window" title="Link to this heading">#</a></h3>
+<p>The module maps at IOVAs of its own choosing without telling the domain’s owner,
+so a window is reserved for it: 64 GiB at 256 GiB, with the IOAS allowed every
+usable IOVA except that. Override where it does not fit:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XNVME_UPCIE_IOVA_BASE</span><span class="o">=</span>0x2000000000<span class="w">  </span><span class="c1"># 128 GiB</span>
+<span class="nv">XNVME_UPCIE_IOVA_SIZE</span><span class="o">=</span>0x400000000<span class="w">   </span><span class="c1"># 16 GiB</span>
+</pre></div>
+</div>
+<p>A window outside every usable IOVA range fails <code class="docutils literal notranslate"><span class="pre">xnvme_dev_open()</span></code> with <code class="docutils literal notranslate"><span class="pre">ERANGE</span></code>.</p>
+</section>
+<section id="several-controllers">
+<h3>Several controllers<a class="headerlink" href="#several-controllers" title="Link to this heading">#</a></h3>
+<p>The window holds one set of addresses for the process. The first controller
+opened claims it and the heap is installed in it; every controller opened after
+that is attached to the same range, so all of them reach the heap, and anything
+registered with <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>, at the same IOVAs through one
+translation table. Two limits follow, on the <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> path only:</p>
+<ul class="simple">
+<li><p>The heap and every registered buffer have to fit in the window. A full window
+fails the registration with <code class="docutils literal notranslate"><span class="pre">ENOSPC</span></code>.</p></li>
+<li><p>The translation table is sized as <a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> describes.
+<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_VA_BITS</span></code> bounds it.</p></li>
+</ul>
+<p>A controller attaching later brings its own reserved regions. Where one overlaps
+the ranges the IOAS was told to allow, that attach fails with <code class="docutils literal notranslate"><span class="pre">EADDRINUSE</span></code>. Move
+the window with <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_IOVA_BASE</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> is unaffected. Physical addresses read the same from every
+controller, so one table serves them all.</p>
+</section>
+<section id="sec-backends-upcie-cuda-iommu-register">
+<span id="registering-buffers"></span><h3>Registering buffers<a class="headerlink" href="#sec-backends-upcie-cuda-iommu-register" title="Link to this heading">#</a></h3>
+<p>A buffer from <code class="docutils literal notranslate"><span class="pre">xnvme_buf_alloc()</span></code> comes off the heap, which every controller
+maps, so it works on any of them.</p>
+<p>A process that drives the controllers itself installs a buffer handed to
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> in the domain of every controller of the window, and
+back-fills it into each controller attached later, so one registration serves
+them all. Registering it again through another device only counts it.</p>
+<p>A served client has the server install the buffer in the domain of the
+controller it was registered through. Register it with each device it is used
+from: the first registration through a device asks the server for that
+controller, at the IOVA the buffer already has, and the last unregister, through
+any of them, gives back all of them.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="n">xnvme_buf_register</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">);</span>
+<span class="cm">/* ... commands on buf through dev_a and dev_b ... */</span>
+<span class="n">xnvme_buf_unregister</span><span class="p">(</span><span class="n">dev_a</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">);</span>
+<span class="n">xnvme_buf_unregister</span><span class="p">(</span><span class="n">dev_b</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Driving the controllers itself, this costs a count, so code that registers with
+each device works either way.</p>
+<p>Under <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> one table serves every controller, so a single
+registration covers them all.</p>
+</section>
+<section id="sec-backends-upcie-cuda-upstream">
+<span id="what-upstream-would-have-to-change"></span><h3>What upstream would have to change<a class="headerlink" href="#sec-backends-upcie-cuda-upstream" title="Link to this heading">#</a></h3>
+<p>None of the out-of-tree code here exists because the kernel cannot do these
+things. It exists because the interfaces that would are closed to a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code>
+that a GPU exported, or to memory that is not RAM. Three changes would retire
+it:</p>
+<ul class="simple">
+<li><p><strong>A way to resolve a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> to physical addresses.</strong> This is what
+<code class="docutils literal notranslate"><span class="pre">dmabuf_import</span></code> does, and what a driver already does internally when it maps
+one for DMA. Nothing equivalent is exposed to user space.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> accepting a GPU <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code>.</strong> It refuses one today,
+which is why the mapping is installed from physical addresses instead.</p></li>
+<li><p><strong>A CUDA runtime that can map a BAR it is handed.</strong>
+<code class="docutils literal notranslate"><span class="pre">cuMemHostRegister(...,</span> <span class="pre">CU_MEMHOSTREGISTER_IOMEMORY)</span></code> puts a BAR in the GPU’s
+address space, which is what lets a kernel ring a doorbell. It takes a host
+mapping and resolves it, and for a mapping made through a <code class="docutils literal notranslate"><span class="pre">vfio</span></code> device it
+will not: only the first page of one is accepted, and the doorbells are never
+in it. Taking a <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> wrapping the BAR, which <code class="docutils literal notranslate"><span class="pre">vfio</span></code> can export, would
+make the mapping a thing the runtime is given rather than something it has to
+work out from a virtual address.</p></li>
+</ul>
+</section>
+</section>
+<section id="sec-backends-upcie-cuda-config">
+<span id="system-configuration"></span><h2>System Configuration<a class="headerlink" href="#sec-backends-upcie-cuda-config" title="Link to this heading">#</a></h2>
+<section id="hardware-requirements">
+<h3>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Link to this heading">#</a></h3>
+<p>P2P transfers require a GPU whose <strong>BAR1</strong> window maps all of its device
+memory into the host PCIe address space, which in practice means resizable BAR
+enabled in the firmware. The window must be at least as large as the GPU’s
+total memory, whatever the size of the device heap. To compare the two:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvidia-smi<span class="w"> </span>-q<span class="w"> </span>-d<span class="w"> </span>memory
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">Total</span></code> under <code class="docutils literal notranslate"><span class="pre">BAR1</span> <span class="pre">Memory</span> <span class="pre">Usage</span></code> is smaller than <code class="docutils literal notranslate"><span class="pre">Total</span></code> under
+<code class="docutils literal notranslate"><span class="pre">FB</span> <span class="pre">Memory</span> <span class="pre">Usage</span></code>, opening a device fails with <code class="docutils literal notranslate"><span class="pre">EOPNOTSUPP</span></code>.</p>
+</section>
+<section id="hugepages">
+<h3>Hugepages<a class="headerlink" href="#hugepages" title="Link to this heading">#</a></h3>
+<p>In addition to the device heap, opening an <strong>upcie-cuda</strong> device also
+initializes the host heap (1 GiB by default) used to hold NVMe control
+structures. Follow
+the hugepage setup steps in <a class="reference internal" href="host.html#sec-backends-upcie-host"><span class="std std-ref">uPCIe (host memory)</span></a> before opening an
+<strong>upcie-cuda</strong> device.</p>
+</section>
+<section id="sec-backends-upcie-cuda-gpu-domain">
+<span id="gpu-iommu-domain"></span><h3>GPU IOMMU domain<a class="headerlink" href="#sec-backends-upcie-cuda-gpu-domain" title="Link to this heading">#</a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>GPU-issued I/O behind a translating IOMMU needs the <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module. With
+it loaded the backend maps the controller’s BAR0 into the GPU’s domain itself
+and nothing else is needed; without it the queue is refused, and the fallback is
+the domain type, set as described below. Host-issued I/O, including
+<a class="reference internal" href="#sec-backends-upcie-cuda-p2p-cq-mirror"><span class="std std-ref">Completions in device memory</span></a>, needs none of this.</p>
+</div>
+<p>Needed only for GPU-resident queues, meaning <code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">perf</span> <span class="pre">cuda-run</span></code>, <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code>
+and anything else built on <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a>. Host-driven I/O needs nothing
+here.</p>
+<p>With a GPU-resident queue the GPU writes the doorbell register itself, rather
+than the CPU doing it, so the write is peer-to-peer traffic into the
+controller’s BAR0. It is translated by the GPU’s own domain, not the
+controller’s that <a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a> sets up, and CUDA hands
+the GPU a physical address. With the GPU in a translating domain nothing has
+mapped it, so every write faults, which is what the identity mapping of the
+BAR into that domain prevents. The backend installs it, at the BAR’s own
+physical address, when it opens a controller for GPU-issued I/O and the GPU’s
+group is of type <code class="docutils literal notranslate"><span class="pre">DMA</span></code> or <code class="docutils literal notranslate"><span class="pre">DMA-FQ</span></code>, through the same <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code> module the
+heap relies on for the reverse direction; the throughput is then the one
+measured with the IOMMU off. The mapping is per controller and held for as
+long as the controller is open. The domain is the kernel’s, the one the GPU’s
+driver allocates its own DMA addresses from, and those come from the top of
+the 32-bit range downwards, so a BAR placed below 4 GiB can collide with them.
+Where the identity range is taken, GPU-issued I/O is declined for that
+controller, since a mapping the driver placed there looks the same as one an
+earlier opener of the controller installed. Setting
+<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_CUDA_DOORBELL_SHARE</span></code> takes the collision to be the latter, for a
+second process opening the same controller for the same GPU. The mapping is
+then the first process’s and goes when it closes the controller, so the first
+has to outlive the second. What follows
+describes the situation without the module.</p>
+<section id="recognising-it">
+<h4>Recognising it<a class="headerlink" href="#recognising-it" title="Link to this heading">#</a></h4>
+<p>The run completes while every I/O fails, taking the queue’s timeout rather than
+<code class="docutils literal notranslate"><span class="pre">--runtime</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> Device                        IOPS      MiB/s   Failed
+ 0000:01:00.0                  2.30       0.01       32
+</pre></div>
+</div>
+<p>The kernel log names the <strong>GPU</strong>, not the NVMe:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nvidia 0000:2b:00.0: AMD-Vi: IO_PAGE_FAULT domain=0x0012 address=0xee901010
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">0xee901010</span></code> is BAR0 plus <code class="docutils literal notranslate"><span class="pre">0x1010</span></code>, the submission-queue doorbell of queue 2. An
+Intel host reports the equivalent under <code class="docutils literal notranslate"><span class="pre">DMAR:</span></code>.</p>
+</section>
+<section id="fixing-it-persistently">
+<h4>Fixing it persistently<a class="headerlink" href="#fixing-it-persistently" title="Link to this heading">#</a></h4>
+<p>Boot with the GPU in a passthrough domain. Add <code class="docutils literal notranslate"><span class="pre">iommu.passthrough=1</span></code> to
+<code class="docutils literal notranslate"><span class="pre">GRUB_CMDLINE_LINUX_DEFAULT</span></code> in <code class="docutils literal notranslate"><span class="pre">/etc/default/grub</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">update-grub</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">reboot</span></code>. This changes only the <em>default</em> domain type,
+so <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> still attaches its own enforcing domain to the NVMe.</p>
+</section>
+<section id="fixing-it-without-a-reboot">
+<h4>Fixing it without a reboot<a class="headerlink" href="#fixing-it-without-a-reboot" title="Link to this heading">#</a></h4>
+<p>A group’s domain type can be switched only while <strong>no device in that group has a
+driver bound</strong>. Find the group and everything in it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>readlink<span class="w"> </span>-f<span class="w"> </span>/sys/bus/pci/devices/0000:2b:00.0/iommu_group
+ls<span class="w"> </span>/sys/bus/pci/devices/0000:2b:00.0/iommu_group/devices/
+</pre></div>
+</div>
+<p>The addresses and group number below are from one host. Substitute what those
+report, then release, unbind, switch, and rebind:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fuser<span class="w"> </span>-v<span class="w"> </span>/dev/nvidia*<span class="w">   </span><span class="c1"># an empty result is what you want</span>
+
+sudo<span class="w"> </span>systemctl<span class="w"> </span>stop<span class="w"> </span>nvidia-dcgm<span class="w"> </span>nvidia-persistenced
+sudo<span class="w"> </span>rmmod<span class="w"> </span>nvidia_uvm<span class="w">   </span><span class="c1"># plus nvidia_drm and nvidia_modeset where loaded</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.1<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/snd_hda_intel/unbind
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.0<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/nvidia/unbind
+
+<span class="nb">echo</span><span class="w"> </span>identity<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/kernel/iommu_groups/16/type
+
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.0<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/nvidia/bind
+<span class="nb">echo</span><span class="w"> </span><span class="m">0000</span>:2b:00.1<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/sys/bus/pci/drivers/snd_hda_intel/bind
+sudo<span class="w"> </span>modprobe<span class="w"> </span>nvidia_uvm
+sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>nvidia-dcgm
+</pre></div>
+</div>
+<p>The switch fails with <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code> if anything is still bound, and does <strong>not</strong>
+survive a reboot.</p>
+</section>
+<section id="verifying-the-switch">
+<h4>Verifying the switch<a class="headerlink" href="#verifying-the-switch" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/sys/kernel/iommu_groups/16/type<span class="w">      </span><span class="c1"># identity</span>
+sudo<span class="w"> </span>xnvme<span class="w"> </span>perf<span class="w"> </span>cuda-verify<span class="w"> </span>--be<span class="w"> </span>upcie-cuda<span class="w"> </span>--iosize<span class="w"> </span><span class="m">4096</span><span class="w"> </span>--qdepth<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--nqueues<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">0000</span>:01:00.0
+sudo<span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">'AMD-Vi|DMAR'</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> should report <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">mismatches</span></code> and <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> nothing at all.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This applies to any peer-to-peer write from a GPU into another device’s BAR,
+not just to xNVMe.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-backends-upcie-cuda-gpu">
+<span id="gpu-resident-queue-api"></span><h2>GPU-Resident Queue API<a class="headerlink" href="#sec-backends-upcie-cuda-gpu" title="Link to this heading">#</a></h2>
+<p>The <strong>upcie-cuda</strong> backend supports GPU-resident NVMe queue pairs via the
+<code class="docutils literal notranslate"><span class="pre">libxnvme_cuda</span></code> API. See <a class="reference internal" href="../../../api/c/gpu/index.html#sec-api-c-gpu"><span class="std std-ref">GPU-Resident Queue API</span></a> for the full API reference,
+including host-side setup, CUDA kernel dispatch, and queue depth semantics.</p>
+<p>GPU-resident queues behind a translating IOMMU need the <code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code>
+module, through which the backend puts the controller’s registers where the
+GPU’s doorbell writes land; see <a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a> for
+the mechanism and for the domain setting that stands in for the module when
+it is absent.</p>
+<p>By default the whole queue pair lives in device memory: the kernel writes
+entries locally, the controller fetches them across PCIe, completes into
+device memory and moves payloads to and from it, so nothing of the I/O
+touches host DRAM. Passing <code class="docutils literal notranslate"><span class="pre">XNVME_QUEUE_SQ_HOSTMEM</span></code> to
+<code class="docutils literal notranslate"><span class="pre">xnvme_cuda_queue_create()</span></code> moves the submission queue alone into host
+memory, taken from the process’s own heap or, on a served controller, from
+the server’s, and mapped into the GPU’s address space; the kernel then writes
+entries across PCIe and the controller fetches them from DRAM. The reader
+decides: a controller fetching entries from device memory pays a PCIe round
+trip per fetch and keeps only so many in flight, which on a fast controller
+capped a queue pair below what the host can drive, whereas the GPU’s writes
+and the controller’s completion writes are posted and cost nothing of the
+sort. Measured with 512 B random reads, the host placement raised one queue
+pair from 1.65M to 3.8M IOPS and eight drives from 40M to 49M, at the same
+latency at a depth of one. What it costs is the entries themselves on the
+GPU’s transmit side, four 16-byte writes per command, which is idle traffic
+for reads but competes with the controller’s payload reads on writes; and
+the placement depends on host memory the GPU can map. The <code class="docutils literal notranslate"><span class="pre">--sq-hostmem</span></code> flag of
+<code class="docutils literal notranslate"><span class="pre">xnvme</span> <span class="pre">perf</span> <span class="pre">cuda-run</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-verify</span></code> selects it.</p>
+<p>A kernel writes an entry as four 16-byte stores cached at L2 only, so the
+L2 combines them into whole sectors before they leave the GPU. With
+narrower stores each would cross PCIe as a posted write of its own, and
+sixteen of them per entry bound the rate before the controller does.</p>
+</section>
+<section id="sec-backends-upcie-cuda-validation">
+<span id="validation"></span><h2>Validation<a class="headerlink" href="#sec-backends-upcie-cuda-validation" title="Link to this heading">#</a></h2>
+<p>The cijoe task <code class="docutils literal notranslate"><span class="pre">test-gpu.yaml</span></code> exercises the <strong>upcie-cuda</strong> backend
+against a PCIe NVMe device. Devices must be tagged with the <code class="docutils literal notranslate"><span class="pre">cuda</span></code> label in
+your cijoe configuration:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[devices]]</span>
+<span class="n">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0000:xx:00.0"</span>
+<span class="n">nsid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"dev"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pcie"</span><span class="p">,</span><span class="w"> </span><span class="s2">"nvm"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cuda"</span><span class="p">]</span>
+<span class="n">driver_attachment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"userspace"</span>
+</pre></div>
+</div>
+<p>Run the task with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>cijoe<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cijoe<span class="w"> </span>tasks/test-gpu.yaml<span class="w"> </span>--config<span class="w"> </span>configs/&lt;your-config&gt;.toml
+</pre></div>
+</div>
+</section>
+<section id="sec-backends-upcie-cuda-limitations">
+<span id="limitations"></span><h2>Limitations<a class="headerlink" href="#sec-backends-upcie-cuda-limitations" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>100 controllers per process, 16 where the heap goes in through
+<code class="docutils literal notranslate"><span class="pre">iommu_map_pa</span></code>.</strong> The first is the controller table
+(<code class="docutils literal notranslate"><span class="pre">XNVME_BE_CREF_MAX_ENTRIES</span></code>), the second the one importer a process attaches
+its controllers to (<code class="docutils literal notranslate"><span class="pre">DMAMEM_IOMMU_MAP_PA_DEVS_MAX</span></code>). Under an enforcing IOMMU
+the heap and every registered buffer must also fit in the IOVA window, see
+<a class="reference internal" href="#sec-backends-upcie-cuda-iommu"><span class="std std-ref">Enforcing IOMMU</span></a>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code> may need the mapping installed by hand.</strong> Describing the GPU heap
+by mapping its <code class="docutils literal notranslate"><span class="pre">dma-buf</span></code> is what <code class="docutils literal notranslate"><span class="pre">IOMMU_IOAS_MAP_FILE</span></code> would do, and it
+refuses one a GPU runtime exported. As <code class="docutils literal notranslate"><span class="pre">iommufd</span></code> cannot map it, the mapping
+goes in from the physical addresses behind it instead. That happens either
+way: a server does it for a client, and a process holding the controller does
+it for itself. See <a class="reference internal" href="#sec-backends-upcie-cuda-upstream"><span class="std std-ref">What upstream would have to change</span></a>.</p></li>
+<li><p><strong>Doorbells come from <code class="docutils literal notranslate"><span class="pre">sysfs</span></code> under <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>.</strong> A queue the GPU submits on
+needs the doorbell page in the GPU’s address space, and the CUDA runtime will
+not take it from a <code class="docutils literal notranslate"><span class="pre">vfio</span></code> mapping, so it is taken from the BAR’s <code class="docutils literal notranslate"><span class="pre">resource0</span></code>
+instead. Both name the same registers. This costs a served client something:
+everything else it needs arrives as a descriptor over the socket, and this it
+has to open for itself, which <code class="docutils literal notranslate"><span class="pre">resource0</span></code> only permits to root. A client that
+submits from the host is unaffected.</p></li>
+<li><p><strong>I/O the GPU issues needs no server.</strong> A controller this process opened
+builds the same queue in the same device memory, and behind an IOMMU installs
+the mapping itself rather than being given one.</p></li>
+<li><p><strong>I/O the GPU issues behind a translating IOMMU needs the mapper module.</strong> See
+<a class="reference internal" href="#sec-backends-upcie-cuda-gpu-domain"><span class="std std-ref">GPU IOMMU domain</span></a>. What a client submits from the host
+works either way.</p></li>
+<li><p><strong>One GPU per process.</strong> The device heap lives on the GPU chosen by the
+first open. See <a class="reference internal" href="#sec-backends-upcie-cuda-opts"><span class="std std-ref">Choosing the GPU and Heap Sizes</span></a>.</p></li>
+<li><p><strong>No PRP list chaining.</strong> Each request has a single 4 KiB PRP list page
+(512 entries). Combined with PRP1, the maximum transfer size per command
+is 513 × 4 KiB ≈ 2 MiB.</p></li>
+<li><p><strong>No <code class="docutils literal notranslate"><span class="pre">buf_realloc</span></code>.</strong> Buffer reallocation is not implemented and returns
+<code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
+<li><p><strong>No pseudo commands.</strong> Show registers, controller reset, subsystem reset,
+and namespace rescan all return <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-memory">Memory Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-p2p-cq-mirror">Completions in device memory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-memory-register">Registering memory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-opts">Choosing the GPU and Heap Sizes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-kernel">Kernel Module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-iommu">Enforcing IOMMU</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iova-window">IOVA window</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#several-controllers">Several controllers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-iommu-register">Registering buffers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-upstream">What upstream would have to change</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-config">System Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-requirements">Hardware Requirements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hugepages">Hugepages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-gpu-domain">GPU IOMMU domain</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#recognising-it">Recognising it</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixing-it-persistently">Fixing it persistently</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixing-it-without-a-reboot">Fixing it without a reboot</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-the-switch">Verifying the switch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-gpu">GPU-Resident Queue API</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-validation">Validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sec-backends-upcie-cuda-limitations">Limitations</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, xNVMe.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

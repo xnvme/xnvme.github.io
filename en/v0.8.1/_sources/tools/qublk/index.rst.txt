@@ -1,0 +1,178 @@
+.. _sec-tools-qublk:
+
+qublk
+#####
+
+**qublk** is a ublk server backed by **xNVMe**. It creates a ``/dev/ublkbN``
+block device, receives ``READ`` / ``WRITE`` / ``FLUSH`` requests, and on a
+backend passing NVMe commands through also ``DISCARD`` / ``WRITE_ZEROES``, from
+the Linux ``ublk_drv`` over ``io_uring``, and services them through the
+**xNVMe** asynchronous command interface. Thus, any **xNVMe** backend, such as
+:ref:`sec-backends-upcie` or **io_uring**, becomes usable as an ordinary block
+device.
+
+``REQ_FUA`` and ``REQ_PREFLUSH`` are supported, as are multiple ublk hardware
+queues via ``--nqueues``. Discard and write zeroes are described below.
+
+.. literalinclude:: qublk_usage.out
+   :language: bash
+
+Requirements
+============
+
+**qublk** is Linux-only and is built only when ``liburing`` and
+``<linux/ublk_cmd.h>`` are available. At runtime it requires:
+
+* ``root`` privileges
+
+* the ublk driver, loaded with ``modprobe ublk_drv``
+
+* for user space backends such as **uPCIe**, a device bound to
+  ``uio_pci_generic`` and hugepages configured; see :ref:`sec-backends-upcie`
+
+The Linux-NVMe-driver ioctl() mimic (see below) additionally needs Linux 6.6 or
+later, at build time and at runtime. Its CUSE protocol comes from `uFuse
+<https://github.com/safl/ufuse>`_, a header-only library that the build
+retrieves by ``subprojects/ufuse.wrap`` unless a 0.4 release is installed.
+uFuse needs a ``<linux/fuse.h>`` of protocol 7.39 (Linux 6.6), and the mimic
+needs ``NVME_IOCTL_IO64_CMD_VEC`` in ``<linux/nvme_ioctl.h>`` (5.17+). Where
+one of these is missing, configure reports its check of them as ``NO``, and
+**qublk** still builds, serving every device without its ``-nvme`` character
+device; ``-Dwith-cuse=enabled`` fails the build instead, and
+``-Dwith-cuse=disabled`` skips the mimic. ``xnvme env library`` reports the
+outcome as ``cuse``. A CUSE device that fails to come up at runtime warns, and
+the block device is served without it.
+
+``serve`` — Serve a block-device
+================================
+
+Opens the given device URIs, adds a ublk device for each, and serves them
+until ``SIGINT`` / ``SIGTERM``, upon which it performs a clean teardown
+(``STOP_DEV`` followed by ``DEL_DEV``).
+
+When ``--dev-id`` is not given, the kernel assigns the device identifiers;
+when given, the devices are numbered consecutively from it.
+When ``--max-io-bytes`` is not given, the per-IO buffer size defaults to the
+smaller of 1MiB and the controller ``MDTS``.
+
+With ``--user-copy`` the server moves the request data itself, with
+``pread()`` / ``pwrite()`` on ``/dev/ublkc<N>`` (``UBLK_F_USER_COPY``, kernel
+6.5+), instead of the kernel reading and writing the server's buffers.
+Zoned namespaces always use it.
+
+By default, each queue is served by a thread of its own. With ``--cpumask`` or
+``--cpulist``, a thread is pinned to each given CPU and the queues are spread
+evenly across them.
+
+.. literalinclude:: qublk_serve_usage.out
+   :language: bash
+
+Example — NVMe block device via io_uring::
+
+   xnvme qublk serve /dev/nvme0n1 --be io_uring --qdepth 64
+
+Example — user space NVMe via uPCIe, with multiple hardware queues::
+
+   xnvme qublk serve 0000:01:00.0 --be upcie --qdepth 64 --nqueues 4
+
+Example — four devices via uPCIe, served by two CPUs::
+
+   xnvme qublk serve 0000:01:00.0 0000:02:00.0 0000:03:00.0 0000:04:00.0 \
+     --be upcie --qdepth 64 --cpulist 0-1
+
+While **qublk** is running, each device appears as ``/dev/ublkb<N>``.
+
+A device driven by one of xNVMe's user-space NVMe drivers (``--be spdk``,
+``libvfn`` or ``upcie``) also gets a ``/dev/ublkb<N>-nvme`` character device
+answering the Linux kernel NVMe driver's ioctl() interface (``NVME_IOCTL_ID``,
+``NVME_IOCTL_ADMIN_CMD``, ``NVME_IOCTL_IO_CMD``, ``NVME_IOCTL_ADMIN64_CMD``,
+``NVME_IOCTL_IO64_CMD``, ``NVME_IOCTL_IO64_CMD_VEC``), so tools such as
+``nvme-cli`` address it like a kernel-attached namespace. Other devices get
+none: a kernel-managed NVMe namespace already has ``/dev/nvme<X>n<Y>`` and
+``/dev/ng<X>n<Y>``, and a device that is not NVMe, such as ``/dev/sda`` or a
+file, has no NVMe interface to mimic. Pass ``--no-cuse`` to skip it; a failed
+CUSE device only disables itself, the block device still comes up.
+
+Passthru data and metadata, together with the
+``nvme_passthru_cmd``/``nvme_passthru_cmd64`` struct itself, are capped at
+128KiB by the kernel's CUSE ioctl handling, not the device's real
+``MDTS``. ``NVME_IOCTL_IO64_CMD_VEC`` additionally rejects a request whose
+``vec_cnt`` is above 125: every retry round resends the same iovec list as
+both the fetch and the scatter-back list, and the kernel's own
+``FUSE_IOCTL_MAX_IOV`` (256) bounds their combined count, well below the
+real driver's ``UIO_MAXIOV``.
+
+Discard and write zeroes
+========================
+
+``DISCARD`` is served as one Dataset Management deallocate command with a
+single range, and ``WRITE_ZEROES`` as one Write Zeroes command. Each is
+advertised in ``/sys/block/ublkb<N>/queue/discard_max_bytes`` and
+``write_zeroes_max_bytes`` only when all of these hold; otherwise the value is
+``0`` and the kernel keeps the op away from **qublk**:
+
+* the backend passes NVMe commands through: ``io_uring_cmd``, ``spdk``,
+  ``libvfn``, ``upcie``, or ``emu`` / ``thrpool`` over the ``nvme``, ``spdk``,
+  ``libvfn`` or ``upcie`` sync path.
+* the controller lists the command in ``ONCS``.
+* the namespace is not zoned.
+
+The limits follow the kernel NVMe driver. Discard uses ``DMRSL`` when it fits
+the 32-bit sector count, else ``UINT32_MAX`` sectors rounded down to whole
+blocks. Write zeroes uses the transfer cap **xNVMe** derives from ``MDTS``, or
+``WZSL`` when reported, and at most 65536 blocks. ``WZSL`` is counted in 4KiB
+pages, since **xNVMe** does not expose ``CAP.MPSMIN``. ``--max-io-bytes`` does
+not affect either limit. The startup line prints both limits in sectors.
+
+A failed command completes with the errno the kernel NVMe driver gives the
+same status, for example ``EBADE`` for Reservation Conflict and ``ENOSPC`` for
+Capacity Exceeded. Any other status, including an errno **xNVMe** records
+before the device answers, is ``EIO``. Write Zeroes sets the deallocate bit
+when ``DLFEAT`` reports that deallocated blocks read as zeroes and that Write
+Zeroes may deallocate, unless the request carries ``UBLK_IO_F_NOUNMAP``.
+
+Zoned namespaces
+================
+
+A ZNS namespace is served as a host-managed zoned block device, so ``blkzone``,
+``zonefs``, zoned ``btrfs`` and ``fio --zonemode=zbd`` work on
+``/dev/ublkb<N>``. Report, open, close, finish, reset and zone append are
+mapped to the matching NVMe commands. It needs:
+
+* a backend that passes NVMe commands through: ``io_uring_cmd``, ``spdk``,
+  ``libvfn`` or ``upcie``, or ``emu`` / ``thrpool`` over the ``nvme``, ``spdk``,
+  ``libvfn`` or ``upcie`` sync path. Others are refused.
+* a kernel with ``CONFIG_BLK_DEV_ZONED`` and ``UBLK_F_ZONED`` (6.6+), and
+  matching ``<linux/ublk_cmd.h>`` at build time; the kernel ties it to user copy.
+* a power-of-two zone size and a capacity of whole zones.
+
+The open and active limits are ``MOR + 1`` and ``MAR + 1``, and the append limit
+is ``ZASL`` capped by the per-IO buffer and the zone size. The kernel may
+publish other values in ``/sys/block/ublkb<N>/queue``. Discard and write zeroes
+are not advertised: a deallocate is not reconciled with the write pointers.
+
+A zone report must fit one request, or ``ublk_drv`` (6.6 to 6.18) returns it
+scrambled. The per-IO buffer holds 64 bytes per zone, so ``--max-io-bytes``
+should be at least 64 times the zone count, rounded up to a page; **qublk**
+warns at start-up when it is not, and when ``MDTS`` rules it out.
+
+Zone management or append through the ``/dev/ublkb<N>-nvme`` character device
+bypasses the block layer's write pointer tracking, and the next write to that
+zone may fail with ``EIO``. Use it for read-only commands only.
+
+Example — ZNS namespace via the NVMe character device::
+
+   xnvme qublk serve /dev/ng1n1 --be io_uring_cmd --qdepth 64 --nqueues 4
+   blkzone report /dev/ublkb0
+   mkfs.btrfs -O zoned /dev/ublkb0
+
+``del`` — Delete a leftover device
+==================================
+
+An ``xnvme qublk serve`` that is killed rather than signalled cleanly leaves its ublk
+device behind. ``del`` stops and deletes such a device by identifier::
+
+   xnvme qublk del --dev-id 0
+
+.. literalinclude:: qublk_del_usage.out
+   :language: bash
