@@ -529,26 +529,65 @@ DMA buffer space needed by the application.</p>
 </section>
 <section id="iova-of-the-heap">
 <h3>IOVA of the heap<a class="headerlink" href="#iova-of-the-heap" title="Link to this heading">#</a></h3>
-<p>With the controller on <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, the heap is mapped before the controller is
-attached, and has to stay clear of the IOVAs the platform reserves for it, listed
-in <code class="docutils literal notranslate"><span class="pre">/sys/bus/pci/devices/&lt;bdf&gt;/iommu_group/reserved_regions</span></code>. Where it does not,
-opening the controller fails, with <code class="docutils literal notranslate"><span class="pre">EADDRINUSE</span></code> through iommufd and <code class="docutils literal notranslate"><span class="pre">EINVAL</span></code>
-through type1. The heap starts at 4 GiB by default, above the regions commonly
-reserved low, and has to end below the device-memory window (see
-<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_IOVA_BASE</span></code>). Override where a controller reserves IOVAs there:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XNVME_UPCIE_HOST_IOVA_BASE</span><span class="o">=</span>0x1000000000<span class="w">  </span><span class="c1"># 64 GiB</span>
+<p>With the controller on <code class="docutils literal notranslate"><span class="pre">vfio-pci</span></code>, through iommufd or type1, the heap is mapped
+at an IOVA equal to its address, as is memory registered with
+<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code>, so both translate alike. User addresses lie far above
+the IOVAs a platform reserves low, listed in
+<code class="docutils literal notranslate"><span class="pre">/sys/bus/pci/devices/&lt;bdf&gt;/iommu_group/reserved_regions</span></code>, but have to fit the
+IOMMU’s aperture, typically 48 bits, and stay clear of the device-memory window
+(see <code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_IOVA_BASE</span></code>).</p>
+<p>Where the heap does not fit there, as behind an IOMMU of 39 bits, it is mapped
+at 4 GiB instead, and nothing can be registered. Setting
+<code class="docutils literal notranslate"><span class="pre">XNVME_UPCIE_HOST_IOVA_BASE</span></code> maps it at the IOVA given, with the same
+consequence. That suits a process that registers nothing, behind an IOMMU whose
+page table grows deeper with the highest IOVA mapped, as an AMD IOMMU’s does:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XNVME_UPCIE_HOST_IOVA_BASE</span><span class="o">=</span>0x100000000<span class="w">  </span><span class="c1"># 4 GiB</span>
 </pre></div>
 </div>
+<p>The heap then has to end below the device-memory window, and stay clear of the
+reserved regions.</p>
 <p><code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code> is unaffected, as its DMA addresses are physical.</p>
 </section>
 </section>
 <section id="sec-backends-upcie-host-limitations">
 <span id="limitations"></span><h2>Limitations<a class="headerlink" href="#sec-backends-upcie-host-limitations" title="Link to this heading">#</a></h2>
-<ul class="simple">
+<ul>
 <li><p><strong>No <code class="docutils literal notranslate"><span class="pre">buf_realloc</span></code>.</strong> Buffer reallocation is not implemented and returns
 <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
-<li><p><strong>No registering of memory</strong> (<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> / <code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code>). These
-return <code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code>.</p></li>
+<li><p><strong>Registering memory</strong> (<code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> / <code class="docutils literal notranslate"><span class="pre">xnvme_buf_unregister()</span></code>):</p>
+<ul class="simple">
+<li><p>Through an IOMMU (iommufd or type1), any memory aligned to the larger of the
+CPU’s page and the IOMMU’s smallest page, where the heap sits at its
+address (see above), and outside the device-memory window, which fails
+with <code class="docutils literal notranslate"><span class="pre">ERANGE</span></code>. The pages are pinned, and count against the locked-memory
+limit unless the process has <code class="docutils literal notranslate"><span class="pre">CAP_IPC_LOCK</span></code>. A client of a server registers
+only when it could map the server’s heap at the server’s address, and
+counts what it registers against its own locked-memory limit.</p></li>
+<li><p>A client of a server maps at an IOVA equal to its address, in an address
+space shared with every other client, so <code class="docutils literal notranslate"><span class="pre">xnvme_buf_register()</span></code> fails with
+<code class="docutils literal notranslate"><span class="pre">EEXIST</span></code> where another client holds that range. Allocate the memory
+elsewhere and register it again. This is rare with a few clients
+registering a few GiB each, more common with large registrations or many
+clients, and certain for two copies of one program running with
+address-space randomisation off. A client unregisters what it still has
+registered as it closes; only one that dies first leaves mappings behind,
+which stay until the server stops.</p></li>
+<li><p>To map at all, a client is given the server’s iommufd or vfio container,
+with which it can also remove the server’s heap, or another client’s
+memory, from the device’s reach. The clients of a server are one trust
+domain, as they already are through the heap and BAR0 they share.</p></li>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">uio_pci_generic</span></code>, only memory in hugetlb pages of the heap’s hugepage
+size, aligned to it, since only those keep the physical address the device
+was given. Reading that address needs <code class="docutils literal notranslate"><span class="pre">CAP_SYS_ADMIN</span></code>. Memory mapped
+<code class="docutils literal notranslate"><span class="pre">MAP_PRIVATE</span></code> does not keep it across <code class="docutils literal notranslate"><span class="pre">fork()</span></code>: whichever of parent and
+child writes first is moved to a copy, and if that is the parent, the
+device goes on using the page the child now has. A process that forks
+while memory is registered should map it <code class="docutils literal notranslate"><span class="pre">MAP_SHARED</span></code>, or mark it
+<code class="docutils literal notranslate"><span class="pre">MADV_DONTFORK</span></code>.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">xnvme_buf_get_alignment()</span></code> reports the alignment for the case at hand, and
+<code class="docutils literal notranslate"><span class="pre">ENOSYS</span></code> where registering is not possible.</p>
+</li>
 <li><p><strong>Controller reset</strong> and <strong>subsystem reset</strong> are not supported. These
 operations disable the controller and re-enable it, but do not re-program the
 admin submission/completion queues. Without full re-initialization the
